@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81c847370fad561409c764da7542b26f, type: 3}
+  m_Name: Texas_MoveSet
+  m_EditorClassIdentifier: 
+  moves:
+  - {fileID: -6829819375710767845, guid: e94e17542f2fa6b40afc4653ad97316f, type: 3}
+  - {fileID: -6829819375710767845, guid: eef34f5dc3015c546845f2ecc89f31fb, type: 3}

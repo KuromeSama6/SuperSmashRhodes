@@ -1,0 +1,32 @@
+.data:
+    id Nml5S
+    prettyName FarSlash
+    bufferFrames 9
+    priority 1
+    
+.input:
+    0 s
+ 
+.main:
+    ;7/6/10
+    ;+1/+4
+
+    startup
+    int 7
+
+    active
+    hitbox 1
+    hurtbox 1
+    anim __placeholder
+    mov $dmg, 36
+    mov $guard, 0
+    mov $hit, 4
+    mov $block, 1
+    mov $ch, 1
+
+    int 6
+
+    recovery
+    int 10
+
+    endm

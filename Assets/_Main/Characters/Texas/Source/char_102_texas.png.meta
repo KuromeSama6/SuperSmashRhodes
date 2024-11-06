@@ -1,0 +1,1343 @@
+fileFormatVersion: 2
+guid: e40f4b80dd1ff1844b61c5326f9dc300
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3401880996374967043
+    second: char_102_texas_0
+  - first:
+      213: -1122246008834179069
+    second: char_102_texas_1
+  - first:
+      213: 7946904998532682439
+    second: char_102_texas_2
+  - first:
+      213: 3519490561780857489
+    second: char_102_texas_3
+  - first:
+      213: 1320932156656638460
+    second: char_102_texas_4
+  - first:
+      213: 8989350340445981038
+    second: char_102_texas_5
+  - first:
+      213: -4675466678963620117
+    second: char_102_texas_6
+  - first:
+      213: -5848008235633673119
+    second: char_102_texas_7
+  - first:
+      213: -6678399840689287033
+    second: char_102_texas_8
+  - first:
+      213: 2656717377963139265
+    second: char_102_texas_9
+  - first:
+      213: -8392386189985626333
+    second: char_102_texas_10
+  - first:
+      213: -1161462438252078217
+    second: char_102_texas_11
+  - first:
+      213: 6678756379500496646
+    second: char_102_texas_12
+  - first:
+      213: -3107883656500487379
+    second: char_102_texas_13
+  - first:
+      213: 4860364872829271107
+    second: char_102_texas_14
+  - first:
+      213: 1684285465890929453
+    second: char_102_texas_15
+  - first:
+      213: 8736313779918743224
+    second: char_102_texas_16
+  - first:
+      213: -2175405464619773606
+    second: char_102_texas_17
+  - first:
+      213: -3079353047948888887
+    second: char_102_texas_18
+  - first:
+      213: -3316367323205883948
+    second: char_102_texas_19
+  - first:
+      213: 7640244164559480132
+    second: char_102_texas_20
+  - first:
+      213: -5339736097999666012
+    second: char_102_texas_21
+  - first:
+      213: 5887644466122017567
+    second: char_102_texas_22
+  - first:
+      213: -1496906643068695586
+    second: char_102_texas_23
+  - first:
+      213: -7110597468919550947
+    second: char_102_texas_24
+  - first:
+      213: -5614127293450788606
+    second: char_102_texas_25
+  - first:
+      213: -4523045886254422882
+    second: char_102_texas_26
+  - first:
+      213: -5096986882218518122
+    second: char_102_texas_27
+  - first:
+      213: 6964345106533545770
+    second: char_102_texas_28
+  - first:
+      213: -788544153648607257
+    second: char_102_texas_29
+  - first:
+      213: 2749669011217266953
+    second: char_102_texas_30
+  - first:
+      213: -7422683362048698110
+    second: char_102_texas_31
+  - first:
+      213: 1617627367586852473
+    second: char_102_texas_32
+  - first:
+      213: 7814702410775108354
+    second: char_102_texas_33
+  - first:
+      213: -2873526954416746822
+    second: char_102_texas_34
+  - first:
+      213: 1924826371023746677
+    second: char_102_texas_35
+  - first:
+      213: -2806804458996549942
+    second: char_102_texas_36
+  - first:
+      213: -2752978981819123941
+    second: char_102_texas_37
+  - first:
+      213: -1522118297264230902
+    second: char_102_texas_38
+  - first:
+      213: -6951766968891425826
+    second: char_102_texas_39
+  - first:
+      213: -2808313044254278104
+    second: char_102_texas_40
+  - first:
+      213: 4446851874019182
+    second: char_102_texas_41
+  - first:
+      213: 3330715918696741661
+    second: char_102_texas_42
+  - first:
+      213: 5651076103012656547
+    second: char_102_texas_43
+  - first:
+      213: -350467752754662073
+    second: char_102_texas_44
+  - first:
+      213: -6280369907259224494
+    second: char_102_texas_45
+  - first:
+      213: 5526642205821607161
+    second: char_102_texas_46
+  - first:
+      213: 4411865976668369641
+    second: char_102_texas_47
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: char_102_texas_0
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 487
+        width: 33
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 303f4150eb8e53f20800000000000000
+      internalID: 3401880996374967043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_1
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 490
+        width: 17
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 300c6dc633bfc60f0800000000000000
+      internalID: -1122246008834179069
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_2
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 448
+        width: 38
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c2115dddf3194e60800000000000000
+      internalID: 7946904998532682439
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_3
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 402
+        width: 40
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19ab945d40eb7d030800000000000000
+      internalID: 3519490561780857489
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_4
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 351
+        width: 35
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf9d8e14cc4e45210800000000000000
+      internalID: 1320932156656638460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_5
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 295
+        width: 38
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e69c1dbc18690cc70800000000000000
+      internalID: 8989350340445981038
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 247
+        width: 56
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be6b231c3d76d1fb0800000000000000
+      internalID: -4675466678963620117
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_7
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 282
+        width: 18
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16cfe776e73b7dea0800000000000000
+      internalID: -5848008235633673119
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_8
+      rect:
+        serializedVersion: 2
+        x: 56
+        y: 252
+        width: 27
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78090b38abe8153a0800000000000000
+      internalID: -6678399840689287033
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_9
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 251
+        width: 23
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c0a91e116e8ed420800000000000000
+      internalID: 2656717377963139265
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_10
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 183
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32743089931488b80800000000000000
+      internalID: -8392386189985626333
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_11
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 94
+        width: 93
+        height: 132
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 77b960ce018a1efe0800000000000000
+      internalID: -1161462438252078217
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_12
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 226
+        width: 36
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6074085aa85bfac50800000000000000
+      internalID: 6678756379500496646
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_13
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 215
+        width: 12
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d2bdb0bd7449ed4d0800000000000000
+      internalID: -3107883656500487379
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_14
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 203
+        width: 13
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 34c76cbb91c737340800000000000000
+      internalID: 4860364872829271107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_15
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 183
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d2b38ce15b8cf5710800000000000000
+      internalID: 1684285465890929453
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_16
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 170
+        width: 23
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b6286a881f9d3970800000000000000
+      internalID: 8736313779918743224
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_17
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 130
+        width: 33
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a5115e671486fc1e0800000000000000
+      internalID: -2175405464619773606
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_18
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 93
+        width: 39
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c47dfec7b0f345d0800000000000000
+      internalID: -3079353047948888887
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_19
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 98
+        width: 11
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d7a99b8d75e9f1d0800000000000000
+      internalID: -3316367323205883948
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_20
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 100
+        width: 27
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 445a1d18699970a60800000000000000
+      internalID: 7640244164559480132
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_21
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 100
+        width: 9
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a4466c5f4275e5b0800000000000000
+      internalID: -5339736097999666012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_22
+      rect:
+        serializedVersion: 2
+        x: 186
+        y: 102
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f1b4ff6a27d15b150800000000000000
+      internalID: 5887644466122017567
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_23
+      rect:
+        serializedVersion: 2
+        x: 186
+        y: 71
+        width: 34
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: edbc7fdc65be93be0800000000000000
+      internalID: -1496906643068695586
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_24
+      rect:
+        serializedVersion: 2
+        x: 277
+        y: 73
+        width: 23
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1c224c8645125d90800000000000000
+      internalID: -7110597468919550947
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_25
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 8
+        width: 89
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2016a06b8fc9612b0800000000000000
+      internalID: -5614127293450788606
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_26
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 70
+        width: 44
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9463070bb9ea31c0800000000000000
+      internalID: -4523045886254422882
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_27
+      rect:
+        serializedVersion: 2
+        x: 151
+        y: 70
+        width: 33
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6991a848f6dd349b0800000000000000
+      internalID: -5096986882218518122
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_28
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 68
+        width: 28
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a277928c9f256a060800000000000000
+      internalID: 6964345106533545770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_29
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 73
+        width: 28
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ef401825478e05f0800000000000000
+      internalID: -788544153648607257
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_30
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 44
+        width: 30
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9093187b569c82620800000000000000
+      internalID: 2749669011217266953
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_31
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 44
+        width: 20
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20992ec2fc45df890800000000000000
+      internalID: -7422683362048698110
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_32
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 65
+        width: 15
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97ee6ff2587f27610800000000000000
+      internalID: 1617627367586852473
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_33
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 45
+        width: 84
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20b93a34076637c60800000000000000
+      internalID: 7814702410775108354
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_34
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 0
+        width: 110
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: abeca75a57e2f18d0800000000000000
+      internalID: -2873526954416746822
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_35
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 43
+        width: 27
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 576bc23e26b56ba10800000000000000
+      internalID: 1924826371023746677
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_36
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 44
+        width: 31
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac63783373a3c09d0800000000000000
+      internalID: -2806804458996549942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_37
+      rect:
+        serializedVersion: 2
+        x: 299
+        y: 44
+        width: 19
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b17fd82b3347bc9d0800000000000000
+      internalID: -2752978981819123941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_38
+      rect:
+        serializedVersion: 2
+        x: 217
+        y: 26
+        width: 41
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0e6171297950eae0800000000000000
+      internalID: -1522118297264230902
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_39
+      rect:
+        serializedVersion: 2
+        x: 258
+        y: 23
+        width: 40
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: edbbee916cc568f90800000000000000
+      internalID: -6951766968891425826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_40
+      rect:
+        serializedVersion: 2
+        x: 298
+        y: 28
+        width: 20
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82eb0235a2ed609d0800000000000000
+      internalID: -2808313044254278104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_41
+      rect:
+        serializedVersion: 2
+        x: 298
+        y: 0
+        width: 44
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e67d152636ccf0000800000000000000
+      internalID: 4446851874019182
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_42
+      rect:
+        serializedVersion: 2
+        x: 318
+        y: 28
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1b78ad2b74193e20800000000000000
+      internalID: 3330715918696741661
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_43
+      rect:
+        serializedVersion: 2
+        x: 342
+        y: 1
+        width: 43
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a5a4c666c7ac6e40800000000000000
+      internalID: 5651076103012656547
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_44
+      rect:
+        serializedVersion: 2
+        x: 217
+        y: 1
+        width: 81
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74534db8f63e22bf0800000000000000
+      internalID: -350467752754662073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_45
+      rect:
+        serializedVersion: 2
+        x: 385
+        y: 2
+        width: 43
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 25ec2cb18d4a7d8a0800000000000000
+      internalID: -6280369907259224494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_46
+      rect:
+        serializedVersion: 2
+        x: 443
+        y: 2
+        width: 24
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9fc9da60ec392bc40800000000000000
+      internalID: 5526642205821607161
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: char_102_texas_47
+      rect:
+        serializedVersion: 2
+        x: 468
+        y: 1
+        width: 37
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e233ff0bb81a3d30800000000000000
+      internalID: 4411865976668369641
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable: {}
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

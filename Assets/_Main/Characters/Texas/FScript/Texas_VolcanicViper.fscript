@@ -1,0 +1,39 @@
+.data:
+    id VolcanicViper
+    prettyName VolcanicViper 
+    
+.input:
+    0 forward
+    1 down
+    2 forward
+    3 p
+ 
+.main:
+    ;9/14/28
+    ;-28/HKD+54
+
+    startup
+    int 9
+
+    active
+    hitbox 1
+    hurtbox 0
+    anim __placeholder
+    mov $dmg, 40
+    mov $guard, -28
+    mov $hit, 4
+    mov $block, 1
+    mov $ch, 1
+
+    int 14
+
+    recovery
+    mov $ch, 1
+    int 28
+
+    endm
+
+.onhit:
+    ;TODO
+    nop
+    int 1

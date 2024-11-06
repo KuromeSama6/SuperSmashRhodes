@@ -1,0 +1,1417 @@
+fileFormatVersion: 2
+guid: 9cda84a32aea83044aa134bf52339852
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4308045771546994962
+    second: texas_0
+  - first:
+      213: 4423287016000741079
+    second: texas_1
+  - first:
+      213: -3902012504888450164
+    second: texas_2
+  - first:
+      213: -5667193364140840251
+    second: texas_3
+  - first:
+      213: -2666942055786811941
+    second: texas_4
+  - first:
+      213: 5131881480733103858
+    second: texas_5
+  - first:
+      213: 8384191727021678541
+    second: texas_6
+  - first:
+      213: 3692263918272955803
+    second: texas_7
+  - first:
+      213: 3131643642659981182
+    second: texas_8
+  - first:
+      213: -3008324936121707724
+    second: texas_9
+  - first:
+      213: 5520431418871543821
+    second: texas_10
+  - first:
+      213: 7781564138842061953
+    second: texas_11
+  - first:
+      213: -6194569599420097140
+    second: texas_12
+  - first:
+      213: -8413628700043198434
+    second: texas_13
+  - first:
+      213: -8040699824461585378
+    second: texas_14
+  - first:
+      213: -7035324368710311294
+    second: texas_15
+  - first:
+      213: 6320373634801232526
+    second: texas_16
+  - first:
+      213: -1100549468389791527
+    second: texas_17
+  - first:
+      213: -1115970487670018959
+    second: texas_18
+  - first:
+      213: 8935368682629742784
+    second: texas_19
+  - first:
+      213: 7875324467054630432
+    second: texas_20
+  - first:
+      213: -3516207918117695413
+    second: texas_21
+  - first:
+      213: -4223106752335115113
+    second: texas_22
+  - first:
+      213: -1924036193931488149
+    second: texas_23
+  - first:
+      213: -6664390077561954666
+    second: texas_24
+  - first:
+      213: -797160157435429059
+    second: texas_25
+  - first:
+      213: -6451423412636946244
+    second: texas_26
+  - first:
+      213: -2032090250634237182
+    second: texas_27
+  - first:
+      213: 1697060483483209693
+    second: texas_28
+  - first:
+      213: 7172231934767688457
+    second: texas_29
+  - first:
+      213: -3597837598828761905
+    second: texas_30
+  - first:
+      213: -6237758164587021249
+    second: texas_31
+  - first:
+      213: -6357194685274978599
+    second: texas_32
+  - first:
+      213: -8722054625606788138
+    second: texas_33
+  - first:
+      213: -8996607507596332352
+    second: texas_34
+  - first:
+      213: -5152983725024656365
+    second: texas_35
+  - first:
+      213: -7394985419508923395
+    second: texas_36
+  - first:
+      213: 4014669698558260356
+    second: texas_37
+  - first:
+      213: 3749944475190451472
+    second: texas_38
+  - first:
+      213: -6753000028821294097
+    second: texas_39
+  - first:
+      213: 7545228584511195019
+    second: texas_40
+  - first:
+      213: -5712778652073891686
+    second: texas_41
+  - first:
+      213: -197996380533134805
+    second: texas_42
+  - first:
+      213: 5392778907654689780
+    second: texas_43
+  - first:
+      213: -5978593831343749711
+    second: texas_44
+  - first:
+      213: -7894200256797816401
+    second: texas_45
+  - first:
+      213: 3422522517564611225
+    second: texas_46
+  - first:
+      213: -7514387072007028730
+    second: texas_47
+  - first:
+      213: 1346164400840535060
+    second: texas_48
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: -0.5
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 0
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 0
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: texas_0
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 2
+        width: 89
+        height: 91
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee651de123fb634c0800000000000000
+      internalID: -4308045771546994962
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_1
+      rect:
+        serializedVersion: 2
+        x: 93
+        y: 3
+        width: 89
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7de52500b1ca26d30800000000000000
+      internalID: 4423287016000741079
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_2
+      rect:
+        serializedVersion: 2
+        x: 185
+        y: 85
+        width: 15
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c83edf0fc4449d9c0800000000000000
+      internalID: -3902012504888450164
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_3
+      rect:
+        serializedVersion: 2
+        x: 185
+        y: 1
+        width: 25
+        height: 90
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ca2fe059a51a51b0800000000000000
+      internalID: -5667193364140840251
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_4
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 82
+        width: 12
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bdde640945e1dfad0800000000000000
+      internalID: -2666942055786811941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_5
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 82
+        width: 24
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2f69080540b183740800000000000000
+      internalID: 5131881480733103858
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_6
+      rect:
+        serializedVersion: 2
+        x: 247
+        y: 65
+        width: 28
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dcf55e154f1aa5470800000000000000
+      internalID: 8384191727021678541
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_7
+      rect:
+        serializedVersion: 2
+        x: 275
+        y: 65
+        width: 28
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b95c6a1a87e8d3330800000000000000
+      internalID: 3692263918272955803
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_8
+      rect:
+        serializedVersion: 2
+        x: 303
+        y: 54
+        width: 36
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e77cbd30d45d57b20800000000000000
+      internalID: 3131643642659981182
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_9
+      rect:
+        serializedVersion: 2
+        x: 339
+        y: 53
+        width: 33
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 433148dc8684046d0800000000000000
+      internalID: -3008324936121707724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_10
+      rect:
+        serializedVersion: 2
+        x: 372
+        y: 53
+        width: 19
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d087eb080238c9c40800000000000000
+      internalID: 5520431418871543821
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_11
+      rect:
+        serializedVersion: 2
+        x: 391
+        y: 52
+        width: 38
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18c79941b5badfb60800000000000000
+      internalID: 7781564138842061953
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_12
+      rect:
+        serializedVersion: 2
+        x: 429
+        y: 47
+        width: 110
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8d912205c7780aa0800000000000000
+      internalID: -6194569599420097140
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_13
+      rect:
+        serializedVersion: 2
+        x: 539
+        y: 44
+        width: 29
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e10c4ed4649cc3b80800000000000000
+      internalID: -8413628700043198434
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_14
+      rect:
+        serializedVersion: 2
+        x: 569
+        y: 44
+        width: 18
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e14eb617c12b96090800000000000000
+      internalID: -8040699824461585378
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_15
+      rect:
+        serializedVersion: 2
+        x: 587
+        y: 73
+        width: 16
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2826f5be2c18d5e90800000000000000
+      internalID: -7035324368710311294
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_16
+      rect:
+        serializedVersion: 2
+        x: 604
+        y: 74
+        width: 20
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e8a6216855a76b750800000000000000
+      internalID: 6320373634801232526
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_17
+      rect:
+        serializedVersion: 2
+        x: 625
+        y: 70
+        width: 29
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d8a1e6e6101ab0f0800000000000000
+      internalID: -1100549468389791527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_18
+      rect:
+        serializedVersion: 2
+        x: 654
+        y: 63
+        width: 29
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17ceb9e01c64380f0800000000000000
+      internalID: -1115970487670018959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_19
+      rect:
+        serializedVersion: 2
+        x: 683
+        y: 80
+        width: 23
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c0cb49a97ec00c70800000000000000
+      internalID: 8935368682629742784
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_20
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 1
+        width: 24
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 026dbb5a0e5ca4d60800000000000000
+      internalID: 7875324467054630432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_21
+      rect:
+        serializedVersion: 2
+        x: 587
+        y: 40
+        width: 28
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b40dd24378be33fc0800000000000000
+      internalID: -3516207918117695413
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_22
+      rect:
+        serializedVersion: 2
+        x: 617
+        y: 36
+        width: 31
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 79c0382a8c28465c0800000000000000
+      internalID: -4223106752335115113
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_23
+      rect:
+        serializedVersion: 2
+        x: 683
+        y: 55
+        width: 23
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b6418bd86437c45e0800000000000000
+      internalID: -1924036193931488149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_24
+      rect:
+        serializedVersion: 2
+        x: 706
+        y: 66
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69e184ea8845383a0800000000000000
+      internalID: -6664390077561954666
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_25
+      rect:
+        serializedVersion: 2
+        x: 234
+        y: 1
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3f77f27f0befe4f0800000000000000
+      internalID: -797160157435429059
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_26
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 1
+        width: 38
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb0f22a5690f776a0800000000000000
+      internalID: -6451423412636946244
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_27
+      rect:
+        serializedVersion: 2
+        x: 340
+        y: 2
+        width: 35
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20b696bfea09cc3e0800000000000000
+      internalID: -2032090250634237182
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_28
+      rect:
+        serializedVersion: 2
+        x: 375
+        y: 1
+        width: 50
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ddf8e50b48b2d8710800000000000000
+      internalID: 1697060483483209693
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_29
+      rect:
+        serializedVersion: 2
+        x: 649
+        y: 36
+        width: 11
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90b6a8ec1f2e88360800000000000000
+      internalID: 7172231934767688457
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_30
+      rect:
+        serializedVersion: 2
+        x: 662
+        y: 32
+        width: 20
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fcc644a14c9e11ec0800000000000000
+      internalID: -3597837598828761905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_31
+      rect:
+        serializedVersion: 2
+        x: 682
+        y: 28
+        width: 24
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3c7ff49ff70f69a0800000000000000
+      internalID: -6237758164587021249
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_32
+      rect:
+        serializedVersion: 2
+        x: 708
+        y: 49
+        width: 9
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d60f289d15b6c7a0800000000000000
+      internalID: -6357194685274978599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_33
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 48
+        width: 13
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6db9729878905f680800000000000000
+      internalID: -8722054625606788138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_34
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 1
+        width: 38
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c2bb1e4321a52380800000000000000
+      internalID: -8996607507596332352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_35
+      rect:
+        serializedVersion: 2
+        x: 463
+        y: 1
+        width: 27
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31449809a9cec78b0800000000000000
+      internalID: -5152983725024656365
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_36
+      rect:
+        serializedVersion: 2
+        x: 490
+        y: 1
+        width: 24
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df34af6f0fbbf5990800000000000000
+      internalID: -7394985419508923395
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_37
+      rect:
+        serializedVersion: 2
+        x: 514
+        y: 1
+        width: 32
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 484f619f1d8f6b730800000000000000
+      internalID: 4014669698558260356
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_38
+      rect:
+        serializedVersion: 2
+        x: 546
+        y: 1
+        width: 24
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01d5a23d1aa7a0430800000000000000
+      internalID: 3749944475190451472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_39
+      rect:
+        serializedVersion: 2
+        x: 571
+        y: 1
+        width: 26
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe377e1b0468842a0800000000000000
+      internalID: -6753000028821294097
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_40
+      rect:
+        serializedVersion: 2
+        x: 597
+        y: 1
+        width: 25
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b87c9e8db6906b860800000000000000
+      internalID: 7545228584511195019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_41
+      rect:
+        serializedVersion: 2
+        x: 647
+        y: 1
+        width: 24
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9863b2651228b0b0800000000000000
+      internalID: -5712778652073891686
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_42
+      rect:
+        serializedVersion: 2
+        x: 706
+        y: 27
+        width: 18
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2a62874753904df0800000000000000
+      internalID: -197996380533134805
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_43
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 35
+        width: 13
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f31af628dff6da40800000000000000
+      internalID: 5392778907654689780
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_44
+      rect:
+        serializedVersion: 2
+        x: 623
+        y: 1
+        width: 23
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b50a6a1694c70da0800000000000000
+      internalID: -5978593831343749711
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_45
+      rect:
+        serializedVersion: 2
+        x: 671
+        y: 1
+        width: 25
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa9c4c311ba227290800000000000000
+      internalID: -7894200256797816401
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_46
+      rect:
+        serializedVersion: 2
+        x: 696
+        y: 2
+        width: 22
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99ad63fa81e3f7f20800000000000000
+      internalID: 3422522517564611225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_47
+      rect:
+        serializedVersion: 2
+        x: 718
+        y: 1
+        width: 17
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 600cb3c55c887b790800000000000000
+      internalID: -7514387072007028730
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texas_48
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 19
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41c6069e3698ea210800000000000000
+      internalID: 1346164400840535060
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      texas_0: -4308045771546994962
+      texas_1: 4423287016000741079
+      texas_10: 5520431418871543821
+      texas_11: 7781564138842061953
+      texas_12: -6194569599420097140
+      texas_13: -8413628700043198434
+      texas_14: -8040699824461585378
+      texas_15: -7035324368710311294
+      texas_16: 6320373634801232526
+      texas_17: -1100549468389791527
+      texas_18: -1115970487670018959
+      texas_19: 8935368682629742784
+      texas_2: -3902012504888450164
+      texas_20: 7875324467054630432
+      texas_21: -3516207918117695413
+      texas_22: -4223106752335115113
+      texas_23: -1924036193931488149
+      texas_24: -6664390077561954666
+      texas_25: -797160157435429059
+      texas_26: -6451423412636946244
+      texas_27: -2032090250634237182
+      texas_28: 1697060483483209693
+      texas_29: 7172231934767688457
+      texas_3: -5667193364140840251
+      texas_30: -3597837598828761905
+      texas_31: -6237758164587021249
+      texas_32: -6357194685274978599
+      texas_33: -8722054625606788138
+      texas_34: -8996607507596332352
+      texas_35: -5152983725024656365
+      texas_36: -7394985419508923395
+      texas_37: 4014669698558260356
+      texas_38: 3749944475190451472
+      texas_39: -6753000028821294097
+      texas_4: -2666942055786811941
+      texas_40: 7545228584511195019
+      texas_41: -5712778652073891686
+      texas_42: -197996380533134805
+      texas_43: 5392778907654689780
+      texas_44: -5978593831343749711
+      texas_45: -7894200256797816401
+      texas_46: 3422522517564611225
+      texas_47: -7514387072007028730
+      texas_48: 1346164400840535060
+      texas_5: 5131881480733103858
+      texas_6: 8384191727021678541
+      texas_7: 3692263918272955803
+      texas_8: 3131643642659981182
+      texas_9: -3008324936121707724
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
