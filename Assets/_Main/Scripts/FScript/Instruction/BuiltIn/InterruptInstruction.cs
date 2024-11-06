@@ -14,7 +14,7 @@ public class InterruptInstruction : FInstruction {
         frameCount = args[0].IntValue();
     }
     
-    protected override void Execute(MoveExecutionContext ctx) {
+    protected override void Execute(FScriptRuntimeContext ctx) {
         RequireMinArgs(1);
         ctx.SetInterrupt(frameCount);
     }

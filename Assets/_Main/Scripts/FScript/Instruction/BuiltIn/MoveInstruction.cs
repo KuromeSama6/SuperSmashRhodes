@@ -7,8 +7,10 @@ public class MoveInstruction : FInstruction {
     public MoveInstruction(FLine line) : base(line) {
 
     }
-    protected override void Execute(MoveExecutionContext ctx) {
+    
+    protected override void Execute(FScriptRuntimeContext ctx) {
         RequireMinArgs(2);
+        args[0].WriteValue(ctx, args[1]);
     }
 }
 }

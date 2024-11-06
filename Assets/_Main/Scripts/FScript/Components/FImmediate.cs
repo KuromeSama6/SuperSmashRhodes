@@ -8,7 +8,6 @@ namespace SuperSmashRhodes.FScript.Components {
 public class FImmediate {
     public string value { get; set; }
     public FImmediateType type { get; }
-    public bool writable => type != FImmediateType.LITERAL;
     
     public FImmediate(object value) {
         if (value is FImmediate immediate) {
@@ -26,64 +25,61 @@ public class FImmediate {
         }
     }
 
-    public string StringValue(MoveExecutionContext ctx = null) {
+    public string StringValue(FScriptRuntimeContext ctx = null) {
         var ret = ResolveValue(ctx);
         return ret;
     }
     
-    public int IntValue(MoveExecutionContext ctx = null) {
+    public int IntValue(FScriptRuntimeContext ctx = null) {
         var ret = ResolveValue(ctx);
         try {
             return int.Parse(ret);
         } catch (Exception e) {
-            throw new ImmedaiteAccessException(e);
+            throw new ImmediateAccessException(e);
         }
     }
     
-    public float FloatValue(MoveExecutionContext ctx = null) {
+    public float FloatValue(FScriptRuntimeContext ctx = null) {
         var ret = ResolveValue(ctx);
         try {
             return float.Parse(ret);
         } catch (Exception e) {
-            throw new ImmedaiteAccessException(e);
+            throw new ImmediateAccessException(e);
         }
     }
     
-    public bool BoolValue(MoveExecutionContext ctx = null) {
+    public bool BoolValue(FScriptRuntimeContext ctx = null) {
         var ret = ResolveValue(ctx);
         try {
             return bool.Parse(ret);
         } catch (Exception e) {
-            throw new ImmedaiteAccessException(e);
+            throw new ImmediateAccessException(e);
         }
     }
     
-    public T EnumValue<T>(MoveExecutionContext ctx = null) where T : Enum {
+    public T EnumValue<T>(FScriptRuntimeContext ctx = null) where T : Enum {
         var ret = ResolveValue(ctx);
         try {
             return (T) Enum.Parse(typeof(T), ret);
         } catch (Exception e) {
-            throw new ImmedaiteAccessException(e);
+            throw new ImmediateAccessException(e);
         }
     }
 
-    public void WriteValue(MoveExecutionContext ctx, string target, object value) {
-        if (!writable)
-            throw new ImmedaiteAccessException("Cannot write to a literal value");
-        
-        if (target.StartsWith("$")) {
-            var regName = target.Substring(1);
-            ctx.registers[regName] = new(value);
-        }
+    public void WriteValue(FScriptRuntimeContext ctx, object value) {
+        string target = this.value;
         
         // variables are in brackets
         if (target.StartsWith("[") && target.EndsWith("]")) {
             var varName = target.Substring(1, target.Length - 2);
             ctx.variables[varName] = new(value);
+        } else {
+            var regName = target;
+            ctx.registers[regName] = new(value);
         }
     }
     
-    private string ResolveValue(MoveExecutionContext ctx = null) {
+    private string ResolveValue(FScriptRuntimeContext ctx = null) {
         if (ctx == null)
             return value;
         
@@ -93,7 +89,7 @@ public class FImmediate {
             var ret = ctx.GetRegisterValue(regName);
 
             if (ret == null)
-                throw new ImmedaiteAccessException($"Accessing uninitiated register {regName}");
+                throw new ImmediateAccessException($"Accessing uninitiated register {regName}");
             return ret.ResolveValue();
         }
         
@@ -103,7 +99,7 @@ public class FImmediate {
             var ret = ctx.GetVariableValue(varName);
 
             if (ret == null)
-                throw new ImmedaiteAccessException($"Accessing undeclared variable {varName}");
+                throw new ImmediateAccessException($"Accessing undeclared variable {varName}");
             return ret.ResolveValue();
         }
 

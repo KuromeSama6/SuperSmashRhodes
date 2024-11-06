@@ -39,6 +39,13 @@ public class PlayerInputModule : MonoBehaviour {
                     if (value > 0) toPush.Add(InputBuffer.TranslateRawDirectionInput(InputType.RAW_MOVE_LEFT, facing));
                     else if (value < 0) toPush.Add(InputBuffer.TranslateRawDirectionInput(InputType.RAW_MOVE_RIGHT, facing));
                 } 
+                
+            }
+            
+            // singles
+            {
+                if (input.actions.FindAction("Dash").ReadValue<float>() > 0f) toPush.Add(InputType.DASH);
+                if (input.actions.FindAction("Crouch").ReadValue<float>() > 0f) toPush.Add(InputType.DOWN);
             }
 
             localBuffer.PushAndTick(toPush.ToArray());

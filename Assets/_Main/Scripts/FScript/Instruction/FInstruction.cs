@@ -12,7 +12,7 @@ public abstract class FInstruction {
     public FInstruction(FLine line) {
         args = line.args;
     }
-    protected abstract void Execute(MoveExecutionContext ctx);
+    protected abstract void Execute(FScriptRuntimeContext ctx);
     
     protected void RequireMinArgs(int count) {
         if (args.Length < count) 

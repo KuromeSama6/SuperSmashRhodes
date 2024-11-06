@@ -5,7 +5,7 @@ namespace SuperSmashRhodes.FScript.Instruction {
 [FInstruction("startup")]
 public class MoveStartupInstruction : FInstruction {
     public MoveStartupInstruction(FLine line) : base(line) { }
-    protected override void Execute(MoveExecutionContext ctx) {
+    protected override void Execute(FScriptRuntimeContext ctx) {
         ctx.moveState = MoveState.STARTUP;
         ctx.WriteRegister(FScriptRegister.HIT_STATE, HitState.COUNTER);
     }
@@ -14,7 +14,7 @@ public class MoveStartupInstruction : FInstruction {
 [FInstruction("active")]
 public class MoveActiveInstruction : FInstruction {
     public MoveActiveInstruction(FLine line) : base(line) { }
-    protected override void Execute(MoveExecutionContext ctx) {
+    protected override void Execute(FScriptRuntimeContext ctx) {
         ctx.moveState = MoveState.ACTIVE;
         ctx.WriteRegister(FScriptRegister.HIT_STATE, HitState.COUNTER);
     }
@@ -23,7 +23,7 @@ public class MoveActiveInstruction : FInstruction {
 [FInstruction("recovery")]
 public class MoveRecoveryInstruction : FInstruction {
     public MoveRecoveryInstruction(FLine line) : base(line) { }
-    protected override void Execute(MoveExecutionContext ctx) {
+    protected override void Execute(FScriptRuntimeContext ctx) {
         ctx.moveState = MoveState.RECOVERY;
         ctx.WriteRegister(FScriptRegister.HIT_STATE, HitState.PUNISH);
     }
@@ -32,7 +32,7 @@ public class MoveRecoveryInstruction : FInstruction {
 [FInstruction("endm")]
 public class MoveEndInstruction : FInstruction {
     public MoveEndInstruction(FLine line) : base(line) { }
-    protected override void Execute(MoveExecutionContext ctx) {
+    protected override void Execute(FScriptRuntimeContext ctx) {
         ctx.WriteRegister(FScriptRegister.HIT_STATE, HitState.NONE);
     }
 }

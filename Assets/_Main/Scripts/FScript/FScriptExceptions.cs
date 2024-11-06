@@ -25,12 +25,12 @@ public class InstructionException : FScriptRuntimeException {
     }
 }
 
-public class ImmedaiteAccessException : FScriptRuntimeException {
-    public ImmedaiteAccessException(string message) : base(message) {
+public class ImmediateAccessException : FScriptRuntimeException {
+    public ImmediateAccessException(string message) : base(message) {
         
     }
     
-    public ImmedaiteAccessException(Exception innerException) : base("Error accessing variable", innerException) {
+    public ImmediateAccessException(Exception innerException) : base("Error accessing variable", innerException) {
         
     }
 }

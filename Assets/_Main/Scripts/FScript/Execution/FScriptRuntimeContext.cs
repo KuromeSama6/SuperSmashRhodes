@@ -4,7 +4,7 @@ using SuperSmashRhodes.FScript.Components;
 using SuperSmashRhodes.FScript.Enums;
 
 namespace SuperSmashRhodes.FScript {
-public class MoveExecutionContext {
+public class FScriptRuntimeContext {
     //region Hard registers
     public MoveState moveState { get; set; } = MoveState.STARTUP;
 
@@ -12,7 +12,7 @@ public class MoveExecutionContext {
     public Dictionary<string, FImmediate> registers { get; } = new();
     public Dictionary<string, FImmediate> variables { get; } = new();
 
-    public MoveExecutionContext() {
+    public FScriptRuntimeContext() {
         // registers
         InitializeRegister(FScriptRegister.DAMAGE, 0); // damage
         InitializeRegister(FScriptRegister.HITSTUN, 0); // hitstun
@@ -20,6 +20,10 @@ public class MoveExecutionContext {
         InitializeRegister(FScriptRegister.GUARD_TYPE, GuardType.ALL); // guard type
         InitializeRegister(FScriptRegister.COUNTER_TYPE, CounterHitType.SMALL); // counter-hit type
         InitializeRegister(FScriptRegister.HIT_STATE, HitState.NONE);
+        InitializeRegister(FScriptRegister.GENERAL_A, 0);
+        InitializeRegister(FScriptRegister.GENERAL_B, 0);
+        InitializeRegister(FScriptRegister.GENERAL_C, 0);
+        InitializeRegister(FScriptRegister.GENERAL_D, 0);
     }
 
     public FImmediate GetVariableValue(string text) {
@@ -52,5 +56,10 @@ public static class FScriptRegister {
     public static readonly string GUARD_TYPE = "guard";
     public static readonly string COUNTER_TYPE = "ch";
     public static readonly string HIT_STATE = "hitstate";
+
+    public static readonly string GENERAL_A = "eax";
+    public static readonly string GENERAL_B = "ebx";
+    public static readonly string GENERAL_C = "ecx";
+    public static readonly string GENERAL_D = "edx";
 }
 }

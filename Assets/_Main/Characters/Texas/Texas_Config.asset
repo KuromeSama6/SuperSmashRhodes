@@ -17,8 +17,8 @@ MonoBehaviour:
   entityType: 0
   health: 440
   defenseModifier: 1
-  walkSpeed: 7
-  backwalkSpeed: 5.2
+  walkSpeed: 1
+  backwalkSpeed: 0.92
   prejump: 4
   jumpDuration: 41
   highJumpDuration: 0
@@ -26,7 +26,31 @@ MonoBehaviour:
   highJumpHeight: 0
   jumpGravity: 0
   highJumpGravity: 0
-  dashSpeed: 0
+  dashAccelCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 10
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 2
+      value: 20
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  dashSpeed: 2.5
   airDashAvailableFrame: 0
   airDashDuration: 0
   backdashDuration: 0

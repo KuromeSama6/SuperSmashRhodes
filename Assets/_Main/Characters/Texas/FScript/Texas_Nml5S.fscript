@@ -18,11 +18,11 @@
     hitbox 1
     hurtbox 1
     anim __placeholder
-    mov $dmg, 36
-    mov $guard, 0
-    mov $hit, 4
-    mov $block, 1
-    mov $ch, 1
+    mov dmg, 36
+    mov guard, 0
+    mov hit, 4
+    mov block, 1
+    mov ch, 1
 
     int 6
 

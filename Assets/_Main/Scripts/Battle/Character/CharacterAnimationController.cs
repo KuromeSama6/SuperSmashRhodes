@@ -7,6 +7,7 @@ public class CharacterAnimationController : MonoBehaviour {
     private static readonly int ANI_WALK_DIRECTION = Animator.StringToHash("WalkDirection");
     private static readonly int ANI_IS_WALKING = Animator.StringToHash("IsWalking");
     private static readonly int ANI_IS_DASHING = Animator.StringToHash("IsDashing");
+    private static readonly int ANI_IS_CROUCHING = Animator.StringToHash("IsCrouching");
     
     private PlayerCharacter character;
     private Animator animator;
@@ -28,6 +29,8 @@ public class CharacterAnimationController : MonoBehaviour {
             
             animator.SetFloat(ANI_WALK_DIRECTION, _walkDirection);
             animator.SetBool(ANI_IS_WALKING, !Mathf.Approximately(direction, 0f));
+            animator.SetBool(ANI_IS_DASHING, character.isDashing);
+            animator.SetBool(ANI_IS_CROUCHING, character.isCrouching);
         }
     }
 }

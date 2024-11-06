@@ -11,7 +11,7 @@ public class AnimationInstruction : FInstruction {
     public AnimationInstruction(FLine line) : base(line) {
         
     }
-    protected override void Execute(MoveExecutionContext ctx) {
+    protected override void Execute(FScriptRuntimeContext ctx) {
         // NO-OP
     }
 }
