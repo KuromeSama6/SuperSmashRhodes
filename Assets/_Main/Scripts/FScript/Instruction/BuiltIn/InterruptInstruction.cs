@@ -1,6 +1,7 @@
 ﻿using SuperSmashRhodes.FScript;
 using SuperSmashRhodes.FScript.Components;
 using SuperSmashRhodes.FScript.Instruction;
+using UnityEngine;
 
 namespace SuperSmashRhodes.FScript.Instruction {
 /// <summary>
@@ -10,11 +11,15 @@ namespace SuperSmashRhodes.FScript.Instruction {
 public class InterruptInstruction : FInstruction {
     public int frameCount { get; private set; }
 
-    public InterruptInstruction(FLine line) : base(line) {
-        frameCount = args[0].IntValue();
+    public InterruptInstruction(FLine line, int addr) : base(line, addr) {
+        try {
+            frameCount = args[0].IntValue();   
+        } catch (ImmediateAccessException e) {
+            frameCount = 0;
+        }
     }
     
-    protected override void Execute(FScriptRuntimeContext ctx) {
+    public override void Execute(FScriptRuntimeContext ctx) {
         RequireMinArgs(1);
         ctx.SetInterrupt(frameCount);
     }

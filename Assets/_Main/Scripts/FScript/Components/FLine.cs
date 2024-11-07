@@ -9,7 +9,7 @@ namespace SuperSmashRhodes.FScript.Components {
 public class FLine {
     public string instruction { get; private set; }
     public FImmediate[] args { get; private set; } = new FImmediate[0];
-    private string raw;
+    public string raw { get; private set; }
     
     public FLine(string str) {
         raw = str;

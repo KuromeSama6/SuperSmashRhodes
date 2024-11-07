@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace SuperSmashRhodes.FScript.Components {
 /// <summary>
@@ -6,15 +7,11 @@ namespace SuperSmashRhodes.FScript.Components {
 /// a register (starting with a dollar sign($)), or a variable (enclosed in brackets([])).
 /// </summary>
 public class FImmediate {
-    public string value { get; set; }
+    public string value { get; private set; }
     public FImmediateType type { get; }
     
     public FImmediate(object value) {
-        if (value is FImmediate immediate) {
-            this.value = immediate.value;
-        } else {
-            this.value = value.ToString();
-        }
+        SetValue(value);
         
         if (this.value.StartsWith("$")) {
             type = FImmediateType.REGISTER;
@@ -25,13 +22,24 @@ public class FImmediate {
         }
     }
 
-    public string StringValue(FScriptRuntimeContext ctx = null) {
-        var ret = ResolveValue(ctx);
+    public void SetValue(object value) {
+        if (value.GetType().IsEnum) {
+            this.value = ((int) value).ToString();
+            
+        } else if (value is FImmediate immediate) {
+            this.value = immediate.value;
+        }else {
+            this.value = value.ToString();
+        }
+    }
+    
+    public string StringValue(FScriptRuntimeContext ctx = null, bool preserveWrite = false) {
+        var ret = ResolveValue(ctx, preserveWrite);
         return ret;
     }
     
-    public int IntValue(FScriptRuntimeContext ctx = null) {
-        var ret = ResolveValue(ctx);
+    public int IntValue(FScriptRuntimeContext ctx = null, bool preserveWrite = false) {
+        var ret = ResolveValue(ctx, preserveWrite);
         try {
             return int.Parse(ret);
         } catch (Exception e) {
@@ -39,8 +47,8 @@ public class FImmediate {
         }
     }
     
-    public float FloatValue(FScriptRuntimeContext ctx = null) {
-        var ret = ResolveValue(ctx);
+    public float FloatValue(FScriptRuntimeContext ctx = null, bool preserveWrite = false) {
+        var ret = ResolveValue(ctx, preserveWrite);
         try {
             return float.Parse(ret);
         } catch (Exception e) {
@@ -48,8 +56,12 @@ public class FImmediate {
         }
     }
     
-    public bool BoolValue(FScriptRuntimeContext ctx = null) {
-        var ret = ResolveValue(ctx);
+    public bool BoolValue(FScriptRuntimeContext ctx = null, bool preserveWrite = false) {
+        var ret = ResolveValue(ctx, preserveWrite);
+        
+        if (ret == "0") return false;
+        if (ret == "1") return true;
+        
         try {
             return bool.Parse(ret);
         } catch (Exception e) {
@@ -57,12 +69,17 @@ public class FImmediate {
         }
     }
     
-    public T EnumValue<T>(FScriptRuntimeContext ctx = null) where T : Enum {
-        var ret = ResolveValue(ctx);
-        try {
-            return (T) Enum.Parse(typeof(T), ret);
-        } catch (Exception e) {
-            throw new ImmediateAccessException(e);
+    public T EnumValue<T>(FScriptRuntimeContext ctx = null, bool preserveWrite = false) where T : Enum {
+        var ret = ResolveValue(ctx, preserveWrite);
+        if (int.TryParse(ret, out int ord)) {
+            return (T) Enum.ToObject(typeof(T), ord);
+            
+        } else {
+            try {
+                return (T) Enum.Parse(typeof(T), ret);
+            } catch (Exception e) {
+                throw new ImmediateAccessException(e);
+            }   
         }
     }
 
@@ -79,14 +96,27 @@ public class FImmediate {
         }
     }
     
-    private string ResolveValue(FScriptRuntimeContext ctx = null) {
-        if (ctx == null)
-            return value;
+    private string ResolveValue(FScriptRuntimeContext ctx = null, bool preserveWrite = false) {
+        // constants starts with #
+        if (value.StartsWith("#")) {
+            var constantName = value.Substring(1);
+            if (ctx == null) 
+                throw new ImmediateAccessException($"Unable to resolve constant {constantName} without context");
+            return ctx.GetConstantValue(constantName).ResolveValue();
+        }
+        
+        // labels starts with @
+        if (value.StartsWith("@")) {
+            var labelName = value.Substring(1);
+            if (ctx == null) 
+                throw new ImmediateAccessException($"Unable to resolve label {labelName} without context");
+            return ctx.GetLabelAddress(labelName).ToString();
+        }
         
         // registers starts with $
         if (value.StartsWith("$")) {
             var regName = value.Substring(1);
-            var ret = ctx.GetRegisterValue(regName);
+            var ret = ctx == null ? new(0) : ctx.GetRegisterValue(regName);
 
             if (ret == null)
                 throw new ImmediateAccessException($"Accessing uninitiated register {regName}");
@@ -96,13 +126,16 @@ public class FImmediate {
         // variables are in brackets
         if (value.StartsWith("[") && value.EndsWith("]")) {
             var varName = value.Substring(1, value.Length - 2);
-            var ret = ctx.GetVariableValue(varName);
+            var ret = ctx == null ? new(0) : ctx.GetVariableValue(varName);
 
             if (ret == null)
                 throw new ImmediateAccessException($"Accessing undeclared variable {varName}");
             return ret.ResolveValue();
         }
 
+        if (preserveWrite) 
+            return new FImmediate($"${value}").ResolveValue(ctx);
+        
         return value;
     }
 

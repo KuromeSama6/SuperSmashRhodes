@@ -17,7 +17,6 @@
     active
     hitbox 1
     hurtbox 1
-    anim __placeholder
     mov dmg, 36
     mov guard, 0
     mov hit, 4

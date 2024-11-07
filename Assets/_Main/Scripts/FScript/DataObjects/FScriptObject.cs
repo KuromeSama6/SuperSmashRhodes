@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SuperSmashRhodes.FScript.Components;
+using SuperSmashRhodes.FScript.Util;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -17,9 +18,12 @@ public class FScriptObject : ScriptableObject {
     
     public Dictionary<string, FScriptSubroutine> subroutines { get; } = new();
     public Dictionary<string, FBlock> blocks { get; } = new();
+    public AddressRegistry addressRegistry { get; private set; }
     
     public void Load() {
+        addressRegistry = new();
         loaded = true;
+        subroutines.Clear();
         blocks.Clear();
         descriptor = null;
         
@@ -61,13 +65,29 @@ public class FScriptObject : ScriptableObject {
         }
         
         // process  blocks
-        foreach (var block in blocks.Values) {
+        foreach (var block in blocks.Values) { 
             if (block.label == "data") descriptor = new FScriptDescriptor(block);
-            if (block.label == "input") inputMethod = new FScriptInputMethod(block);
-            if (block.label == "main") main = new FScriptMainProcedure(block);
+            else if (block.label == "input") inputMethod = new FScriptInputMethod(block);
+            else if (block.label == "main") main = new FScriptMainProcedure(block, addressRegistry);
+            else {
+                // subroutines
+                if (!block.label.StartsWith("sub_"))
+                    throw new FScriptException($"Illegal subroutine name {block.label}: Must begin with `_sub`");
+                if (subroutines.ContainsKey(block.label))
+                    throw new FScriptException($"Duplicate subroutine name {block.label}");
+                
+                subroutines[block.label] = new FScriptSubroutine(block, addressRegistry);
+            }
         }
         
         ready = true;
+    }
+    
+    public FScriptObject DetachedCopy() {
+        var copy = CreateInstance<FScriptObject>();
+        copy.rawScript = rawScript;
+        copy.Load();
+        return copy;
     }
 }
 }

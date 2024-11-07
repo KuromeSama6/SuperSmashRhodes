@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81c847370fad561409c764da7542b26f, type: 3}
   m_Name: CommonMoveSet
   m_EditorClassIdentifier: 
-  moves: []
+  moves:
+  - {fileID: -6829819375710767845, guid: 58bef1b7938bb6242b222cf3c5af82e6, type: 3}

@@ -9,6 +9,7 @@ public class FScriptDescriptor : FScriptBlockImplementation {
     public string prettyName { get; private set; }
     public int bufferFrames { get; private set; }
     public int priority { get; private set; } = -1;
+    public bool followUp { get; private set; } = false;
 
     public FScriptDescriptor(FBlock block) : base(block){
         if (block.label != "data")

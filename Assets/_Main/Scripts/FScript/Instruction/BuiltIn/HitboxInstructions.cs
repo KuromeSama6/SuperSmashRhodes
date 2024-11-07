@@ -3,15 +3,15 @@
 namespace SuperSmashRhodes.FScript.Instruction {
 [FInstruction("hitbox")]
 public class HitboxInstruction : FInstruction {
-    public HitboxInstruction(FLine line) : base(line) { }
-    protected override void Execute(FScriptRuntimeContext ctx) {
+    public HitboxInstruction(FLine line, int addr) : base(line, addr) { }
+    public override void Execute(FScriptRuntimeContext ctx) {
         
     }
 }
 
 [FInstruction("hurtbox")]
 public class HurtboxInstruction : FInstruction {
-    public HurtboxInstruction(FLine line) : base(line) { }
-    protected override void Execute(FScriptRuntimeContext ctx) { }
+    public HurtboxInstruction(FLine line, int addr) : base(line, addr) { }
+    public override void Execute(FScriptRuntimeContext ctx) { }
 }
 }

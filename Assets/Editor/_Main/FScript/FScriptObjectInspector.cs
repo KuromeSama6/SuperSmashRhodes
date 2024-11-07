@@ -1,6 +1,7 @@
 using System;
 using SuperSmashRhodes;
 using SuperSmashRhodes.FScript;
+using SuperSmashRhodes.FScript.Instruction;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,7 +9,9 @@ namespace FScript.Editor {
 [CustomEditor(typeof(FScriptObject))]
 public class FScriptObjectInspector : UnityEditor.Editor {
     private bool loaded = false;
-
+    [NonSerialized]
+    private bool inspectorShowAddressTable = true;
+    
     private void OnEnable() {
         FInstructionRegistry.Scan();
         loaded = false;
@@ -16,6 +19,7 @@ public class FScriptObjectInspector : UnityEditor.Editor {
 
     private void OnDisable() {
         loaded = false;
+        
     }
 
     public override void OnInspectorGUI() {
@@ -57,6 +61,7 @@ public class FScriptObjectInspector : UnityEditor.Editor {
             EditorGUILayout.LabelField("Subroutines", Mathf.Max(0, fScript.blocks.Count - 3).ToString(), EditorStyles.boldLabel);
             EditorGUILayout.LabelField("Max Input Buffer", $"{fScript.descriptor.bufferFrames}F", EditorStyles.boldLabel);
             EditorGUILayout.LabelField("Scan Priority", $"{fScript.descriptor.priority}", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Follow-Up Only", $"{fScript.descriptor.followUp}", EditorStyles.boldLabel);
             
         }
 
@@ -67,6 +72,21 @@ public class FScriptObjectInspector : UnityEditor.Editor {
             EditorGUILayout.LabelField("Active", $"{overview.active}F", EditorStyles.boldLabel);
             EditorGUILayout.LabelField("Recovery", $"{overview.recovery}F", EditorStyles.boldLabel);
             EditorGUILayout.LabelField("Total", $"{overview.total}F", EditorStyles.boldLabel);
+
+            {
+                // Address
+                inspectorShowAddressTable = EditorGUILayout.Foldout(inspectorShowAddressTable, "Address Table");
+                if (inspectorShowAddressTable) {
+                    foreach (var entry in fScript.addressRegistry.registry) {
+                        if (entry.Value is FInstruction instruction)
+                            EditorGUILayout.LabelField($"0x{entry.Key:x8}", instruction.rawLine.raw);
+                        else if (entry.Value is FScriptProcedure proc)
+                            EditorGUILayout.LabelField($"0x{entry.Key:x8}", $"[proc] {proc.block.label}", EditorStyles.boldLabel);
+                        else
+                            EditorGUILayout.LabelField($"0x{entry.Key:x8}", $"(unknown)");
+                    }
+                }
+            }
             
         }
         

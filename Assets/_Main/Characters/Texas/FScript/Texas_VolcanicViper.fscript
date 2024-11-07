@@ -1,6 +1,8 @@
 .data:
     id VolcanicViper
-    prettyName VolcanicViper 
+    prettyName VolcanicViper
+    bufferFrames 9
+    priority 2
     
 .input:
     0 forward
@@ -18,7 +20,6 @@
     active
     hitbox 1
     hurtbox 0
-    anim __placeholder
     mov $dmg, 40
     mov $guard, -28
     mov $hit, 4
@@ -33,7 +34,7 @@
 
     endm
 
-.onhit:
+.sub_onhit:
     ;TODO
     nop
     int 1

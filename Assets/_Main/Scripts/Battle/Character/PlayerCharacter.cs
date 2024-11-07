@@ -19,6 +19,9 @@ public class PlayerCharacter : Entity {
 
     protected override void Update() {
         base.Update();
+        if (UnityEngine.Input.GetKeyDown(KeyCode.Space)) {
+            RunMove("CmnJump");
+        }
     }
 
     protected override void FixedUpdate() {

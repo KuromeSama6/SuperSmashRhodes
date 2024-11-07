@@ -11,7 +11,7 @@ namespace SuperSmashRhodes {
 public static class FInstructionRegistry {
     private static readonly Dictionary<string, Type> registry = new();
     
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
     public static void Init() {
         Scan();
     }
@@ -30,19 +30,20 @@ public static class FInstructionRegistry {
             }
 
             ++count;
-            registry[attr.label] = type;
+            foreach (var label in attr.labels)
+                registry[label] = type;
         }
         
-        Debug.Log($"Scanned {count} FScript instructions");
+        // Debug.Log($"Scanned {count} FScript instructions");
     }
 
-    public static FInstruction InstantiateInstruction(FLine line) {
+    public static FInstruction InstantiateInstruction(FLine line, int address) {
         var label = line.instruction;
         if (!registry.ContainsKey(label))
             throw new FScriptRuntimeException($"Unknown instruction {label}: in {line}");
         
         var type = registry[label];
-        return (FInstruction) Activator.CreateInstance(type, line);
+        return (FInstruction) Activator.CreateInstance(type, line, address);
     }
 }
 }

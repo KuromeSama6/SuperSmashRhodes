@@ -1,0 +1,15 @@
+.data:
+    id CmnJump
+    prettyName Jump
+    bufferFrames 1
+    priority 0
+
+.input:
+    0 up
+
+.main:
+    int $prejumplen
+
+    call PhysicsFuncs.AddCarriedForce, 0, 5
+    endm
+ 

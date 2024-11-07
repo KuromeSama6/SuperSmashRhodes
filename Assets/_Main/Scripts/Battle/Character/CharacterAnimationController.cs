@@ -8,17 +8,24 @@ public class CharacterAnimationController : MonoBehaviour {
     private static readonly int ANI_IS_WALKING = Animator.StringToHash("IsWalking");
     private static readonly int ANI_IS_DASHING = Animator.StringToHash("IsDashing");
     private static readonly int ANI_IS_CROUCHING = Animator.StringToHash("IsCrouching");
+    private static readonly int ANI_MANAGED_LAYER = 1;
     
     private PlayerCharacter character;
     private Animator animator;
     private SkeletonMecanim skeleton;
-
+    private AnimatorOverrideController overrideController;
+    
     private float _walkDirection;
     
     private void Start() {
         character = GetComponent<PlayerCharacter>();
         animator = GetComponentInChildren<Animator>();
         skeleton = GetComponent<SkeletonMecanim>();
+        
+        overrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
+        animator.runtimeAnimatorController = overrideController;
+        
+        animator.SetLayerWeight(ANI_MANAGED_LAYER, 0);
     }
 
     private void Update() {

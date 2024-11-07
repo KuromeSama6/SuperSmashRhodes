@@ -3,16 +3,22 @@ using System.Collections.Generic;
 using System.Reflection;
 using Sirenix.Utilities;
 using SuperSmashRhodes.FScript.Components;
+using SuperSmashRhodes.FScript.Util;
 using UnityEngine;
 
 namespace SuperSmashRhodes.FScript.Instruction {
-public abstract class FInstruction {
+public abstract class FInstruction : IFScriptAddressable {
     public FImmediate[] args { get; private set; }
+    public FLine rawLine { get; private set; }
+    public int address { get; private set; }
     
-    public FInstruction(FLine line) {
+    public FInstruction(FLine line, int address) {
+        rawLine = line;
         args = line.args;
+        this.address = address;
     }
-    protected abstract void Execute(FScriptRuntimeContext ctx);
+    
+    public abstract void Execute(FScriptRuntimeContext ctx);
     
     protected void RequireMinArgs(int count) {
         if (args.Length < count) 
@@ -22,9 +28,9 @@ public abstract class FInstruction {
 
 [AttributeUsage(AttributeTargets.Class)]
 public class FInstructionAttribute : Attribute {
-    public string label { get; private set; }
-    public FInstructionAttribute(string label) {
-        this.label = label;
+    public string[] labels { get; private set; }
+    public FInstructionAttribute(params string[] labels) {
+        this.labels = labels;
     }
     
 }
