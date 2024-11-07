@@ -21,11 +21,8 @@ MonoBehaviour:
   backwalkSpeed: 0.92
   prejump: 4
   jumpDuration: 41
-  highJumpDuration: 0
-  jumpHeight: 0
-  highJumpHeight: 0
+  jumpVelocity: 0
   jumpGravity: 0
-  highJumpGravity: 0
   dashAccelCurve:
     serializedVersion: 2
     m_Curve:
@@ -57,3 +54,5 @@ MonoBehaviour:
   backdashInvuln: 0
   backdashAirborne: 0
   backdashDistance: 0
+  animationClipReferences:
+  - {fileID: 11400000, guid: 3c9695ad59fa38a4ead4543ce8bf44f1, type: 2}

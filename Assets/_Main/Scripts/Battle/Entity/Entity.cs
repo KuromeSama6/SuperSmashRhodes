@@ -22,13 +22,28 @@ public abstract class Entity : MonoBehaviour {
     public Rigidbody2D rb { get; private set; }
     public EntityState state { get; private set; }
     public Dictionary<string, FScriptObject> moves { get; } = new();
+    public Dictionary<string, AnimationClip> managedAnimations { get; } = new();
     
     public bool isPhysicallyMoving => !Mathf.Approximately(rb.linearVelocityX, 0) || !Mathf.Approximately(rb.linearVelocityY, 0);
+
+    // Air States
+    public bool isPhysicallyGrounded { get; private set; } = true;
+    public int forcedAirborneFrames { get; set; }
+    private bool _isLogicallyGrounded = true;
+    
     public virtual bool isBusy {
         get {
             if (state != null) return true;
             return false;
         }
+    }
+    
+    public bool isLogicallyGrounded {
+        get {
+            if (forcedAirborneFrames > 0) return false;
+            return _isLogicallyGrounded;
+        }
+        set => _isLogicallyGrounded = value;
     }
     
     protected virtual void Start() {
@@ -43,6 +58,13 @@ public abstract class Entity : MonoBehaviour {
                 moves[runtimeMove.descriptor.id] = runtimeMove;
             }
         }
+        
+        // load animations
+        foreach (var reference in config.animationClipReferences) {
+            foreach (var clip in reference.clips) {
+                managedAnimations[clip.name] = clip;
+            }
+        } 
     }
 
     protected virtual void Update() { }
@@ -51,6 +73,9 @@ public abstract class Entity : MonoBehaviour {
         if (managedXVelocityLimit >= 0) {
             rb.linearVelocityX = Mathf.Clamp(rb.linearVelocityX, -managedXVelocityLimit, managedXVelocityLimit);
         }
+        
+        UpdateGroundedState();
+        if (state != null && state.ended) OnStateEnded();
     }
 
     public void RunMove(string name) {
@@ -63,8 +88,6 @@ public abstract class Entity : MonoBehaviour {
     public void RunMove(FScriptObject script) {
         state = new EntityState(this, script);
         StartCoroutine(state.Begin());
-
-        state.onEnded.AddListener(OnStateEnded);
     }
     
     public void AddContinuousForce(Vector2 force) {
@@ -79,9 +102,18 @@ public abstract class Entity : MonoBehaviour {
         rb.AddForce(force, ForceMode2D.Impulse);
     }
     
-    private void OnStateEnded(EntityState state) {
-        this.state = null;
+    private void OnStateEnded() {
         state.Dispose();
+        state = null;
+    }
+
+    private void UpdateGroundedState() {
+        isPhysicallyGrounded = transform.position.y < 0.02f;
+        if (!isLogicallyGrounded && isPhysicallyGrounded && forcedAirborneFrames == 0) {
+            isLogicallyGrounded = true;
+        }
+
+        if (forcedAirborneFrames > 0) forcedAirborneFrames--;
     }
     
     /// <summary>

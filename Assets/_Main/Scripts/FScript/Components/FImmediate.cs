@@ -28,7 +28,9 @@ public class FImmediate {
             
         } else if (value is FImmediate immediate) {
             this.value = immediate.value;
-        }else {
+        } else if (value is bool b) {
+            this.value = b ? "1" : "0";
+        } else {
             this.value = value.ToString();
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using Sirenix.OdinInspector;
 using Spine.Unity;
 using UnityEngine;
 
@@ -8,7 +9,12 @@ public class CharacterAnimationController : MonoBehaviour {
     private static readonly int ANI_IS_WALKING = Animator.StringToHash("IsWalking");
     private static readonly int ANI_IS_DASHING = Animator.StringToHash("IsDashing");
     private static readonly int ANI_IS_CROUCHING = Animator.StringToHash("IsCrouching");
+    private static readonly int ANI_IS_GROUNDED = Animator.StringToHash("IsGrounded");
+    private static readonly int ANI_Y_VELOCITY = Animator.StringToHash("VelocityY");
     private static readonly int ANI_MANAGED_LAYER = 1;
+
+    [Title("References")]
+    public AnimationClip managedPlaceholderClip;
     
     private PlayerCharacter character;
     private Animator animator;
@@ -16,6 +22,9 @@ public class CharacterAnimationController : MonoBehaviour {
     private AnimatorOverrideController overrideController;
     
     private float _walkDirection;
+
+    private AnimationClip currentManagedClip;
+    private int managedAnimationFrames;
     
     private void Start() {
         character = GetComponent<PlayerCharacter>();
@@ -32,13 +41,53 @@ public class CharacterAnimationController : MonoBehaviour {
         {
             // movement update
             var direction = character.moveDirection;
-            _walkDirection = Mathf.Lerp(_walkDirection, direction, Time.deltaTime * 10f);
+            _walkDirection = Mathf.Lerp(_walkDirection, direction, Time.deltaTime * 20f);
             
             animator.SetFloat(ANI_WALK_DIRECTION, _walkDirection);
             animator.SetBool(ANI_IS_WALKING, !Mathf.Approximately(direction, 0f));
             animator.SetBool(ANI_IS_DASHING, character.isDashing);
             animator.SetBool(ANI_IS_CROUCHING, character.isCrouching);
         }
+
+        {
+            // air
+            animator.SetBool(ANI_IS_GROUNDED, character.isLogicallyGrounded);
+            animator.SetFloat(ANI_Y_VELOCITY, character.rb.linearVelocityY);
+        }
+
+        {
+            // managed animation
+            
+        }
+    }
+
+    private void FixedUpdate() {
+        if (managedAnimationFrames > 0) {
+            --managedAnimationFrames;
+            if (managedAnimationFrames == 0) {
+                CancelManagedAnimation();
+            }
+        }
+    }
+
+    public void CancelManagedAnimation() {
+        animator.SetLayerWeight(ANI_MANAGED_LAYER, 0);
+        managedAnimationFrames = 0;
+
+        overrideController[currentManagedClip] = managedPlaceholderClip;
+    }
+    
+    public void SetManagedAnimation(string name, int frames) {
+        animator.SetLayerWeight(ANI_MANAGED_LAYER, 1);
+
+        if (frames <= 0)
+            throw new ArgumentException("Must have at least one frame of managed animation");
+        if (!character.managedAnimations.TryGetValue(name, out var clip))
+            throw new ArgumentException($"Accessing undefined or unmanaged animation `{name}`");
+            
+        overrideController[managedPlaceholderClip] = clip;
+        currentManagedClip = clip;
+        managedAnimationFrames = frames;
     }
 }
 }

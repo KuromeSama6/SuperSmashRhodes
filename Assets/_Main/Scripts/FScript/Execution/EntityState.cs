@@ -19,7 +19,7 @@ public class EntityState {
     public int frame { get; private set; } = 0;
     public int currentAddress { get; private set; } = 0;
 
-    private bool ended = false;
+    public bool ended { get; private set; }
     private int interruptFrames = 0;
     private int queuedJump = -1;
     
@@ -65,9 +65,11 @@ public class EntityState {
             
             // end if null
             if (exe == null) {
-                ended = true;
+                EndImediately();
                 break;
             }
+            
+            UpdateScriptConstants();
             
             // nop if block
             if (exe is FScriptProcedure proc) {
@@ -98,12 +100,18 @@ public class EntityState {
             yield return new WaitForFixedUpdate();
         }
     }
+
+    private void UpdateScriptConstants() {
+        context.WriteConstant(FScriptConstant.GROUNDED, owner.isLogicallyGrounded);
+        context.WriteConstant(FScriptConstant.PHY_GROUNDED, owner.isPhysicallyGrounded);
+    }
     
     public void AddInterrupt(int frames) {
         interruptFrames += frames;
     }
     
     public void EndImediately() {
+        if (ended) return;
         ended = true;
         onEnded.Invoke(this);
     }

@@ -32,7 +32,7 @@ public class FScriptRuntimeContext {
             if (!field.IsStatic || field.FieldType != typeof(string)) continue;
             var name = (string)field.GetValue(null);
             var attribute = field.GetCustomAttribute<FScriptTokenInit>();
-            InitializeRegister(name, attribute?.value ?? 0);
+            registers[name] = new(attribute?.value ?? 0);
         }
         
         // init constants
@@ -40,11 +40,12 @@ public class FScriptRuntimeContext {
             if (!field.IsStatic || field.FieldType != typeof(string)) continue;
             var name = (string)field.GetValue(null);
             var attribute = field.GetCustomAttribute<FScriptTokenInit>();
-            InitializeRegister(name, attribute?.value ?? 0);
+            constants[name] = new(attribute?.value ?? 0);
         }
         
         // write character registers
         {
+            WriteRegister(FScriptRegister.CHR_PREJUMP_LEN, owner.config.prejump);
         }
     }
 
@@ -88,9 +89,9 @@ public class FScriptRuntimeContext {
     }
 
     public void WriteConstant(string name, object value) {
-        if (constants.ContainsKey(name))
+        if (!constants.ContainsKey(name))
             throw new FScriptRuntimeException($"Duplicate constant {name}");
-        constants[name] = new(value);
+        constants[name].SetValue(value);
     }
     
     public int GetLabelAddress(string name) {
@@ -108,9 +109,6 @@ public class FScriptRuntimeContext {
             comparsionFlags.Add(flag);
     }
     
-    private void InitializeRegister(string name, object value) {
-        registers[name] = new(value);
-    }
 }
 
 public static class FScriptRegister {

@@ -12,6 +12,14 @@ public class PlayerCharacter : Entity {
     public int framesDashed { get; private set; }
     private PlayerInputModule inputModule;
     
+    public bool mayNeutralMove {
+        get {
+            if (isBusy) return false;
+            if (!isLogicallyGrounded) return false;
+            return true;
+        }
+    }
+    
     protected override void Start() {
         base.Start();
         inputModule = GetComponent<PlayerInputModule>();
@@ -40,7 +48,7 @@ public class PlayerCharacter : Entity {
             else framesDashed = 0;
 
             isCrouching = input.HasInput(InputType.DOWN);
-            if (!isCrouching) {
+            if (!isCrouching && mayNeutralMove) {
                 if (input.HasInput(InputType.FORWARD)) {
                     moveDirection = 1f;
             
@@ -55,6 +63,7 @@ public class PlayerCharacter : Entity {
                 } else {
                     moveDirection = 0f;
                 }   
+                
             } else {
                 moveDirection = 0f;
             }

@@ -8,8 +8,11 @@
     0 up
 
 .main:
+    ManagedStateAnimation std_prejump, $prejumplen
     int $prejumplen
+    call PhysicsFuncs.AddCarriedForce, 0, 10
+    SetForcedAirborneFrames 4
+    SetAirborneState 1
 
-    call PhysicsFuncs.AddCarriedForce, 0, 5
     endm
  

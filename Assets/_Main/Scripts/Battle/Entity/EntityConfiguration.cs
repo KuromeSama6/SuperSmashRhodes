@@ -1,5 +1,8 @@
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using SuperSmashRhodes._Main.Scripts.Battle.Animation;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace SuperSmashRhodes.Battle {
 [CreateAssetMenu(fileName = "EntityConfiguration", menuName = "Battle/Entity Configuration")]
@@ -27,6 +30,11 @@ public class EntityConfiguration : ScriptableObject {
     [ShowIf("entityType", EntityType.CHARACTER)]
     [TabGroup("playerConfig", "Dash", SdfIconType.ArrowRight, TextColor = "yellow")]
     public float dashSpeed, airDashAvailableFrame, airDashDuration, backdashDuration, backdashInvuln, backdashAirborne, backdashDistance;
+
+    [FormerlySerializedAs("clipReferences")]
+    [BoxGroup("Animation")]
+    public List<AnimationClipReference> animationClipReferences = new();
+
 }
 
 public enum EntityType {

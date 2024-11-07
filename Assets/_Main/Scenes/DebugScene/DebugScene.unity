@@ -1358,7 +1358,7 @@ BoxCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 71f8ab527ec2b014a95498b9dbe0512e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1418,7 +1418,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 2
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 1
@@ -1445,6 +1445,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bf53e5194f8462fb769df28a62281ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  managedPlaceholderClip: {fileID: 7400000, guid: 8e6a9275935a2064e9984d7c0b1c7e22, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
