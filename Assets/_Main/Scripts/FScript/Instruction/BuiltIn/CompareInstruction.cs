@@ -5,7 +5,7 @@ namespace SuperSmashRhodes.FScript.Instruction {
 [FInstruction("cmp")]
 public class CompareInstruction : FInstruction {
     public CompareInstruction(FLine line, int address) : base(line, address) { }
-    public override void Execute(FScriptRuntimeContext ctx) {
+    public override void Execute(FScriptRuntime ctx) {
         RequireMinArgs(2);
         var a = args[0];
         var b = args[1];

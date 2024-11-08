@@ -23,7 +23,7 @@ public class InputBuffer {
         this.buffer = buffer.ToList();
     }
 
-    public void PushAndTick(params InputType[] inputs) {
+    public void PushAndTick(params InputFrame[] inputs) {
         InputChord chord = new(inputs);
         buffer.Insert(0, chord);
         
@@ -47,6 +47,45 @@ public class InputBuffer {
 
         }
         throw new ArgumentException("Input must be RAW_MOVE_LEFT or RAW_MOVE_RIGHT");
+    }
+}
+
+public enum InputFrameType {
+    PRESSED,
+    HELD,
+    RELEASED
+}
+
+public struct InputFrame : IEquatable<InputFrame> {
+    public InputType type { get; }
+    public InputFrameType frameType { get; }
+    
+    public InputFrame(InputType type, InputFrameType frameType) {
+        this.type = type;
+        this.frameType = frameType;
+    }
+    
+    public bool Equals(InputFrame other) {
+        return type == other.type && frameType == other.frameType;
+    }
+    public override int GetHashCode() {
+        return HashCode.Combine((int)type, (int)frameType);
+    }
+}
+
+public class InputChord {
+    public InputFrame[] inputs;
+
+    public InputChord(params InputFrame[] inputs) {
+        this.inputs = inputs;
+    }
+
+    public bool HasInput(InputFrame type) {
+        return inputs.Contains(type);
+    }
+
+    public override string ToString() {
+        return $"InputChord({string.Join(", ", inputs)})";
     }
 }
 }

@@ -5,13 +5,13 @@ namespace SuperSmashRhodes.FScript.Instruction {
 [FInstruction("jmp")]
 public class JumpInstruction : FInstruction {
     public JumpInstruction(FLine line, int address) : base(line, address) { }
-    public override void Execute(FScriptRuntimeContext ctx) {
+    public override void Execute(FScriptRuntime ctx) {
         RequireMinArgs(1);
         var destination = args[0];
         int addr = destination.IntValue(ctx);
         
         if (ShouldJump(new(ctx.comparsionFlags)))
-            ctx.QueueJump(addr);
+            ctx.mainTask.QueueJump(addr);
     }
 
     public virtual bool ShouldJump(HashSet<ComparisonFlag> flags) {
@@ -106,6 +106,25 @@ public class JumpIfNotCarryInstruction : JumpInstruction {
     public JumpIfNotCarryInstruction(FLine line, int address) : base(line, address) { }
     public override bool ShouldJump(HashSet<ComparisonFlag> flags) {
         return !flags.Contains(ComparisonFlag.CARRY);
+    }
+}
+
+// Return
+[FInstruction("ret")]
+public class ReturnInstruction : FInstruction {
+    public ReturnInstruction(FLine line, int address) : base(line, address) { }
+    public override void Execute(FScriptRuntime ctx) {
+        var stack = ctx.mainTask.callStack;
+
+        if (stack.Count == 0) {
+            // Same as exit
+            ctx.mainTask.ExitState();
+            return;
+        }
+
+        int addr = ctx.mainTask.callStack.Pop();
+        if (addr == 0) ctx.mainTask.ExitState();
+        else ctx.mainTask.QueueJump(addr);
     }
 }
 }

@@ -30,7 +30,7 @@ public class ImmediateAccessException : FScriptRuntimeException {
         
     }
     
-    public ImmediateAccessException(Exception innerException) : base("Error accessing variable", innerException) {
+    public ImmediateAccessException(Exception innerException) : base("Error accessing immediate", innerException) {
         
     }
 }

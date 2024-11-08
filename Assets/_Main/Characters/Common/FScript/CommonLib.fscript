@@ -1,0 +1,11 @@
+section .CommonInit:
+    mov ent_hp, 440
+    mov ent_hp_max, 440
+    ret
+
+section .CommonDefines:
+    ret
+
+#include CmnJump 
+#include CmnMove
+#include CmnNeutral

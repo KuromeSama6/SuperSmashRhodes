@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
+using Sirenix.OdinInspector;
+using Spine.Unity;
+using SuperSmashRhodes._Main.Scripts.FScript;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.FScript.Components;
 using SuperSmashRhodes.FScript.Enums;
@@ -10,22 +13,31 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 namespace SuperSmashRhodes.FScript {
-public class FScriptRuntimeContext {
-    //region Hard registers
-    public MoveState moveState { get; set; } = MoveState.STARTUP;
-
+public class FScriptRuntime : MonoBehaviour {
+    [Title("Refrences")]
+    public List<FScriptLibrary> scripts = new();
+    
     //endregion
     public Dictionary<string, FImmediate> registers { get; } = new();
     public Dictionary<string, FImmediate> variables { get; } = new();
     public Dictionary<string, FImmediate> constants { get; } = new();
     public List<ComparisonFlag> comparsionFlags { get; } = new();
-    public EntityState state { get; private set; }
-    public Entity owner => state.owner;
-    
     private Dictionary<string, FInstruction> labels { get; } = new();
     
-    public FScriptRuntimeContext(EntityState state) {
-        this.state = state;
+    public Entity owner { get; private set; }
+    public FScriptLinked script { get; private set; }
+    public EntityTask mainTask { get; private set; }
+    
+    private SkeletonAnimation animation => owner.animation;
+    
+    private void Start() {
+        owner = GetComponent<Entity>();
+        script = new(owner.mainScript, scripts);
+        Init();
+    }
+    
+    private void Init() {
+        mainTask = new(this);
         
         // init registers
         foreach (var field in typeof(FScriptRegister).GetFields()) {
@@ -43,12 +55,32 @@ public class FScriptRuntimeContext {
             constants[name] = new(attribute?.value ?? 0);
         }
         
-        // write character registers
-        {
-            WriteRegister(FScriptRegister.CHR_PREJUMP_LEN, owner.config.prejump);
+        // call entityInit
+        CallSubroutine($"{script.mainNamespace}::entityInit");
+    }
+
+    private void FixedUpdate() {
+        // update task
+        if (mainTask.isBusy && mainTask.isState) {
+            mainTask.TickState();
         }
     }
 
+    public void CallSubroutine(string name, bool interrupt = false) {
+        if (interrupt)
+            throw new NotImplementedException("Interrupts are not implemented");
+
+        if (!interrupt && mainTask.isBusy)
+            throw new FScriptRuntimeException($"Could not call subroutine {name}: task is busy");
+        
+        if (!script.sections.TryGetValue(name, out var section))
+            throw new FScriptRuntimeException($"Calling undefined subroutine {name}");
+
+        mainTask.BeginState(section, false);
+        // subroutines are ticked immediately
+        if (!interrupt) mainTask.TickState();
+    }
+    
     public FImmediate GetVariableValue(string text) {
         return null;
     }
@@ -66,7 +98,7 @@ public class FScriptRuntimeContext {
     }
 
     public void SetInterrupt(int frames) {
-        state.AddInterrupt(frames); 
+        throw new NotImplementedException();
     }
 
     public void SetLabel(LabelInstruction instruction) {
@@ -78,7 +110,7 @@ public class FScriptRuntimeContext {
     }
     
     public void EndState() {
-        state.EndImediately();
+        throw new NotImplementedException();
     }
     
     
@@ -100,46 +132,11 @@ public class FScriptRuntimeContext {
         return labels[name].address;
     }
     
-    public void QueueJump(int address) {
-        state.QueueJump(address);
-    }
-    
     public void SetFlag(ComparisonFlag flag) {
         if (!comparsionFlags.Contains(flag))
             comparsionFlags.Add(flag);
     }
     
-}
-
-public static class FScriptRegister {
-    public static readonly string DAMAGE = "dmg";
-    public static readonly string HITSTUN = "hit";
-    public static readonly string BLOCKSTUN = "block";
-    [FScriptTokenInit(GuardType.ALL)]
-    public static readonly string GUARD_TYPE = "guard";
-    [FScriptTokenInit(CounterHitType.SMALL)]
-    public static readonly string COUNTER_TYPE = "ch";
-    [FScriptTokenInit(HitState.NONE)]
-    public static readonly string HIT_STATE = "hitstate";
-
-    public static readonly string GENERAL_A = "rax";
-    public static readonly string GENERAL_B = "rbx";
-    public static readonly string GENERAL_C = "rcx";
-    public static readonly string GENERAL_D = "rdx";
-    public static readonly string SUBROUTINE_RETURN = "rrp";
-    public static readonly string CURRENT_INSTRUCTION_PTR = "rci";
-    public static readonly string LAST_INSTRUCTION_PTR = "rpi";
-    
-    public static readonly string CHR_PREJUMP_LEN = "prejumplen";
-    public static readonly string CHR_JUMP_LEN = "jumplen";
-    public static readonly string CHR_JUMP_VEL = "jumpvel";
-}
-
-public static class FScriptConstant {
-    [FScriptTokenInit(true)]
-    public static readonly string PHY_GROUNDED = "p_grounded";
-    [FScriptTokenInit(true)]
-    public static readonly string GROUNDED = "l_grounded";
 }
 
 public enum ComparisonFlag {
@@ -150,11 +147,4 @@ public enum ComparisonFlag {
     PARITY
 }
 
-[AttributeUsage(AttributeTargets.Field)]
-public class FScriptTokenInit : Attribute {
-    public object value { get; }
-    public FScriptTokenInit(object value) {
-        this.value = value;
-    }
-}
 }

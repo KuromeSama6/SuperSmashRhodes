@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using SuperSmashRhodes._Main.Scripts.FScript;
 using SuperSmashRhodes.FScript.Components;
 using UnityEngine;
 
@@ -44,7 +45,7 @@ public static class FFunctionRegistry {
         Debug.Log($"FFunction Registry registered {count} functions, skipped {skipped}");
     }
 
-    public static FImmediate CallFunction(string name, FScriptRuntimeContext ctx, params FImmediate[] args) {
+    public static FImmediate CallFunction(string name, FScriptRuntime ctx, params FImmediate[] args) {
         if (!registry.TryGetValue(name, out var func))
             throw new ArgumentException($"Calling non-existent function {name}");
 

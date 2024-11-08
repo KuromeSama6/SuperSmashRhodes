@@ -1,0 +1,16 @@
+#include CommonLib
+
+section .entityInit:
+    jmp .CommonLib::CommonInit
+    
+    mov ent_defense, 1
+    mov ent_walk_spd, 1
+    mov ent_backwalk_spd, 1
+    mov ent_prejump_f,  1
+    mov ent_dash_spd, 1
+
+section .stateDef:
+    jmp .CommonLib::CommonDefines
+
+section .onRoundStart:
+    jmp .CommonLib::CmnNeutral

@@ -35,12 +35,12 @@ public class FImmediate {
         }
     }
     
-    public string StringValue(FScriptRuntimeContext ctx = null, bool preserveWrite = false) {
+    public string StringValue(FScriptRuntime ctx = null, bool preserveWrite = false) {
         var ret = ResolveValue(ctx, preserveWrite);
         return ret;
     }
     
-    public int IntValue(FScriptRuntimeContext ctx = null, bool preserveWrite = false) {
+    public int IntValue(FScriptRuntime ctx = null, bool preserveWrite = false) {
         var ret = ResolveValue(ctx, preserveWrite);
         try {
             return int.Parse(ret);
@@ -49,7 +49,7 @@ public class FImmediate {
         }
     }
     
-    public float FloatValue(FScriptRuntimeContext ctx = null, bool preserveWrite = false) {
+    public float FloatValue(FScriptRuntime ctx = null, bool preserveWrite = false) {
         var ret = ResolveValue(ctx, preserveWrite);
         try {
             return float.Parse(ret);
@@ -58,7 +58,7 @@ public class FImmediate {
         }
     }
     
-    public bool BoolValue(FScriptRuntimeContext ctx = null, bool preserveWrite = false) {
+    public bool BoolValue(FScriptRuntime ctx = null, bool preserveWrite = false) {
         var ret = ResolveValue(ctx, preserveWrite);
         
         if (ret == "0") return false;
@@ -71,7 +71,7 @@ public class FImmediate {
         }
     }
     
-    public T EnumValue<T>(FScriptRuntimeContext ctx = null, bool preserveWrite = false) where T : Enum {
+    public T EnumValue<T>(FScriptRuntime ctx = null, bool preserveWrite = false) where T : Enum {
         var ret = ResolveValue(ctx, preserveWrite);
         if (int.TryParse(ret, out int ord)) {
             return (T) Enum.ToObject(typeof(T), ord);
@@ -85,7 +85,7 @@ public class FImmediate {
         }
     }
 
-    public void WriteValue(FScriptRuntimeContext ctx, object value) {
+    public void WriteValue(FScriptRuntime ctx, object value) {
         string target = this.value;
         
         // variables are in brackets
@@ -98,7 +98,17 @@ public class FImmediate {
         }
     }
     
-    private string ResolveValue(FScriptRuntimeContext ctx = null, bool preserveWrite = false) {
+    private string ResolveValue(FScriptRuntime ctx = null, bool preserveWrite = false) {
+        // sections start with .
+        if (value.StartsWith(".")) {
+            var sectionName = value.Substring(1);
+            if (ctx == null) 
+                throw new ImmediateAccessException($"Unable to resolve section {sectionName} without context");
+            if (!ctx.script.sections.TryGetValue(sectionName, out var ret))
+                throw new ImmediateAccessException($"Unable to resolve section {sectionName}");
+            return ret.address.ToString();
+        }
+
         // constants starts with #
         if (value.StartsWith("#")) {
             var constantName = value.Substring(1);

@@ -8,7 +8,7 @@ public class MoveInstruction : FInstruction {
 
     }
     
-    public override void Execute(FScriptRuntimeContext ctx) {
+    public override void Execute(FScriptRuntime ctx) {
         RequireMinArgs(2);
         args[0].WriteValue(ctx, args[1]);
     }

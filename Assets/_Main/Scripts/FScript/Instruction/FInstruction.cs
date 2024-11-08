@@ -7,10 +7,11 @@ using SuperSmashRhodes.FScript.Util;
 using UnityEngine;
 
 namespace SuperSmashRhodes.FScript.Instruction {
-public abstract class FInstruction : IFScriptAddressable {
+public abstract class FInstruction : IFScriptToken {
     public FImmediate[] args { get; private set; }
     public FLine rawLine { get; private set; }
     public int address { get; private set; }
+    public int nextAddress { get; set; }
     
     public FInstruction(FLine line, int address) {
         rawLine = line;
@@ -18,7 +19,7 @@ public abstract class FInstruction : IFScriptAddressable {
         this.address = address;
     }
     
-    public abstract void Execute(FScriptRuntimeContext ctx);
+    public abstract void Execute(FScriptRuntime ctx);
     
     protected void RequireMinArgs(int count) {
         if (args.Length < count) 

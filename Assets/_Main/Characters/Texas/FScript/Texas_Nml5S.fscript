@@ -1,13 +1,4 @@
-.data:
-    id Nml5S
-    prettyName FarSlash
-    bufferFrames 9
-    priority 1
-    
-.input:
-    0 s
- 
-.main:
+section .main:
     ;7/6/10
     ;+1/+4
 

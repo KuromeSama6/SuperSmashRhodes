@@ -4,7 +4,7 @@ namespace SuperSmashRhodes.FScript.Instruction {
 
 public abstract class ArithmeticInstruction : FInstruction {
     public ArithmeticInstruction(FLine line, int address) : base(line, address) { }
-    public override void Execute(FScriptRuntimeContext ctx) {
+    public override void Execute(FScriptRuntime ctx) {
         RequireMinArgs(2);
         var a = args[0].FloatValue(ctx, true);
         var b = args[1].FloatValue(ctx);

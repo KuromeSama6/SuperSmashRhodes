@@ -1,0 +1,6 @@
+section .main:
+
+    ; neutral loop
+    label loop
+    int 1
+    jmp @loop

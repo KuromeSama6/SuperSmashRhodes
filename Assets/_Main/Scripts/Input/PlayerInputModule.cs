@@ -25,7 +25,7 @@ public class PlayerInputModule : MonoBehaviour {
 
     private void FixedUpdate() {
         {
-            List<InputType> toPush = new();
+            List<InputFrame> toPush = new();
             
             // Abstract inputs polled once per Frame and written to the InputBuffer
 
@@ -36,16 +36,16 @@ public class PlayerInputModule : MonoBehaviour {
                 var facing = playerCharacter.facing;
                 
                 if (!Mathf.Approximately(value, 0)) {
-                    if (value > 0) toPush.Add(InputBuffer.TranslateRawDirectionInput(InputType.RAW_MOVE_LEFT, facing));
-                    else if (value < 0) toPush.Add(InputBuffer.TranslateRawDirectionInput(InputType.RAW_MOVE_RIGHT, facing));
+                    if (value > 0) toPush.Add(new(InputBuffer.TranslateRawDirectionInput(InputType.RAW_MOVE_LEFT, facing), InputFrameType.HELD));
+                    else if (value < 0) toPush.Add(new(InputBuffer.TranslateRawDirectionInput(InputType.RAW_MOVE_RIGHT, facing), InputFrameType.HELD));
                 } 
                 
             }
             
             // singles
             {
-                if (input.actions.FindAction("Dash").ReadValue<float>() > 0f) toPush.Add(InputType.DASH);
-                if (input.actions.FindAction("Crouch").ReadValue<float>() > 0f) toPush.Add(InputType.DOWN);
+                if (input.actions.FindAction("Dash").ReadValue<float>() > 0f) toPush.Add(new(InputType.DASH, InputFrameType.HELD));
+                if (input.actions.FindAction("Crouch").ReadValue<float>() > 0f) toPush.Add(new(InputType.DOWN, InputFrameType.HELD));
             }
 
             localBuffer.PushAndTick(toPush.ToArray());

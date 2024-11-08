@@ -1,13 +1,4 @@
-.data:
-    id CmnJump
-    prettyName Jump
-    bufferFrames 1
-    priority 0
-
-.input:
-    0 up
-
-.main:
+section .main:
     ManagedStateAnimation std_prejump, $prejumplen
     int $prejumplen
     call PhysicsFuncs.AddCarriedForce, 0, 10

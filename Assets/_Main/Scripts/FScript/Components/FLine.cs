@@ -1,15 +1,16 @@
 ﻿using System.Linq;
+using SuperSmashRhodes.FScript.Util;
 using UnityEngine;
 
 namespace SuperSmashRhodes.FScript.Components {
 /// <summary>
-/// Represents a line of FScript. The most basic building block of FScript.
-/// Consists of a single instruction followed by arguments seperated by commas.
+/// A FLine represents a single line of FScript code, and is the most basic building blocks of FScript.
 /// </summary>
 public class FLine {
     public string instruction { get; private set; }
     public FImmediate[] args { get; private set; } = new FImmediate[0];
     public string raw { get; private set; }
+    public int address { get; private set; }
     
     public FLine(string str) {
         raw = str;

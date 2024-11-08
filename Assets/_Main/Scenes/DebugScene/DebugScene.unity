@@ -1122,7 +1122,7 @@ GameObject:
   - component: {fileID: 2072367984}
   - component: {fileID: 2072367982}
   - component: {fileID: 2072367987}
-  - component: {fileID: 2072367986}
+  - component: {fileID: 2072367988}
   m_Layer: 0
   m_Name: Texas_Spine
   m_TagString: Untagged
@@ -1198,7 +1198,29 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2101703127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2072367986
+--- !u!95 &2072367987
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2072367981}
+  m_Enabled: 0
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a957e88fd7d42364a974829b0b66045e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2072367988
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1207,7 +1229,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2072367981}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9db98c60740638449864eb028fbe7ad, type: 3}
+  m_Script: {fileID: 11500000, guid: d247ba06193faa74d9335f5481b2b56c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   skeletonDataAsset: {fileID: 11400000, guid: 9682c3a07b9d859459c1642cfe7d8f79, type: 2}
@@ -1236,34 +1258,11 @@ MonoBehaviour:
   physicsPositionInheritanceFactor: {x: 1, y: 1}
   physicsRotationInheritanceFactor: 1
   physicsMovementRelativeTo: {fileID: 0}
-  translator:
-    autoReset: 1
-    useCustomMixMode: 1
-    layerMixModes: 0000000001000000
-    layerBlendModes: 0100000002000000
   updateTiming: 1
---- !u!95 &2072367987
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2072367981}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: a957e88fd7d42364a974829b0b66045e, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
+  unscaledTime: 0
+  _animationName: std_neutral
+  loop: 1
+  timeScale: 1
 --- !u!1 &2101703126
 GameObject:
   m_ObjectHideFlags: 0
@@ -1314,10 +1313,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75589697253a45349a331ae1976ebd02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  config: {fileID: 11400000, guid: 434ea1ac775d5c546a9eaf51465adf55, type: 2}
-  moveSets:
-  - {fileID: 11400000, guid: 8c6cc4cd87b4fba4ba8a5387763d9fe0, type: 2}
-  - {fileID: 11400000, guid: 73bbb161db890144f84ccd81e2d031a7, type: 2}
+  mainScript: {fileID: -6829819375710767845, guid: 0e608715f44c99d4688a954a236150ee, type: 3}
 --- !u!114 &2101703129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1442,10 +1438,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 2101703126}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0bf53e5194f8462fb769df28a62281ed, type: 3}
+  m_Script: {fileID: 11500000, guid: 431402cfe7b4488db16a279a24fea5e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  managedPlaceholderClip: {fileID: 7400000, guid: 8e6a9275935a2064e9984d7c0b1c7e22, type: 2}
+  scripts:
+  - {fileID: 11400000, guid: e6ec54ce3b3f9644d977e62e1640f909, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using SuperSmashRhodes._Main.Scripts.Battle.Animation;
@@ -5,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace SuperSmashRhodes.Battle {
+[Obsolete]
 [CreateAssetMenu(fileName = "EntityConfiguration", menuName = "Battle/Entity Configuration")]
 public class EntityConfiguration : ScriptableObject {
     [BoxGroup("Basic Configuration")]

@@ -21,7 +21,7 @@ public class FFunction {
             throw new ArgumentException($"FFunction {name}: must be marked with FFunction");
         
         var args = method.GetParameters();
-        requiresContext = args.Length > 0 && args[0].ParameterType == typeof(FScriptRuntimeContext);
+        requiresContext = args.Length > 0 && args[0].ParameterType == typeof(FScriptRuntime);
         
         var firstArg = requiresContext ? 1 : 0;
         
@@ -40,7 +40,7 @@ public class FFunction {
         
     }
 
-    public FImmediate Call(FScriptRuntimeContext ctx, params FImmediate[] args) {
+    public FImmediate Call(FScriptRuntime ctx, params FImmediate[] args) {
         List<object> param = new();
         if (requiresContext) param.Add(ctx);
         if (hasParams) param.Add(args);

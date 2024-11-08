@@ -8,7 +8,7 @@ namespace SuperSmashRhodes.Battle.Instruction {
 [FInstruction("ManagedStateAnimation")]
 public class ManagedStateAnimation : FInstruction {
     public ManagedStateAnimation(FLine line, int address) : base(line, address) { }
-    public override void Execute(FScriptRuntimeContext ctx) {
+    public override void Execute(FScriptRuntime ctx) {
         RequireMinArgs(2);
         if (!(ctx.owner is PlayerCharacter player))
             throw new NotImplementedException("Non-player managed animations not implemented yet.");

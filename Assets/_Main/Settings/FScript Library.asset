@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81c847370fad561409c764da7542b26f, type: 3}
+  m_Name: FScript Library
+  m_EditorClassIdentifier: 
+  scripts:
+  - {fileID: -6829819375710767845, guid: 4b5a8487f1a6dc94294d6f9152e71ef9, type: 3}
+  - {fileID: -6829819375710767845, guid: 58bef1b7938bb6242b222cf3c5af82e6, type: 3}
+  - {fileID: -6829819375710767845, guid: e94e17542f2fa6b40afc4653ad97316f, type: 3}
+  - {fileID: -6829819375710767845, guid: 4f8110740f4b724438705621513b1b06, type: 3}
+  - {fileID: -6829819375710767845, guid: 26b4301c415c34f46b0d65b2be90bdd0, type: 3}
