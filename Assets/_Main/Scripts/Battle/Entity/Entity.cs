@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using SingularityGroup.HotReload;
 using Sirenix.OdinInspector;
 using Spine.Unity;
+using SuperSmashRhodes.Battle.Animation;
 using SuperSmashRhodes.Battle.Enums;
-using SuperSmashRhodes.FScript;
+using SuperSmashRhodes.Battle.State;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
@@ -14,42 +16,33 @@ namespace SuperSmashRhodes.Battle {
 /// </summary>
 public abstract class Entity : MonoBehaviour {
     [Title("References")]
-    public FScriptObject mainScript;
+    public EntityConfiguration config;
     
     public EntityFacing facing { get; protected set; } = EntityFacing.LEFT;
-    public SkeletonAnimation animation { get; private set; }
-    public FScriptRuntime runtime { get; private set; }
+    public EntityAnimationController animation { get; private set; }
     public Rigidbody2D rb { get; private set; }
-    public EntityTask task { get; private set; }
-    public Dictionary<string, FScriptObject> moves { get; } = new();
-    public Dictionary<string, AnimationClip> managedAnimations { get; } = new();
-    
-    public bool isPhysicallyMoving => !Mathf.Approximately(rb.linearVelocityX, 0) || !Mathf.Approximately(rb.linearVelocityY, 0);
+    public EntityState activeState { get; private set; }
 
-    // Air States
-    public bool isPhysicallyGrounded { get; private set; } = true;
-    public int forcedAirborneFrames { get; set; }
-    private bool _isLogicallyGrounded = true;
-    
-    public bool isLogicallyGrounded {
-        get {
-            if (forcedAirborneFrames > 0) return false;
-            return _isLogicallyGrounded;
-        }
-        set => _isLogicallyGrounded = value;
-    }
+    public Dictionary<string, EntityState> states { get; } = new();
+
+    // Entity Stats
+    public float health { get; set; }
     
     protected virtual void Start() {
-        animation = GetComponent<SkeletonAnimation>();
+        animation = GetComponent<EntityAnimationController>();
         rb = GetComponent<Rigidbody2D>();
-        runtime = GetComponent<FScriptRuntime>();
         
-        // load animations
-        // foreach (var reference in config.animationClipReferences) {
-        //     foreach (var clip in reference.clips) {
-        //         managedAnimations[clip.name] = clip;
-        //     }
-        // } 
+        // load states
+        foreach (var stateLibrary in config.stateLibraries) {
+            foreach (var name in stateLibrary.states) {
+                if (!EntityStateRegistry.inst.CreateInstance(name, out var state, this))
+                   throw new Exception($"State {name} not found");
+               
+                states[name] = state;
+            }
+        }
+        
+        // Debug.Log($"Loaded states {string.Join(", ", states.Keys)}");
     }
 
     protected virtual void Update() {
@@ -57,39 +50,41 @@ public abstract class Entity : MonoBehaviour {
     }
 
     protected virtual void FixedUpdate() {
-        if (managedXVelocityLimit >= 0) {
-            rb.linearVelocityX = Mathf.Clamp(rb.linearVelocityX, -managedXVelocityLimit, managedXVelocityLimit);
+        // state
+        {
+            EnsureState();
+            activeState.TickState();
+            if (!activeState.active) activeState = null;
         }
+    }
+
+    public void EnsureState() {
+        if (activeState == null) {
+            var state = GetDefaultState();
+            if (state == null)
+                throw new Exception("No state assigned"); 
+            BeginState(state);
+        }
+    }
+
+    public void BeginState(EntityState state) {
+        if (state == null)
+            throw new Exception("Cannot begin null state");
         
-        UpdateGroundedState();
-    }
-    
-    public void AddContinuousForce(Vector2 force) {
-        rb.AddForce(force, ForceMode2D.Force);
-    }
-    
-    public void AddSimulatedForce(Vector2 force) {
-        transform.Translate(force * (Time.fixedDeltaTime));
-    }
+        if (activeState != null && activeState.active)
+            activeState.EndState();
 
-    public void AddCarriedForce(Vector2 force) {
-        rb.AddForce(force, ForceMode2D.Impulse);
+        activeState = state;
+        state.BeginState();
     }
     
-
-    private void UpdateGroundedState() {
-        isPhysicallyGrounded = transform.position.y < 0.02f;
-        if (!isLogicallyGrounded && isPhysicallyGrounded && forcedAirborneFrames == 0) {
-            isLogicallyGrounded = true;
-        }
-
-        if (forcedAirborneFrames > 0) forcedAirborneFrames--;
+    // Implemented methods
+    public virtual void RoundInit() {
+        health = config.health; 
     }
     
-    /// <summary>
-    /// The current limit on the entity's x velocity. If -1, there is no limit.
-    /// Dynamically adjusted by the entity's implementation.
-    /// </summary>
-    public virtual float managedXVelocityLimit => -1;
+    // Abstract Methods
+    protected abstract EntityState GetDefaultState();
+
 }
 }

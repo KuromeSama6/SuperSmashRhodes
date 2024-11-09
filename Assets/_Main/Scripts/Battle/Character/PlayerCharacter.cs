@@ -1,5 +1,6 @@
-﻿using SuperSmashRhodes.FScript;
-using SuperSmashRhodes.FScript.Input;
+﻿using System;
+using System.Linq;
+using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Input;
 using SuperSmashRhodes.Util;
 using UnityEngine;
@@ -10,7 +11,7 @@ public class PlayerCharacter : Entity {
     public bool isDashing { get; private set; }
     public bool isCrouching { get; private set; }
     public int framesDashed { get; private set; }
-    private PlayerInputModule inputModule;
+    public PlayerInputModule inputModule { get; private set; }
     
     protected override void Start() {
         base.Start();
@@ -23,55 +24,35 @@ public class PlayerCharacter : Entity {
 
     protected override void FixedUpdate() {
         base.FixedUpdate();
+        UpdateInput();
     }
 
-    private void UpdateMovement() {
-        // InputChord input = inputModule.localBuffer.thisFrame;
-        
-        // // movement
-        // {
-        //     isDashing = input.HasInput(InputType.DASH);
-        //     if (isDashing) ++framesDashed;
-        //     else framesDashed = 0;
-        //
-        //     isCrouching = input.HasInput(InputType.DOWN);
-        //     if (!isCrouching && mayNeutralMove) {
-        //         if (input.HasInput(InputType.FORWARD)) {
-        //             moveDirection = 1f;
-        //     
-        //         } else if (input.HasInput(InputType.BACKWARD)) {
-        //             moveDirection = -1f;
-        //             if (isDashing) {
-        //                 moveDirection = 0f;
-        //                 isDashing = false;
-        //                 //TODO: Backdash
-        //             }
-        //     
-        //         } else {
-        //             moveDirection = 0f;
-        //         }   
-        //         
-        //     } else {
-        //         moveDirection = 0f;
-        //     }
-        //
-        //     if (!Mathf.Approximately(moveDirection, 0f)) {
-        //         // All characters have universal walking acceleration
-        //         float force = isDashing ? config.dashAccelCurve.Evaluate(framesDashed) : 20f;
-        //         AddContinuousForce(new Vector2(PhysicsUtil.NormalizeRelativeDirecionalForce(force * moveDirection, facing), 0f));
-        //     }
-        // }
-        
-    }
+    private void UpdateInput() {
+        // get priority sorted list
+        var li = (from state in states.Values
+            orderby state.inputPriority descending
+            select state).ToList();
 
-    public override float managedXVelocityLimit {
-        get {
-            // if (isPhysicallyMoving) {
-            //     if (isDashing) return config.dashSpeed;
-            //     return moveDirection < 0f ? config.backwalkSpeed : config.walkSpeed;
-            // }
-            return -1;
+        foreach (var state in li) {
+            if (state == activeState) continue;
+            
+            if (state.IsInputValid(inputModule.localBuffer) && state.mayEnterState) {
+                // check cancel state
+                if (activeState.stateData.cancelOptions.Contains(state) || BitUtil.CheckFlag((int)activeState.stateData.cancelFlag, (int)state.type)) {
+                    // state is valid
+                    BeginState(state);
+                    break;
+                }
+            }
         }
+        
+    }
+
+    protected override EntityState GetDefaultState() {
+        if (!EntityStateRegistry.inst.CreateInstance("CmnNeutral", out var ret, this))
+            throw new Exception("Default state [CmnNeutral] not assigned");
+        
+        return ret;
     }
 }
 }

@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
-using SuperSmashRhodes._Main.Scripts.Battle.Animation;
+using SuperSmashRhodes.Battle.State;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace SuperSmashRhodes.Battle {
-[Obsolete]
 [CreateAssetMenu(fileName = "EntityConfiguration", menuName = "Battle/Entity Configuration")]
 public class EntityConfiguration : ScriptableObject {
     [BoxGroup("Basic Configuration")]
@@ -14,6 +13,9 @@ public class EntityConfiguration : ScriptableObject {
     [BoxGroup("Basic Configuration")]
     public EntityType entityType;
 
+    [BoxGroup("State")]
+    public List<EntityStateLibrary> stateLibraries = new();
+    
     [BoxGroup("Basic Stats")]
     public float health, defenseModifier;
 
@@ -27,15 +29,13 @@ public class EntityConfiguration : ScriptableObject {
 
     [ShowIf("entityType", EntityType.CHARACTER)]
     [TabGroup("playerConfig", "Dash", SdfIconType.ArrowRight, TextColor = "yellow")]
+    public bool mayDash = false;
+    [TabGroup("playerConfig", "Dash", SdfIconType.ArrowRight, TextColor = "yellow")]
     public AnimationCurve dashAccelCurve;
     
     [ShowIf("entityType", EntityType.CHARACTER)]
     [TabGroup("playerConfig", "Dash", SdfIconType.ArrowRight, TextColor = "yellow")]
     public float dashSpeed, airDashAvailableFrame, airDashDuration, backdashDuration, backdashInvuln, backdashAirborne, backdashDistance;
-
-    [FormerlySerializedAs("clipReferences")]
-    [BoxGroup("Animation")]
-    public List<AnimationClipReference> animationClipReferences = new();
 
 }
 

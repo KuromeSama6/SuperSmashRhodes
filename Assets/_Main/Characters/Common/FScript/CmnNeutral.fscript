@@ -1,6 +1,11 @@
 section .main:
+    call DebugFuncs.Log, start common neutral
+    clearAnim
+    anim 0, std_neutral
+    animLoop 0, 1
 
-    ; neutral loop
+    cancel *
+
     label loop
     int 1
     jmp @loop

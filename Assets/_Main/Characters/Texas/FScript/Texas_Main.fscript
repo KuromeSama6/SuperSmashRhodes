@@ -12,5 +12,5 @@ section .entityInit:
 section .stateDef:
     jmp .CommonLib::CommonDefines
 
-section .onRoundStart:
-    jmp .CommonLib::CmnNeutral
+section .onDefaultState:
+    state CmnNeutral

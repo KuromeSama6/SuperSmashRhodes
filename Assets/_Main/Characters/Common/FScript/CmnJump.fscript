@@ -1,5 +1,4 @@
 section .main:
-    ManagedStateAnimation std_prejump, $prejumplen
     int $prejumplen
     call PhysicsFuncs.AddCarriedForce, 0, 10
     SetForcedAirborneFrames 4

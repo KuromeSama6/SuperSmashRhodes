@@ -1258,7 +1258,7 @@ MonoBehaviour:
   physicsPositionInheritanceFactor: {x: 1, y: 1}
   physicsRotationInheritanceFactor: 1
   physicsMovementRelativeTo: {fileID: 0}
-  updateTiming: 1
+  updateTiming: 0
   unscaledTime: 0
   _animationName: std_neutral
   loop: 1
@@ -1313,7 +1313,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75589697253a45349a331ae1976ebd02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainScript: {fileID: -6829819375710767845, guid: 0e608715f44c99d4688a954a236150ee, type: 3}
+  config: {fileID: 11400000, guid: 434ea1ac775d5c546a9eaf51465adf55, type: 2}
 --- !u!114 &2101703129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1415,7 +1415,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 2
-  m_LinearDamping: 0
+  m_LinearDamping: 0.6
   m_AngularDamping: 0.05
   m_GravityScale: 1
   m_Material: {fileID: 6200000, guid: 71f8ab527ec2b014a95498b9dbe0512e, type: 2}
@@ -1438,11 +1438,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2101703126}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 431402cfe7b4488db16a279a24fea5e1, type: 3}
+  m_Script: {fileID: 11500000, guid: 81b0db2b78ba4dd28fbfc79409147038, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scripts:
-  - {fileID: 11400000, guid: e6ec54ce3b3f9644d977e62e1640f909, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

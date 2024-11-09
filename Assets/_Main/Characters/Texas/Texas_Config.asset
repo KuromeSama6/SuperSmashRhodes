@@ -15,6 +15,9 @@ MonoBehaviour:
   id: chr_texas
   prettyName: "\u5FB7\u514B\u8428\u65AF"
   entityType: 0
+  stateLibraries:
+  - {fileID: 11400000, guid: eec0401451ff3ff418a2bfd24c185f23, type: 2}
+  - {fileID: 11400000, guid: f8922546a5ecdea4fa97024c6db1751b, type: 2}
   health: 440
   defenseModifier: 1
   walkSpeed: 1
@@ -23,6 +26,7 @@ MonoBehaviour:
   jumpDuration: 41
   jumpVelocity: 0
   jumpGravity: 0
+  mayDash: 1
   dashAccelCurve:
     serializedVersion: 2
     m_Curve:
@@ -37,7 +41,7 @@ MonoBehaviour:
       outWeight: 0
     - serializedVersion: 3
       time: 2
-      value: 20
+      value: 100
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -54,5 +58,3 @@ MonoBehaviour:
   backdashInvuln: 0
   backdashAirborne: 0
   backdashDistance: 0
-  animationClipReferences:
-  - {fileID: 11400000, guid: 3c9695ad59fa38a4ead4543ce8bf44f1, type: 2}

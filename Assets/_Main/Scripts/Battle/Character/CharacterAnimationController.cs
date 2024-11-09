@@ -4,6 +4,7 @@ using Spine.Unity;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
+[Obsolete]
 public class CharacterAnimationController : MonoBehaviour {
     private static readonly int ANI_WALK_DIRECTION = Animator.StringToHash("WalkDirection");
     private static readonly int ANI_IS_WALKING = Animator.StringToHash("IsWalking");
@@ -51,7 +52,7 @@ public class CharacterAnimationController : MonoBehaviour {
 
         {
             // air
-            animator.SetBool(ANI_IS_GROUNDED, character.isLogicallyGrounded);
+            animator.SetBool(ANI_IS_GROUNDED, true); //TODO: Implement grounded check
             animator.SetFloat(ANI_Y_VELOCITY, character.rb.linearVelocityY);
         }
 
@@ -77,17 +78,5 @@ public class CharacterAnimationController : MonoBehaviour {
         overrideController[currentManagedClip] = managedPlaceholderClip;
     }
     
-    public void SetManagedAnimation(string name, int frames) {
-        animator.SetLayerWeight(ANI_MANAGED_LAYER, 1);
-
-        if (frames <= 0)
-            throw new ArgumentException("Must have at least one frame of managed animation");
-        if (!character.managedAnimations.TryGetValue(name, out var clip))
-            throw new ArgumentException($"Accessing undefined or unmanaged animation `{name}`");
-            
-        overrideController[managedPlaceholderClip] = clip;
-        currentManagedClip = clip;
-        managedAnimationFrames = frames;
-    }
 }
 }
