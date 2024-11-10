@@ -20,11 +20,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f8922546a5ecdea4fa97024c6db1751b, type: 2}
   health: 440
   defenseModifier: 1
-  walkSpeed: 1
-  backwalkSpeed: 0.92
+  walkSpeed: 1.5
+  backwalkSpeed: 0.7
   prejump: 4
   jumpDuration: 41
-  jumpVelocity: 0
+  jumpVelocity: 9
   jumpGravity: 0
   mayDash: 1
   dashAccelCurve:
@@ -51,7 +51,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  dashSpeed: 2.5
+  dashSpeed: 3
   airDashAvailableFrame: 0
   airDashDuration: 0
   backdashDuration: 0

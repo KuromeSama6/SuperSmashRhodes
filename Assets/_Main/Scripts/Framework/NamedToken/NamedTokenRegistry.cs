@@ -45,4 +45,15 @@ public abstract class NamedTokenRegistry<TRegistry, TTarget> : GlobalSingleton<T
     
 }
 
+public abstract class NamedToken {
+    public string id { get; private set; }
+    public NamedToken() {
+        var attr = GetType().GetCustomAttribute<NamedTokenAttribute>();
+        if (attr == null) 
+            throw new Exception($"NamedToken {GetType()}: missing NamedTokenAttribute");
+        
+        id = attr.name;
+    }
+}
+
 }

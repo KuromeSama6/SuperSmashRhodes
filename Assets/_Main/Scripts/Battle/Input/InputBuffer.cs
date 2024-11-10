@@ -30,19 +30,34 @@ public class InputBuffer {
         if (buffer.Count > maxSize) buffer.RemoveAt(buffer.Count - 1);
     }
 
-    public InputBuffer Slice(int frames) {
+    public InputBuffer TimeSlice(int frames) {
         var ret = buffer.GetRange(0, frames);
         return new InputBuffer(maxSize, ret.ToArray());
     }
+
+    public bool ScanForInput(params InputFrame[] seq) {
+        var req = seq.ToList();
+        if (req.Count == 0)
+            throw new ArgumentException("Input sequence must have at least one element");
+            
+        for (int i = buffer.Count - 1; i >= 0; i--) {
+            if (buffer[i].HasInput(req[0])) {
+                req.RemoveAt(0);
+                if (req.Count == 0) return true;
+            }
+        }
+        
+        return false;
+    }
     
-    public static InputType TranslateRawDirectionInput(InputType input, EntityFacing facing) {
+    public static InputType TranslateRawDirectionInput(InputType input, EntitySide side) {
         if (input == InputType.RAW_MOVE_LEFT) {
-            if (facing == EntityFacing.LEFT) return InputType.FORWARD;
+            if (side == EntitySide.LEFT) return InputType.FORWARD;
             return InputType.BACKWARD;
 
         }
         if (input == InputType.RAW_MOVE_RIGHT) {
-            if (facing == EntityFacing.LEFT) return InputType.BACKWARD;
+            if (side == EntitySide.LEFT) return InputType.BACKWARD;
             return InputType.FORWARD;
 
         }

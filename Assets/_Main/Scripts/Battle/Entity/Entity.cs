@@ -7,6 +7,7 @@ using Spine.Unity;
 using SuperSmashRhodes.Battle.Animation;
 using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Battle.State;
+using SuperSmashRhodes.Util;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
@@ -16,17 +17,18 @@ namespace SuperSmashRhodes.Battle {
 /// </summary>
 public abstract class Entity : MonoBehaviour {
     [Title("References")]
+    public Transform rotationContainer;
     public EntityConfiguration config;
     
-    public EntityFacing facing { get; protected set; } = EntityFacing.LEFT;
+    public EntitySide side { get; protected set; } = EntitySide.LEFT;
     public EntityAnimationController animation { get; private set; }
     public Rigidbody2D rb { get; private set; }
     public EntityState activeState { get; private set; }
-
     public Dictionary<string, EntityState> states { get; } = new();
-
     // Entity Stats
     public float health { get; set; }
+
+    private bool logicStarted;
     
     protected virtual void Start() {
         animation = GetComponent<EntityAnimationController>();
@@ -46,15 +48,24 @@ public abstract class Entity : MonoBehaviour {
     }
 
     protected virtual void Update() {
-        
+        {
+            // facing animation
+            float target = side == EntitySide.LEFT ? 0 : 180;
+            rotationContainer.eulerAngles = new Vector3(0, Mathf.Lerp(rotationContainer.eulerAngles.y, target, Time.deltaTime * 20f), 0);
+        }
     }
 
     protected virtual void FixedUpdate() {
+        if (!logicStarted) return;
+        
         // state
         {
             EnsureState();
             activeState.TickState();
-            if (!activeState.active) activeState = null;
+            if (!activeState.active) {
+                activeState = null;
+                EnsureState(); 
+            }
         }
     }
 
@@ -67,6 +78,10 @@ public abstract class Entity : MonoBehaviour {
         }
     }
 
+    public void BeginState(string state) {
+        BeginState(states[state]);
+    }
+    
     public void BeginState(EntityState state) {
         if (state == null)
             throw new Exception("Cannot begin null state");
@@ -77,10 +92,34 @@ public abstract class Entity : MonoBehaviour {
         activeState = state;
         state.BeginState();
     }
+
+    public void BeginLogic() {
+        logicStarted = true;
+    }
+
+    public virtual void HandleEntityInteraction(EntityBoundingBox from, EntityBoundingBox to) {
+        ulong fromType = (ulong)from.type;
+        ulong toType = (ulong)to.type;
+        
+        // TODO Clash Counters
+        
+        // Hit
+        if (BitUtil.CheckFlag(fromType, (ulong)BoundingBoxType.HITBOX) && BitUtil.CheckFlag(toType, (ulong)BoundingBoxType.HURTBOX)) {
+            bool success = OnOutboundHit(to.owner);
+            if (success) to.owner.OnInboundHit(this);
+        }
+        
+    }
     
     // Implemented methods
-    public virtual void RoundInit() {
-        health = config.health; 
+    public virtual void OnRoundInit() {
+        health = config.health;
+    }
+    protected virtual bool OnOutboundHit(Entity victim) {
+        return false;
+    }
+    protected virtual void OnInboundHit(Entity attacker) {
+        
     }
     
     // Abstract Methods

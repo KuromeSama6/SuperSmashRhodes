@@ -1,5 +1,5 @@
 ﻿namespace SuperSmashRhodes.Battle.Enums {
-public enum EntityFacing {
+public enum EntitySide {
     LEFT,
     RIGHT
 }

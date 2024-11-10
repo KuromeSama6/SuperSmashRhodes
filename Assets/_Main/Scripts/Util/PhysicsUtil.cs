@@ -2,8 +2,8 @@
 
 namespace SuperSmashRhodes.Util {
 public static class PhysicsUtil {
-    public static float NormalizeRelativeDirecionalForce(float force, EntityFacing facing) {
-        return force * (facing == EntityFacing.LEFT ? 1 : -1);
+    public static float NormalizeRelativeDirecionalForce(float force, EntitySide side) {
+        return force * (side == EntitySide.LEFT ? 1 : -1);
     }
 }
 }

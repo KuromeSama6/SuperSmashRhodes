@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using NUnit.Framework;
 using SuperSmashRhodes.Battle;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -10,6 +11,7 @@ public class PlayerInputModule : MonoBehaviour {
     
     private PlayerInput input;
     private PlayerCharacter playerCharacter;
+    private List<InputFrame> thisFrameInputs = new();
     
     private void Start() {
         input = GetComponent<PlayerInput>();
@@ -25,6 +27,8 @@ public class PlayerInputModule : MonoBehaviour {
     private void FixedUpdate() {
         {
             List<InputFrame> toPush = new();
+            toPush.AddRange(thisFrameInputs);
+            thisFrameInputs.Clear();
             
             // Abstract inputs polled once per Frame and written to the InputBuffer
 
@@ -32,7 +36,7 @@ public class PlayerInputModule : MonoBehaviour {
             {
                 var action = input.actions.FindAction("Move");
                 var value = action.ReadValue<Vector2>().x;
-                var facing = playerCharacter.facing;
+                var facing = playerCharacter.side;
                 
                 if (!Mathf.Approximately(value, 0)) {
                     if (value > 0) toPush.Add(new(InputBuffer.TranslateRawDirectionInput(InputType.RAW_MOVE_LEFT, facing), InputFrameType.HELD));
@@ -50,5 +54,24 @@ public class PlayerInputModule : MonoBehaviour {
             localBuffer.PushAndTick(toPush.ToArray());
         }
     }
+    
+    public void OnMove(InputValue input) {
+        var value = input.Get<Vector2>().x;
+        var facing = playerCharacter.side;
+        
+        if (!Mathf.Approximately(value, 0)) {
+            if (value > 0) thisFrameInputs.Add(new(InputBuffer.TranslateRawDirectionInput(InputType.RAW_MOVE_LEFT, facing), InputFrameType.PRESSED));
+            else if (value < 0) thisFrameInputs.Add(new(InputBuffer.TranslateRawDirectionInput(InputType.RAW_MOVE_RIGHT, facing), InputFrameType.PRESSED));
+        } 
+    }
+
+    public void OnJump(InputValue input) {
+        thisFrameInputs.Add(new(InputType.UP, InputFrameType.PRESSED));
+    }
+
+    public void OnSlash(InputValue input) {
+        thisFrameInputs.Add(new (InputType.S, InputFrameType.PRESSED));
+    }
+    
 }
 }

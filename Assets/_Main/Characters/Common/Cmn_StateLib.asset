@@ -17,3 +17,8 @@ MonoBehaviour:
   - CmnMoveForward
   - CmnMoveBackward
   - CmnDash
+  - CmnJump
+  - CmnAirNeutral
+  - CmnBlockStun
+  - CmnBlockStunCrouch
+  - CmnNeutralCrouch

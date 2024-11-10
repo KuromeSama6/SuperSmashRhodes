@@ -14,7 +14,6 @@ public class EntityAnimationController : MonoBehaviour {
     private float currentBlendProgress = 0f;
     private List<TrackBlend> blends = new();
     
-    
     private void Start() {
         animation = GetComponentInChildren<SkeletonAnimation>();
     }
@@ -25,11 +24,16 @@ public class EntityAnimationController : MonoBehaviour {
 
     public void AddUnmanagedAnimation(string name, bool loop, float transitionTime = 0f) {
         var track = state.GetCurrent(0);
-        track.Loop = false;
+        if (transitionTime == 0) {
+            state.ClearTrack(0);
+        } else {
+            track.Loop = false;
+        }
         state.AddAnimation(0, name, loop, transitionTime);
     }
 
     public void Tick(int frames = 1) {
+        if (animation == null) return;
         animation.Update(frames * Time.fixedDeltaTime);
         
     }

@@ -7,10 +7,12 @@ public class EntityStateData {
     /// States that can be canceled into from this state.
     /// </summary>
     public List<EntityState> cancelOptions { get; } = new List<EntityState>();
+
     /// <summary>
     /// A flag that determines if the current state can be cancelled into a specific type of states.
     /// </summary>
-    public EntityStateType cancelFlag { get; set; }
-    
+    public EntityStateType cancelFlag;
+
+    public bool disableSideSwap = false;
 }
 }

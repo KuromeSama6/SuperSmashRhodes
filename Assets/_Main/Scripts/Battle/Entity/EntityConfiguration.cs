@@ -25,7 +25,9 @@ public class EntityConfiguration : ScriptableObject {
 
     [ShowIf("entityType", EntityType.CHARACTER)]
     [TabGroup("playerConfig", "Jumping", SdfIconType.ArrowUp, TextColor = "blue")]
-    public float prejump, jumpDuration, jumpVelocity, jumpGravity;
+    public int prejump;
+    [TabGroup("playerConfig", "Jumping", SdfIconType.ArrowUp, TextColor = "blue")]
+    public float jumpDuration, jumpVelocity, jumpGravity;
 
     [ShowIf("entityType", EntityType.CHARACTER)]
     [TabGroup("playerConfig", "Dash", SdfIconType.ArrowRight, TextColor = "yellow")]

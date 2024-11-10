@@ -2,12 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
+using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Input;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.State {
-public abstract class EntityState {
-    public string id { get; }
+public abstract class EntityState : NamedToken {
     public Entity owner { get; private set; }
     public EntityStateData stateData { get; private set; }
     public bool active { get; private set; }
@@ -17,16 +17,15 @@ public abstract class EntityState {
     public virtual bool mayEnterState => true;
     
     private int interruptFrames;
-    private int scheduledAnimationFrames;
+    private int scheduledPauseAnimationFrames;
     private IEnumerator routine;
     
-    public EntityState(Entity owner, string id) {
-        this.id = id;
+    public EntityState(Entity owner) {
         this.owner = owner;
     }
 
     private void Init() {
-        OnStateInit();
+        OnStateBegin();
         routine = MainRoutine();
     }
 
@@ -34,7 +33,7 @@ public abstract class EntityState {
         stateData = new();
         frame = 0;
         interruptFrames = 0;
-        scheduledAnimationFrames = 0;
+        scheduledPauseAnimationFrames = 0;
         Init();
         active = true;
     }
@@ -44,8 +43,10 @@ public abstract class EntityState {
         ++frame;
         
         // scheduled animation
-        if (scheduledAnimationFrames > 0) {
-            --scheduledAnimationFrames;
+        if (scheduledPauseAnimationFrames > 0) {
+            --scheduledPauseAnimationFrames;
+            
+        } else {
             owner.animation.Tick();
         }
         
@@ -74,7 +75,7 @@ public abstract class EntityState {
         
         // interrupt frames
         if (obj is int framesSkipped) {
-            interruptFrames += framesSkipped;
+            interruptFrames += Mathf.Max(framesSkipped - 1, 0);
             return;
         }
 
@@ -116,15 +117,23 @@ public abstract class EntityState {
         owner.BeginState(state);
     }
     
-    protected void SetScheduledAnimationFrames(int frames, bool tickImmediate = true) {
-        if (tickImmediate) owner.animation.Tick();
-        scheduledAnimationFrames = frames;
+    protected void SetScheduledPauseAnimationFrames(int frames) {
+        scheduledPauseAnimationFrames = frames;
     }
     
     // Virtual methods / Events
-    protected virtual void OnStateInit() { }
+    protected virtual void OnStateBegin() { }
     // Abstract methods
     public abstract bool IsInputValid(InputBuffer buffer);
     public abstract IEnumerator MainRoutine();
+}
+
+public abstract class CharacterState : EntityState {
+    public PlayerCharacter player { get; private set; }
+    protected PlayerCharacter opponent => player.opponent;
+    
+    public CharacterState(Entity owner) : base(owner) {
+        player = (PlayerCharacter)owner;
+    }
 }
 }
