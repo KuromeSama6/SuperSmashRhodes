@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 589170e0e507452e8d9a751a77995ab6, type: 3}
+  m_Name: Texas_Descriptor
+  m_EditorClassIdentifier: 
+  id: texas
+  chineseName: "\u5FB7\u514B\u8428\u65AF"
+  englishName: Texas
+  profession: 2
+  portrait: {fileID: -202320987222130686, guid: 68eff356725378c45b3b84435a0880ba, type: 3}
+  avatar: {fileID: 822580744, guid: 41d128924f692f345b5f4704c78ea030, type: 3}
+  professionIconFull: {fileID: 762540141978943900, guid: 630d1a921910b4c4582c6106896141a5, type: 3}
+  professionIconBlack: {fileID: -3997260828798204694, guid: 0052eace1e0dabc42923bd885a78af46, type: 3}
+  professionIconWhite: {fileID: -1951740891388850315, guid: 53023f2be07aeea44a591a42f921772f, type: 3}
+  professionIconUI: {fileID: -855615615, guid: b8efcc14c116ada40b9bd55d5a0ab621, type: 3}

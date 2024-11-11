@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using Sirenix.OdinInspector;
 using SuperSmashRhodes.Battle.Enums;
+using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Battle.State.Implementation;
@@ -12,6 +14,9 @@ using UnityEngine.Events;
 
 namespace SuperSmashRhodes.Battle {
 public class PlayerCharacter : Entity {
+    [Title("References")]
+    public CharacterDescriptor descriptor;
+    
     public int playerIndex { get; private set; }
     public float moveDirection { get; private set; }
     public bool isDashing { get; private set; }
@@ -25,7 +30,9 @@ public class PlayerCharacter : Entity {
     public UnityEvent onSideSwap { get; } = new();
     
     private int applyGroundedFrictionFrames = 0;
-    private PushboxManager pushboxManager;
+    public float groundedFrictionAlpha { get; set; }
+    public PushboxManager pushboxManager { get; private set; }
+    public CharacterFXManager fxManager { get; private set; }
     
     public void Init(int playerIndex) {
         this.playerIndex = playerIndex;
@@ -38,6 +45,7 @@ public class PlayerCharacter : Entity {
         
         inputModule = GetComponent<PlayerInputModule>();
         pushboxManager = GetComponentInChildren<PushboxManager>();
+        fxManager = GetComponentInChildren<CharacterFXManager>();
         
         pushboxManager.onGroundContact.AddListener(OnGroundContact);
     }
@@ -54,7 +62,8 @@ public class PlayerCharacter : Entity {
 
         if (applyGroundedFrictionFrames > 0) {
             --applyGroundedFrictionFrames;
-            rb.linearVelocityX = Mathf.Lerp(rb.linearVelocityX, 0, Time.fixedDeltaTime * 20f);
+            groundedFrictionAlpha = Mathf.Lerp(groundedFrictionAlpha, 1, Time.fixedDeltaTime);
+            rb.linearVelocityX = Mathf.Lerp(rb.linearVelocityX, 0, Time.fixedDeltaTime * 20f * groundedFrictionAlpha);
         }
     }
     
@@ -121,7 +130,17 @@ public class PlayerCharacter : Entity {
         // position
         
         // TODO: Z index management
-        transform.position = new(playerIndex == 0 ? -1.5f : 1.5f, 0f, playerIndex);
+        transform.position = new(playerIndex == 0 ? -1.5f : 1.5f, 0f, 0f);
+    }
+
+    public void SetZPriority() {
+        animation.animation.GetComponent<MeshRenderer>().sortingOrder = 3;
+        opponent.animation.animation.GetComponent<MeshRenderer>().sortingOrder = 2;
+    }
+
+    public override void BeginLogic() {
+        base.BeginLogic();
+        if (playerIndex == 0) SetZPriority();
     }
 
     protected override bool OnOutboundHit(Entity victim) {
@@ -131,13 +150,13 @@ public class PlayerCharacter : Entity {
             return ProcessOutboundHit(player);
         }
         
-        //TODO: Others
+        //TODO: Others 
         return false;
     }
 
     protected override void OnInboundHit(Entity attacker) {
         base.OnInboundHit(attacker);
-        if (attacker is PlayerCharacter player) ProcessInboundHitPost(player);
+        if (attacker is PlayerCharacter player) ProcessInboundHit(player);
     }
 
     private bool ProcessOutboundHit(PlayerCharacter to) {
@@ -155,7 +174,7 @@ public class PlayerCharacter : Entity {
         return true;
     }
     
-    private void ProcessInboundHitPost(PlayerCharacter from) {
+    private void ProcessInboundHit(PlayerCharacter from) {
         // called same frame as OutboundHit
         // get state of other player 
         var state = from.activeState;
@@ -165,7 +184,7 @@ public class PlayerCharacter : Entity {
         }
 
         // reject if move has no active frames
-        // hit/guard
+        // hit/guard 
         var blockType = move.attackProperties.guardType;
         bool blocked = false;
 
@@ -186,16 +205,28 @@ public class PlayerCharacter : Entity {
         }
         
         // register hit
+        
         int framesRemaining = move.frameData.total - move.frame - 1;
         // Debug.Log($"inbound hit 1, neutral: {neutral}, blockheld: {blockHeld}, blockType: {blockType} blocked: {blocked}, framesRemaining: {framesRemaining}, blockstun {framesRemaining + move.frameData.onBlock}");
         if (blocked) {
             frameData.blockstunFrames = framesRemaining + move.frameData.onBlock;
             BeginState(crouching ? "CmnBlockStunCrouch" : "CmnBlockStun");
+            fxManager.NotifyBlock();
             
         } else {
             frameData.hitstunFrames = framesRemaining + move.frameData.onHit;
+            BeginState(crouching ? "CmnHitStunGroundCrouch" : "CmnHitStunGround"); 
+            comboCounter.AddMove(move);
+            fxManager.NotifyHit();
             
+            //TODO: Damage logic
+            health -= move.attackProperties.damage * comboCounter.finalScale;
         }
+        
+        ApplyCarriedPushback(move.attackProperties.pushback);
+        
+        // apply freeze frames
+        PhysicsTickManager.inst.Schedule(4, move.attackProperties.freezeFrames);
         
     }
 
@@ -203,6 +234,20 @@ public class PlayerCharacter : Entity {
         if (airborne) airborne = false;
     }
 
+    private void ApplyCarriedPushback(float amount) {
+        float direction = side == EntitySide.LEFT ? -1 : 1;
+        
+        if (pushboxManager.atWall) {
+            opponent.rb.AddForceX(amount * -direction, ForceMode2D.Impulse);
+            opponent.groundedFrictionAlpha = 0;
+            // Debug.Log("add opponent force");
+            
+        } else {
+            rb.AddForceX(amount * direction, ForceMode2D.Impulse);
+            groundedFrictionAlpha = 0;
+        }
+    }
+    
 }
 
 public abstract class RuntimeCharacterDataRegister {

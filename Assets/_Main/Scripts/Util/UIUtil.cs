@@ -5,7 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Tomlyn.UI {
+namespace SuperSmashRhodes.UI {
 public static class UIUtil {
 
     public static GameObject SetText(this GameObject go, string inText) {
@@ -68,52 +68,7 @@ public static class UIUtil {
         // Set the scroll position (for vertical scrolling, adjust for horizontal similarly)
         scrollRect.verticalNormalizedPosition = normalizedPosition;
     }
-
-    public static bool IsMouseHovering(this GameObject obj) {
-        // Check if the object has an Image or Text component
-        var image = obj.GetComponent<Image>();
-        var text = obj.GetComponent<Text>();
-
-        if (image == null && text == null) {
-            // If the object doesn't have an Image or Text component, it cannot be hovered over
-            return false;
-        }
-
-        // Check if the mouse is currently hovering over the object
-        var eventData = new PointerEventData(EventSystem.current);
-        eventData.position = Input.mousePosition;
-
-        if (image != null) {
-            // If the object has an Image component, use the Raycast method of the GraphicRaycaster class
-            var graphicRaycaster = obj.GetComponentInParent<GraphicRaycaster>();
-            var results = new List<RaycastResult>();
-            graphicRaycaster.Raycast(eventData, results);
-
-            foreach (var result in results) {
-                if (result.gameObject == obj) {
-                    // The mouse is currently hovering over the object
-                    return true;
-                }
-            }
-        }
-
-        if (text != null) {
-            // If the object has a Text component, use the Raycast method of the Physics2DRaycaster class
-            var physics2DRaycaster = obj.GetComponentInParent<Physics2DRaycaster>();
-            var results = new List<RaycastResult>();
-            physics2DRaycaster.Raycast(eventData, results);
-
-            foreach (var result in results) {
-                if (result.gameObject == obj) {
-                    // The mouse is currently hovering over the object
-                    return true;
-                }
-            }
-        }
-
-        // The mouse is not currently hovering over the object
-        return false;
-    }
+    
 
     public static Sprite BytesToSprite(byte[] bytes, Vector2 imageSize) {
         int width = (int)imageSize.x;

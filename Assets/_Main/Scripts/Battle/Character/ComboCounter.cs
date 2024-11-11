@@ -2,7 +2,7 @@
 
 namespace SuperSmashRhodes.Battle {
 public class ComboCounter : RuntimeCharacterDataRegister {
-    private int count;
+    public int count { get; private set; }
     private float overallProration = 1f;
     private float appliedProration = 1f;
 

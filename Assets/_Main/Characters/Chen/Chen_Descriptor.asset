@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 589170e0e507452e8d9a751a77995ab6, type: 3}
+  m_Name: Chen_Descriptor
+  m_EditorClassIdentifier: 
+  id: chen
+  chineseName: "\u9648"
+  englishName: Chen
+  profession: 4
+  portrait: {fileID: 3757218774091775294, guid: 3ef04dc7ca8fe4e4ea149af7b2f8a721, type: 3}
+  avatar: {fileID: 2518722248592080792, guid: b2d790360038ec04a834627640a5ac19, type: 3}
+  professionIconFull: {fileID: 2119572679851325784, guid: 74c09db931bd94f4ea62698d74292730, type: 3}
+  professionIconBlack: {fileID: -7976829744534510976, guid: a01e8121291d7f143948c320e25a2947, type: 3}
+  professionIconWhite: {fileID: 2321974901445414416, guid: 6c0564eea95760146b9135e1b9f6a3ea, type: 3}
+  professionIconUI: {fileID: 4044282750168869791, guid: b8efcc14c116ada40b9bd55d5a0ab621, type: 3}

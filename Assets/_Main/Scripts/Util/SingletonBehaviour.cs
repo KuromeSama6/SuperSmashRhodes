@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Tomlyn {
+namespace SuperSmashRhodes {
 public abstract class SingletonBehaviour<T> : MonoBehaviour where T : MonoBehaviour {
     public static T inst { get; protected set; }
 

@@ -12,7 +12,8 @@ public class EntityBoundingBoxManager : MonoBehaviour {
     public int hitboxCount = 0;
     public int hurtboxCount = 0;
     public SkeletonAnimation skeleton;
-
+    
+    public EntityBoundingBox pushbox { get; private set; }
     private Entity entity;
     private List<EntityBoundingBox> boxes = new();
 
@@ -21,7 +22,7 @@ public class EntityBoundingBoxManager : MonoBehaviour {
         
         // register
         // main pushbox
-        CreateBoundingBox("pushbox", BoundingBoxType.CHR_MAIN_PUSHBOX);
+        pushbox = CreateBoundingBox("pushbox", BoundingBoxType.CHR_MAIN_PUSHBOX);
         for (int i = 0; i < hitboxCount; i++) CreateBoundingBox($"hb_{i}", BoundingBoxType.HITBOX);
         for (int i = 0; i < hurtboxCount; i++) CreateBoundingBox($"ub_{i}", BoundingBoxType.HURTBOX);
 

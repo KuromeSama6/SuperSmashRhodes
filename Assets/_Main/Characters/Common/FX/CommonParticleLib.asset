@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c678f3e4f10e4987ad51c22b83842bc3, type: 3}
+  m_Name: CommonParticleLib
+  m_EditorClassIdentifier: 
+  anyHit: {fileID: 7872588379766544261, guid: d1092ba4a89d5a2428d2e37dc74b940c, type: 3}
+  normalBlock: {fileID: 8141726812257462589, guid: 200b4a47f1c44e74d89dcb757b480353, type: 3}
+  lightHit: {fileID: 8141726812257462589, guid: a40c613ff4e5bb745975c556110388ac, type: 3}

@@ -21,6 +21,7 @@ public class State_CmnNeutral : CharacterState {
     protected override void OnStateBegin() {
         base.OnStateBegin();
         AddCancelOption(EntityStateType.ALL);
+        player.comboCounter.Reset();
     }
 
     public override IEnumerator MainRoutine() {
@@ -46,6 +47,7 @@ public class State_CmnAirNeutral : CharacterState {
     protected override void OnStateBegin() {
         base.OnStateBegin();
         AddCancelOption(EntityStateType.CHR_ATK_AIR_NORMAL | EntityStateType.CHR_ATK_SPECIAL_SUPER);
+        player.comboCounter.Reset();
     }
 
     public override IEnumerator MainRoutine() {
@@ -75,6 +77,7 @@ public class State_CmnNeutralCrouch : CharacterState {
     protected override void OnStateBegin() {
         base.OnStateBegin();
         AddCancelOption(EntityStateType.CHR_ATK_ALL);
+        player.comboCounter.Reset();
     }
 
     public override IEnumerator MainRoutine() {

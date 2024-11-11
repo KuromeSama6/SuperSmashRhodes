@@ -24,15 +24,17 @@ public abstract class Entity : MonoBehaviour {
     public EntityAnimationController animation { get; private set; }
     public Rigidbody2D rb { get; private set; }
     public EntityState activeState { get; private set; }
+    public EntityBoundingBoxManager boundingBoxManager { get; private set; }
     public Dictionary<string, EntityState> states { get; } = new();
     // Entity Stats
     public float health { get; set; }
 
-    private bool logicStarted;
+    public bool logicStarted { get; private set; }
     
     protected virtual void Start() {
         animation = GetComponent<EntityAnimationController>();
         rb = GetComponent<Rigidbody2D>();
+        boundingBoxManager = GetComponentInChildren<EntityBoundingBoxManager>();
         
         // load states
         foreach (var stateLibrary in config.stateLibraries) {
@@ -93,7 +95,7 @@ public abstract class Entity : MonoBehaviour {
         state.BeginState();
     }
 
-    public void BeginLogic() {
+    public virtual void BeginLogic() {
         logicStarted = true;
     }
 

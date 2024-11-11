@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using SuperSmashRhodes.Battle.Enums;
-using Tomlyn;
 using Unity.Cinemachine;
+using UnityEditor.Tilemaps;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 namespace SuperSmashRhodes.Battle.Game {
 public class GameManager : SingletonBehaviour<GameManager> {
@@ -17,9 +18,12 @@ public class GameManager : SingletonBehaviour<GameManager> {
 
     [Title("Scene")]
     public GameObject ground;
+    public GameObject leftWall, rightWall;
     
     [Title("Debug")]
-    public GameObject characterPrefab;
+    public GameObject p1Prefab;
+    [FormerlySerializedAs("p2Prfab")]
+    public GameObject p2Prefab;
         
     private PlayerInputManager inputManager;
     private Dictionary<int, PlayerCharacter> players = new();
@@ -30,18 +34,22 @@ public class GameManager : SingletonBehaviour<GameManager> {
         targetGroup.Targets.Clear();
         
         //TODO: Change debug
-        CreatePlayer(0, "Keyboard", Keyboard.current);
-        CreatePlayer(1, "Keyboard2", Keyboard.current);
+        CreatePlayer(0, p1Prefab, "Keyboard", Keyboard.current);
+        CreatePlayer(1, p2Prefab,"Keyboard2", Keyboard.current);
 
         yield return new WaitForFixedUpdate();
-        foreach (var player in players.Values) player.BeginLogic();
+        foreach (var player in players.Values) {
+            player.OnRoundInit();
+        }
+        foreach (var player in players.Values) {
+            player.BeginLogic();
+        }
     }
 
-    private void CreatePlayer(int index, string controlScheme, InputDevice device) {
-        var input = PlayerInput.Instantiate(characterPrefab, controlScheme: controlScheme, pairWithDevice: device);
+    private void CreatePlayer(int index, GameObject prefab, string controlScheme, InputDevice device) {
+        var input = PlayerInput.Instantiate(prefab, controlScheme: controlScheme, pairWithDevice: device);
         var player = input.GetComponent<PlayerCharacter>();
         player.Init(index);
-        player.OnRoundInit();
         player.name = "Player" + index;
         
         players[index] = player;
@@ -50,6 +58,10 @@ public class GameManager : SingletonBehaviour<GameManager> {
     
     public PlayerCharacter GetOpponent(PlayerCharacter player) {
         return players[player.playerIndex == 0 ? 1 : 0];
+    }
+
+    public PlayerCharacter GetPlayer(int index) {
+        return players[index];
     }
 }
 }

@@ -21,7 +21,8 @@ public class State_Texas_NmlAtk5S : State_Common_NmlAtk5S {
         pushback = 2f,
         comboProration = 0.95f,
         firstHitProration = 1f,
-        guardType = AttackGuardType.ALL
+        guardType = AttackGuardType.ALL,
+        freezeFrames = 2
     };
 }
 }

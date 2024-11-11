@@ -1,0 +1,402 @@
+fileFormatVersion: 2
+guid: b8efcc14c116ada40b9bd55d5a0ab621
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3243260922659875127
+    second: SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_0
+  - first:
+      213: -1895160346243698612
+    second: SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_1
+  - first:
+      213: 2075264868976963185
+    second: SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_2
+  - first:
+      213: 5977542184884822378
+    second: SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_3
+  - first:
+      213: -6253392344571724416
+    second: SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_4
+  - first:
+      213: 5974088763492168504
+    second: SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_5
+  - first:
+      213: -7575755476335955799
+    second: SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_6
+  - first:
+      213: 7409370138171844342
+    second: SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_7
+  - first:
+      213: -4637800175821812093
+    second: SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_8
+  - first:
+      213: -2188009397217058280
+    second: SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_9
+  - first:
+      213: -486307203846008141
+    second: SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_10
+  - first:
+      213: -3753356261192081509
+    second: SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_11
+  - first:
+      213: 8098324524875209161
+    second: SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_12
+  - first:
+      213: -9019608163080804524
+    second: SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_13
+  - first:
+      213: 6761158116161863619
+    second: SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_14
+  - first:
+      213: 2367706838274695701
+    second: SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_15
+  - first:
+      213: -1169102561387570333
+    second: SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_16
+  - first:
+      213: 4044282750168869791
+    second: SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_17
+  - first:
+      213: 8965273765020495929
+    second: SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_18
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: UIProfession_Warrior
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 43
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9b2e07dbbd202830800000000000000
+      internalID: 4044282750168869791
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UIProfessionIcons_0
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 0
+        width: 42
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a00608fa185e70a44a6ef72d6f38f5c9
+      internalID: -102340783
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UIProfessionIcons_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 43
+        width: 43
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 09622fb9d68f57c4caad967ef7552011
+      internalID: 150042190
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UIProfessionIcons_5
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 43
+        width: 43
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ef24dcd8ffdeb7945b908f076a629d94
+      internalID: -275785706
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UIProfessionIcons_6
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 43
+        width: 43
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6c9c51f1caeb5b24499375196f203d52
+      internalID: -1811550432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UIProfessionIcons_1
+      rect:
+        serializedVersion: 2
+        x: 87
+        y: 0
+        width: 42
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 322414e8f2e5f9343b643b8dd92d2031
+      internalID: 1094276483
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UIProfessionIcons_2
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 0
+        width: 42
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 852590b454bb25242a9d8577985ff126
+      internalID: -855615615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UIProfessionIcons_3
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 0
+        width: 42
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7ea2f62c5b221cb49aa7e0a0ec5ef665
+      internalID: 1791457876
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 7f4eaa926c0096a41aefb9d69e35cbdd
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_0: -3243260922659875127
+      SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_1: -1895160346243698612
+      SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_10: -486307203846008141
+      SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_11: -3753356261192081509
+      SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_12: 8098324524875209161
+      SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_13: -9019608163080804524
+      SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_14: 6761158116161863619
+      SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_15: 2367706838274695701
+      SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_16: -1169102561387570333
+      SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_18: 8965273765020495929
+      SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_2: 2075264868976963185
+      SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_3: 5977542184884822378
+      SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_4: -6253392344571724416
+      SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_5: 5974088763492168504
+      SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_6: -7575755476335955799
+      SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_7: 7409370138171844342
+      SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_8: -4637800175821812093
+      SpriteAtlasTexture-FILTER_ICON_PROFESSION-256x128-fmt34_9: -2188009397217058280
+      UIProfessionIcons_0: -102340783
+      UIProfessionIcons_1: 1094276483
+      UIProfessionIcons_2: -855615615
+      UIProfessionIcons_3: 1791457876
+      UIProfessionIcons_4: 150042190
+      UIProfessionIcons_5: -275785706
+      UIProfessionIcons_6: -1811550432
+      UIProfession_Warrior: 4044282750168869791
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -16,18 +16,23 @@ public abstract class AttackStateBase : CharacterState {
         phase = AttackPhase.STARTUP;
         hitsRemaining = 1;
         stateData.disableSideSwap = true;
+        player.SetZPriority();
     }
 
     public override IEnumerator MainRoutine() {
         owner.animation.AddUnmanagedAnimation(mainAnimation, false);
         phase = AttackPhase.STARTUP;
         OnStartup();
+        
+        player.ApplyGroundedFriction(frameData.startup);
         yield return frameData.startup;
 
         phase = AttackPhase.ACTIVE;
         OnActive();
+        player.ApplyGroundedFriction(frameData.active);
         yield return frameData.active;
         
+        player.ApplyGroundedFriction(frameData.active);
         phase = AttackPhase.RECOVERY;
         OnRecovery();
         yield return frameData.recovery;
@@ -68,5 +73,6 @@ public struct AttackProperties {
     public float damage, chipDamagePercentage, otgDamagePercentage, pushback;
     public float comboProration, firstHitProration;
     public AttackGuardType guardType;
+    public int freezeFrames;
 }
 }

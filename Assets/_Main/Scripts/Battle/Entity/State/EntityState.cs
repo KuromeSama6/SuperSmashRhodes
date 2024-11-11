@@ -41,6 +41,11 @@ public abstract class EntityState : NamedToken {
     public void TickState() {
         if (!active) return;
         ++frame;
+
+        // Debug.Log($"frames: {PhysicsTickManager.inst.globalFreezeFrames}"); 
+        if (PhysicsTickManager.inst.globalFreezeFrames > 0) {
+            return;
+        }
         
         // scheduled animation
         if (scheduledPauseAnimationFrames > 0) {
