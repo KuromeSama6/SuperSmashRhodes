@@ -49,6 +49,12 @@ public class EntityBoundingBoxManager : MonoBehaviour {
 
         return bb;
     }
+
+    public void DisableAll() {
+        foreach (var box in boxes) {
+            if (box != pushbox) box.collider.enabled = false;
+        }
+    }
     
 }
 }

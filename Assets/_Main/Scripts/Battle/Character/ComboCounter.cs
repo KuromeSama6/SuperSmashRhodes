@@ -17,15 +17,14 @@ public class ComboCounter : RuntimeCharacterDataRegister {
 
     }
 
-    public void AddMove(AttackStateBase move) {
+    public void RegisterAttack(IAttack move, Entity victim) {
         ++count;
-        var properties = move.attackProperties;
         
         if (count == 1) {
-            overallProration = properties.firstHitProration;
+            overallProration = move.GetFirstHitProration(victim);
         }
-        
-        appliedProration *= properties.comboProration;
+
+        appliedProration *= move.GetComboProration(victim);
     }
 
     public void Reset() {

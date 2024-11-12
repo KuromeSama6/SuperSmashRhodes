@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: chen
   chineseName: "\u9648"
-  englishName: Chen
+  englishName: Ch'en
   profession: 4
   portrait: {fileID: 3757218774091775294, guid: 3ef04dc7ca8fe4e4ea149af7b2f8a721, type: 3}
   avatar: {fileID: 2518722248592080792, guid: b2d790360038ec04a834627640a5ac19, type: 3}

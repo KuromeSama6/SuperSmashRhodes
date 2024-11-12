@@ -13,7 +13,6 @@ public abstract class EntityState : NamedToken {
     public bool active { get; private set; }
     public int frame { get; private set; }
     public abstract EntityStateType type { get; }
-    public abstract int inputPriority { get; }
     public virtual bool mayEnterState => true;
     
     private int interruptFrames;
@@ -43,9 +42,7 @@ public abstract class EntityState : NamedToken {
         ++frame;
 
         // Debug.Log($"frames: {PhysicsTickManager.inst.globalFreezeFrames}"); 
-        if (PhysicsTickManager.inst.globalFreezeFrames > 0) {
-            return;
-        }
+
         
         // scheduled animation
         if (scheduledPauseAnimationFrames > 0) {
@@ -72,7 +69,7 @@ public abstract class EntityState : NamedToken {
 
     public void EndState() {
         active = false;
-        
+        OnStateEnd();
     }
     
     private void HandleRoutineReturn(object obj) {
@@ -103,17 +100,6 @@ public abstract class EntityState : NamedToken {
         stateData.cancelFlag |= flag;
     }
 
-    protected bool RevalidateInput() {
-        return IsInputValid(GetCurrentInputBuffer());
-    }
-    
-    protected InputBuffer GetCurrentInputBuffer() {
-        if (!(owner is PlayerCharacter player))
-            throw new NotSupportedException();
-
-        return player.inputModule.localBuffer;
-    }
-
     protected void CancelInto(string name) {
         if (!owner.states.TryGetValue(name, out var state))
             throw new KeyNotFoundException($"State {name} not found");
@@ -128,17 +114,29 @@ public abstract class EntityState : NamedToken {
     
     // Virtual methods / Events
     protected virtual void OnStateBegin() { }
+    protected virtual void OnStateEnd() {}
     // Abstract methods
-    public abstract bool IsInputValid(InputBuffer buffer);
     public abstract IEnumerator MainRoutine();
 }
 
 public abstract class CharacterState : EntityState {
     public PlayerCharacter player { get; private set; }
     protected PlayerCharacter opponent => player.opponent;
+    public abstract int inputPriority { get; }
+
+    protected bool RevalidateInput() {
+        return IsInputValid(GetCurrentInputBuffer());
+    }
     
+    protected InputBuffer GetCurrentInputBuffer() {
+        if (!(owner is PlayerCharacter player))
+            throw new NotSupportedException();
+
+        return player.inputModule.localBuffer;
+    }
     public CharacterState(Entity owner) : base(owner) {
         player = (PlayerCharacter)owner;
     }
+    public abstract bool IsInputValid(InputBuffer buffer);
 }
 }

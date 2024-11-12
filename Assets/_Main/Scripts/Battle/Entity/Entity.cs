@@ -19,6 +19,7 @@ public abstract class Entity : MonoBehaviour {
     [Title("References")]
     public Transform rotationContainer;
     public EntityConfiguration config;
+    public List<EntityAssetLibrary> assetLibraries = new();
     
     public EntitySide side { get; protected set; } = EntitySide.LEFT;
     public EntityAnimationController animation { get; private set; }
@@ -26,15 +27,18 @@ public abstract class Entity : MonoBehaviour {
     public EntityState activeState { get; private set; }
     public EntityBoundingBoxManager boundingBoxManager { get; private set; }
     public Dictionary<string, EntityState> states { get; } = new();
+    public EntityAudioManager audioManager { get; private set; }
     // Entity Stats
     public float health { get; set; }
 
     public bool logicStarted { get; private set; }
+    public EntityAssetLibrary assetLibrary { get; private set; }
     
     protected virtual void Start() {
         animation = GetComponent<EntityAnimationController>();
         rb = GetComponent<Rigidbody2D>();
         boundingBoxManager = GetComponentInChildren<EntityBoundingBoxManager>();
+        audioManager = GetComponent<EntityAudioManager>();
         
         // load states
         foreach (var stateLibrary in config.stateLibraries) {
@@ -46,6 +50,12 @@ public abstract class Entity : MonoBehaviour {
             }
         }
         
+        // merge asset libs
+        assetLibrary = ScriptableObject.CreateInstance<EntityAssetLibrary>();
+        foreach (var lib in assetLibraries) {
+            assetLibrary.MergeFrom(lib);
+        }
+
         // Debug.Log($"Loaded states {string.Join(", ", states.Keys)}");
     }
 
@@ -60,6 +70,10 @@ public abstract class Entity : MonoBehaviour {
     protected virtual void FixedUpdate() {
         if (!logicStarted) return;
         
+        if (PhysicsTickManager.inst.globalFreezeFrames > 0) {
+            return;
+        }
+        
         // state
         {
             EnsureState();
@@ -69,6 +83,8 @@ public abstract class Entity : MonoBehaviour {
                 EnsureState(); 
             }
         }
+
+        OnTick();
     }
 
     public void EnsureState() {
@@ -97,18 +113,26 @@ public abstract class Entity : MonoBehaviour {
 
     public virtual void BeginLogic() {
         logicStarted = true;
+        
     }
 
-    public virtual void HandleEntityInteraction(EntityBoundingBox from, EntityBoundingBox to) {
+    public virtual void HandleEntityInteraction(EntityBoundingBox from, EntityBoundingBox to, EntityBBInteractionData data) {
+        if (from.owner == to.owner) return;
+        
         ulong fromType = (ulong)from.type;
         ulong toType = (ulong)to.type;
+        if (BitUtil.CheckFlag(fromType, (ulong)BoundingBoxType.HURTBOX) && BitUtil.CheckFlag(toType, (ulong)BoundingBoxType.HURTBOX)) {
+            return;
+        }
         
         // TODO Clash Counters
         
+        // Debug.Log($"from {from.name} {fromType} {from.owner} to {to.name} {toType} {to.owner}");
+        
         // Hit
         if (BitUtil.CheckFlag(fromType, (ulong)BoundingBoxType.HITBOX) && BitUtil.CheckFlag(toType, (ulong)BoundingBoxType.HURTBOX)) {
-            bool success = OnOutboundHit(to.owner);
-            if (success) to.owner.OnInboundHit(this);
+            bool success = OnOutboundHit(to.owner, data);
+            if (success) to.owner.OnInboundHit(this, data);
         }
         
     }
@@ -117,10 +141,11 @@ public abstract class Entity : MonoBehaviour {
     public virtual void OnRoundInit() {
         health = config.health;
     }
-    protected virtual bool OnOutboundHit(Entity victim) {
+    protected virtual void OnTick() {}
+    protected virtual bool OnOutboundHit(Entity victim, EntityBBInteractionData data) {
         return false;
     }
-    protected virtual void OnInboundHit(Entity attacker) {
+    protected virtual void OnInboundHit(Entity attacker, EntityBBInteractionData data) {
         
     }
     

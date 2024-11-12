@@ -14,15 +14,13 @@ public class State_Texas_NmlAtk5S : State_Common_NmlAtk5S {
         onHit = +4,
         onBlock = +1,
     };
-    public override AttackProperties attackProperties => new() {
-        damage = 36,
-        chipDamagePercentage = 0,
-        otgDamagePercentage = 0,
-        pushback = 2f,
-        comboProration = 0.95f,
-        firstHitProration = 1f,
-        guardType = AttackGuardType.ALL,
-        freezeFrames = 2
-    };
+
+    public override float GetUnscaledDamage(Entity to) {
+        return 36f;
+    }
+
+    public override string GetAttackNormalSfx() {
+        return "battle_generic_atk_sword1";
+    }
 }
 }

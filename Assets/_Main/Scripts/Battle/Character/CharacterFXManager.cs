@@ -1,14 +1,17 @@
 ﻿using System;
 using Sirenix.OdinInspector;
 using SuperSmashRhodes.Battle.Enums;
+using SuperSmashRhodes.Util;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.FX {
 public class CharacterFXManager : MonoBehaviour {
     [Title("References")]
-    public CharacterParticleLibrary particleLibrary;
+    public CharacterFXLibrary fxLibrary;
+    [Title("Sockets")]
+    public UDictionary<CharacterFXSocketType, Transform> sockets = new();
     
-    private Transform particleContainer;
+    private Transform particleContainer; 
     private PlayerCharacter player;
 
     private void Start() {
@@ -19,39 +22,55 @@ public class CharacterFXManager : MonoBehaviour {
         particleContainer.transform.localPosition = Vector3.zero;
     }
 
-    public void PlayParticleVFX(GameObject prefab, ParticleTargetType type) {
-        var go = Instantiate(prefab);
-        var height = 1f;
+    public void PlayGameObjectFX(GameObject prefab, CharacterFXSocketType type, Vector3 offset = default, Vector3 direction = default) {
+        var socket = sockets[type];
+        var go = Instantiate(prefab, socket);
         
-        switch (type) {
-            case ParticleTargetType.INTERACTION:
-                float direction = player.side == EntitySide.LEFT ? 1 : -1;
-                go.transform.position = player.transform.position + new Vector3(player.pushboxManager.pushboxSize * direction, height, 0);
-                break;
-            
-            default:
-                go.transform.position = player.transform.position + new Vector3(0, height, 0);
-                break;
-        }
-        
+        go.transform.localPosition = Vector3.zero + offset;
+        go.transform.eulerAngles += direction;
         // print(go.GetComponent<MeshRenderer>());
         
     }
 
-    public void NotifyHit() {
-        PlayParticleVFX(particleLibrary.anyHit, ParticleTargetType.INTERACTION);
-        PlayParticleVFX(particleLibrary.lightHit, ParticleTargetType.INTERACTION);
-    }
-    
-    public void NotifyBlock() {
-        PlayParticleVFX(particleLibrary.anyHit, ParticleTargetType.INTERACTION);
-        PlayParticleVFX(particleLibrary.normalBlock, ParticleTargetType.INTERACTION);
+    public void NotifyHit(StandardAttackResult result) {
+        var attack = result.attack;
+        int level = attack.GetAttackLevel(result.to);
+        bool isLargeHit = level >= 3;
+
+        if (isLargeHit) {
+            PlayGameObjectFX(fxLibrary.particleOnAnyHit, CharacterFXSocketType.DIRECTIONAL_SELF);
+            SimpleCameraShakePlayer.inst.Play(fxLibrary.cameraShakeOnHitMedium);
+        } else {
+            
+            SimpleCameraShakePlayer.inst.Play(fxLibrary.cameraShakeOnHitSmall);
+        }
+        
+        switch (result.result) {
+            case AttackResult.BLOCKED:
+                PlayGameObjectFX(fxLibrary.particleOnBlock, CharacterFXSocketType.DIRECTIONAL_SELF);
+                PlayGameObjectFX(fxLibrary.managedAttackBlock, CharacterFXSocketType.DIRECTIONAL_SELF);
+                break;
+            
+            case AttackResult.HIT:
+                if (isLargeHit) {
+                    PlayGameObjectFX(fxLibrary.particleOnHitMedium, CharacterFXSocketType.DIRECTIONAL_SELF_TAIL);
+                    PlayGameObjectFX(fxLibrary.particleOnLargerHitDirectional, 
+                                     CharacterFXSocketType.DIRECTIONAL_SELF_TAIL, 
+                                     new(-0, 0, 0),  
+                                     new(0, -90, 0));
+                } else {
+                    PlayGameObjectFX(fxLibrary.particleOnHitSmall, CharacterFXSocketType.DIRECTIONAL_SELF);
+                }
+                break;
+        }
+        
     }
     
 }
 
-public enum ParticleTargetType {
+public enum CharacterFXSocketType {
     SELF,
-    INTERACTION
+    DIRECTIONAL_SELF,
+    DIRECTIONAL_SELF_TAIL 
 }
 }

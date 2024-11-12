@@ -20,8 +20,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f8922546a5ecdea4fa97024c6db1751b, type: 2}
   health: 440
   defenseModifier: 1
-  walkSpeed: 1.5
-  backwalkSpeed: 0.7
+  walkSpeed: 1
+  backwalkSpeed: 0.8
   prejump: 4
   jumpDuration: 41
   jumpVelocity: 9

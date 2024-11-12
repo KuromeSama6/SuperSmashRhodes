@@ -27,7 +27,7 @@ public class State_CmnMoveForward : CharacterState {
     }
 
     public override IEnumerator MainRoutine() {
-        owner.animation.AddUnmanagedAnimation("std_walk", true, .2f);
+        owner.animation.AddUnmanagedAnimation("std_walk", true);
         
         while (RevalidateInput()) {
             owner.rb.AddForceX(PhysicsUtil.NormalizeRelativeDirecionalForce(50, owner.side));
@@ -59,7 +59,7 @@ public class State_CmnMoveBackward : CharacterState {
     }
 
     public override IEnumerator MainRoutine() {
-        owner.animation.AddUnmanagedAnimation("std_walk", true, .2f);
+        owner.animation.AddUnmanagedAnimation("std_walk", true);
         
         while (RevalidateInput()) {
             owner.rb.AddForceX(PhysicsUtil.NormalizeRelativeDirecionalForce(-50, owner.side));

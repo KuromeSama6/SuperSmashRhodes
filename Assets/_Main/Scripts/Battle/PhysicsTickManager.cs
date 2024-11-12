@@ -36,7 +36,7 @@ public class PhysicsTickManager : SingletonBehaviour<PhysicsTickManager> {
     }
     
     public void Schedule(int delay, int freezeFrames) {
-        // Debug.Log("schedule, " + freezeFrames );
+        // Debug.Log("schedule, " + freezeFrames);
         scheduledDelay = delay;
         scheduledFreezeFrames = freezeFrames;
     }

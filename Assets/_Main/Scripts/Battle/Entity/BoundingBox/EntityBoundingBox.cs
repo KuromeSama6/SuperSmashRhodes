@@ -8,7 +8,7 @@ public class EntityBoundingBox : MonoBehaviour {
     public Entity owner { get; set; }
     
     private BoundingBoxFollower bbFollower;
-    private PolygonCollider2D collider;
+    public PolygonCollider2D collider { get; private set; }
 
     private void Start() {
         bbFollower = GetComponent<BoundingBoxFollower>();
@@ -44,8 +44,12 @@ public class EntityBoundingBox : MonoBehaviour {
         if (bb == null || bb.owner == owner) return;
 
         // Debug.Log($"{owner.name}: {name} hit {bb}");
-        owner.HandleEntityInteraction(this, bb);
+         
+        owner.HandleEntityInteraction(this, bb, new() {
+            point = other.ClosestPoint(transform.position)
+        });
     }
+    
 
 }
 
@@ -56,5 +60,9 @@ public enum BoundingBoxType {
     HURTBOX = 1 << 2,
     
     CHR_MAIN_PUSHBOX = PUSHBOX | HURTBOX
+}
+
+public struct EntityBBInteractionData {
+    public Vector2 point;
 }
 }

@@ -16,13 +16,13 @@ namespace SuperSmashRhodes.Battle {
 public class PlayerCharacter : Entity {
     [Title("References")]
     public CharacterDescriptor descriptor;
-    
     public int playerIndex { get; private set; }
     public float moveDirection { get; private set; }
     public bool isDashing { get; private set; }
     public bool isCrouching { get; private set; }
     public bool airborne { get; set; }
     public PlayerCharacter opponent => GameManager.inst.GetOpponent(this);
+    public float opponentDistance => Mathf.Abs(transform.position.x - opponent.transform.position.x);
     public PlayerInputModule inputModule { get; private set; }
     public ComboCounter comboCounter { get; private set; }
     public FrameDataRegister frameData { get; private set; }
@@ -54,8 +54,8 @@ public class PlayerCharacter : Entity {
         base.Update();
     }
 
-    protected override void FixedUpdate() {
-        base.FixedUpdate();
+    protected override void OnTick() {
+        base.OnTick();
         frameData.Tick();
         UpdateInput();
         UpdateFacing();
@@ -66,14 +66,14 @@ public class PlayerCharacter : Entity {
             rb.linearVelocityX = Mathf.Lerp(rb.linearVelocityX, 0, Time.fixedDeltaTime * 20f * groundedFrictionAlpha);
         }
     }
-    
+
     private void UpdateInput() {
         if (inputModule.localBuffer == null) return;
         
         // get priority sorted list
         var li = (from state in states.Values
-            orderby state.inputPriority descending
-            select state).ToList();
+            orderby ((CharacterState)state).inputPriority descending
+            select (CharacterState)state).ToList();
         
         foreach (var state in li) {
             if (state == activeState) continue;
@@ -115,11 +115,19 @@ public class PlayerCharacter : Entity {
     }
     
     public void ApplyGroundedFriction(int frames = 1) {
+        return;
         applyGroundedFrictionFrames = frames;
+    }
+
+    public void ApplyGroundedFrictionImmediate() {
+        applyGroundedFrictionFrames = 0;
+        rb.linearVelocityX = 0f;
     }
     
     protected override EntityState GetDefaultState() {
-        if (!EntityStateRegistry.inst.CreateInstance("CmnNeutral", out var ret, this))
+        string name = inputModule.localBuffer.thisFrame.HasInput(InputType.DOWN, InputFrameType.HELD) ? "CmnNeutralCrouch" : "CmnNeutral";
+        
+        if (!EntityStateRegistry.inst.CreateInstance(name, out var ret, this))
             throw new Exception("Default state [CmnNeutral] not assigned");
         
         return ret;
@@ -143,8 +151,8 @@ public class PlayerCharacter : Entity {
         if (playerIndex == 0) SetZPriority();
     }
 
-    protected override bool OnOutboundHit(Entity victim) {
-        base.OnOutboundHit(victim);
+    protected override bool OnOutboundHit(Entity victim, EntityBBInteractionData data) {
+        base.OnOutboundHit(victim, data);
 
         if (victim is PlayerCharacter player) {
             return ProcessOutboundHit(player);
@@ -154,13 +162,17 @@ public class PlayerCharacter : Entity {
         return false;
     }
 
-    protected override void OnInboundHit(Entity attacker) {
-        base.OnInboundHit(attacker);
-        if (attacker is PlayerCharacter player) ProcessInboundHit(player);
+    protected override void OnInboundHit(Entity attacker, EntityBBInteractionData data) {
+        base.OnInboundHit(attacker, data);
+
+        var state = attacker.activeState;
+        if (state is IAttack attack) {
+            ApplyStandardAttack(attacker, attack, data);
+        }
     }
 
     private bool ProcessOutboundHit(PlayerCharacter to) {
-        if (!(activeState is AttackStateBase move)) {
+        if (!(activeState is CharacterAttackStateBase move)) {
             // invalid attack state1
             return false;
         }
@@ -170,22 +182,20 @@ public class PlayerCharacter : Entity {
         // reject if move is not active
         if (move.phase != AttackPhase.ACTIVE) return false;
         
-        move.OnHit(to);
+        move.OnContact(to);
         return true;
     }
     
-    private void ProcessInboundHit(PlayerCharacter from) {
+    private void ApplyStandardAttack(Entity from, IAttack attack, EntityBBInteractionData data) {
         // called same frame as OutboundHit
-        // get state of other player 
-        var state = from.activeState;
-        if (!(state is AttackStateBase move)) {
-            // invalid attack state
-            return;  
-        }
-
+        
         // reject if move has no active frames
+        if (!attack.MayHit(this)) {
+            return;
+        }
+        
         // hit/guard 
-        var blockType = move.attackProperties.guardType;
+        var blockType = attack.GetGuardType(this);
         bool blocked = false;
 
         // neutral check
@@ -205,47 +215,66 @@ public class PlayerCharacter : Entity {
         }
         
         // register hit
-        
-        int framesRemaining = move.frameData.total - move.frame - 1;
+        var frameData = attack.GetFrameData(this);
+        int framesRemaining = frameData.total - attack.GetCurrentFrame(this) - 1;
         // Debug.Log($"inbound hit 1, neutral: {neutral}, blockheld: {blockHeld}, blockType: {blockType} blocked: {blocked}, framesRemaining: {framesRemaining}, blockstun {framesRemaining + move.frameData.onBlock}");
+        ApplyGroundedFriction();
         if (blocked) {
-            frameData.blockstunFrames = framesRemaining + move.frameData.onBlock;
+            this.frameData.blockstunFrames = framesRemaining + frameData.onBlock;
             BeginState(crouching ? "CmnBlockStunCrouch" : "CmnBlockStun");
-            fxManager.NotifyBlock();
+            attack.OnBlock(this);
             
         } else {
-            frameData.hitstunFrames = framesRemaining + move.frameData.onHit;
+            this.frameData.hitstunFrames = framesRemaining + frameData.onHit;
             BeginState(crouching ? "CmnHitStunGroundCrouch" : "CmnHitStunGround"); 
-            comboCounter.AddMove(move);
-            fxManager.NotifyHit();
+            comboCounter.RegisterAttack(attack, this);
+            attack.OnHit(this);
             
             //TODO: Damage logic
-            health -= move.attackProperties.damage * comboCounter.finalScale;
+            health -= attack.GetUnscaledDamage(this) * comboCounter.finalScale;
         }
+
+        StandardAttackResult result = new() {
+            attack = attack,
+            result = blocked ? AttackResult.BLOCKED : AttackResult.HIT,
+            from = from,
+            to = this,
+            interactionData = data
+        };
         
-        ApplyCarriedPushback(move.attackProperties.pushback);
+        fxManager.NotifyHit(result);
+        ApplyCarriedPushback(attack.GetPushback(this, airborne));
         
         // apply freeze frames
-        PhysicsTickManager.inst.Schedule(4, move.attackProperties.freezeFrames);
+        if (comboCounter.count < 2) {
+            PhysicsTickManager.inst.Schedule(4, attack.GetFreezeFrames(this));
+        }
         
+        attack.OnHitProcessed(this);
     }
 
     private void OnGroundContact() {
         if (airborne) airborne = false;
     }
 
-    private void ApplyCarriedPushback(float amount) {
+    private void ApplyCarriedPushback(Vector2 vec) {
         float direction = side == EntitySide.LEFT ? -1 : 1;
         
         if (pushboxManager.atWall) {
-            opponent.rb.AddForceX(amount * -direction, ForceMode2D.Impulse);
+            opponent.rb.AddForceX(vec.x * -direction, ForceMode2D.Impulse);
             opponent.groundedFrictionAlpha = 0;
             // Debug.Log("add opponent force");
             
         } else {
-            rb.AddForceX(amount * direction, ForceMode2D.Impulse);
+            rb.AddForceX(vec.x * direction, ForceMode2D.Impulse);
             groundedFrictionAlpha = 0;
         }
+        
+        // y force
+        // Debug.Log(vec);
+        rb.linearVelocityY = 0;
+        rb.AddForceY(vec.y, ForceMode2D.Impulse);
+        
     }
     
 }

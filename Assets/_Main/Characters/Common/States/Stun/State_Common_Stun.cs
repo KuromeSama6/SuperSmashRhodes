@@ -21,7 +21,7 @@ public abstract class State_Common_Stun : CharacterState {
 
     public override IEnumerator MainRoutine() {
         while (frames > 0) {
-            if (!player.airborne) player.ApplyGroundedFriction();
+            player.ApplyGroundedFriction();
             yield return 1;
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using MoreMountains.Tools;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -33,7 +34,8 @@ public class AppDaemon : PersistentSingletonBehaviour<AppDaemon> {
         
         File.WriteAllText(logFilePath, string.Empty);
         Application.logMessageReceived += HandleLog;
-        
+
+        MMDebug.SetDebugLogsEnabled(false);
     }
 
     private static void HandleLog(string logString, string stackTrace, LogType type) {
