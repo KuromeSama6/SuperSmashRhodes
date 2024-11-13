@@ -78,14 +78,16 @@ public class PlayerCharacter : Entity {
         foreach (var state in li) {
             if (state == activeState) continue;
             
-            if (state.IsInputValid(inputModule.localBuffer) && state.mayEnterState) {
-                // check cancel state
-                if (activeState.stateData.cancelOptions.Contains(state) || BitUtil.CheckFlag((ulong)activeState.stateData.cancelFlag, (ulong)state.type)) {
-                    // state is valid
+            if (activeState.stateData.cancelOptions.Contains(state) || BitUtil.CheckFlag((ulong)activeState.stateData.cancelFlag, (ulong)state.type)) {
+                // state is valid
+                if (state.IsInputValid(inputModule.localBuffer) && state.mayEnterState) {
+                    // check cancel state
+                
                     BeginState(state);
                     break;
                 }
             }
+            
         }
         
     }
@@ -151,7 +153,7 @@ public class PlayerCharacter : Entity {
         if (playerIndex == 0) SetZPriority();
     }
 
-    protected override bool OnOutboundHit(Entity victim, EntityBBInteractionData data) {
+    protected override IAttack OnOutboundHit(Entity victim, EntityBBInteractionData data) {
         base.OnOutboundHit(victim, data);
 
         if (victim is PlayerCharacter player) {
@@ -159,64 +161,48 @@ public class PlayerCharacter : Entity {
         }
         
         //TODO: Others 
-        return false;
+        return null;
     }
 
-    protected override void OnInboundHit(Entity attacker, EntityBBInteractionData data) {
-        base.OnInboundHit(attacker, data);
-
-        var state = attacker.activeState;
-        if (state is IAttack attack) {
-            ApplyStandardAttack(attacker, attack, data);
-        }
+    protected override void OnInboundHit(AttackData data) {
+        base.OnInboundHit(data);
+        ApplyStandardAttack(data);
     }
 
-    private bool ProcessOutboundHit(PlayerCharacter to) {
+    private IAttack ProcessOutboundHit(PlayerCharacter to) {
         if (!(activeState is CharacterAttackStateBase move)) {
             // invalid attack state1
-            return false;
+            return null;
         }
         
         // reject if move has no active frames
-        if (!move.hasActiveFrames) return false;
+        if (!move.hasActiveFrames) return null;
         // reject if move is not active
-        if (move.phase != AttackPhase.ACTIVE) return false;
+        if (move.phase != AttackPhase.ACTIVE) return null;
         
-        move.OnContact(to);
-        return true;
+        // move.OnContact(to);
+        return move;
     }
     
-    private void ApplyStandardAttack(Entity from, IAttack attack, EntityBBInteractionData data) {
+    private void ApplyStandardAttack(AttackData data) {
         // called same frame as OutboundHit
+        var attack = data.attack;
         
         // reject if move has no active frames
         if (!attack.MayHit(this)) {
             return;
         }
         
+        attack.OnContact(this);
         // hit/guard 
-        var blockType = attack.GetGuardType(this);
-        bool blocked = false;
+        bool blocked = !CheckAttackHit(data);
 
         // neutral check
-        bool neutral = BitUtil.CheckFlag((ulong)activeState.type, (ulong)EntityStateType.CHR_NEUTRAL) || activeState is State_CmnMoveBackward;
-        bool crouching = activeState is State_CmnNeutralCrouch || activeState is State_CmnBlockStunCrouch;
-        bool blockHeld = inputModule.localBuffer.thisFrame.HasInput(InputType.BACKWARD, InputFrameType.HELD);
-
-        AttackGuardType currentGuardType = crouching ? AttackGuardType.CROUCHING : AttackGuardType.STANDING;
-        
-        if (blockType == AttackGuardType.THROW) {
-            throw new NotImplementedException("Throw guard not implemented");
-            
-        } else if (blockType != AttackGuardType.NONE) {
-            if (neutral && blockHeld && BitUtil.CheckFlag((ulong)blockType, (ulong)currentGuardType)) {
-                blocked = true; 
-            }
-        }
+        bool crouching = activeState is State_CmnNeutralCrouch || activeState is State_CmnBlockStunCrouch || activeState is State_CmnHitStunCrouch;
         
         // register hit
         var frameData = attack.GetFrameData(this);
-        int framesRemaining = frameData.total - attack.GetCurrentFrame(this) - 1;
+        int framesRemaining = frameData.active + frameData.recovery;
         // Debug.Log($"inbound hit 1, neutral: {neutral}, blockheld: {blockHeld}, blockType: {blockType} blocked: {blocked}, framesRemaining: {framesRemaining}, blockstun {framesRemaining + move.frameData.onBlock}");
         ApplyGroundedFriction();
         if (blocked) {
@@ -225,7 +211,7 @@ public class PlayerCharacter : Entity {
             attack.OnBlock(this);
             
         } else {
-            this.frameData.hitstunFrames = framesRemaining + frameData.onHit;
+            this.frameData.SetHitstunFrames(framesRemaining + frameData.onHit, Mathf.Max(frameData.total - attack.GetCurrentFrame(this), 0));
             BeginState(crouching ? "CmnHitStunGroundCrouch" : "CmnHitStunGround"); 
             comboCounter.RegisterAttack(attack, this);
             attack.OnHit(this);
@@ -234,25 +220,45 @@ public class PlayerCharacter : Entity {
             health -= attack.GetUnscaledDamage(this) * comboCounter.finalScale;
         }
 
-        StandardAttackResult result = new() {
-            attack = attack,
-            result = blocked ? AttackResult.BLOCKED : AttackResult.HIT,
-            from = from,
-            to = this,
-            interactionData = data
-        };
-        
-        fxManager.NotifyHit(result);
+        data.result = blocked ? AttackResult.BLOCKED : AttackResult.HIT;
+        fxManager.NotifyHit(data);
         ApplyCarriedPushback(attack.GetPushback(this, airborne));
         
         // apply freeze frames
-        if (comboCounter.count < 2) {
-            PhysicsTickManager.inst.Schedule(4, attack.GetFreezeFrames(this));
-        }
         
-        attack.OnHitProcessed(this);
+        PhysicsTickManager.inst.Schedule(4, attack.GetFreezeFrames(this));
     }
 
+    private bool CheckAttackHit(AttackData data) {
+        var attack = data.attack;
+        
+        var blockType = attack.GetGuardType(this);
+        bool crouching = activeState is State_CmnNeutralCrouch || activeState is State_CmnBlockStunCrouch;
+        bool blockHeld = inputModule.localBuffer.thisFrame.HasInput(InputType.BACKWARD, InputFrameType.HELD);
+
+        AttackGuardType currentGuardType = crouching ? AttackGuardType.CROUCHING : AttackGuardType.STANDING;
+        
+        if (blockType == AttackGuardType.THROW) {
+            throw new NotImplementedException("Throw guard not implemented");
+        }
+
+        // incorrect block
+        if (!BitUtil.CheckFlag((ulong)blockType, (ulong)currentGuardType))
+            return true;
+        
+        // blockstun carryover
+        if (BitUtil.CheckFlag((ulong)activeState.type, (ulong)EntityStateType.CHR_BLOCKSTUN))
+            return false;
+
+        // neutral
+        if (blockHeld && (BitUtil.CheckFlag((ulong)activeState.type, (ulong)EntityStateType.CHR_NEUTRAL) || activeState is State_CmnMoveBackward)) {
+            return false;
+        }
+        
+
+        return true;
+    }
+    
     private void OnGroundContact() {
         if (airborne) airborne = false;
     }

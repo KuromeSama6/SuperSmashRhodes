@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
-public struct StandardAttackResult {
+public class AttackData {
     public EntityBBInteractionData interactionData;
     public IAttack attack;
     public Entity from;
@@ -10,6 +10,7 @@ public struct StandardAttackResult {
 }
 
 public enum AttackResult {
+    PENDING,
     HIT,
     BLOCKED
 }

@@ -50,7 +50,7 @@ public class RotaryCounterDigit : MonoBehaviour {
             
         } else current = target;
 
-        var y = height / 11f * current;
+        var y = height / 11f * (10 - current);
         var pos = container.anchoredPosition;
         pos.y = y;
         container.anchoredPosition = pos;

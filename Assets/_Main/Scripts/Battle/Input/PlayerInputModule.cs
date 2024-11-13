@@ -15,7 +15,7 @@ public class PlayerInputModule : MonoBehaviour {
     
     private void Start() {
         input = GetComponent<PlayerInput>();
-        localBuffer = new(30);
+        localBuffer = new(120);
         playerCharacter = GetComponent<PlayerCharacter>();
         
     }
@@ -52,6 +52,8 @@ public class PlayerInputModule : MonoBehaviour {
             }
 
             localBuffer.PushAndTick(toPush.ToArray());
+            // if (PhysicsTickManager.inst.globalFreezeFrames > 0) localBuffer.PushToCurrentFrame(toPush.ToArray());
+            // else localBuffer.PushAndTick(toPush.ToArray());
         }
     }
     
@@ -71,6 +73,10 @@ public class PlayerInputModule : MonoBehaviour {
 
     public void OnSlash(InputValue input) {
         thisFrameInputs.Add(new (InputType.S, InputFrameType.PRESSED));
+    }
+
+    public void OnHeavySlash(InputValue input) {
+        thisFrameInputs.Add(new(InputType.HS, InputFrameType.PRESSED));
     }
     
 }

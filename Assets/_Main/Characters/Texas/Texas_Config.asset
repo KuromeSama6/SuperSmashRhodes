@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fb1a6f815c33ad4f96f57c0dd768172, type: 3}
   m_Name: Texas_Config
   m_EditorClassIdentifier: 
-  id: chr_texas
+  id: texas
   prettyName: "\u5FB7\u514B\u8428\u65AF"
+  tokenName: Texas
   entityType: 0
   stateLibraries:
   - {fileID: 11400000, guid: eec0401451ff3ff418a2bfd24c185f23, type: 2}
-  - {fileID: 11400000, guid: f8922546a5ecdea4fa97024c6db1751b, type: 2}
+  - {fileID: 11400000, guid: 62afd55e79e5d4544b0c20ad2a057de0, type: 2}
   health: 440
   defenseModifier: 1
   walkSpeed: 1

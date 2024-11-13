@@ -9,7 +9,7 @@ namespace SuperSmashRhodes.Battle {
 [CreateAssetMenu(fileName = "EntityConfiguration", menuName = "Battle/Entity Configuration")]
 public class EntityConfiguration : ScriptableObject {
     [BoxGroup("Basic Configuration")]
-    public string id, prettyName;
+    public string id, prettyName, tokenName;
     [BoxGroup("Basic Configuration")]
     public EntityType entityType;
 

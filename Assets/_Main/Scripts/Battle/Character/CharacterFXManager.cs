@@ -32,10 +32,10 @@ public class CharacterFXManager : MonoBehaviour {
         
     }
 
-    public void NotifyHit(StandardAttackResult result) {
-        var attack = result.attack;
-        int level = attack.GetAttackLevel(result.to);
-        bool isLargeHit = level >= 3;
+    public void NotifyHit(AttackData data) {
+        var attack = data.attack;
+        int level = attack.GetAttackLevel(data.to);
+        bool isLargeHit = level >= 2;
 
         if (isLargeHit) {
             PlayGameObjectFX(fxLibrary.particleOnAnyHit, CharacterFXSocketType.DIRECTIONAL_SELF);
@@ -45,7 +45,7 @@ public class CharacterFXManager : MonoBehaviour {
             SimpleCameraShakePlayer.inst.Play(fxLibrary.cameraShakeOnHitSmall);
         }
         
-        switch (result.result) {
+        switch (data.result) {
             case AttackResult.BLOCKED:
                 PlayGameObjectFX(fxLibrary.particleOnBlock, CharacterFXSocketType.DIRECTIONAL_SELF);
                 PlayGameObjectFX(fxLibrary.managedAttackBlock, CharacterFXSocketType.DIRECTIONAL_SELF);

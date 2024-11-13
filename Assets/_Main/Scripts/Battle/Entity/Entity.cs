@@ -33,6 +33,8 @@ public abstract class Entity : MonoBehaviour {
 
     public bool logicStarted { get; private set; }
     public EntityAssetLibrary assetLibrary { get; private set; }
+
+    private List<AttackData> queuedInboundAttacks = new();
     
     protected virtual void Start() {
         animation = GetComponent<EntityAnimationController>();
@@ -43,10 +45,14 @@ public abstract class Entity : MonoBehaviour {
         // load states
         foreach (var stateLibrary in config.stateLibraries) {
             foreach (var name in stateLibrary.states) {
-                if (!EntityStateRegistry.inst.CreateInstance(name, out var state, this))
-                   throw new Exception($"State {name} not found");
+                string prefix = stateLibrary.useTokenNameAsPrefix ? (config.tokenName + "_") : stateLibrary.prefix;
+                var tokenName = prefix + name;
+                if (!EntityStateRegistry.inst.CreateInstance(tokenName, out var state, this)) {
+                    Debug.LogError($"State {tokenName} not found");
+                    continue;
+                }
                
-                states[name] = state;
+                states[tokenName] = state;
             }
         }
         
@@ -76,7 +82,16 @@ public abstract class Entity : MonoBehaviour {
         
         // state
         {
+            HandleInboundAttacks();
             EnsureState();
+            
+            if (this is PlayerCharacter player) {
+                if (player.playerIndex == 0) {
+                    // Debug.Log($"P0 {activeState.id}#{activeState.frame} P1 {player.opponent.activeState.id}#{player.opponent.activeState.frame} stun {player.opponent.frameData.hitstunFrames}");
+
+                }
+            }
+            
             activeState.TickState();
             if (!activeState.active) {
                 activeState = null;
@@ -85,6 +100,13 @@ public abstract class Entity : MonoBehaviour {
         }
 
         OnTick();
+    }
+
+    private void HandleInboundAttacks() {
+        foreach (var attack in queuedInboundAttacks) {
+            OnInboundHit(attack);
+        }
+        queuedInboundAttacks.Clear();
     }
 
     public void EnsureState() {
@@ -131,10 +153,23 @@ public abstract class Entity : MonoBehaviour {
         
         // Hit
         if (BitUtil.CheckFlag(fromType, (ulong)BoundingBoxType.HITBOX) && BitUtil.CheckFlag(toType, (ulong)BoundingBoxType.HURTBOX)) {
-            bool success = OnOutboundHit(to.owner, data);
-            if (success) to.owner.OnInboundHit(this, data);
+            var ret = OnOutboundHit(to.owner, data);
+            if (ret != null) {
+                // to.owner.OnInboundHit(this, data);
+                to.owner.QueueInboundAttack(new() {
+                    attack = ret,
+                    from = this,
+                    to = to.owner,
+                    interactionData = data,
+                    result = AttackResult.PENDING
+                });
+            }
         }
         
+    }
+
+    public void QueueInboundAttack(AttackData attack) {
+        queuedInboundAttacks.Add(attack);
     }
     
     // Implemented methods
@@ -142,10 +177,10 @@ public abstract class Entity : MonoBehaviour {
         health = config.health;
     }
     protected virtual void OnTick() {}
-    protected virtual bool OnOutboundHit(Entity victim, EntityBBInteractionData data) {
-        return false;
+    protected virtual IAttack OnOutboundHit(Entity victim, EntityBBInteractionData data) {
+        return null;
     }
-    protected virtual void OnInboundHit(Entity attacker, EntityBBInteractionData data) {
+    protected virtual void OnInboundHit(AttackData attack) {
         
     }
     

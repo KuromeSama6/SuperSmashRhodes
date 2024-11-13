@@ -1,4 +1,6 @@
 ﻿using System.Collections;
+using JetBrains.Annotations;
+using SuperSmashRhodes.Input;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.State.Implementation {
@@ -17,6 +19,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         hitsRemaining = 1;
         stateData.disableSideSwap = true;
         player.SetZPriority();
+        PhysicsTickManager.inst.globalFreezeFrames = 0;
     }
 
     public override IEnumerator MainRoutine() {
@@ -44,24 +47,22 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         player.boundingBoxManager.DisableAll();
     }
 
-    public virtual void OnContact(PlayerCharacter to) {
+    public virtual void OnContact(Entity to) {
+        if (hitsRemaining > 0) --hitsRemaining;
+        // Debug.Log("cancel added"); 
+        AddCancelOption(commonCancelOptions);
     }
     
     public virtual void OnHit(Entity target) {
-        if (hitsRemaining <= 0) return;
         player.audioManager.PlaySound(GetHitSfx(target), .6f);
     }
     
     public virtual void OnBlock(Entity target) {
         player.audioManager.PlaySound(GetBlockedSfx(target), .4f);
     }
-
-    public void OnHitProcessed(Entity to) {
-        if (hitsRemaining > 0) --hitsRemaining;
-    }
+    
 
     public bool MayHit(Entity target) {
-        if (phase != AttackPhase.ACTIVE) return false;
         if (!hasActiveFrames) return false;
         return true;
     }
@@ -74,6 +75,19 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         return frame;
     }
 
+    public override bool IsInputValid(InputBuffer buffer) {
+        var input = requiredInput;
+        int frames;
+        if (owner.activeState is CharacterAttackStateBase attack) {
+            // Debug.Log(attack.frameData.startup + frameData.startup + frameData.active);
+            frames = Mathf.Max(1, attack.GetFreezeFrames(null) + frameData.startup + frameData.active);
+        } else {
+            frames = 6;
+        }
+
+        return buffer.TimeSlice(frames).ScanForInput(input); 
+    }
+
     // Abstract Properties
     protected abstract string mainAnimation { get; }
     public abstract AttackFrameData frameData { get; }
@@ -84,7 +98,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     protected virtual void OnStartup() {
     }
     protected virtual void OnActive() {
-        AddCancelOption(commonCancelOptions);
+        // Debug.Log($"onactive addcancel {commonCancelOptions}");
     }
     protected virtual void OnRecovery() {
     }
@@ -98,9 +112,10 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public abstract float GetComboProration(Entity to);
     public abstract float GetFirstHitProration(Entity to);
     public abstract AttackGuardType GetGuardType(Entity to);
-    public abstract int GetFreezeFrames(Entity to);
+    public abstract int GetFreezeFrames([CanBeNull] Entity to);
     public abstract int GetAttackLevel(Entity to);
     public abstract string GetAttackNormalSfx();
+    protected abstract InputFrame[] requiredInput { get; }
 
     public string GetHitSfx(Entity to) {
         return "battle_generic_hit1";

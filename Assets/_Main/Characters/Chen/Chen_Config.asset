@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: chen
   prettyName: "\u9648"
+  tokenName: Chen
   entityType: 0
   stateLibraries:
   - {fileID: 11400000, guid: eec0401451ff3ff418a2bfd24c185f23, type: 2}
-  - {fileID: 11400000, guid: b360ac9cf854c154bbf229bf3104cfc4, type: 2}
+  - {fileID: 11400000, guid: 62afd55e79e5d4544b0c20ad2a057de0, type: 2}
   health: 440
   defenseModifier: 1
   walkSpeed: 1

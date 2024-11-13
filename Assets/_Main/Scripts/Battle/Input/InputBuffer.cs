@@ -28,6 +28,13 @@ public class InputBuffer {
         buffer.Insert(0, chord);
         
         if (buffer.Count > maxSize) buffer.RemoveAt(buffer.Count - 1);
+        foreach (var c in buffer) {
+            if (c.consumed) c.Consume();
+        }
+    }
+    
+    public void PushToCurrentFrame(params InputFrame[] inputs) {
+        buffer[0] = new(buffer[0].inputs.Concat(inputs).ToArray());
     }
 
     public InputBuffer TimeSlice(int frames) {
@@ -42,7 +49,9 @@ public class InputBuffer {
             
         for (int i = buffer.Count - 1; i >= 0; i--) {
             if (buffer[i].HasInput(req[0])) {
+                // Debug.Log(string.Join(", ", buffer));
                 req.RemoveAt(0);
+                buffer[i].consumed = true;
                 if (req.Count == 0) return true;
             }
         }
@@ -86,10 +95,15 @@ public struct InputFrame : IEquatable<InputFrame> {
     public override int GetHashCode() {
         return HashCode.Combine((int)type, (int)frameType);
     }
+
+    public override string ToString() {
+        return $"{type}#{frameType}";
+    }
 }
 
 public class InputChord {
     public InputFrame[] inputs;
+    public bool consumed { get; set; }
 
     public InputChord(params InputFrame[] inputs) {
         this.inputs = inputs;
@@ -102,6 +116,11 @@ public class InputChord {
     
     public bool HasInput(InputFrame type) {
         return inputs.Contains(type);
+    }
+
+    public void Consume() {
+        inputs = new InputFrame[0];
+        consumed = false;
     }
 
     public override string ToString() {

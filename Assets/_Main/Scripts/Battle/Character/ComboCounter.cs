@@ -1,4 +1,5 @@
 ﻿using SuperSmashRhodes.Battle.State.Implementation;
+using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
 public class ComboCounter : RuntimeCharacterDataRegister {
@@ -31,6 +32,7 @@ public class ComboCounter : RuntimeCharacterDataRegister {
         count = 0;
         overallProration = 1f;
         appliedProration = 1f;
+        // Debug.Log($"{owner} combo end");
     }
     
 }

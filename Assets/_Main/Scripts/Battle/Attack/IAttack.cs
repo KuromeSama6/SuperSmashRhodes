@@ -21,7 +21,7 @@ public interface IAttack {
     public string GetBlockedSfx(Entity to);
     public string GetHitSfx(Entity to);
     
-    public void OnHitProcessed(Entity to) {}
+    public void OnContact(Entity to) {}
     public void OnHit(Entity to);
     public void OnBlock(Entity to);
 }

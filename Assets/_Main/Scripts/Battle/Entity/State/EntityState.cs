@@ -122,7 +122,7 @@ public abstract class EntityState : NamedToken {
 public abstract class CharacterState : EntityState {
     public PlayerCharacter player { get; private set; }
     protected PlayerCharacter opponent => player.opponent;
-    public abstract int inputPriority { get; }
+    public abstract float inputPriority { get; }
 
     protected bool RevalidateInput() {
         return IsInputValid(GetCurrentInputBuffer());

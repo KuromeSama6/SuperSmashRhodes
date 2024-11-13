@@ -3,12 +3,12 @@ using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
 public class PhysicsTickManager : SingletonBehaviour<PhysicsTickManager> {
-    public int globalFreezeFrames { get; private set; }
+    public int globalFreezeFrames { get; set; }
 
     private int scheduledDelay;
     private int scheduledFreezeFrames;
     
-    private void Start() {
+    private void Start() { 
         Physics2D.simulationMode = SimulationMode2D.Script;
     }
 

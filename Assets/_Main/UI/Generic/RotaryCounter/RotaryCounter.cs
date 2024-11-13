@@ -68,7 +68,7 @@ public class RotaryCounter : MonoBehaviour {
         }
     }
 
-    private void ApplyImmediately() {
+    public void ApplyImmediately() {
         current = target;
         SetNumber(current);
         foreach (var digit in digits) digit.ApplyImmediately();
@@ -82,7 +82,7 @@ public class RotaryCounter : MonoBehaviour {
         if (delta >= 10 * speedThresholdScale * multiplier) speed = 10f;
         if (delta >= 100 * speedThresholdScale * multiplier) speed = 32f;
         if (delta >= 1000 * speedThresholdScale * multiplier) speed = 64f;
-        return speed;
+        return speed * speedScale;
     }
 }
 
