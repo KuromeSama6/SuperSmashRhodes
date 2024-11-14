@@ -2,6 +2,7 @@
 using System.Linq;
 using SuperSmashRhodes.Battle.State.Implementation;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace SuperSmashRhodes.Battle {
 public class ComboCounter : RuntimeCharacterDataRegister {

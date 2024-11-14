@@ -20,6 +20,9 @@ public class ComboCounterUI : PerSideUIElement<ComboCounterUI> {
 
     private bool shown = false;
     private List<TweenerCore<float, float, FloatOptions>> activeTweens = new();
+    private int lastCount = 0;
+    private float sizeTarget = 1f;
+    private float sizeCurrent = 1f;
     
     private void Start() {
         canvasGroup.alpha = 0f;
@@ -27,7 +30,7 @@ public class ComboCounterUI : PerSideUIElement<ComboCounterUI> {
         endMask.fillAmount = 0f;
         counter.target = 0;
     }
-
+    
     private void Update() {
         if (!player) return;
         var count = player.opponent.comboCounter.count;
@@ -42,17 +45,31 @@ public class ComboCounterUI : PerSideUIElement<ComboCounterUI> {
         if (shown) {
             if (count > counter.target) {
                 counter.target = count;
+                if (lastCount < count) {
+                    OnIncrement();
+                    lastCount = count;
+                }
+                
             } else if (count < counter.target){
                 StopAllCoroutines();
                 StartCoroutine(Hide());
             }
         }
-        
+
+        sizeCurrent = Mathf.Lerp(sizeCurrent, sizeTarget, Time.deltaTime * 15f);
+        transform.localScale = Vector3.one * sizeCurrent;
     }
 
+    private void OnIncrement() {
+        sizeTarget = Mathf.Min(3f, sizeTarget + .1f);
+        sizeCurrent += .5f;
+    }
+    
     private IEnumerator Show() {
         CancelAllTweens();
         counter.target = 1f;
+        lastCount = 1;
+        sizeTarget = sizeCurrent = 1f;
         counter.ApplyImmediately();
         
         canvasGroup.alpha = 0f;
@@ -68,7 +85,8 @@ public class ComboCounterUI : PerSideUIElement<ComboCounterUI> {
     private IEnumerator Hide() {
         if (!shown) yield break;
         CancelAllTweens();
-        
+
+        transform.localScale = Vector3.one;
         shown = false;
         endMask.fillAmount = 0f;
         activeTweens.Add(endMask.DOFillAmount(1f, 0.3f));

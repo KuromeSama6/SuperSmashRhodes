@@ -39,6 +39,7 @@ public class PlayerCharacter : Entity {
     public float neutralAniTransitionOverride { get; set; } = 0.05f;
     
     private float airHitstunRotation = 0f;
+    private float yRotationTarget = 0f;
     
     public void Init(int playerIndex) {
         this.playerIndex = playerIndex;
@@ -81,7 +82,7 @@ public class PlayerCharacter : Entity {
             var decay = comboCounter.comboDecay;
             var data = opponent.comboDecayData;
             ret *= data.opponentGravityCurve.Evaluate(decay);
-        }
+        } 
         
         rb.gravityScale = ret;
     }
@@ -96,9 +97,10 @@ public class PlayerCharacter : Entity {
         
         // facing animation
         float facing = side == EntitySide.LEFT ? 0 : 180;
+        yRotationTarget = Mathf.Lerp(yRotationTarget, facing, Time.deltaTime * 20f);
         
         var ea = rotationContainer.transform.localEulerAngles;
-        ea.y = facing;
+        ea.y = yRotationTarget;
         ea.z = airHitstunRotation;
         rotationContainer.transform.localEulerAngles = ea;
     }
