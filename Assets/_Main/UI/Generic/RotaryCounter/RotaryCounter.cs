@@ -39,7 +39,7 @@ public class RotaryCounter : MonoBehaviour {
     private void Update() {
         // if (UnityEngine.Input.GetKeyDown(KeyCode.Minus)) target -= 30;
         
-        direction = target > current ? RotaryCounterDirection.UP : RotaryCounterDirection.DOWN;
+        if (!Mathf.Approximately(target, current)) direction = target > current ? RotaryCounterDirection.UP : RotaryCounterDirection.DOWN;
         var step = Time.deltaTime * GetRotarySpeed(1);
         
         if (Math.Abs(current - target) > step) {

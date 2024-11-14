@@ -17,7 +17,7 @@ public class State_CmnDash : CharacterState {
 
     public override bool mayEnterState {
         get {
-            if (!owner.config.mayDash) return false;
+            if (!player.characterConfig.mayDash) return false;
             return true;
         }
     }
@@ -40,9 +40,9 @@ public class State_CmnDash : CharacterState {
         owner.animation.AddUnmanagedAnimation("std_dash_loop", true);
         
         while (RevalidateInput()) {
-            var force = owner.config.dashAccelCurve.Evaluate(frame);
+            var force = player.characterConfig.dashAccelCurve.Evaluate(frame);
             owner.rb.AddForceX(PhysicsUtil.NormalizeRelativeDirecionalForce(force, owner.side));
-            owner.rb.linearVelocityX = Mathf.Clamp(owner.rb.linearVelocityX, -owner.config.dashSpeed, owner.config.dashSpeed);
+            owner.rb.linearVelocityX = Mathf.Clamp(owner.rb.linearVelocityX, -player.characterConfig.dashSpeed, player.characterConfig.dashSpeed);
             yield return 1;
         }
         

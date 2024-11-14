@@ -9,17 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fb1a6f815c33ad4f96f57c0dd768172, type: 3}
-  m_Name: Chen_Config
+  m_Script: {fileID: 11500000, guid: 9bad5212300e45b1aecf00078cd609f4, type: 3}
+  m_Name: Chen_CharConfig
   m_EditorClassIdentifier: 
-  id: chen
   prettyName: "\u9648"
-  tokenName: Chen
-  entityType: 0
-  stateLibraries:
-  - {fileID: 11400000, guid: eec0401451ff3ff418a2bfd24c185f23, type: 2}
-  - {fileID: 11400000, guid: 62afd55e79e5d4544b0c20ad2a057de0, type: 2}
-  health: 440
   defenseModifier: 1
   walkSpeed: 1
   backwalkSpeed: 0.8

@@ -119,7 +119,7 @@ public class InputChord {
     }
 
     public void Consume() {
-        inputs = new InputFrame[0];
+        inputs = (from c in inputs where c.frameType == InputFrameType.HELD select c).ToArray();
         consumed = false;
     }
 

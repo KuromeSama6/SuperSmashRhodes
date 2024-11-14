@@ -1,0 +1,137 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfc06a3cb20145ef89e12ab156427093, type: 3}
+  m_Name: Cmn_ComboDecayData
+  m_EditorClassIdentifier: 
+  extraProrationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 20
+      value: 0.1
+      inSlope: -0.12586653
+      outSlope: -0.12586653
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.1930666
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  opponentGravityCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0.009060409
+      outSlope: 0.009060409
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.07832526
+    - serializedVersion: 3
+      time: 6.672581
+      value: 1.8092936
+      inSlope: 0.20496228
+      outSlope: 0.20496228
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.08210252
+    - serializedVersion: 3
+      time: 20
+      value: 3
+      inSlope: -0.00257599
+      outSlope: -0.00257599
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.16249733
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  opponentBlowbackCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0.009060409
+      outSlope: 0.009060409
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.07832526
+    - serializedVersion: 3
+      time: 5.1800427
+      value: 1.893217
+      inSlope: 0.20496228
+      outSlope: 0.20496228
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.08210252
+    - serializedVersion: 3
+      time: 20
+      value: 5
+      inSlope: -0.00257599
+      outSlope: -0.00257599
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.16249733
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  opponentLaunchCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0.00042597455
+      outSlope: 0.00042597455
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.24626866
+    - serializedVersion: 3
+      time: 3.641796
+      value: 0.81538284
+      inSlope: -0.14051524
+      outSlope: -0.14051524
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.03790586
+    - serializedVersion: 3
+      time: 20
+      value: 0.1
+      inSlope: -0.00000002393372
+      outSlope: -0.00000002393372
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.10895519
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

@@ -16,6 +16,10 @@ PrefabInstance:
       propertyPath: descriptor
       value: 
       objectReference: {fileID: 11400000, guid: 7e42b87b06d742d4daa52cd967e41a35, type: 2}
+    - target: {fileID: 2764539944195769258, guid: 869df265edc9b1e489d328c95c4d65cf, type: 3}
+      propertyPath: characterConfig
+      value: 
+      objectReference: {fileID: 11400000, guid: 35214d593a5270b43aa672436a4052e7, type: 2}
     - target: {fileID: 2974030519987698663, guid: 869df265edc9b1e489d328c95c4d65cf, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.5
@@ -58,12 +62,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3132066959301301514, guid: 869df265edc9b1e489d328c95c4d65cf, type: 3}
       propertyPath: m_Name
-      value: PlayerCharacter Variant
+      value: Texas
       objectReference: {fileID: 0}
     - target: {fileID: 7313164139058482545, guid: 869df265edc9b1e489d328c95c4d65cf, type: 3}
       propertyPath: skeletonDataAsset
       value: 
       objectReference: {fileID: 11400000, guid: 9682c3a07b9d859459c1642cfe7d8f79, type: 2}
+    - target: {fileID: 7702110325327955290, guid: 869df265edc9b1e489d328c95c4d65cf, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 5245e92bbc39d074382363aa24b815be, type: 2}
+    - target: {fileID: 9047408469080022298, guid: 869df265edc9b1e489d328c95c4d65cf, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

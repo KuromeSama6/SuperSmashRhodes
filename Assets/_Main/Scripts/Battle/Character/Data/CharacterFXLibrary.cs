@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.FX {
-[CreateAssetMenu(menuName = "Battle/Character FX Lib", order = 0)]
+[CreateAssetMenu(menuName = "SSR/Battle/Character FX Lib", order = 0)]
 public class CharacterFXLibrary : ScriptableObject {
     [Title("Camera")]
     public SimpleCameraShakeData cameraShakeOnHitSmall;

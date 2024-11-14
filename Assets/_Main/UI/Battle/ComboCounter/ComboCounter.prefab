@@ -3460,7 +3460,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1534881285639915214, guid: a7ee93ad0648fb6459627a4fedca9e25, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -1240.4401
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 2462219583610595540, guid: a7ee93ad0648fb6459627a4fedca9e25, type: 3}
       propertyPath: m_fontSize
@@ -3672,7 +3672,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4121159994721658802, guid: a7ee93ad0648fb6459627a4fedca9e25, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -2067.4001
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4336554471902063868, guid: a7ee93ad0648fb6459627a4fedca9e25, type: 3}
       propertyPath: m_AnchorMax.y
@@ -3732,7 +3732,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4481035476356578293, guid: a7ee93ad0648fb6459627a4fedca9e25, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -826.96
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4725814695458269560, guid: a7ee93ad0648fb6459627a4fedca9e25, type: 3}
       propertyPath: m_AnchorMax.y
@@ -3760,7 +3760,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4725814695458269560, guid: a7ee93ad0648fb6459627a4fedca9e25, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -1447.18
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4848945714365681360, guid: a7ee93ad0648fb6459627a4fedca9e25, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -3792,7 +3792,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4969265440445837779, guid: a7ee93ad0648fb6459627a4fedca9e25, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -620.22003
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5004180505592955329, guid: a7ee93ad0648fb6459627a4fedca9e25, type: 3}
       propertyPath: m_AnchorMax.y
@@ -3820,7 +3820,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5004180505592955329, guid: a7ee93ad0648fb6459627a4fedca9e25, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -206.74
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5061057293536740760, guid: a7ee93ad0648fb6459627a4fedca9e25, type: 3}
       propertyPath: m_AnchorMax.y
@@ -3848,7 +3848,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5061057293536740760, guid: a7ee93ad0648fb6459627a4fedca9e25, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -1860.66
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5383270725299745468, guid: a7ee93ad0648fb6459627a4fedca9e25, type: 3}
       propertyPath: speedScale
@@ -4004,7 +4004,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7448339878710124383, guid: a7ee93ad0648fb6459627a4fedca9e25, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -1653.92
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 7639859187981991978, guid: a7ee93ad0648fb6459627a4fedca9e25, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -4036,7 +4036,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7815355455193544388, guid: a7ee93ad0648fb6459627a4fedca9e25, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -1033.7001
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 8916370429229089647, guid: a7ee93ad0648fb6459627a4fedca9e25, type: 3}
       propertyPath: m_fontSize
@@ -4096,7 +4096,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9067882579730425063, guid: a7ee93ad0648fb6459627a4fedca9e25, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -413.48
+      value: -0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4039848398604954669, guid: a7ee93ad0648fb6459627a4fedca9e25, type: 3}

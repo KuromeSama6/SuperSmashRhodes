@@ -25,7 +25,8 @@ public class State_CmnNeutral : CharacterState {
     }
 
     public override IEnumerator MainRoutine() {
-        owner.animation.AddUnmanagedAnimation("std_neutral", true, 0.05f);
+        owner.animation.AddUnmanagedAnimation("std_neutral", true, player.neutralAniTransitionOverride);
+        player.neutralAniTransitionOverride = 0.05f;
 
         while (true) {
             player.ApplyGroundedFriction();
@@ -52,7 +53,8 @@ public class State_CmnNeutralCrouch : CharacterState {
     }
 
     public override IEnumerator MainRoutine() {
-        owner.animation.AddUnmanagedAnimation("std_crouch", true);
+        owner.animation.AddUnmanagedAnimation("std_crouch", true, player.neutralAniTransitionOverride);
+        player.neutralAniTransitionOverride = 0.05f;
         while (RevalidateInput()) {
             player.ApplyGroundedFriction();
             yield return 1;

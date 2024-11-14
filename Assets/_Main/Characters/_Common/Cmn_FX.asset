@@ -91,8 +91,8 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    velocity: {x: 0, y: 0.02, z: 0}
-    duration: 1
+    velocity: {x: 0, y: 0.05, z: 0}
+    duration: 0.3
   cameraShakeOnHitMedium:
     shakeCurve:
       serializedVersion: 2
@@ -173,7 +173,7 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     velocity: {x: 0, y: 0.05, z: 0}
-    duration: 1
+    duration: 0.3
   cameraShakeOnHitLarge:
     shakeCurve:
       serializedVersion: 2
@@ -253,8 +253,8 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    velocity: {x: 0, y: 0.1, z: 0}
-    duration: 1
+    velocity: {x: 0, y: 0.03, z: 0}
+    duration: 0.3
   particleOnAnyHit: {fileID: 7872588379766544261, guid: d1092ba4a89d5a2428d2e37dc74b940c, type: 3}
   particleOnHitSmall: {fileID: 7532763792851826944, guid: 967641b1abebc01458f015bbbfe94614, type: 3}
   particleOnHitMedium: {fileID: 8141726812257462589, guid: a40c613ff4e5bb745975c556110388ac, type: 3}

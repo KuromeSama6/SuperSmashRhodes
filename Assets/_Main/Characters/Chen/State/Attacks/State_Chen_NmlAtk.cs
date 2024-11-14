@@ -60,4 +60,22 @@ public class State_Chen_NmlAtk5H : State_Common_NmlAtk5H {
         return "battle_generic_atk_sword3";
     }
 }
+
+[NamedToken("Chen_NmlAtk2H")]
+public class State_Chen_NmlAtk2H : State_Common_NmlAtk2H {
+    public State_Chen_NmlAtk2H(Entity owner) : base(owner) { } 
+    public override AttackFrameData frameData => new() {
+        startup = 11,
+        active = 5,
+        recovery = 28,
+        onHit = +2,
+        onBlock = -13,
+    };
+    public override float GetUnscaledDamage(Entity to) {
+        return 54;
+    }
+    public override string GetAttackNormalSfx() {
+        return "battle_generic_atk_sword9";
+    }
+}
 }

@@ -27,7 +27,7 @@ public abstract class Entity : MonoBehaviour {
     public EntityState activeState { get; private set; }
     public EntityBoundingBoxManager boundingBoxManager { get; private set; }
     public Dictionary<string, EntityState> states { get; } = new();
-    public EntityAudioManager audioManager { get; private set; }
+    public EntityAudioManager audioManager { get; private set; } 
     // Entity Stats
     public float health { get; set; }
 
@@ -66,11 +66,7 @@ public abstract class Entity : MonoBehaviour {
     }
 
     protected virtual void Update() {
-        {
-            // facing animation
-            float target = side == EntitySide.LEFT ? 0 : 180;
-            rotationContainer.eulerAngles = new Vector3(0, Mathf.Lerp(rotationContainer.eulerAngles.y, target, Time.deltaTime * 20f), 0);
-        }
+
     }
 
     protected virtual void FixedUpdate() {

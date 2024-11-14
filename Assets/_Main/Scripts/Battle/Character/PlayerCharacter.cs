@@ -15,7 +15,10 @@ using UnityEngine.Events;
 namespace SuperSmashRhodes.Battle {
 public class PlayerCharacter : Entity {
     [Title("References")]
+    public CharacterConfiguration characterConfig;
     public CharacterDescriptor descriptor;
+    public ComboDecayData comboDecayData;
+    
     public int playerIndex { get; private set; }
     public float moveDirection { get; private set; }
     public bool isDashing { get; private set; }
@@ -33,6 +36,9 @@ public class PlayerCharacter : Entity {
     public float groundedFrictionAlpha { get; set; }
     public PushboxManager pushboxManager { get; private set; }
     public CharacterFXManager fxManager { get; private set; }
+    public float neutralAniTransitionOverride { get; set; } = 0.05f;
+    
+    private float airHitstunRotation = 0f;
     
     public void Init(int playerIndex) {
         this.playerIndex = playerIndex;
@@ -59,6 +65,8 @@ public class PlayerCharacter : Entity {
         frameData.Tick();
         UpdateInput();
         UpdateFacing();
+        UpdateGravity();
+        UpdateRotation();
 
         if (applyGroundedFrictionFrames > 0) {
             --applyGroundedFrictionFrames;
@@ -67,7 +75,35 @@ public class PlayerCharacter : Entity {
         }
     }
 
-    private void UpdateInput() {
+    private void UpdateGravity() {
+        var ret = characterConfig.baseGravity;
+        if (comboCounter.inCombo) {
+            var decay = comboCounter.comboDecay;
+            var data = opponent.comboDecayData;
+            ret *= data.opponentGravityCurve.Evaluate(decay);
+        }
+        
+        rb.gravityScale = ret;
+    }
+
+    private void UpdateRotation() {
+        if (airborne && activeState is State_CmnHitStunAir) {
+            airHitstunRotation = Mathf.Clamp(airHitstunRotation + 0.5f, -55f, 55f);
+
+        } else {
+            airHitstunRotation = Mathf.Lerp(airHitstunRotation, 0, Time.fixedDeltaTime * 10f);
+        }
+        
+        // facing animation
+        float facing = side == EntitySide.LEFT ? 0 : 180;
+        
+        var ea = rotationContainer.transform.localEulerAngles;
+        ea.y = facing;
+        ea.z = airHitstunRotation;
+        rotationContainer.transform.localEulerAngles = ea;
+    }
+    
+    private void UpdateInput() { 
         if (inputModule.localBuffer == null) return;
         
         // get priority sorted list
@@ -109,6 +145,7 @@ public class PlayerCharacter : Entity {
                 return;
             if (Mathf.Abs(pos - opponentPos) < pushboxManager.pushbox.size.x)
                 return;
+            if ((airborne && activeState is State_CmnHitStunAir) || (opponent.airborne && opponent.activeState is State_CmnHitStunAir)) return;
             
             this.side = side;
             onSideSwap.Invoke();
@@ -155,7 +192,8 @@ public class PlayerCharacter : Entity {
 
     protected override IAttack OnOutboundHit(Entity victim, EntityBBInteractionData data) {
         base.OnOutboundHit(victim, data);
-
+        // Debug.Log("outbound");
+        
         if (victim is PlayerCharacter player) {
             return ProcessOutboundHit(player);
         }
@@ -174,7 +212,8 @@ public class PlayerCharacter : Entity {
             // invalid attack state1
             return null;
         }
-        
+
+        if (to.activeState.fullyInvincible) return null;
         // reject if move has no active frames
         if (!move.hasActiveFrames) return null;
         // reject if move is not active
@@ -207,26 +246,58 @@ public class PlayerCharacter : Entity {
         ApplyGroundedFriction();
         if (blocked) {
             this.frameData.blockstunFrames = framesRemaining + frameData.onBlock;
-            BeginState(crouching ? "CmnBlockStunCrouch" : "CmnBlockStun");
+            if (!activeState.type.HasFlag(EntityStateType.CHR_BLOCKSTUN)) BeginState(crouching ? "CmnBlockStunCrouch" : "CmnBlockStun");
             attack.OnBlock(this);
             
         } else {
             this.frameData.SetHitstunFrames(framesRemaining + frameData.onHit, Mathf.Max(frameData.total - attack.GetCurrentFrame(this), 0));
-            BeginState(crouching ? "CmnHitStunGroundCrouch" : "CmnHitStunGround"); 
+            if (!activeState.type.HasFlag(EntityStateType.CHR_HITSTUN)) BeginState(crouching ? "CmnHitStunGroundCrouch" : "CmnHitStunGround"); 
             comboCounter.RegisterAttack(attack, this);
             attack.OnHit(this);
+            airHitstunRotation = 0f;
             
-            //TODO: Damage logic
-            health -= attack.GetUnscaledDamage(this) * comboCounter.finalScale;
+            // Debug.Log($"unscaled damage: {attack.GetUnscaledDamage(this)}, final scale: {comboCounter.finalScale}, final dmg {attack.GetUnscaledDamage(this) * comboCounter.finalScale}");
+            {
+                // damage
+                var dmg = attack.GetUnscaledDamage(this) * comboCounter.finalScale * comboCounter.GetMoveSpecificProration(attack);
+                
+                // combo decay
+                if (data.from is PlayerCharacter player) {
+                    var decayData = player.comboDecayData;
+                    if (comboCounter.inCombo) {
+                        dmg *= decayData.extraProrationCurve.Evaluate(comboCounter.comboDecay);
+                    }
+                }
+                
+                health -= Mathf.Max(1, dmg);
+            }
         }
 
         data.result = blocked ? AttackResult.BLOCKED : AttackResult.HIT;
         fxManager.NotifyHit(data);
-        ApplyCarriedPushback(attack.GetPushback(this, airborne));
+        
+        // pushback
+        {
+            var amount = attack.GetPushback(this, airborne);
+            if (blocked) amount.y = 0f;
+            
+            if (data.from is PlayerCharacter player) {
+                var decayData = player.comboDecayData;
+                if (comboCounter.inCombo) {
+                    amount *= new Vector2(
+                        decayData.opponentBlowbackCurve.Evaluate(comboCounter.comboDecay), 
+                        decayData.opponentLaunchCurve.Evaluate(comboCounter.comboDecay)
+                        );
+                }
+            }
+            
+            ApplyCarriedPushback(amount);
+        }
         
         // apply freeze frames
-        
-        PhysicsTickManager.inst.Schedule(4, attack.GetFreezeFrames(this));
+
+        var freezeFrames = attack.GetFreezeFrames(this);
+        PhysicsTickManager.inst.Schedule(4, freezeFrames);
     }
 
     private bool CheckAttackHit(AttackData data) {

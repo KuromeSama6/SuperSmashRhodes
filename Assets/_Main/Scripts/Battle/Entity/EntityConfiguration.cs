@@ -6,10 +6,10 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace SuperSmashRhodes.Battle {
-[CreateAssetMenu(fileName = "EntityConfiguration", menuName = "Battle/Entity Configuration")]
+[CreateAssetMenu(fileName = "EntityConfiguration", menuName = "SSR/Battle/Entity Configuration")]
 public class EntityConfiguration : ScriptableObject {
     [BoxGroup("Basic Configuration")]
-    public string id, prettyName, tokenName;
+    public string id, tokenName;
     [BoxGroup("Basic Configuration")]
     public EntityType entityType;
 
@@ -17,27 +17,8 @@ public class EntityConfiguration : ScriptableObject {
     public List<EntityStateLibrary> stateLibraries = new();
     
     [BoxGroup("Basic Stats")]
-    public float health, defenseModifier;
-
-    [ShowIf("entityType", EntityType.CHARACTER)]
-    [TabGroup("playerConfig", "Grounded Movement", SdfIconType.ArrowsMove, TextColor = "green")]
-    public float walkSpeed, backwalkSpeed;
-
-    [ShowIf("entityType", EntityType.CHARACTER)]
-    [TabGroup("playerConfig", "Jumping", SdfIconType.ArrowUp, TextColor = "blue")]
-    public int prejump;
-    [TabGroup("playerConfig", "Jumping", SdfIconType.ArrowUp, TextColor = "blue")]
-    public float jumpDuration, jumpVelocity, jumpGravity;
-
-    [ShowIf("entityType", EntityType.CHARACTER)]
-    [TabGroup("playerConfig", "Dash", SdfIconType.ArrowRight, TextColor = "yellow")]
-    public bool mayDash = false;
-    [TabGroup("playerConfig", "Dash", SdfIconType.ArrowRight, TextColor = "yellow")]
-    public AnimationCurve dashAccelCurve;
+    public float health;
     
-    [ShowIf("entityType", EntityType.CHARACTER)]
-    [TabGroup("playerConfig", "Dash", SdfIconType.ArrowRight, TextColor = "yellow")]
-    public float dashSpeed, airDashAvailableFrame, airDashDuration, backdashDuration, backdashInvuln, backdashAirborne, backdashDistance;
 
 }
 

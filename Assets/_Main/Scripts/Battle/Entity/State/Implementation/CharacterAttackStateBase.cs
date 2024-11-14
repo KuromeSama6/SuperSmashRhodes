@@ -123,6 +123,9 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public string GetBlockedSfx(Entity to) {
         return "battle_generic_block2";
     }
+    public float GetComboDecay(Entity to) {
+        return 1f;
+    }
 }
 
 }

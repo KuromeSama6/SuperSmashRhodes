@@ -1,4 +1,5 @@
 ﻿using System;
+using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
 using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Util;
@@ -10,6 +11,8 @@ public class CharacterFXManager : MonoBehaviour {
     public CharacterFXLibrary fxLibrary;
     [Title("Sockets")]
     public UDictionary<CharacterFXSocketType, Transform> sockets = new();
+    [BoxGroup("Direct Managed")]
+    public MMF_Player staticOnGroundedTechFlashPlayer;
     
     private Transform particleContainer; 
     private PlayerCharacter player;

@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
-[CreateAssetMenu(menuName = "Battle/Entity Asset Library")]
+[CreateAssetMenu(menuName = "SSR/Battle/Entity Asset Library")]
 public class EntityAssetLibrary : ScriptableObject {
     public List<AudioClip> audioClips = new();
 

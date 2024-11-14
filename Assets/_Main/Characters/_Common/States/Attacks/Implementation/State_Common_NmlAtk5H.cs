@@ -19,7 +19,7 @@ public abstract class State_Common_NmlAtk5H : State_Common_NormalAttack {
     protected override InputFrame[] requiredInput => new InputFrame[] {new(InputType.HS, InputFrameType.PRESSED)};
 
     public override int GetFreezeFrames(Entity to) {
-        return 10;
+        return 8;
     }
     public override float GetComboProration(Entity to) {
         return .9f;
@@ -31,7 +31,7 @@ public abstract class State_Common_NmlAtk5H : State_Common_NormalAttack {
         return AttackGuardType.ALL;
     }
     public override Vector2 GetPushback(Entity to, bool airborne) {
-        return airborne ? new Vector2(1.5f, 5f) : new Vector2(3f, 0);
+        return airborne ? new Vector2(4f, 4f) : new Vector2(3.5f, 0);
     }
     public override int GetAttackLevel(Entity to) {
         return 4;

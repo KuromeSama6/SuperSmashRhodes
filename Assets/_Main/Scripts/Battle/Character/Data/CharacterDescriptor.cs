@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
-[CreateAssetMenu(fileName = "Character Descriptor", menuName = "Battle/Character Descriptor")]
+[CreateAssetMenu(fileName = "Character Descriptor", menuName = "SSR/Battle/Character Descriptor")]
 public class CharacterDescriptor : ScriptableObject {
     [Title("Name and Lore")]
     public string id;

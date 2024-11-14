@@ -2,6 +2,7 @@
 
 namespace SuperSmashRhodes.Battle {
 public interface IAttack {
+    public string id { get; }
     public AttackFrameData GetFrameData(Entity to);
     public int GetCurrentFrame(Entity to);
     
@@ -12,6 +13,8 @@ public interface IAttack {
     
     public float GetComboProration(Entity to);
     public float GetFirstHitProration(Entity to);
+    public float GetComboDecay(Entity to);
+    
     public AttackGuardType GetGuardType(Entity to);
     public int GetFreezeFrames(Entity to);
     public int GetAttackLevel(Entity to);
