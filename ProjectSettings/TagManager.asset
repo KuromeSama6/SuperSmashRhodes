@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - FxTemporaire
   layers:
   - Default
   - TransparentFX
@@ -43,6 +44,9 @@ TagManager:
     locked: 0
   - name: UI
     uniqueID: 1075859831
+    locked: 0
+  - name: CameraSortingLayer
+    uniqueID: 3521723171
     locked: 0
   m_RenderingLayers:
   - Default

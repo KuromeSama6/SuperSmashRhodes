@@ -534,4 +534,26 @@ public static class RectTransformExtensions {
     }
 }
 
+public class ClampedFloat {
+    public float value {
+        get {
+            return _value;
+        }
+        set {
+            _value = Mathf.Clamp(value, min, max);
+        }
+    }
+    private float _value;
+    public float min, max;
+
+    public float percentage => Mathf.InverseLerp(min, max, value);
+    
+    public ClampedFloat(float min, float max, float value = 0) {
+        this.min = min;
+        this.max = max;
+        this._value = value;
+    }
+    
+}
+
 }

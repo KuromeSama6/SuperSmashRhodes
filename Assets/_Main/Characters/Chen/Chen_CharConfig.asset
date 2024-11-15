@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Chen_CharConfig
   m_EditorClassIdentifier: 
   prettyName: "\u9648"
-  defenseModifier: 1
+  defenseModifier: 0.9531
+  baseGravity: 1.9
+  guts: 2
   walkSpeed: 1
   backwalkSpeed: 0.8
   prejump: 4

@@ -20,7 +20,7 @@ public class State_CmnBlockStun : State_Common_Stun {
     protected override void OnStateBegin() {
         base.OnStateBegin();
         AddCancelOption("CmnBlockStunCrouch");
-        player.ApplyGroundedFrictionImmediate();
+        // player.ApplyGroundedFrictionImmediate();
     }
 }
 
@@ -39,7 +39,7 @@ public class State_CmnBlockStunCrouch : State_Common_Stun {
     protected override void OnStateBegin() {
         base.OnStateBegin();
         AddCancelOption("CmnBlockStun");
-        player.ApplyGroundedFrictionImmediate();
+        // player.ApplyGroundedFrictionImmediate();
     }
 
     public override IEnumerator MainRoutine() {

@@ -550,6 +550,17 @@
                 },
                 {
                     "name": "",
+                    "id": "8fda662c-e540-430a-8ff0-da3c7143b0a7",
+                    "path": "<Keyboard>/numpadMinus",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard2",
+                    "action": "ForceReset",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "61d85e45-a730-4a7c-a944-b8d17f813df3",
                     "path": "<Gamepad>/rightTrigger",
                     "interactions": "",

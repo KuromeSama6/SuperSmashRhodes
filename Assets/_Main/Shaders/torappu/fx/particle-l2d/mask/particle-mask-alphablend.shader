@@ -1,0 +1,32 @@
+Shader "Torappu/Particles-L2D/Mask/Mask (AlphaBlend)" {
+	Properties {
+		_TintColor ("Tint Color", Vector) = (0.5,0.5,0.5,0.5)
+		_MainTex ("Particle Texture", 2D) = "white" {}
+		[NoScaleOffset] _MaskTex ("Mask Texture", 2D) = "black" {}
+		_AddTex ("Add Texture", 2D) = "black" {}
+		_AddFactor ("Add Factor", Range(0, 1)) = 0.5
+		[Enum(Off, 0, On, 4)] _ZTest ("ZTest", Float) = 4
+	}
+	//DummyShaderTextExporter
+	SubShader{
+		Tags { "RenderType"="Opaque" }
+		LOD 200
+		CGPROGRAM
+#pragma surface surf Standard
+#pragma target 3.0
+
+		sampler2D _MainTex;
+		struct Input
+		{
+			float2 uv_MainTex;
+		};
+
+		void surf(Input IN, inout SurfaceOutputStandard o)
+		{
+			fixed4 c = tex2D(_MainTex, IN.uv_MainTex);
+			o.Albedo = c.rgb;
+			o.Alpha = c.a;
+		}
+		ENDCG
+	}
+}

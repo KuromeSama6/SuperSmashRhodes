@@ -11,7 +11,7 @@ public class ComboCounter : RuntimeCharacterDataRegister {
     
     private float overallProration = 1f;
     private float appliedProration = 1f;
-    public float comboDecay { get; private set; }
+    public float comboDecay { get; set; }
     private Dictionary<string, int> movesUsed = new();
 
     public float finalScale {

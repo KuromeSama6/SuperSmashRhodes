@@ -15,6 +15,7 @@ public class CharacterFXLibrary : ScriptableObject {
     public GameObject particleOnHitMedium;
     public GameObject particleOnBlock;
     public GameObject particleOnLargerHitDirectional;
+    public GameObject onWhiteForceReset;
     
     [Title("Managed")]
     public GameObject managedAttackBlock;

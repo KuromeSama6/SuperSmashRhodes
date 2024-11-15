@@ -55,10 +55,16 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     
     public virtual void OnHit(Entity target) {
         player.audioManager.PlaySound(GetHitSfx(target), .6f);
+        // Debug.Log(player.meter.meterGainMultiplier);
+        player.meter.meter.value += GetMeterGain(target, false) * player.meter.meterGainMultiplier;
+        player.meter.meterBalance.value += .05f * GetUnscaledDamage(target) * player.meter.meterGainMultiplier;
+        // Debug.Log($"on hit, {GetMeterGain(target, true)}");
     }
     
     public virtual void OnBlock(Entity target) {
         player.audioManager.PlaySound(GetBlockedSfx(target), .4f);
+        player.meter.meter.value += GetMeterGain(target, true) * player.meter.meterGainMultiplier;;
+        player.meter.meterBalance.value += .02f * GetUnscaledDamage(target) * player.meter.meterGainMultiplier;;
     }
     
 
@@ -87,6 +93,11 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
 
         return buffer.TimeSlice(frames).ScanForInput(input); 
     }
+    
+    public float GetMeterGain(Entity to, bool blocked) {
+        var attackLevel = GetAttackLevel(to);
+        return (attackLevel + 1) * 1.5f * (blocked ? 1f : 2f);
+    }
 
     // Abstract Properties
     protected abstract string mainAnimation { get; }
@@ -99,16 +110,18 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     }
     protected virtual void OnActive() {
         // Debug.Log($"onactive addcancel {commonCancelOptions}");
+        AddCancelOption("CmnWhiteForceReset");
     }
     protected virtual void OnRecovery() {
     }
-    
+
     // Member Methods
 
     public abstract float GetUnscaledDamage(Entity to);
     public abstract float GetChipDamagePercentage(Entity to);
     public abstract float GetOtgDamagePercentage(Entity to);
-    public abstract Vector2 GetPushback(Entity to, bool airborne);
+    public abstract Vector2 GetPushback(Entity to, bool airborne, bool blocked);
+    public abstract Vector2 GetCarriedMomentumPercentage(Entity to);
     public abstract float GetComboProration(Entity to);
     public abstract float GetFirstHitProration(Entity to);
     public abstract AttackGuardType GetGuardType(Entity to);

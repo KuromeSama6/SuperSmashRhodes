@@ -13,7 +13,7 @@ public class State_CmnHitStun : State_Common_Stun {
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
-        player.ApplyGroundedFrictionImmediate();
+        // player.ApplyGroundedFrictionImmediate();
     }
 
 }
@@ -27,7 +27,7 @@ public class State_CmnHitStunCrouch : State_Common_Stun {
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
-        player.ApplyGroundedFrictionImmediate();
+        // player.ApplyGroundedFrictionImmediate();
         AddCancelOption("CmnHitStunAir");
     }
 }

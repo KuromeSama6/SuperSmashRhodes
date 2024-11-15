@@ -43,12 +43,20 @@ public class InputBuffer {
     }
 
     public bool ScanForInput(params InputFrame[] seq) {
+        List<InputFrame[]> args = new();
+        foreach (var frame in seq) {
+            args.Add(new[]{ frame });
+        }
+        return ScanForInput(args.ToArray());
+    }
+    
+    public bool ScanForInput(params InputFrame[][] seq) {
         var req = seq.ToList();
         if (req.Count == 0)
             throw new ArgumentException("Input sequence must have at least one element");
             
         for (int i = buffer.Count - 1; i >= 0; i--) {
-            if (buffer[i].HasInput(req[0])) {
+            if (req[0].ToList().TrueForAll(c => buffer[i].HasInput(c))) {
                 // Debug.Log(string.Join(", ", buffer));
                 req.RemoveAt(0);
                 buffer[i].consumed = true;

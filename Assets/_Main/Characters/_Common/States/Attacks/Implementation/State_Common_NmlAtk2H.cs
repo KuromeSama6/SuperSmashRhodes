@@ -30,11 +30,15 @@ public abstract class State_Common_NmlAtk2H : State_Common_NormalAttack {
     public override AttackGuardType GetGuardType(Entity to) {
         return AttackGuardType.ALL;
     }
-    public override Vector2 GetPushback(Entity to, bool airborne) {
-        return airborne ? new Vector2(2.5f, 5f) : new Vector2(2f, 9f);
+    public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
+        if (airborne) return new Vector2(2.5f, 5f);
+        return blocked ? new(4f, 0f) : new Vector2(.5f, 9f);
     }
     public override int GetAttackLevel(Entity to) {
         return 4;
+    }
+    public override Vector2 GetCarriedMomentumPercentage(Entity to) {
+        return Vector2.zero;
     }
 }
 }

@@ -28,3 +28,4 @@ MonoBehaviour:
   - CmnHitStunGroundCrouch
   - CmnHitStunAir
   - CmnSoftKnockdown
+  - CmnWhiteForceReset

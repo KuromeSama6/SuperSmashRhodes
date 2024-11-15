@@ -43,6 +43,9 @@ public class State_CmnDash : CharacterState {
             var force = player.characterConfig.dashAccelCurve.Evaluate(frame);
             owner.rb.AddForceX(PhysicsUtil.NormalizeRelativeDirecionalForce(force, owner.side));
             owner.rb.linearVelocityX = Mathf.Clamp(owner.rb.linearVelocityX, -player.characterConfig.dashSpeed, player.characterConfig.dashSpeed);
+            
+            player.meter.meter.value += 0.05f * player.meter.meterGainMultiplier;
+            player.meter.meterBalance.value += 0.0012f * player.meter.meterGainMultiplier;
             yield return 1;
         }
         

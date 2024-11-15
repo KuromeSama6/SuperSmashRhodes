@@ -260,4 +260,5 @@ MonoBehaviour:
   particleOnHitMedium: {fileID: 8141726812257462589, guid: a40c613ff4e5bb745975c556110388ac, type: 3}
   particleOnBlock: {fileID: 8141726812257462589, guid: 200b4a47f1c44e74d89dcb757b480353, type: 3}
   particleOnLargerHitDirectional: {fileID: 3525767760542525643, guid: d606e0523a566b840ba0937b5ef47f8f, type: 3}
+  onWhiteForceReset: {fileID: 3886212200948081101, guid: 8092d09a7c6747a478a194b8c81d5c32, type: 3}
   managedAttackBlock: {fileID: 3799462234815856771, guid: 645b4eee0b951284ea165d89d38e88cb, type: 3}

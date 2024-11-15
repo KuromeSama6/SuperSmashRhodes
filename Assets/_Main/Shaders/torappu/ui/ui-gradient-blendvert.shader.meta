@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: a5526326d777e85449b6998032e845c7
+timeCreated: 1731587170
+licenseType: Free
+ShaderImporter:
+  name:
+  externalObjects: {}
+  defaultTextures: []
+  userData:
+  assetBundleName: '[uc]shaders.ab'
+  assetBundleVariant:

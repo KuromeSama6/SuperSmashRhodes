@@ -78,6 +78,10 @@ public class PlayerInputModule : MonoBehaviour {
     public void OnHeavySlash(InputValue input) {
         thisFrameInputs.Add(new(InputType.HS, InputFrameType.PRESSED));
     }
+
+    public void OnForceReset(InputValue input) {
+        thisFrameInputs.Add(new(InputType.FORCE_RESET, InputFrameType.PRESSED));
+    }
     
 }
 }

@@ -32,6 +32,9 @@ public class State_CmnMoveForward : CharacterState {
         while (RevalidateInput()) {
             owner.rb.AddForceX(PhysicsUtil.NormalizeRelativeDirecionalForce(50, owner.side));
             owner.rb.linearVelocityX = Mathf.Clamp(owner.rb.linearVelocityX, -player.characterConfig.walkSpeed, player.characterConfig.walkSpeed);
+            // 0.01% meter gain per frame
+            player.meter.meter.value += 0.02f;
+            player.meter.meterBalance.value += 0.0007f;
             yield return 1;
         }
     }
@@ -64,6 +67,8 @@ public class State_CmnMoveBackward : CharacterState {
         while (RevalidateInput()) {
             owner.rb.AddForceX(PhysicsUtil.NormalizeRelativeDirecionalForce(-50, owner.side));
             owner.rb.linearVelocityX = Mathf.Clamp(owner.rb.linearVelocityX, -player.characterConfig.backwalkSpeed, player.characterConfig.backwalkSpeed);
+            
+            
             yield return 1;
         }
     }

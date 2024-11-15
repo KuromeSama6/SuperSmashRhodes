@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace SuperSmashRhodes.Battle {
 [CreateAssetMenu(menuName = "SSR/Battle/Combo Decay Data", order = 0)]
@@ -13,5 +14,8 @@ public class ComboDecayData : ScriptableObject {
     public AnimationCurve opponentBlowbackCurve;
     [PropertyTooltip("Vertical launch of future attacks. [1.0f, 0.0f]")]
     public AnimationCurve opponentLaunchCurve;
+    [FormerlySerializedAs("tensionGainProrationCurve")]
+    [PropertyTooltip("Tension gain proration. [1.0f, 0.0f]")]
+    public AnimationCurve meterGainProrationCurve;
 }
 }

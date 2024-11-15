@@ -101,6 +101,17 @@ public abstract class EntityState : NamedToken {
         stateData.cancelFlag |= flag;
     }
 
+    protected void RemoveCancelOption(EntityStateType flag) {
+        stateData.cancelFlag &= ~flag;
+    }
+    
+    protected void RemoveCancelOption(string stateName) {
+        if (!owner.states.TryGetValue(stateName, out var state))
+            throw new KeyNotFoundException($"State {stateName} not found");
+            
+        stateData.cancelOptions.Remove(state);
+    }
+    
     protected void CancelInto(string name) {
         if (!owner.states.TryGetValue(name, out var state))
             throw new KeyNotFoundException($"State {name} not found");

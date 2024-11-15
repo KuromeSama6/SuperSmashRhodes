@@ -6,6 +6,7 @@ using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Battle.State.Implementation;
+using SuperSmashRhodes.Character.Gauge;
 using SuperSmashRhodes.Input;
 using SuperSmashRhodes.Runtime.State;
 using SuperSmashRhodes.Util;
@@ -31,15 +32,33 @@ public class PlayerCharacter : Entity {
     public FrameDataRegister frameData { get; private set; }
 
     public UnityEvent onSideSwap { get; } = new();
+    public UnityEvent onRoundInit { get; } = new();
     
     private int applyGroundedFrictionFrames = 0;
     public float groundedFrictionAlpha { get; set; }
     public PushboxManager pushboxManager { get; private set; }
     public CharacterFXManager fxManager { get; private set; }
     public float neutralAniTransitionOverride { get; set; } = 0.05f;
+    public PlayerMeterGauge meter { get; private set; }
     
     private float airHitstunRotation = 0f;
     private float yRotationTarget = 0f;
+
+    public float gutsDamageModifier {
+        get {
+            var percentage = health / config.health;
+            if (percentage > .7f) return 1f;
+            var guts = characterConfig.guts;
+
+            if (percentage <= .1f) return .56f - guts * .03f;
+            if (percentage <= .2f) return .66f - guts * .03f;
+            if (percentage <= .3f) return .75f - guts * .02f;
+            if (percentage <= .4f) return .84f - guts * .02f;
+            if (percentage <= .5f) return .89f - guts * .02f;
+            if (percentage <= .6f) return .92f - guts * .01f;
+            return .97f - guts * .01f;
+        }
+    }
     
     public void Init(int playerIndex) {
         this.playerIndex = playerIndex;
@@ -53,6 +72,7 @@ public class PlayerCharacter : Entity {
         inputModule = GetComponent<PlayerInputModule>();
         pushboxManager = GetComponentInChildren<PushboxManager>();
         fxManager = GetComponentInChildren<CharacterFXManager>();
+        meter = GetComponent<PlayerMeterGauge>();
         
         pushboxManager.onGroundContact.AddListener(OnGroundContact);
     }
@@ -180,6 +200,7 @@ public class PlayerCharacter : Entity {
         
         // TODO: Z index management
         transform.position = new(playerIndex == 0 ? -1.5f : 1.5f, 0f, 0f);
+        onRoundInit.Invoke();
     }
 
     public void SetZPriority() {
@@ -270,7 +291,8 @@ public class PlayerCharacter : Entity {
                         dmg *= decayData.extraProrationCurve.Evaluate(comboCounter.comboDecay);
                     }
                 }
-                
+
+                dmg *= gutsDamageModifier;
                 health -= Mathf.Max(1, dmg);
             }
         }
@@ -280,7 +302,7 @@ public class PlayerCharacter : Entity {
         
         // pushback
         {
-            var amount = attack.GetPushback(this, airborne);
+            var amount = attack.GetPushback(this, airborne, blocked);
             if (blocked) amount.y = 0f;
             
             if (data.from is PlayerCharacter player) {
@@ -293,7 +315,7 @@ public class PlayerCharacter : Entity {
                 }
             }
             
-            ApplyCarriedPushback(amount);
+            ApplyCarriedPushback(amount, attack.GetCarriedMomentumPercentage(this));
         }
         
         // apply freeze frames
@@ -336,17 +358,21 @@ public class PlayerCharacter : Entity {
         if (airborne) airborne = false;
     }
 
-    private void ApplyCarriedPushback(Vector2 vec) {
+    private void ApplyCarriedPushback(Vector2 vec, Vector2 carriedMomentum) {
         float direction = side == EntitySide.LEFT ? -1 : 1;
         
         if (pushboxManager.atWall) {
+            opponent.rb.linearVelocity *= carriedMomentum;
             opponent.rb.AddForceX(vec.x * -direction, ForceMode2D.Impulse);
             opponent.groundedFrictionAlpha = 0;
+            // Debug.Log("at wall");
             // Debug.Log("add opponent force");
             
         } else {
+            rb.linearVelocity *= carriedMomentum;
             rb.AddForceX(vec.x * direction, ForceMode2D.Impulse);
             groundedFrictionAlpha = 0;
+            // Debug.Log("not at wall");
         }
         
         // y force

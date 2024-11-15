@@ -9,7 +9,8 @@ public interface IAttack {
     public float GetUnscaledDamage(Entity to);
     public float GetChipDamagePercentage(Entity to);
     public float GetOtgDamagePercentage(Entity to);
-    public Vector2 GetPushback(Entity to, bool airborne);
+    public Vector2 GetPushback(Entity to, bool airborne, bool blocked);
+    public Vector2 GetCarriedMomentumPercentage(Entity to);
     
     public float GetComboProration(Entity to);
     public float GetFirstHitProration(Entity to);
@@ -19,6 +20,8 @@ public interface IAttack {
     public int GetFreezeFrames(Entity to);
     public int GetAttackLevel(Entity to);
 
+    public float GetMeterGain(Entity to, bool blocked);
+    
     public bool MayHit(Entity target);
     public string GetAttackNormalSfx();
     public string GetBlockedSfx(Entity to);

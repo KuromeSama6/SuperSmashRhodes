@@ -7,6 +7,7 @@ public class CharacterConfiguration : ScriptableObject {
     public string prettyName;
     public float defenseModifier = 1f;
     public float baseGravity = 1.9f;
+    public int guts;
     
     [TabGroup("playerConfig", "Grounded Movement", SdfIconType.ArrowsMove, TextColor = "green")]
     public float walkSpeed, backwalkSpeed;
