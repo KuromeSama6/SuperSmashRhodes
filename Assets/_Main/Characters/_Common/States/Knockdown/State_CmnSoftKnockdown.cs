@@ -22,6 +22,7 @@ public class State_CmnSoftKnockdown : CharacterState {
     }
     public override IEnumerator MainRoutine() {
         player.fxManager.staticOnGroundedTechFlashPlayer.PlayFeedbacks();
+        yield return 1;
         player.comboCounter.Reset();
         yield return 30;
         player.neutralAniTransitionOverride = 0f;

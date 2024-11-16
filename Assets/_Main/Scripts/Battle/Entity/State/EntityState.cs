@@ -43,7 +43,7 @@ public abstract class EntityState : NamedToken {
         ++frame;
 
         // Debug.Log($"frames: {PhysicsTickManager.inst.globalFreezeFrames}"); 
-
+        OnTick();
         
         // scheduled animation
         if (scheduledPauseAnimationFrames > 0) {
@@ -125,6 +125,7 @@ public abstract class EntityState : NamedToken {
     }
     
     // Virtual methods / Events
+    protected virtual void OnTick() { }
     protected virtual void OnStateBegin() { }
     protected virtual void OnStateEnd() {}
     // Abstract methods

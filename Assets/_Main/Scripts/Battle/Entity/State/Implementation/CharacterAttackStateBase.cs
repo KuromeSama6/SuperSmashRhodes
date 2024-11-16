@@ -88,7 +88,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
             // Debug.Log(attack.frameData.startup + frameData.startup + frameData.active);
             frames = Mathf.Max(1, attack.GetFreezeFrames(null) + frameData.startup + frameData.active);
         } else {
-            frames = 6;
+            frames = normalInputBufferLength;
         }
 
         return buffer.TimeSlice(frames).ScanForInput(input); 
@@ -103,6 +103,9 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     protected abstract string mainAnimation { get; }
     public abstract AttackFrameData frameData { get; }
     protected abstract EntityStateType commonCancelOptions { get; }
+    protected abstract InputFrame[] requiredInput { get; }
+    protected abstract int normalInputBufferLength { get; }
+    
     protected virtual int totalHits => 1;
     
     // Events
@@ -116,19 +119,24 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     }
 
     // Member Methods
-
+    public virtual AttackSpecialProperties GetSpecialProperties(Entity to) {
+        return AttackSpecialProperties.NONE;
+    }
     public abstract float GetUnscaledDamage(Entity to);
     public abstract float GetChipDamagePercentage(Entity to);
     public abstract float GetOtgDamagePercentage(Entity to);
     public abstract Vector2 GetPushback(Entity to, bool airborne, bool blocked);
-    public abstract Vector2 GetCarriedMomentumPercentage(Entity to);
+    public virtual Vector2 GetCarriedMomentumPercentage(Entity to) {
+        return new(0.5f, 0.5f);
+    }
     public abstract float GetComboProration(Entity to);
     public abstract float GetFirstHitProration(Entity to);
     public abstract AttackGuardType GetGuardType(Entity to);
     public abstract int GetFreezeFrames([CanBeNull] Entity to);
     public abstract int GetAttackLevel(Entity to);
-    public abstract string GetAttackNormalSfx();
-    protected abstract InputFrame[] requiredInput { get; }
+    public virtual string GetAttackNormalSfx() {
+        return null;
+    }
 
     public string GetHitSfx(Entity to) {
         return "battle_generic_hit1";
@@ -140,5 +148,4 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         return 1f;
     }
 }
-
 }

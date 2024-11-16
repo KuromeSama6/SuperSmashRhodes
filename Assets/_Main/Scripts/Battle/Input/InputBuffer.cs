@@ -54,17 +54,28 @@ public class InputBuffer {
         var req = seq.ToList();
         if (req.Count == 0)
             throw new ArgumentException("Input sequence must have at least one element");
-            
+
+        bool result = false;
+        List<InputChord> toConsume = new();
+        
         for (int i = buffer.Count - 1; i >= 0; i--) {
             if (req[0].ToList().TrueForAll(c => buffer[i].HasInput(c))) {
                 // Debug.Log(string.Join(", ", buffer));
                 req.RemoveAt(0);
-                buffer[i].consumed = true;
-                if (req.Count == 0) return true;
+                toConsume.Add(buffer[i]);
+                if (req.Count == 0) {
+                    result = true;
+                    break;
+                }
             }
         }
-        
-        return false;
+
+        if (result) {
+            foreach (var c in toConsume) {
+                c.consumed = true;
+            }
+        }
+        return result;
     }
     
     public static InputType TranslateRawDirectionInput(InputType input, EntitySide side) {

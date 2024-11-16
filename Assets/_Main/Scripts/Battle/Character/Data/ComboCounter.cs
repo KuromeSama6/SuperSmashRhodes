@@ -37,7 +37,7 @@ public class ComboCounter : RuntimeCharacterDataRegister {
         // same move penalty
         if (movesUsed.ContainsKey(move.id)) {
             ++movesUsed[move.id];
-            comboDecay += 0.2f;
+            comboDecay += 0.4f * (movesUsed[move.id] + 1);
 
         } else movesUsed[move.id] = 1;
 

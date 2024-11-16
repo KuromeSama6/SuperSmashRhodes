@@ -265,6 +265,9 @@ public class PlayerCharacter : Entity {
         // register hit
         var frameData = attack.GetFrameData(this);
         int framesRemaining = frameData.active + frameData.recovery;
+        bool addFreezeFrames = true;
+        bool knockedDown = activeState.type.HasFlag(EntityStateType.CHR_HARD_KNOCKDOWN);
+        
         // Debug.Log($"inbound hit 1, neutral: {neutral}, blockheld: {blockHeld}, blockType: {blockType} blocked: {blocked}, framesRemaining: {framesRemaining}, blockstun {framesRemaining + move.frameData.onBlock}");
         ApplyGroundedFriction();
         if (blocked) {
@@ -274,7 +277,10 @@ public class PlayerCharacter : Entity {
             
         } else {
             this.frameData.SetHitstunFrames(framesRemaining + frameData.onHit, Mathf.Max(frameData.total - attack.GetCurrentFrame(this), 0));
-            if (!activeState.type.HasFlag(EntityStateType.CHR_HITSTUN)) BeginState(crouching ? "CmnHitStunGroundCrouch" : "CmnHitStunGround"); 
+            
+            // hit state select
+            HandleOnHitStateTransition(attack, crouching, out addFreezeFrames);
+            
             comboCounter.RegisterAttack(attack, this);
             attack.OnHit(this);
             airHitstunRotation = 0f;
@@ -293,6 +299,7 @@ public class PlayerCharacter : Entity {
                 }
 
                 dmg *= gutsDamageModifier;
+                if (knockedDown) dmg *= attack.GetOtgDamagePercentage(this);
                 health -= Mathf.Max(1, dmg);
             }
         }
@@ -304,6 +311,10 @@ public class PlayerCharacter : Entity {
         {
             var amount = attack.GetPushback(this, airborne, blocked);
             if (blocked) amount.y = 0f;
+            if (knockedDown) {
+                amount.y = 0f;
+                amount.x *= .2f;
+            }
             
             if (data.from is PlayerCharacter player) {
                 var decayData = player.comboDecayData;
@@ -321,9 +332,36 @@ public class PlayerCharacter : Entity {
         // apply freeze frames
 
         var freezeFrames = attack.GetFreezeFrames(this);
-        PhysicsTickManager.inst.Schedule(4, freezeFrames);
+        if (addFreezeFrames) PhysicsTickManager.inst.Schedule(4, freezeFrames);
     }
 
+    private void HandleOnHitStateTransition(IAttack attack, bool crouching, out bool addFreezeFrames) {
+        var specialProperties = attack.GetSpecialProperties(this);
+        addFreezeFrames = true;
+        
+        if (activeState.type.HasFlag(EntityStateType.CHR_HARD_KNOCKDOWN)) {
+            BeginState("CmnSoftKnockdown");
+            return;
+        }
+        
+        if (specialProperties.HasFlag(AttackSpecialProperties.HARD_KNOCKDOWN)) {
+            if (activeState is State_CmnHitStunAir hitStunAir) {
+                hitStunAir.hardKnockdownOnLand = true;
+            } else {
+                addFreezeFrames = false;
+                BeginState("CmnHardKnockdown");
+            }
+
+        } else if (specialProperties.HasFlag(AttackSpecialProperties.SOFT_KNOCKDOWN)) {
+            addFreezeFrames = false;
+            // airborne = true;
+            transform.position += new Vector3(0, .5f, 0);
+            BeginState("CmnHitStunAir");
+        } else {
+            if (!activeState.type.HasFlag(EntityStateType.CHR_HITSTUN)) BeginState(crouching ? "CmnHitStunGroundCrouch" : "CmnHitStunGround"); 
+        }
+    }
+    
     private bool CheckAttackHit(AttackData data) {
         var attack = data.attack;
         
@@ -380,6 +418,10 @@ public class PlayerCharacter : Entity {
         rb.linearVelocityY = 0;
         rb.AddForceY(vec.y, ForceMode2D.Impulse);
         
+    }
+    
+    public void PlayOwnedFx(string fx, CharacterFXSocketType type, Vector3 offset = default, Vector3 direction = default) {
+        fxManager.PlayGameObjectFX(assetLibrary.GetParticle(fx), type, offset, direction);
     }
     
 }

@@ -20,6 +20,14 @@ PrefabInstance:
       propertyPath: characterConfig
       value: 
       objectReference: {fileID: 11400000, guid: 09ecaf5fda998b143a3908503b954b7f, type: 2}
+    - target: {fileID: 2764539944195769258, guid: 869df265edc9b1e489d328c95c4d65cf, type: 3}
+      propertyPath: assetLibraries.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2764539944195769258, guid: 869df265edc9b1e489d328c95c4d65cf, type: 3}
+      propertyPath: 'assetLibraries.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 07a8c6abf656720498b1df910ed93abc, type: 2}
     - target: {fileID: 2974030519987698663, guid: 869df265edc9b1e489d328c95c4d65cf, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.5

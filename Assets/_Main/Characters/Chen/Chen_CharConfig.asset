@@ -15,7 +15,7 @@ MonoBehaviour:
   prettyName: "\u9648"
   defenseModifier: 0.9531
   baseGravity: 1.9
-  guts: 2
+  guts: 3
   walkSpeed: 1
   backwalkSpeed: 0.8
   prejump: 4

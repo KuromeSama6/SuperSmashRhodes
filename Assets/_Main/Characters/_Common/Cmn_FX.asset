@@ -253,7 +253,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    velocity: {x: 0, y: 0.03, z: 0}
+    velocity: {x: 0.1, y: 0.15, z: 0}
     duration: 0.3
   particleOnAnyHit: {fileID: 7872588379766544261, guid: d1092ba4a89d5a2428d2e37dc74b940c, type: 3}
   particleOnHitSmall: {fileID: 7532763792851826944, guid: 967641b1abebc01458f015bbbfe94614, type: 3}

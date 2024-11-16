@@ -58,6 +58,7 @@ public class PlayerInputModule : MonoBehaviour {
     }
     
     public void OnMove(InputValue input) {
+        // Debug.Log("on move");
         var value = input.Get<Vector2>().x;
         var facing = playerCharacter.side;
         
@@ -65,6 +66,10 @@ public class PlayerInputModule : MonoBehaviour {
             if (value > 0) thisFrameInputs.Add(new(InputBuffer.TranslateRawDirectionInput(InputType.RAW_MOVE_LEFT, facing), InputFrameType.PRESSED));
             else if (value < 0) thisFrameInputs.Add(new(InputBuffer.TranslateRawDirectionInput(InputType.RAW_MOVE_RIGHT, facing), InputFrameType.PRESSED));
         } 
+    }
+    
+    public void OnCrouch(InputValue input) {
+        thisFrameInputs.Add(new(InputType.DOWN, InputFrameType.PRESSED));
     }
 
     public void OnJump(InputValue input) {

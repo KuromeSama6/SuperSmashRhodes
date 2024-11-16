@@ -9,11 +9,6 @@ public class AttackData {
     public AttackResult result;
 }
 
-public enum AttackResult {
-    PENDING,
-    HIT,
-    BLOCKED
-}
 
 public struct AttackFrameData {
     public int startup, active, recovery, onHit, onBlock;

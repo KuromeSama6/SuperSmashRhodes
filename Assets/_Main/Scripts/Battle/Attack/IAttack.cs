@@ -5,6 +5,7 @@ public interface IAttack {
     public string id { get; }
     public AttackFrameData GetFrameData(Entity to);
     public int GetCurrentFrame(Entity to);
+    public AttackSpecialProperties GetSpecialProperties(Entity to);
     
     public float GetUnscaledDamage(Entity to);
     public float GetChipDamagePercentage(Entity to);

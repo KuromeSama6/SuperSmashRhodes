@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using SuperSmashRhodes.Battle.Enums;
+using SuperSmashRhodes.Battle.Stage;
 using Unity.Cinemachine;
 using UnityEditor.Tilemaps;
 using UnityEngine;
@@ -16,9 +17,9 @@ public class GameManager : SingletonBehaviour<GameManager> {
     public CinemachineCamera mainCamera;
     public CinemachineTargetGroup targetGroup;
 
-    [Title("Scene")]
+    [Title("Stage")]
+    public StageData stageData;
     public GameObject ground;
-    public GameObject leftWall, rightWall;
     
     [Title("Debug")]
     public GameObject p1Prefab;

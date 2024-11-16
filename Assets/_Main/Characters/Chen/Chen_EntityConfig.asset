@@ -13,49 +13,10 @@ MonoBehaviour:
   m_Name: Chen_EntityConfig
   m_EditorClassIdentifier: 
   id: chen
-  prettyName: "\u9648"
   tokenName: Chen
   entityType: 0
   stateLibraries:
   - {fileID: 11400000, guid: eec0401451ff3ff418a2bfd24c185f23, type: 2}
   - {fileID: 11400000, guid: 62afd55e79e5d4544b0c20ad2a057de0, type: 2}
+  - {fileID: 11400000, guid: b360ac9cf854c154bbf229bf3104cfc4, type: 2}
   health: 440
-  defenseModifier: 1
-  walkSpeed: 1
-  backwalkSpeed: 0.8
-  prejump: 4
-  jumpDuration: 41
-  jumpVelocity: 9
-  jumpGravity: 0
-  mayDash: 1
-  dashAccelCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 10
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 2
-      value: 100
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  dashSpeed: 3
-  airDashAvailableFrame: 0
-  airDashDuration: 0
-  backdashDuration: 0
-  backdashInvuln: 0
-  backdashAirborne: 0
-  backdashDistance: 0

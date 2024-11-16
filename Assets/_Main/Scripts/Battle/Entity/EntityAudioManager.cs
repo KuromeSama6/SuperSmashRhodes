@@ -12,6 +12,7 @@ public class EntityAudioManager : MonoBehaviour {
     }
 
     public void PlaySound(string soundName, float volume = 1f) {
+        if (soundName == null) return;
         audioSource.PlayOneShot(entity.assetLibrary.GetAudioClip(soundName), volume);
     }
 }

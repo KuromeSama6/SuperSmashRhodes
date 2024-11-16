@@ -25,7 +25,7 @@ public abstract class State_Common_Stun : CharacterState {
             player.ApplyGroundedFriction();
             // Debug.Log($"stun {frames}");
 
-            if (!player.airborne && player.transform.position.y > 0.35f) {
+            if (!player.airborne && player.transform.position.y >= 0.2f) {
                 CancelInto("CmnHitStunAir");
                 yield break;
             }

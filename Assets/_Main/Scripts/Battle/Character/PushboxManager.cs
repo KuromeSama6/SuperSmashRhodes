@@ -13,9 +13,10 @@ public class PushboxManager : MonoBehaviour {
     
     public UnityEvent onGroundContact { get; } = new();
     public bool atWall => atLeftWall || atRightWall;
+    public bool atLeftWall => player.side == EntitySide.LEFT && Mathf.Abs(player.transform.position.x - GameManager.inst.stageData.leftWallPosition) < 1f;
+    public bool atRightWall => player.side == EntitySide.RIGHT && Mathf.Abs(player.transform.position.x - GameManager.inst.stageData.rightWallPosition) < 1f;
+    
     public float pushboxSize => pushbox.size.x;
-
-    private bool atLeftWall, atRightWall;
     private PlayerCharacter player;
     private bool pushboxCorrectionLock;
     
@@ -24,6 +25,7 @@ public class PushboxManager : MonoBehaviour {
     }
 
     private void Update() {
+        // Debug.Log($"{player.name}: wall={atWall}, left={atLeftWall}, right={atRightWall}");
     }
 
     private void FixedUpdate() {
@@ -32,23 +34,7 @@ public class PushboxManager : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D other) {
         if (other.gameObject == GameManager.inst.ground) onGroundContact.Invoke();
-
-        if (player == null) return;   
-        var side = player.side;
-        if (other.gameObject == GameManager.inst.rightWall && side == EntitySide.RIGHT) {
-            atRightWall = true;
-            // Debug.Log("at l wall");
-        }
-        if (other.gameObject == GameManager.inst.leftWall && side == EntitySide.LEFT) {
-            atLeftWall = true;
-            // Debug.Log("at r wall");
-        }
-    }
-
-    private void OnCollisionExit2D(Collision2D other) {
-        if (other.gameObject == GameManager.inst.leftWall || other.gameObject == GameManager.inst.rightWall) {
-            atLeftWall = atRightWall = false;
-        }
+        
     }
 
     public void OnTriggerEnter2D(Collider2D other) {
@@ -72,8 +58,9 @@ public class PushboxManager : MonoBehaviour {
         pushboxCorrectionLock = true;
         // Debug.Log("pushbox cor 1r");
 
-        var nearestWall = player.opponent.side == EntitySide.LEFT ? GameManager.inst.leftWall : GameManager.inst.rightWall;
-        float gap = Mathf.Abs(nearestWall.transform.position.x - player.opponent.transform.position.x);
+        var stageData = GameManager.inst.stageData;
+        var nearestWall = player.opponent.side == EntitySide.LEFT ? stageData.leftWallPosition : stageData.rightWallPosition;
+        float gap = Mathf.Abs(nearestWall - player.opponent.transform.position.x);
         // Debug.Log($"{player.name}: gap {gap}, req={size}");
         
         float direction;

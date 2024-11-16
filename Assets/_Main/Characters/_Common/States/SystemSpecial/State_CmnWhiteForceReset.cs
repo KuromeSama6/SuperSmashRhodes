@@ -20,7 +20,7 @@ public class State_CmnWhiteForceReset : CharacterState {
     protected override void OnStateBegin() {
         base.OnStateBegin();
         player.meter.meter.value -= 50f;
-        player.rb.linearVelocityX = 0f;
+        player.ApplyGroundedFrictionImmediate();
         opponent.comboCounter.comboDecay = 0f;
         player.fxManager.PlayGameObjectFX(player.fxManager.fxLibrary.onWhiteForceReset, CharacterFXSocketType.SELF);
         player.audioManager.PlaySound("battle_forcereset");

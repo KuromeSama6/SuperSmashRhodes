@@ -1,7 +1,11 @@
 ﻿using SuperSmashRhodes.Battle;
+using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Battle.State.Implementation;
 using SuperSmashRhodes.Framework;
+using SuperSmashRhodes.Util;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace SuperSmashRhodes.Runtime.State {
 [NamedToken("Chen_NmlAtk5CS")]
@@ -40,6 +44,18 @@ public class State_Chen_NmlAtk5S : State_Common_NmlAtk5S {
     public override string GetAttackNormalSfx() {
         return "battle_generic_atk_sword2";
     }
+    public override void OnHit(Entity target) {
+        base.OnHit(target);
+        if (target is PlayerCharacter c) {
+            Vector3 angle = new(0f, 0f, Random.Range(20, 80));
+            Vector3 offset = new(Random.Range(-.1f, .1f), Random.Range(-.1f, .1f), 0);
+            c.PlayOwnedFx("p_chen_slash", CharacterFXSocketType.SELF, offset, angle);
+            // Debug.Log("On hit");
+            // AddressablesUtil.LoadAsync<GameObject>("battle/chr/chen/fx/p_chen_slash", go => {
+            //     c.fxManager.PlayGameObjectFX(go, CharacterFXSocketType.SELF);
+            // });
+        }
+    }
 }
 
 
@@ -58,6 +74,15 @@ public class State_Chen_NmlAtk5H : State_Common_NmlAtk5H {
     }
     public override string GetAttackNormalSfx() {
         return "battle_generic_atk_sword3";
+    }
+    public override void OnHit(Entity target) {
+        base.OnHit(target);
+        if (target is PlayerCharacter c) {
+            // c.PlayOwnedFx("p_chen_slash", CharacterFXSocketType.SELF);
+            Vector3 angle = new(0f, 0f, Random.Range(20, 80));
+            Vector3 offset = new(Random.Range(-.1f, .1f), Random.Range(-.1f, .1f), 0);
+            c.PlayOwnedFx("p_chen_slash", CharacterFXSocketType.SELF, offset, angle);
+        }
     }
 }
 

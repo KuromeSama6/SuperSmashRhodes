@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f171b95c005a4d1896106a7a10205ec5, type: 3}
   m_Name: Chen_StateLib
   m_EditorClassIdentifier: 
+  prefix: 
+  useTokenNameAsPrefix: 0
   states:
-  - Chen_NmlAtk5S
+  - Chen_SklUnsheathHeavy
