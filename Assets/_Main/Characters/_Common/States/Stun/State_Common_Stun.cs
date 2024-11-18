@@ -16,8 +16,7 @@ public abstract class State_Common_Stun : CharacterState {
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
-        owner.animation.AddUnmanagedAnimation(animationName, true, 0);
-        // Debug.Log($"stun start, {frames}");
+        owner.animation.AddUnmanagedAnimation(animationName, true, 0); 
     }
 
     public override IEnumerator MainRoutine() {

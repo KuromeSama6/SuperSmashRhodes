@@ -29,4 +29,15 @@ public enum AttackSpecialProperties {
     SOFT_KNOCKDOWN = 1 << 0,
     HARD_KNOCKDOWN = 1 << 1,
 }
+
+[Flags]
+public enum DamageSpecialProperties {
+    NONE = 0,
+    
+    IGNORE_COMBO = 1 << 0,
+    IGNORE_COMBO_DECAY = 1 << 1,
+    SKIP_REGISTER = 1 << 2,
+    
+    REAL_DAMAGE = IGNORE_COMBO | IGNORE_COMBO_DECAY
+}
 }

@@ -3,6 +3,7 @@ using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Input;
+using UnityEngine.AddressableAssets;
 
 namespace SuperSmashRhodes.Runtime.State {
 [NamedToken("CmnHardKnockdown")]
@@ -17,7 +18,7 @@ public class State_CmnHardKnockdown : CharacterState {
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
-        owner.animation.AddUnmanagedAnimation("std_down", false);
+        owner.animation.AddUnmanagedAnimation("std/down", false);
     }
     public override IEnumerator MainRoutine() {
         yield return 55;

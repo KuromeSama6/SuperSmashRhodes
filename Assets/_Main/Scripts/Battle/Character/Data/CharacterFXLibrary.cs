@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.FX {
@@ -8,16 +9,5 @@ public class CharacterFXLibrary : ScriptableObject {
     public SimpleCameraShakeData cameraShakeOnHitSmall;
     public SimpleCameraShakeData cameraShakeOnHitMedium;
     public SimpleCameraShakeData cameraShakeOnHitLarge;
-    
-    [Title("Particles")]
-    public GameObject particleOnAnyHit;
-    public GameObject particleOnHitSmall;
-    public GameObject particleOnHitMedium;
-    public GameObject particleOnBlock;
-    public GameObject particleOnLargerHitDirectional;
-    public GameObject onWhiteForceReset;
-    
-    [Title("Managed")]
-    public GameObject managedAttackBlock;
 }
 }

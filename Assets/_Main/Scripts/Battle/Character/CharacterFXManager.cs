@@ -1,7 +1,8 @@
-﻿using System;
-using MoreMountains.Feedbacks;
+﻿using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
+using SuperSmashRhodes.Adressable;
 using SuperSmashRhodes.Battle.Enums;
+using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Runtime.State;
 using SuperSmashRhodes.Util;
 using UnityEngine;
@@ -26,13 +27,25 @@ public class CharacterFXManager : MonoBehaviour {
         particleContainer.transform.localPosition = Vector3.zero;
     }
 
+    public void PlayGameObjectFX(string key, CharacterFXSocketType type, Vector3 offset = default, Vector3 direction = default) {
+        AssetManager.Get<GameObject>(key, (prefab) => {
+            PlayGameObjectFX(prefab, type, offset, direction);
+        });
+    }
+    
     public void PlayGameObjectFX(GameObject prefab, CharacterFXSocketType type, Vector3 offset = default, Vector3 direction = default) {
-        var socket = sockets[type];
+        var socket = type == CharacterFXSocketType.WORLD ? null : sockets[type];
         var go = Instantiate(prefab, socket);
 
+        if (type == CharacterFXSocketType.WORLD) {
+            go.transform.position = player.transform.position + new Vector3(0, 1, 0) + PhysicsUtil.NormalizeSide(offset, player.side);
+            go.transform.position = GameManager.inst.ClampPositionToStage(go.transform.position);
+        } else {
+            go.transform.localPosition = Vector3.zero + offset;
+        }
+        
         // if (player.activeState is State_CmnHitStunAir) offset += new Vector3(0, -.5f, 0);
-        go.transform.localPosition = Vector3.zero + offset;
-        go.transform.eulerAngles += direction;
+        go.transform.localEulerAngles += direction;
         // print(go.GetComponent<MeshRenderer>());
         
     }
@@ -43,7 +56,7 @@ public class CharacterFXManager : MonoBehaviour {
         bool isLargeHit = level >= 2;
 
         if (isLargeHit) {
-            PlayGameObjectFX(fxLibrary.particleOnAnyHit, CharacterFXSocketType.DIRECTIONAL_SELF);
+            PlayGameObjectFX("cmn/batte/fx/prefab/common/attack_land/0", CharacterFXSocketType.DIRECTIONAL_SELF);
         }
 
         switch (attack.GetAttackLevel(data.to)) {
@@ -61,19 +74,19 @@ public class CharacterFXManager : MonoBehaviour {
         
         switch (data.result) {
             case AttackResult.BLOCKED:
-                PlayGameObjectFX(fxLibrary.particleOnBlock, CharacterFXSocketType.DIRECTIONAL_SELF);
-                PlayGameObjectFX(fxLibrary.managedAttackBlock, CharacterFXSocketType.DIRECTIONAL_SELF);
+                PlayGameObjectFX("cmn/batte/fx/prefab/common/block/0", CharacterFXSocketType.DIRECTIONAL_SELF);
+                PlayGameObjectFX("cmn/batte/fx/prefab/common/block/1", CharacterFXSocketType.DIRECTIONAL_SELF);
                 break;
             
             case AttackResult.HIT:
                 if (isLargeHit) {
-                    PlayGameObjectFX(fxLibrary.particleOnHitMedium, CharacterFXSocketType.DIRECTIONAL_SELF_TAIL);
-                    PlayGameObjectFX(fxLibrary.particleOnLargerHitDirectional, 
+                    PlayGameObjectFX("cmn/batte/fx/prefab/common/hit/medium", CharacterFXSocketType.DIRECTIONAL_SELF_TAIL);
+                    PlayGameObjectFX("cmn/batte/fx/prefab/common/hit/directional", 
                                      CharacterFXSocketType.DIRECTIONAL_SELF_TAIL, 
                                      new(-0, 0, 0),  
                                      new(0, -90, 0));
                 } else {
-                    PlayGameObjectFX(fxLibrary.particleOnHitSmall, CharacterFXSocketType.DIRECTIONAL_SELF);
+                    PlayGameObjectFX("cmn/batte/fx/prefab/common/hit/light", CharacterFXSocketType.DIRECTIONAL_SELF);
                 }
                 break;
         }
@@ -85,6 +98,7 @@ public class CharacterFXManager : MonoBehaviour {
 public enum CharacterFXSocketType {
     SELF,
     DIRECTIONAL_SELF,
-    DIRECTIONAL_SELF_TAIL 
+    DIRECTIONAL_SELF_TAIL,
+    WORLD
 }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace SuperSmashRhodes.Util {
+namespace SuperSmashRhodes.Framework {
 public class CoroutineWrapper<T> : IEnumerator {
     public T result { get; private set; }
     public bool hasResult { get; private set; }

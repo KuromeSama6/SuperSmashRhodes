@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Reflection;
 using UnityEngine;
 
-namespace SuperSmashRhodes.Util {
+namespace SuperSmashRhodes.Framework {
 public abstract class AutoInitSingletonBehaviour<T> : PersistentSingletonBehaviour<T> where T : AutoInitSingletonBehaviour<T> {
     protected virtual string objectName => $"{GetType().Name}.Singleton";
     

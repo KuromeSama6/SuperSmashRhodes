@@ -18,7 +18,7 @@ public class State_CmnSoftKnockdown : CharacterState {
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
-        owner.animation.AddUnmanagedAnimation("std_ground_tech", false);
+        owner.animation.AddUnmanagedAnimation("std/ground_tech", false);
     }
     public override IEnumerator MainRoutine() {
         player.fxManager.staticOnGroundedTechFlashPlayer.PlayFeedbacks();

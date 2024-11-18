@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MoreMountains.Feedbacks;
 using NUnit.Framework;
 using Sirenix.OdinInspector;
+using SuperSmashRhodes.Framework;
 using UnityEngine;
 
 namespace SuperSmashRhodes.FX {

@@ -19,22 +19,27 @@ public class State_CmnJump : CharacterState {
     }
     
     public override IEnumerator MainRoutine() {
-        owner.animation.AddUnmanagedAnimation("std_prejump", false, .1f);
+        owner.animation.AddUnmanagedAnimation("std/prejump", false, .1f);
         
         var prejumpFrames = player.characterConfig.prejump;
-        player.ApplyGroundedFriction(2);
+        var originalX = player.rb.linearVelocityX;
+        
+        player.ApplyGroundedFrictionImmediate();
         yield return prejumpFrames;
 
         player.airborne = true;
-        owner.animation.AddUnmanagedAnimation("std_jump_up", true);
+        owner.animation.AddUnmanagedAnimation("std/jump_up", true);
 
         float xForce = 0;
-        float amount = 2;
-        
-        if (player.inputModule.localBuffer.thisFrame.HasInput(InputType.FORWARD, InputFrameType.HELD))
-            xForce = PhysicsUtil.NormalizeRelativeDirecionalForce(amount, owner.side);
-        else if (player.inputModule.localBuffer.thisFrame.HasInput(InputType.BACKWARD, InputFrameType.HELD))
-            xForce = PhysicsUtil.NormalizeRelativeDirecionalForce(-amount, owner.side);
+        float amount = 3f;
+
+        if (player.inputModule.localBuffer.thisFrame.HasInput(InputType.DASH, InputFrameType.HELD)) {
+            xForce = PhysicsUtil.NormalizeSide(amount * 1.5f, owner.side);
+        } if (player.inputModule.localBuffer.thisFrame.HasInput(InputType.FORWARD, InputFrameType.HELD)) {
+            xForce = PhysicsUtil.NormalizeSide(amount, owner.side);
+        } else if (player.inputModule.localBuffer.thisFrame.HasInput(InputType.BACKWARD, InputFrameType.HELD)) {
+            xForce = PhysicsUtil.NormalizeSide(-amount, owner.side);
+        }
         
         owner.rb.AddForce(new(xForce, player.characterConfig.jumpVelocity), ForceMode2D.Impulse);
 

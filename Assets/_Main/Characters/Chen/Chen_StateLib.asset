@@ -16,3 +16,4 @@ MonoBehaviour:
   useTokenNameAsPrefix: 0
   states:
   - Chen_SklUnsheathHeavy
+  - Chen_SklUnsheathLight

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-namespace SuperSmashRhodes.Util {
+namespace SuperSmashRhodes.Framework {
 public class MainThreadDispatcher : AutoInitSingletonBehaviour<MainThreadDispatcher> {
     private static SynchronizationContext mainThreadContext;
 
@@ -37,12 +37,6 @@ public class MainThreadDispatcher : AutoInitSingletonBehaviour<MainThreadDispatc
                 action?.Invoke();
             }
         }
-    }
-
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-    protected static void Init() {
-        InitInternal();
-        
     }
 }
 }

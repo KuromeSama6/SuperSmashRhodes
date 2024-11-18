@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SuperSmashRhodes {
+namespace SuperSmashRhodes.Framework {
 public abstract class PersistentSingletonBehaviour<T> : SingletonBehaviour<T> where T : MonoBehaviour {
     protected override void Awake() {
         if (inst != null && inst != this) {

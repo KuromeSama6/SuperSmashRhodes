@@ -24,7 +24,7 @@ public class State_Chen_NmlAtk5CS : State_Common_NmlAtk5CS {
     }
 
     public override string GetAttackNormalSfx() {
-        return "battle_generic_atk_sword1";
+        return "cmn/battle/sfx/attack/sword/1";
     }
 }
 
@@ -42,16 +42,16 @@ public class State_Chen_NmlAtk5S : State_Common_NmlAtk5S {
         return 34;
     }
     public override string GetAttackNormalSfx() {
-        return "battle_generic_atk_sword2";
+        return "cmn/battle/sfx/attack/sword/2";
     }
     public override void OnHit(Entity target) {
         base.OnHit(target);
         if (target is PlayerCharacter c) {
             Vector3 angle = new(0f, 0f, Random.Range(20, 80));
             Vector3 offset = new(Random.Range(-.1f, .1f), Random.Range(-.1f, .1f), 0);
-            c.PlayOwnedFx("p_chen_slash", CharacterFXSocketType.SELF, offset, angle);
+            c.PlayOwnedFx("prefab/nml/slash/1", CharacterFXSocketType.SELF, offset, angle);
             // Debug.Log("On hit");
-            // AddressablesUtil.LoadAsync<GameObject>("battle/chr/chen/fx/p_chen_slash", go => {
+            // AddressablesUtil.LoadAsync<GameObject>("chr/chen/battle/fx/p_chen_slash", go => {
             //     c.fxManager.PlayGameObjectFX(go, CharacterFXSocketType.SELF);
             // });
         }
@@ -66,14 +66,14 @@ public class State_Chen_NmlAtk5H : State_Common_NmlAtk5H {
         startup = 12,
         active = 6,
         recovery = 21,
-        onHit = -5,
+        onHit = +5,
         onBlock = -8,
     };
     public override float GetUnscaledDamage(Entity to) {
         return 48;
     }
     public override string GetAttackNormalSfx() {
-        return "battle_generic_atk_sword3";
+        return "cmn/battle/sfx/attack/sword/3";
     }
     public override void OnHit(Entity target) {
         base.OnHit(target);
@@ -81,7 +81,7 @@ public class State_Chen_NmlAtk5H : State_Common_NmlAtk5H {
             // c.PlayOwnedFx("p_chen_slash", CharacterFXSocketType.SELF);
             Vector3 angle = new(0f, 0f, Random.Range(20, 80));
             Vector3 offset = new(Random.Range(-.1f, .1f), Random.Range(-.1f, .1f), 0);
-            c.PlayOwnedFx("p_chen_slash", CharacterFXSocketType.SELF, offset, angle);
+            c.PlayOwnedFx("prefab/nml/slash/1", CharacterFXSocketType.SELF, offset, angle);
         }
     }
 }
@@ -100,7 +100,17 @@ public class State_Chen_NmlAtk2H : State_Common_NmlAtk2H {
         return 54;
     }
     public override string GetAttackNormalSfx() {
-        return "battle_generic_atk_sword9";
+        return "cmn/battle/sfx/attack/sword/9";
     }
 }
+
+[NamedToken("Chen_NmlAtkGndThrow")]
+public class State_Chen_NmlAtkGndThrow : State_Common_NmlAtkGndThrow {
+    public State_Chen_NmlAtkGndThrow(Entity owner) : base(owner) { }
+    protected override int animationLength => 71;
+    protected override int[] GetCosmeticHitFrames(PlayerCharacter to) {
+        return new[] { 39 };
+    }
+}
+
 }

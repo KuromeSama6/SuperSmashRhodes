@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
-[CreateAssetMenu(menuName = "SSR/Battle/Entity Asset Library")]
+// [CreateAssetMenu(menuName = "SSR/Battle/Entity Asset Library")]
+[Obsolete]
 public class EntityAssetLibrary : ScriptableObject {
     public List<AudioClip> audioClips = new();
     public List<GameObject> particles = new();

@@ -33,7 +33,7 @@ public class ComboCounterUI : PerSideUIElement<ComboCounterUI> {
     
     private void Update() {
         if (!player) return;
-        var count = player.opponent.comboCounter.count;
+        var count = player.opponent.comboCounter.displayedCount;
         
         if (count >= 2) {
             if (!shown) {

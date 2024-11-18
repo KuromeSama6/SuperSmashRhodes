@@ -4,6 +4,7 @@ namespace SuperSmashRhodes.Battle {
 public class FrameDataRegister : RuntimeCharacterDataRegister {
     public int hitstunFrames { get => _hitstunFrames + carriedHitstunFrames; }
     public int blockstunFrames { get; set; }
+    public int throwInvulnFrames { get; set; }
 
     private int _hitstunFrames;
     private int carriedHitstunFrames;
@@ -17,8 +18,13 @@ public class FrameDataRegister : RuntimeCharacterDataRegister {
             --_hitstunFrames;
         }
         
+        
         if (blockstunFrames > 0) {
             --blockstunFrames;
+        }
+        
+        if (throwInvulnFrames > 0) {
+            --throwInvulnFrames;
         }
     }
 

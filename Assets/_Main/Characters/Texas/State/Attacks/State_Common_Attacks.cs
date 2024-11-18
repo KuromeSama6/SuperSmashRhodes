@@ -20,7 +20,7 @@ public class StateTexasNmlAtk5CS : State_Common_NmlAtk5CS {
     }
 
     public override string GetAttackNormalSfx() {
-        return "battle_generic_atk_sword1";
+        return "cmn/battle/sfx/attack/sword/1";
     }
 }
 }

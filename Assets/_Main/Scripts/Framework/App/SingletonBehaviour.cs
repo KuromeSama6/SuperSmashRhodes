@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SuperSmashRhodes {
+namespace SuperSmashRhodes.Framework {
 public abstract class SingletonBehaviour<T> : MonoBehaviour where T : MonoBehaviour {
     public static T inst { get; protected set; }
 

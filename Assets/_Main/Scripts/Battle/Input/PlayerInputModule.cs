@@ -84,6 +84,10 @@ public class PlayerInputModule : MonoBehaviour {
         thisFrameInputs.Add(new(InputType.HS, InputFrameType.PRESSED));
     }
 
+    public void OnDust(InputValue input) {
+        thisFrameInputs.Add(new(InputType.D, InputFrameType.PRESSED));
+    }
+    
     public void OnForceReset(InputValue input) {
         thisFrameInputs.Add(new(InputType.FORCE_RESET, InputFrameType.PRESSED));
     }

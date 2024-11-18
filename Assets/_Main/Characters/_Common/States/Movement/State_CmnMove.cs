@@ -27,10 +27,10 @@ public class State_CmnMoveForward : CharacterState {
     }
 
     public override IEnumerator MainRoutine() {
-        owner.animation.AddUnmanagedAnimation("std_walk", true);
+        owner.animation.AddUnmanagedAnimation("std/walk", true);
         
         while (RevalidateInput()) {
-            owner.rb.AddForceX(PhysicsUtil.NormalizeRelativeDirecionalForce(50, owner.side));
+            owner.rb.AddForceX(PhysicsUtil.NormalizeSide(50, owner.side));
             owner.rb.linearVelocityX = Mathf.Clamp(owner.rb.linearVelocityX, -player.characterConfig.walkSpeed, player.characterConfig.walkSpeed);
             // 0.01% meter gain per frame
             player.meter.meter.value += 0.02f;
@@ -62,10 +62,10 @@ public class State_CmnMoveBackward : CharacterState {
     }
 
     public override IEnumerator MainRoutine() {
-        owner.animation.AddUnmanagedAnimation("std_walk", true);
+        owner.animation.AddUnmanagedAnimation("std/walk", true);
         
         while (RevalidateInput()) {
-            owner.rb.AddForceX(PhysicsUtil.NormalizeRelativeDirecionalForce(-50, owner.side));
+            owner.rb.AddForceX(PhysicsUtil.NormalizeSide(-50, owner.side));
             owner.rb.linearVelocityX = Mathf.Clamp(owner.rb.linearVelocityX, -player.characterConfig.backwalkSpeed, player.characterConfig.backwalkSpeed);
             
             

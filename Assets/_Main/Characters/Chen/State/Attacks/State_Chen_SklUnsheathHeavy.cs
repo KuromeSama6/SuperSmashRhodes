@@ -1,4 +1,5 @@
-﻿using SuperSmashRhodes.Battle;
+﻿using SuperSmashRhodes.Adressable;
+using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Framework;
@@ -9,7 +10,7 @@ namespace SuperSmashRhodes.Runtime.State {
 [NamedToken("Chen_SklUnsheathHeavy")]
 public class State_Chen_SklUnsheathHeavy : State_Common_SpecialAttack {
     public State_Chen_SklUnsheathHeavy(Entity owner) : base(owner) { }
-    protected override string mainAnimation => "chen_SklUnsheathHeavy";
+    protected override string mainAnimation => "chr/SklUnsheathHeavy";
 
     public override AttackFrameData frameData => new() {
         startup = 25,
@@ -52,24 +53,26 @@ public class State_Chen_SklUnsheathHeavy : State_Common_SpecialAttack {
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
-        player.PlayOwnedFx("p_chen_seq_214h_1", CharacterFXSocketType.SELF);
+        player.PlayOwnedFx("prefab/skl_214h/0", CharacterFXSocketType.SELF);
     }
 
     protected override void OnActive() {
         base.OnActive();
-        owner.audioManager.PlaySound($"vo_chen_modal_{Random.Range(1, 3)}");
+        owner.audioManager.PlaySound($"chr/chen/battle/vo/modal/{Random.Range(0, 3)}");
     }
 
     protected override void OnTick() {
         base.OnTick();
         if (frame == 10) {
-            owner.audioManager.PlaySound("sfx_chen_SklUnsheathHeavy");
+            owner.audioManager.PlaySound("chr/chen/battle/sfx/skl_214h/0");
         }
     }
 
     public override void OnHit(Entity target) {
         base.OnHit(target);
-        opponent.fxManager.PlayGameObjectFX(player.assetLibrary.GetParticle("p_chen_214h_hit1"), CharacterFXSocketType.SELF);
+        AssetManager.Get<GameObject>("chr/chen/battle/fx/prefab/skl_214h/hit/0", go => {
+            opponent.fxManager.PlayGameObjectFX(go, CharacterFXSocketType.SELF);
+        });
     }
 }
 }

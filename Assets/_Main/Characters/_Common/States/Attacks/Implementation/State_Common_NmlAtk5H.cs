@@ -13,7 +13,7 @@ public abstract class State_Common_NmlAtk5H : State_Common_NormalAttack {
     public override EntityStateType type => EntityStateType.CHR_ATK_5H;
     public override float inputPriority => 3;
 
-    protected override string mainAnimation => "cmn_NmlAtk5H";
+    protected override string mainAnimation => "cmn/NmlAtk5H";
 
     protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_SPECIAL_SUPER;
     protected override InputFrame[] requiredInput => new InputFrame[] {new(InputType.HS, InputFrameType.PRESSED)};

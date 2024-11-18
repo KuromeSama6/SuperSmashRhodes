@@ -6,6 +6,7 @@ using UnityEngine.Events;
 
 namespace SuperSmashRhodes.Battle {
 public class ComboCounter : RuntimeCharacterDataRegister {
+    public int displayedCount { get; private set; }
     public int count { get; private set; }
     public bool inCombo => count >= 2;
     
@@ -25,7 +26,10 @@ public class ComboCounter : RuntimeCharacterDataRegister {
 
     }
 
-    public void RegisterAttack(IAttack move, Entity victim) {
+    public void RegisterAttack(IAttack move, Entity victim, bool skipRegister = false) {
+        ++displayedCount;
+        if (skipRegister) return;
+        
         ++count;
         
         if (count == 1) {
@@ -62,7 +66,7 @@ public class ComboCounter : RuntimeCharacterDataRegister {
     }
     
     public void Reset() {
-        count = 0;
+        count = displayedCount = 0;
         overallProration = 1f;
         appliedProration = 1f;
         comboDecay = 0;

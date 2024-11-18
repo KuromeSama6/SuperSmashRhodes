@@ -11,7 +11,7 @@ namespace SuperSmashRhodes.Runtime.State {
 public class State_CmnBlockStun : State_Common_Stun {
     public State_CmnBlockStun(Entity owner) : base(owner) { }
     protected override int frames => player.frameData.blockstunFrames;
-    protected override string animationName => "std_blockstun";
+    protected override string animationName => "std/blockstun";
     public override EntityStateType type => EntityStateType.CHR_BLOCKSTUN;
     public override bool mayEnterState => owner.activeState is State_CmnBlockStunCrouch;
     public override bool IsInputValid(InputBuffer buffer) {
@@ -28,7 +28,7 @@ public class State_CmnBlockStun : State_Common_Stun {
 public class State_CmnBlockStunCrouch : State_Common_Stun {
     public State_CmnBlockStunCrouch(Entity owner) : base(owner) { }
     protected override int frames => player.frameData.blockstunFrames;
-    protected override string animationName => "std_blockstun_crouch";
+    protected override string animationName => "std/blockstun_crouch";
     public override EntityStateType type => EntityStateType.CHR_BLOCKSTUN;
 
     public override bool mayEnterState => owner.activeState is State_CmnBlockStun;

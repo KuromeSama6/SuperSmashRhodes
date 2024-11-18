@@ -8,7 +8,7 @@ namespace SuperSmashRhodes.Runtime.State {
 public class State_CmnHitStun : State_Common_Stun {
     public State_CmnHitStun(Entity owner) : base(owner) { }
     protected override int frames => player.frameData.hitstunFrames;
-    protected override string animationName => "std_hitstun_ground";
+    protected override string animationName => "std/hitstun_ground";
     public override EntityStateType type => EntityStateType.CHR_HITSTUN;
 
     protected override void OnStateBegin() {
@@ -22,7 +22,7 @@ public class State_CmnHitStun : State_Common_Stun {
 public class State_CmnHitStunCrouch : State_Common_Stun {
     public State_CmnHitStunCrouch(Entity owner) : base(owner) { }
     protected override int frames => player.frameData.hitstunFrames;
-    protected override string animationName => "std_hitstun_ground_crouch";
+    protected override string animationName => "std/hitstun_ground_crouch";
     public override EntityStateType type => EntityStateType.CHR_HITSTUN;
 
     protected override void OnStateBegin() {
@@ -36,7 +36,7 @@ public class State_CmnHitStunCrouch : State_Common_Stun {
 public class State_CmnHitStunAir : State_Common_Stun {
     public State_CmnHitStunAir(Entity owner) : base(owner) { }
     protected override int frames => player.frameData.hitstunFrames;
-    protected override string animationName => "std_hitstun_air";
+    protected override string animationName => "std/hitstun_air";
     public override EntityStateType type => EntityStateType.CHR_HITSTUN;
     public override bool mayEnterState => player.airborne;
     

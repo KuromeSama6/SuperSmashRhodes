@@ -13,9 +13,12 @@ public class EntityAnimationController : MonoBehaviour {
     private AnimationState state => animation.state;
     private float currentBlendProgress = 0f;
     private List<TrackBlend> blends = new();
+    private PlayerCharacter player;
     
     private void Start() {
         animation = GetComponentInChildren<SkeletonAnimation>();
+        state.Event += OnUserDefinedEvent;
+        player = GetComponentInParent<PlayerCharacter>();
     }
 
     private void Update() {
@@ -24,8 +27,13 @@ public class EntityAnimationController : MonoBehaviour {
 
     public void AddUnmanagedAnimation(string name, bool loop, float transitionTime = 0f) {
         var track = state.GetCurrent(0);
+        // transitionTime = Mathf.Max(Time.fixedDeltaTime, transitionTime);
+        
         if (transitionTime == 0) {
+            // force the last frame to play
+            // state.Update(track.TrackEnd - track.TrackTime);
             state.ClearTrack(0);
+            
         } else {
             track.Loop = false;
         }
@@ -36,6 +44,20 @@ public class EntityAnimationController : MonoBehaviour {
         if (animation == null) return;
         animation.Update(frames * Time.fixedDeltaTime);
         
+    }
+    
+    private void OnUserDefinedEvent(TrackEntry trackEntry, Spine.Event e) {
+        var name = e.Data.Name;
+        var args = (e.String ?? "").Split();
+        
+        switch (name) {
+            case "PlaySound":
+                var path = args[0];
+                var volume = args.Length > 1 ? float.Parse(args[1]) : 1f;
+                player.audioManager.PlaySound(path, volume);
+                break;
+        }
+
     }
     
 }

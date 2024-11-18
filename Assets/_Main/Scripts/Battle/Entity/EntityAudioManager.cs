@@ -1,4 +1,5 @@
 ﻿using System;
+using SuperSmashRhodes.Adressable;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
@@ -13,7 +14,7 @@ public class EntityAudioManager : MonoBehaviour {
 
     public void PlaySound(string soundName, float volume = 1f) {
         if (soundName == null) return;
-        audioSource.PlayOneShot(entity.assetLibrary.GetAudioClip(soundName), volume);
+        AssetManager.Get<AudioClip>(soundName, clip => audioSource.PlayOneShot(clip, volume)); 
     }
 }
 }

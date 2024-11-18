@@ -13,11 +13,76 @@ MonoBehaviour:
   m_Name: Particles
   m_EditorClassIdentifier: 
   m_GroupName: Particles
-  m_GUID: 0448ce7050f34de47a72d32251af94ec
-  m_SerializeEntries: []
+  m_GUID: 6a30011c4a61c344093408f8298d18f6
+  m_SerializeEntries:
+  - m_GUID: 200b4a47f1c44e74d89dcb757b480353
+    m_Address: cmn/batte/fx/prefab/common/block/0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5bb94a7e79778004c95f2c6b9228be17
+    m_Address: chr/chen/battle/fx/prefab/skl_214s/hit/0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 645b4eee0b951284ea165d89d38e88cb
+    m_Address: cmn/batte/fx/prefab/common/block/1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 73d8c0d1649d7c64ba607efbecb439b4
+    m_Address: cmn/batte/fx/prefab/common/hit/4
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 782d423118be8dd47af103272cfa916a
+    m_Address: chr/chen/battle/fx/prefab/skl_214s/0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8092d09a7c6747a478a194b8c81d5c32
+    m_Address: cmn/batte/fx/prefab/common/force_reset/0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 967641b1abebc01458f015bbbfe94614
+    m_Address: cmn/batte/fx/prefab/common/hit/light
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9c5a832b3487b154fa6752e45e03d0a6
+    m_Address: chr/chen/battle/fx/prefab/nml/slash/1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a40c613ff4e5bb745975c556110388ac
+    m_Address: cmn/batte/fx/prefab/common/hit/medium
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a616a7f35c67cd84d8de5163ceb3e6c4
+    m_Address: chr/chen/battle/fx/prefab/skl_214h/0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1092ba4a89d5a2428d2e37dc74b940c
+    m_Address: cmn/batte/fx/prefab/common/attack_land/0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d606e0523a566b840ba0937b5ef47f8f
+    m_Address: cmn/batte/fx/prefab/common/hit/directional
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e35d9a7abcb92e7479d529ff3cf2b109
+    m_Address: chr/chen/battle/fx/prefab/skl_214h/hit/0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 47af94df76536e94698dc26068dd4147, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 61809ca56371a5b48bb9c7af0eeddf80, type: 2}
-    - {fileID: 11400000, guid: eafdd968a591b1b4c9ddab8cfef0e98b, type: 2}
+    - {fileID: 11400000, guid: be7e0c7f6d567494c9146598a6c0be00, type: 2}
+    - {fileID: 11400000, guid: 2db567cbd21cee343a88e9bc7780ef44, type: 2}

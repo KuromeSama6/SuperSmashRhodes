@@ -18,8 +18,9 @@ namespace SuperSmashRhodes.Battle {
 public abstract class Entity : MonoBehaviour {
     [Title("References")]
     public Transform rotationContainer;
+    public Transform socketsContainer;
     public EntityConfiguration config;
-    public List<EntityAssetLibrary> assetLibraries = new();
+    // public List<EntityAssetLibrary> assetLibraries = new();
     
     public EntitySide side { get; protected set; } = EntitySide.LEFT;
     public EntityAnimationController animation { get; private set; }
@@ -32,7 +33,7 @@ public abstract class Entity : MonoBehaviour {
     public float health { get; set; }
 
     public bool logicStarted { get; private set; }
-    public EntityAssetLibrary assetLibrary { get; private set; }
+    // public EntityAssetLibrary assetLibrary { get; private set; }
 
     private List<AttackData> queuedInboundAttacks = new();
     
@@ -57,10 +58,10 @@ public abstract class Entity : MonoBehaviour {
         }
         
         // merge asset libs
-        assetLibrary = ScriptableObject.CreateInstance<EntityAssetLibrary>();
-        foreach (var lib in assetLibraries) {
-            assetLibrary.MergeFrom(lib);
-        }
+        // assetLibrary = ScriptableObject.CreateInstance<EntityAssetLibrary>();
+        // foreach (var lib in assetLibraries) {
+        //     assetLibrary.MergeFrom(lib);
+        // }
 
         // Debug.Log($"Loaded states {string.Join(", ", states.Keys)}");
     }
@@ -169,6 +170,8 @@ public abstract class Entity : MonoBehaviour {
     }
     
     // Implemented methods
+    public virtual bool shouldTickAnimation => true;
+    public virtual bool shouldTickState => true;
     public virtual void OnRoundInit() {
         health = config.health;
     }

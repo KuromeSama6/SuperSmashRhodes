@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using JetBrains.Annotations;
 using Sirenix.OdinInspector;
+using SuperSmashRhodes.Adressable;
 using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.Game;
@@ -27,6 +29,7 @@ public class PlayerCharacter : Entity {
     public bool airborne { get; set; }
     public PlayerCharacter opponent => GameManager.inst.GetOpponent(this);
     public float opponentDistance => Mathf.Abs(transform.position.x - opponent.transform.position.x);
+    public bool inUnmanagedTime => unmanagedTime.frames > 0;
     public PlayerInputModule inputModule { get; private set; }
     public ComboCounter comboCounter { get; private set; }
     public FrameDataRegister frameData { get; private set; }
@@ -40,6 +43,7 @@ public class PlayerCharacter : Entity {
     public CharacterFXManager fxManager { get; private set; }
     public float neutralAniTransitionOverride { get; set; } = 0.05f;
     public PlayerMeterGauge meter { get; private set; }
+    public CharacterUnmanagedTimeData unmanagedTime { get; set; }
     
     private float airHitstunRotation = 0f;
     private float yRotationTarget = 0f;
@@ -59,7 +63,20 @@ public class PlayerCharacter : Entity {
             return .97f - guts * .01f;
         }
     }
-    
+
+    public override bool shouldTickAnimation {
+        get {
+            if (inUnmanagedTime && unmanagedTime.flags.HasFlag(UnmanagedTimeSlotFlags.PAUSE_ANIMATIONS)) return false;
+            return true;
+        }
+    }
+    public override bool shouldTickState {
+        get {
+            if (inUnmanagedTime && unmanagedTime.flags.HasFlag(UnmanagedTimeSlotFlags.PAUSE_STATE)) return false;
+            return true;
+        }
+    }
+
     public void Init(int playerIndex) {
         this.playerIndex = playerIndex;
     }
@@ -75,6 +92,8 @@ public class PlayerCharacter : Entity {
         meter = GetComponent<PlayerMeterGauge>();
         
         pushboxManager.onGroundContact.AddListener(OnGroundContact);
+        
+        AssetManager.inst.PreloadAll($"chr/chen/battle/**");
     }
 
     protected override void Update() {
@@ -94,6 +113,7 @@ public class PlayerCharacter : Entity {
             groundedFrictionAlpha = Mathf.Lerp(groundedFrictionAlpha, 1, Time.fixedDeltaTime);
             rb.linearVelocityX = Mathf.Lerp(rb.linearVelocityX, 0, Time.fixedDeltaTime * 20f * groundedFrictionAlpha);
         }
+        
     }
 
     private void UpdateGravity() {
@@ -102,7 +122,11 @@ public class PlayerCharacter : Entity {
             var decay = comboCounter.comboDecay;
             var data = opponent.comboDecayData;
             ret *= data.opponentGravityCurve.Evaluate(decay);
-        } 
+        }
+
+        if (inUnmanagedTime && unmanagedTime.flags.HasFlag(UnmanagedTimeSlotFlags.PAUSE_PHYSICS)) {
+            ret = 0f;
+        }
         
         rb.gravityScale = ret;
     }
@@ -281,27 +305,28 @@ public class PlayerCharacter : Entity {
             // hit state select
             HandleOnHitStateTransition(attack, crouching, out addFreezeFrames);
             
-            comboCounter.RegisterAttack(attack, this);
             attack.OnHit(this);
             airHitstunRotation = 0f;
             
             // Debug.Log($"unscaled damage: {attack.GetUnscaledDamage(this)}, final scale: {comboCounter.finalScale}, final dmg {attack.GetUnscaledDamage(this) * comboCounter.finalScale}");
-            {
-                // damage
-                var dmg = attack.GetUnscaledDamage(this) * comboCounter.finalScale * comboCounter.GetMoveSpecificProration(attack);
-                
-                // combo decay
-                if (data.from is PlayerCharacter player) {
-                    var decayData = player.comboDecayData;
-                    if (comboCounter.inCombo) {
-                        dmg *= decayData.extraProrationCurve.Evaluate(comboCounter.comboDecay);
-                    }
-                }
-
-                dmg *= gutsDamageModifier;
-                if (knockedDown) dmg *= attack.GetOtgDamagePercentage(this);
-                health -= Mathf.Max(1, dmg);
-            }
+            // {
+            //     // damage
+            //     var dmg = attack.GetUnscaledDamage(this) * comboCounter.finalScale * comboCounter.GetMoveSpecificProration(attack);
+            //     
+            //     // combo decay
+            //     if (data.from is PlayerCharacter player) {
+            //         var decayData = player.comboDecayData;
+            //         if (comboCounter.inCombo) {
+            //             dmg *= decayData.extraProrationCurve.Evaluate(comboCounter.comboDecay);
+            //         }
+            //     }
+            //
+            //     dmg *= gutsDamageModifier;
+            //     if (knockedDown) dmg *= attack.GetOtgDamagePercentage(this);
+            //     health -= Mathf.Max(1, dmg);
+            // }
+            
+            ApplyDamage(attack.GetUnscaledDamage(this), data);
         }
 
         data.result = blocked ? AttackResult.BLOCKED : AttackResult.HIT;
@@ -421,7 +446,33 @@ public class PlayerCharacter : Entity {
     }
     
     public void PlayOwnedFx(string fx, CharacterFXSocketType type, Vector3 offset = default, Vector3 direction = default) {
-        fxManager.PlayGameObjectFX(assetLibrary.GetParticle(fx), type, offset, direction);
+        AssetManager.Get<GameObject>($"chr/{config.id}/battle/fx/{fx}", go => {
+            fxManager.PlayGameObjectFX(go, type, offset, direction);
+        });
+    }
+
+    public void ApplyDamage(float rawDamage, [CanBeNull] AttackData data, DamageSpecialProperties flags = DamageSpecialProperties.NONE) {
+        var attack = data == null ? null : data.attack;
+        var dmg = rawDamage;
+
+        var skipRegister = flags.HasFlag(DamageSpecialProperties.SKIP_REGISTER);
+        if (attack != null || skipRegister) comboCounter.RegisterAttack(attack, this, skipRegister);
+        
+        if (!flags.HasFlag(DamageSpecialProperties.IGNORE_COMBO)) {
+            dmg *= comboCounter.finalScale * (attack == null ? 1 : comboCounter.GetMoveSpecificProration(attack));
+        }
+        
+        // combo decay
+        if (data != null && data.from is PlayerCharacter player) {
+            var decayData = player.comboDecayData;
+            if (comboCounter.inCombo) {
+                dmg *= decayData.extraProrationCurve.Evaluate(comboCounter.comboDecay);
+            }
+        }
+
+        dmg *= gutsDamageModifier;
+        if (attack != null && activeState is State_CmnHardKnockdown) dmg *= attack.GetOtgDamagePercentage(this);
+        health -= Mathf.Max(1, dmg);
     }
     
 }

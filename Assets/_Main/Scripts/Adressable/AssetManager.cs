@@ -1,0 +1,75 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using DotNet.Globbing;
+using SuperSmashRhodes.Framework;
+using SuperSmashRhodes.Util;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.ResourceLocations;
+using UnityEngine.SceneManagement;
+
+namespace SuperSmashRhodes.Adressable {
+public class AssetManager : AutoInitSingletonBehaviour<AssetManager> {
+    private Dictionary<string, ManagedAsset> assets = new();
+    private List<Action> queue = new();
+    private bool ready;
+    
+    private IEnumerator Start() {
+        var handle = Addressables.InitializeAsync();
+        yield return handle;
+        
+        foreach (var locator in Addressables.ResourceLocators) {
+            foreach (var key in locator.Keys) {
+                assets[key.ToString()] = new(key.ToString());
+            }
+        }
+        
+        // Debug.Log($"loaded {assets.Count} addressables");
+        ready = true;
+        queue.ForEach(c => c.Invoke());
+
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
+    }
+
+    public void PreloadAll(string pattern, AssetReleaseMethod releaseMethod = AssetReleaseMethod.ON_SCENE_UNLOAD) {
+        if (!ready) {
+            queue.Add(() => PreloadAll(pattern, releaseMethod));
+            return;
+        }
+        
+        var glob = Glob.Parse(pattern);
+        // List<string> toLoad = new();
+        
+        foreach (var key in assets.Keys) {
+            if (assets.ContainsKey(key) && assets[key].status == AssetStatus.STANDBY) {
+                continue;
+            }
+
+            if (glob.IsMatch(key)) {
+                assets[key].releaseMethod = releaseMethod;
+                assets[key].Load();
+            }
+        }
+    }
+    
+    private void OnSceneUnloaded(Scene scene) {
+        foreach (var asset in assets.Values) {
+            if (asset.releaseMethod == AssetReleaseMethod.ON_SCENE_UNLOAD) {
+                asset.Release();
+            }
+        }
+    }
+    
+    public static void Get<T>(string key, Action<T> callback) {
+        if (inst.assets.ContainsKey(key)) {
+            inst.assets[key].Get(callback);
+            
+        } else {
+            Debug.LogError($"Asset {key} not found");
+        }
+    }
+    
+    
+}
+}

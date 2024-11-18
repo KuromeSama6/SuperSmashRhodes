@@ -2,10 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using SuperSmashRhodes.Adressable;
 using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Battle.Stage;
+using SuperSmashRhodes.Framework;
 using Unity.Cinemachine;
-using UnityEditor.Tilemaps;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
@@ -45,6 +46,9 @@ public class GameManager : SingletonBehaviour<GameManager> {
         foreach (var player in players.Values) {
             player.BeginLogic();
         }
+        
+        AssetManager.inst.PreloadAll("cmn/battle/sfx/**");
+        AssetManager.inst.PreloadAll("cmn/battle/fx/**");
     }
 
     private void CreatePlayer(int index, GameObject prefab, string controlScheme, InputDevice device) {
@@ -63,6 +67,11 @@ public class GameManager : SingletonBehaviour<GameManager> {
 
     public PlayerCharacter GetPlayer(int index) {
         return players[index];
+    }
+
+    public Vector3 ClampPositionToStage(Vector3 position) {
+        var x = Mathf.Clamp(position.x, stageData.leftWallPosition, stageData.rightWallPosition);
+        return new Vector3(x, position.y, position.z);
     }
 }
 }

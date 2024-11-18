@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using MoreMountains.Tools;
+using SuperSmashRhodes.Extensions;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace SuperSmashRhodes.Util {
+namespace SuperSmashRhodes.Framework {
 public class AppDaemon : PersistentSingletonBehaviour<AppDaemon> {
     public static UnityEvent onApplicationQuit { get; } = new();
     public static UnityEvent<bool> onApplicationPause { get; } = new();
@@ -36,8 +38,24 @@ public class AppDaemon : PersistentSingletonBehaviour<AppDaemon> {
         Application.logMessageReceived += HandleLog;
 
         MMDebug.SetDebugLogsEnabled(false);
+        InstantiatePersistentSingletons();
     }
-
+    
+    public static void InstantiatePersistentSingletons() {
+        foreach (var type in Assembly.GetExecutingAssembly().GetTypes()) {
+            // Debug.Log(type);
+            if (type.IsSubclassOfGeneric(typeof(AutoInitSingletonBehaviour<>)) && !type.IsAbstract) {
+                var method = type.GetMethod("InitInternal", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+                if (method != null) {
+                    method.Invoke(null, null);
+                    // Debug.Log($"{type.Namespace} Singleton Init");
+                } else {
+                    Debug.LogError($"Type {type.Name} does not have a static InitInternal method");
+                }
+            }
+        }
+    }
+    
     private static void HandleLog(string logString, string stackTrace, LogType type) {
         // Combine the log message, stack trace, and log type
         string logEntry = $"{System.DateTime.Now}: [{type}] {logString}\n";

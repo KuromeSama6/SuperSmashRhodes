@@ -46,14 +46,18 @@ public abstract class EntityState : NamedToken {
         OnTick();
         
         // scheduled animation
-        if (scheduledPauseAnimationFrames > 0) {
-            --scheduledPauseAnimationFrames;
+        if (owner.shouldTickAnimation) {
+            if (scheduledPauseAnimationFrames > 0) {
+                --scheduledPauseAnimationFrames;
             
-        } else {
-            owner.animation.Tick();
+            } else {
+                owner.animation.Tick();
+            }   
         }
         
         // interrupt frames
+        if (!owner.shouldTickState) return;
+        
         if (interruptFrames > 0) {
             --interruptFrames;
             return;

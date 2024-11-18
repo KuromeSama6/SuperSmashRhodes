@@ -36,12 +36,12 @@ public class State_CmnDash : CharacterState {
     }
 
     public override IEnumerator MainRoutine() {
-        owner.animation.AddUnmanagedAnimation("std_dash_start", false, .2f);
-        owner.animation.AddUnmanagedAnimation("std_dash_loop", true);
+        owner.animation.AddUnmanagedAnimation("std/dash_start", false, .2f);
+        owner.animation.AddUnmanagedAnimation("std/dash_loop", true);
         
         while (RevalidateInput()) {
             var force = player.characterConfig.dashAccelCurve.Evaluate(frame);
-            owner.rb.AddForceX(PhysicsUtil.NormalizeRelativeDirecionalForce(force, owner.side));
+            owner.rb.AddForceX(PhysicsUtil.NormalizeSide(force, owner.side));
             owner.rb.linearVelocityX = Mathf.Clamp(owner.rb.linearVelocityX, -player.characterConfig.dashSpeed, player.characterConfig.dashSpeed);
             
             player.meter.meter.value += 0.05f * player.meter.meterGainMultiplier;

@@ -13,7 +13,7 @@ public abstract class State_Common_NmlAtk5CS : State_Common_NormalAttack {
     public override EntityStateType type => EntityStateType.CHR_ATK_5CS;
     public override float inputPriority => 3.1f;
 
-    protected override string mainAnimation => "cmn_NmlAtk5CS";
+    protected override string mainAnimation => "cmn/NmlAtk5CS";
 
     protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_SPECIAL_SUPER | 
                                                              EntityStateType.CHR_ATK_5S | EntityStateType.CHR_ATK_2S

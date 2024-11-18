@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.State.Implementation {
 public abstract class CharacterAttackStateBase : CharacterState, IAttack {
-    public AttackPhase phase { get; private set; }
+    public AttackPhase phase { get; protected set; }
     public bool hasActiveFrames => hitsRemaining > 0;
     private int hitsRemaining = 1;
     
@@ -19,7 +19,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         hitsRemaining = 1;
         stateData.disableSideSwap = true;
         player.SetZPriority();
-        PhysicsTickManager.inst.globalFreezeFrames = 0;
+        PhysicsTickManager.inst.globalFreezeFrames = 0; 
     }
 
     public override IEnumerator MainRoutine() {
@@ -139,10 +139,10 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     }
 
     public string GetHitSfx(Entity to) {
-        return "battle_generic_hit1";
+        return "cmn/battle/sfx/hit/1";
     }
     public string GetBlockedSfx(Entity to) {
-        return "battle_generic_block2";
+        return "cmn/battle/sfx/block/2";
     }
     public float GetComboDecay(Entity to) {
         return 1f;
