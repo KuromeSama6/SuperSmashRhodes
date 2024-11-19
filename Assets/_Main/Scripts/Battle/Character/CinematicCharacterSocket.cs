@@ -27,6 +27,8 @@ public class CinematicCharacterSocket {
         var follower = parentGameObject.AddComponent<BoneFollower>();
 
         follower.SkeletonRenderer = owner.animation.animation;
+        follower.followBoneRotation = false;
+        
         var suc = follower.SetBone(boneName);
         if (!suc) {
             Debug.LogError($"Failed to attach bone {boneName} to {owner.playerIndex}: bone not found");
@@ -51,9 +53,10 @@ public class CinematicCharacterSocket {
         var pos = parentGameObject.transform.position;
         target.transform.SetParent(null);
 
-        var ea = target.transform.localEulerAngles;
-        ea.z = 0;
-        target.transform.localEulerAngles = ea;
+        // var ea = target.transform.localEulerAngles;
+        // ea.y = 0;
+        // ea.z = 0;
+        target.transform.localEulerAngles = Vector3.zero;
 
         target.transform.position = pos;
         

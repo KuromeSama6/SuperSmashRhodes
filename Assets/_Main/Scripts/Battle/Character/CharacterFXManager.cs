@@ -34,12 +34,18 @@ public class CharacterFXManager : MonoBehaviour {
     }
     
     public void PlayGameObjectFX(GameObject prefab, CharacterFXSocketType type, Vector3 offset = default, Vector3 direction = default) {
-        var socket = type == CharacterFXSocketType.WORLD ? null : sockets[type];
+        var socket = type == CharacterFXSocketType.WORLD || type == CharacterFXSocketType.WORLD_UNBOUND ? null : sockets[type];
         var go = Instantiate(prefab, socket);
 
-        if (type == CharacterFXSocketType.WORLD) {
+        if (type == CharacterFXSocketType.WORLD_UNBOUND) {
+            go.transform.position = offset;
+            go.transform.position = GameManager.inst.ClampPositionToStage(go.transform.position);
+            go.transform.localEulerAngles = direction;
+
+        } if (type == CharacterFXSocketType.WORLD) {
             go.transform.position = player.transform.position + new Vector3(0, 1, 0) + PhysicsUtil.NormalizeSide(offset, player.side);
             go.transform.position = GameManager.inst.ClampPositionToStage(go.transform.position);
+            
         } else {
             go.transform.localPosition = Vector3.zero + offset;
         }
@@ -99,6 +105,7 @@ public enum CharacterFXSocketType {
     SELF,
     DIRECTIONAL_SELF,
     DIRECTIONAL_SELF_TAIL,
-    WORLD
+    WORLD,
+    WORLD_UNBOUND
 }
 }

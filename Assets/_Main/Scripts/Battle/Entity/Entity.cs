@@ -22,7 +22,7 @@ public abstract class Entity : MonoBehaviour {
     public EntityConfiguration config;
     // public List<EntityAssetLibrary> assetLibraries = new();
     
-    public EntitySide side { get; protected set; } = EntitySide.LEFT;
+    public EntitySide side { get; set; } = EntitySide.LEFT;
     public EntityAnimationController animation { get; private set; }
     public Rigidbody2D rb { get; private set; }
     public EntityState activeState { get; private set; }

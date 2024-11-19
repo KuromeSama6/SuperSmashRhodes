@@ -33,6 +33,11 @@ public abstract class State_Common_Stun : CharacterState {
         }
     }
 
+    protected override void OnStateEnd() {
+        base.OnStateEnd();
+        player.frameData.throwInvulnFrames = 5;
+    }
+
     // Abstract properties
     protected abstract int frames { get; }
     protected abstract string animationName { get; }

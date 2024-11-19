@@ -22,6 +22,12 @@ public abstract class State_Common_NmlAtkGndThrow : ThrowAttackStateBase {
     public override float GetUnscaledDamage(Entity to) {
         return 80f;
     }
+    protected override bool ClashableWith(ThrowAttackStateBase other) {
+        return other is State_Common_NmlAtkGndThrow;
+    }
+    protected override bool ShouldSwitchSides(PlayerCharacter other) {
+        return player.inputModule.localBuffer.thisFrame.HasInput(InputType.BACKWARD, InputFrameType.HELD);
+    }
 
 }
 }

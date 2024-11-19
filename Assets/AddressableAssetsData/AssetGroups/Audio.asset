@@ -20,6 +20,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 14c08d25ec14f1f469e32c9a41c9d0b0
+    m_Address: cmn/battle/sfx/throw/1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2c259643fb3bf064a88949cb79ea9b0c
     m_Address: chr/chen/battle/vo/modal/1
     m_ReadOnly: 0
@@ -27,6 +32,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2ce7a5319742cb3428b6a3b54197c0bc
     m_Address: cmn/battle/sfx/attack/sword/3
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3ca18596f4ac1794f90cce427b664e33
+    m_Address: cmn/battle/sfx/throw_break/1
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

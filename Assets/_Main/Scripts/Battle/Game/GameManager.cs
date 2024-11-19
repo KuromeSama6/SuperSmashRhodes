@@ -29,6 +29,7 @@ public class GameManager : SingletonBehaviour<GameManager> {
         
     private PlayerInputManager inputManager;
     private Dictionary<int, PlayerCharacter> players = new();
+    private bool pushboxCorrectionLock = false;
     
     private IEnumerator Start() {
         inputManager = GetComponent<PlayerInputManager>();
@@ -73,5 +74,34 @@ public class GameManager : SingletonBehaviour<GameManager> {
         var x = Mathf.Clamp(position.x, stageData.leftWallPosition, stageData.rightWallPosition);
         return new Vector3(x, position.y, position.z);
     }
+
+    private void FixedUpdate() {
+        pushboxCorrectionLock = false;
+    }
+
+    public void AttemptPushboxCorrection() {
+        if (pushboxCorrectionLock) return;
+        pushboxCorrectionLock = true;
+        var p1 = players[0];
+        var p2 = players[1];
+        
+        // find the character that needs to move
+        PlayerCharacter target;
+        if (p1.atWall) target = p2;
+        else if (p2.atWall) target = p1;
+        else {
+            // prioritize wall distance
+            // Debug.Log($"p1 {p1.wallDistance} p2 {p2.wallDistance}");
+            if (p1.wallDistance < p2.wallDistance) target = p2;
+            else target = p1;
+        }
+        
+        float size = target.pushboxManager.pushboxSize;
+        float offset = (target.transform.position.x <= target.opponent.transform.position.x ? -1 : 1) * (size + .1f);
+        target.transform.position += new Vector3(offset, 0, 0);
+
+    }
 }
+
+
 }

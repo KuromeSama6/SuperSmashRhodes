@@ -7,7 +7,8 @@ public static class BitUtil {
     }
 
     public static bool CheckFlag(ulong value, ulong flag) {
-        return value == (value | flag);
+        // return value == (value | flag);
+        return (value & flag) != 0;
     }
     
     public static bool CheckFlag(this Enum value, ulong flag) {

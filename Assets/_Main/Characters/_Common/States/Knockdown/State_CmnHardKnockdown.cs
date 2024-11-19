@@ -24,5 +24,10 @@ public class State_CmnHardKnockdown : CharacterState {
         yield return 55;
         CancelInto("CmnSoftKnockdown");
     }
+
+    protected override void OnStateEnd() {
+        base.OnStateEnd();
+        player.frameData.throwInvulnFrames = 5;
+    }
 }
 }

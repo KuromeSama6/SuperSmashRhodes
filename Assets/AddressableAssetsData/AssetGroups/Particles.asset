@@ -20,6 +20,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 23cf3a5815758b441bdd3cb029ff1a1e
+    m_Address: cmn/battle/fx/prefab/common/throw_circle/0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 331b22e95c05a4d40a82dba0a94fe56e
+    m_Address: cmn/batte/fx/prefab/common/throw_clash/0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5bb94a7e79778004c95f2c6b9228be17
     m_Address: chr/chen/battle/fx/prefab/skl_214s/hit/0
     m_ReadOnly: 0

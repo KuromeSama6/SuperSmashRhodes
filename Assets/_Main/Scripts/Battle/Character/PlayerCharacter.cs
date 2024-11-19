@@ -44,6 +44,15 @@ public class PlayerCharacter : Entity {
     public float neutralAniTransitionOverride { get; set; } = 0.05f;
     public PlayerMeterGauge meter { get; private set; }
     public CharacterUnmanagedTimeData unmanagedTime { get; set; }
+
+    public bool atWall => pushboxManager.atWall;
+    public float wallDistance {
+        get {
+            var stageData = GameManager.inst.stageData;
+            // var nearestWall = side == EntitySide.LEFT ? stageData.leftWallPosition : stageData.rightWallPosition;
+            return Mathf.Min(Mathf.Abs(stageData.leftWallPosition - transform.position.x), Mathf.Abs(stageData.rightWallPosition - transform.position.x));
+        }
+    }
     
     private float airHitstunRotation = 0f;
     private float yRotationTarget = 0f;
@@ -105,6 +114,7 @@ public class PlayerCharacter : Entity {
         frameData.Tick();
         UpdateInput();
         UpdateFacing();
+        UpdatePosition();
         UpdateGravity();
         UpdateRotation();
 
@@ -131,7 +141,7 @@ public class PlayerCharacter : Entity {
         rb.gravityScale = ret;
     }
 
-    private void UpdateRotation() {
+    public void UpdateRotation() {
         if (airborne && activeState is State_CmnHitStunAir) {
             airHitstunRotation = Mathf.Clamp(airHitstunRotation + 0.5f, -55f, 55f);
 
@@ -140,7 +150,7 @@ public class PlayerCharacter : Entity {
         }
         
         // facing animation
-        float facing = side == EntitySide.LEFT ? 0 : 180;
+        float facing = side == EntitySide.LEFT ? 0 : 180; 
         yRotationTarget = Mathf.Lerp(yRotationTarget, facing, Time.deltaTime * 20f);
         
         var ea = rotationContainer.transform.localEulerAngles;
@@ -174,7 +184,18 @@ public class PlayerCharacter : Entity {
         
     }
 
-    private void UpdateFacing() {
+    private void UpdatePosition() {
+        var x = transform.position.x;
+        var stageData = GameManager.inst.stageData;
+        if (x <= stageData.leftWallPosition || x >= stageData.rightWallPosition) {
+            rb.linearVelocityX = 0;
+            Vector3 offset = new((side == EntitySide.LEFT ? 1 : -1) * .4f, 0, 0);
+            
+            transform.position = GameManager.inst.ClampPositionToStage(transform.position) + offset;
+        }
+    }
+    
+    public void UpdateFacing() {
         float pos = transform.position.x;
         float opponentPos = opponent.transform.position.x;
         var side = this.side;
@@ -231,7 +252,7 @@ public class PlayerCharacter : Entity {
         animation.animation.GetComponent<MeshRenderer>().sortingOrder = 3;
         opponent.animation.animation.GetComponent<MeshRenderer>().sortingOrder = 2;
     }
-
+    
     public override void BeginLogic() {
         base.BeginLogic();
         if (playerIndex == 0) SetZPriority();
@@ -421,7 +442,7 @@ public class PlayerCharacter : Entity {
         if (airborne) airborne = false;
     }
 
-    private void ApplyCarriedPushback(Vector2 vec, Vector2 carriedMomentum) {
+    public void ApplyCarriedPushback(Vector2 vec, Vector2 carriedMomentum) {
         float direction = side == EntitySide.LEFT ? -1 : 1;
         
         if (pushboxManager.atWall) {

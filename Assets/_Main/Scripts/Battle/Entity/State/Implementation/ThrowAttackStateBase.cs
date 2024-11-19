@@ -1,8 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using SuperSmashRhodes.Battle.Enums;
+using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Input;
+using SuperSmashRhodes.Util;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.State.Implementation {
@@ -14,17 +17,23 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
     protected override int normalInputBufferLength => 1;
     
     public bool connected { get; private set; }
+    protected bool hasHit { get; private set; }
     private int hitAnimationStartFrame;
     
     protected override void OnStateBegin() {
         base.OnStateBegin();
+        stateData.ClearCancelOptions();
         connected = false;
         hitAnimationStartFrame = 0;
+        hasHit = false;
     }
 
     public override IEnumerator MainRoutine() {
         phase = AttackPhase.STARTUP;
+        var opponent = player.opponent;
+        
         OnStartup();
+        
         yield return frameData.startup;
         
         // proximity check
@@ -33,17 +42,68 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
         connected = false;
         for (int i = 0; i < frameData.active; i++) {
             if (player.opponentDistance < distanceRequirement) {
+                if (!connected) {
+                    opponent.fxManager.PlayGameObjectFX(
+                        "cmn/battle/fx/prefab/common/throw_circle/0", 
+                        CharacterFXSocketType.SELF
+                    );
+                }
                 connected = true;
-                break;
             }
             yield return 1;
         }
         
         // process hit
         bool mayHit = MayHit(player.opponent);
-        var opponent = player.opponent;
+
+        bool clash = false;
+        // clash
+        if (connected) {
+            var otherState = opponent.activeState;
+            if (otherState is ThrowAttackStateBase th) {
+                if (th.phase < AttackPhase.RECOVERY && ClashableWith(th)) clash = true;
+            }
+        }
         
         if (connected && mayHit) {
+            if (clash) {
+                player.BeginState("CmnSoftKnockdown");
+                opponent.BeginState("CmnSoftKnockdown");
+
+                Vector2 force = new(5, 0);
+                player.ApplyCarriedPushback(force, new(0.5f, 0));
+                opponent.ApplyCarriedPushback(force, new(0.5f, 0));
+                
+                player.fxManager.PlayGameObjectFX(
+                    "cmn/batte/fx/prefab/common/throw_clash/0", 
+                    CharacterFXSocketType.WORLD_UNBOUND,
+                    new(Mathf.Lerp(player.transform.position.x, opponent.transform.position.x, .5f), 1, 0)
+                );
+                player.audioManager.PlaySound("cmn/battle/sfx/throw_break/1");
+                yield break;
+            }
+
+            // successful hit
+            hasHit = true;
+            bool switchSides = ShouldSwitchSides(opponent);
+            player.audioManager.PlaySound("cmn/battle/sfx/throw/1");
+            
+            var dist = player.opponentDistance * 2;
+            if (switchSides) {
+                var atWall = player.pushboxManager.atWall;
+                opponent.transform.position -= new Vector3(opponent.side == EntitySide.RIGHT ? 1 : -1 * dist, 0, 0);
+                (player.side, opponent.side) = (opponent.side, player.side);
+                
+                if (atWall) {
+                    player.transform.position -= new Vector3(dist * (player.side == EntitySide.LEFT ? 1 : -1), 0, 0);
+                }
+            } else {
+                if (opponent.pushboxManager.atWall) {
+                    
+                    player.transform.position -= new Vector3(dist * (player.side == EntitySide.LEFT ? 1 : -1), 0, 0);
+                }
+            }
+            
             OnThrowHit(opponent);
             // process throw hit
             opponent.BeginState("CmnHitStunGround");
@@ -76,7 +136,7 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
 
     protected override void OnTick() {
         base.OnTick();
-        if (connected) {
+        if (hasHit) {
             // cosmetic animation
             var hitAnimationFrame = frame - hitAnimationStartFrame;
             var cosmeticFrames = GetCosmeticHitFrames(player.opponent);
@@ -127,15 +187,20 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
     protected abstract int animationLength { get; }
     protected virtual string throwSocketBoneName => "throw_opponent";
 
+    protected abstract bool ClashableWith(ThrowAttackStateBase other);
     protected virtual int[] GetCosmeticHitFrames(PlayerCharacter to) {
         return new int[0];
+    }
+    protected virtual bool ShouldSwitchSides(PlayerCharacter other) {
+        return false;
     }
     protected virtual bool MayHit(PlayerCharacter other) {
         if (other.frameData.throwInvulnFrames > 0) return false;
         if (player.airborne != other.airborne) return false;
         if (other.inUnmanagedTime) return false;
         if (other.activeState.fullyInvincible) return false;
-        if (other.activeState.type.HasFlag(EntityStateType.CHR_STUN) || other.activeState.type.HasFlag(EntityStateType.CHR_KNOCKDOWN)) return false;
+        if (other.activeState.type.CheckFlag((ulong)EntityStateType.CHR_STUN)) return false;
+        if (other.activeState.type.CheckFlag((ulong)EntityStateType.CHR_KNOCKDOWN)) return false;
 
         return true;
     }
@@ -153,7 +218,7 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
         player.opponent.fxManager.NotifyHit(CreateAttackData());
     }
     protected virtual void OnFinalHit() {
-        player.audioManager.PlaySound(GetHitSfx(player.opponent), .6f);
+        OnHit(player.opponent);
         player.opponent.fxManager.NotifyHit(CreateAttackData()); 
     }
 }

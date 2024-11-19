@@ -13,8 +13,8 @@ public class PushboxManager : MonoBehaviour {
     
     public UnityEvent onGroundContact { get; } = new();
     public bool atWall => atLeftWall || atRightWall;
-    public bool atLeftWall => player.side == EntitySide.LEFT && Mathf.Abs(player.transform.position.x - GameManager.inst.stageData.leftWallPosition) < 1f;
-    public bool atRightWall => player.side == EntitySide.RIGHT && Mathf.Abs(player.transform.position.x - GameManager.inst.stageData.rightWallPosition) < 1f;
+    public bool atLeftWall => player.side == EntitySide.LEFT && Mathf.Abs(player.transform.position.x - GameManager.inst.stageData.leftWallPosition) <= .8f;
+    public bool atRightWall => player.side == EntitySide.RIGHT && Mathf.Abs(player.transform.position.x - GameManager.inst.stageData.rightWallPosition) <= .8f;
     
     public float pushboxSize => pushbox.size.x;
     private PlayerCharacter player;
@@ -40,23 +40,26 @@ public class PushboxManager : MonoBehaviour {
     public void OnTriggerEnter2D(Collider2D other) {
         if (player == null || !player.logicStarted) return;
         
+
+        
+    }
+    public void OnTriggerStay2D(Collider2D other) {
         bool isOpponent = player.opponent == other.GetComponentInParent<PlayerCharacter>();
         // Debug.Log($"trigger enter: {other.transform.parent.name}/{other.name}, isOpponent: {isOpponent}");
         bool isPushbox = other.GetComponent<PushboxManager>();
-
         if (isOpponent && isPushbox) {
             // correction
-            AttemptPushboxCorrection();
+            GameManager.inst.AttemptPushboxCorrection();
         }
-        
     }
 
     private void AttemptPushboxCorrection() {
         if (pushboxCorrectionLock) return;
-        if (!player.airborne) return;
+        // Debug.Log(player.transform.position.y);
+        if (player.transform.position.y <= .05f) return;
         float size = pushbox.size.x;
         pushboxCorrectionLock = true;
-        // Debug.Log("pushbox cor 1r");
+        // Debug.Log($"pushbox cor {player.playerIndex}");
 
         var stageData = GameManager.inst.stageData;
         var nearestWall = player.opponent.side == EntitySide.LEFT ? stageData.leftWallPosition : stageData.rightWallPosition;

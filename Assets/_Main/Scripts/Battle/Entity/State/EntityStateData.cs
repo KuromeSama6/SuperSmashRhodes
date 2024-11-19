@@ -14,5 +14,10 @@ public class EntityStateData {
     public EntityStateType cancelFlag;
 
     public bool disableSideSwap = false;
+
+    public void ClearCancelOptions() {
+        cancelFlag = 0;
+        cancelOptions.Clear();
+    }
 }
 }

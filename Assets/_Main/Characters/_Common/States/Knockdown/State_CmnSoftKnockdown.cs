@@ -27,5 +27,10 @@ public class State_CmnSoftKnockdown : CharacterState {
         yield return 30;
         player.neutralAniTransitionOverride = 0f;
     }
+
+    protected override void OnStateEnd() {
+        base.OnStateEnd();
+        player.frameData.throwInvulnFrames = 5;
+    }
 }
 }
