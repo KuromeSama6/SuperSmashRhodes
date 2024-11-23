@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace SuperSmashRhodes.Character.Gauge {
 public class PlayerMeterGauge : CharacterComponent {
-    public ClampedFloat meter { get; } = new(0, 100f);
-    public ClampedFloat meterBalance { get; } = new(-250f, 250f);
+    public ClampedFloat gauge { get; } = new(0, 100f);
+    public ClampedFloat balance { get; } = new(-250f, 250f);
 
     public float meterGainMultiplier {
         get {
@@ -24,7 +24,7 @@ public class PlayerMeterGauge : CharacterComponent {
 
     public float meterBalanceMultiplier {
         get {
-            var balance = meterBalance.value;
+            var balance = this.balance.value;
             if (balance >= 200f) return 1.5f;
             if (balance >= 150f) return 1.3f;
             if (balance >= 100f) return 1.2f;
@@ -39,17 +39,17 @@ public class PlayerMeterGauge : CharacterComponent {
     
     public override void OnRoundInit() {
         base.OnRoundInit();
-        meter.value = 0f;
-        meterBalance.value = 0f;
+        gauge.value = 0f;
+        balance.value = 0f;
     }
 
     private void FixedUpdate() {
         // tension balance update
         {
-            var balance = meterBalance.value;
-            if (balance > 0 && balance <= 75f) meterBalance.value -= .01f;
-            else if (balance > 75f) meterBalance.value -= .03f;
-            else if (balance < 0) meterBalance.value += .01f;
+            var balance = this.balance.value;
+            if (balance > 0 && balance <= 75f) this.balance.value -= .01f;
+            else if (balance > 75f) this.balance.value -= .03f;
+            else if (balance < 0) this.balance.value += .01f;
         }
     }
 

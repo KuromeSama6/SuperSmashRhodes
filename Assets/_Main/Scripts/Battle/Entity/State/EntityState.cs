@@ -15,6 +15,7 @@ public abstract class EntityState : NamedToken {
     public abstract EntityStateType type { get; }
     public virtual bool mayEnterState => true;
     public virtual bool fullyInvincible => false;
+    public virtual bool isSelfCancellable => false;
     
     private int interruptFrames;
     private int scheduledPauseAnimationFrames;

@@ -92,7 +92,7 @@ public class CharacterFXManager : MonoBehaviour {
                                      new(-0, 0, 0),  
                                      new(0, -90, 0));
                 } else {
-                    PlayGameObjectFX("cmn/batte/fx/prefab/common/hit/light", CharacterFXSocketType.DIRECTIONAL_SELF);
+                    PlayGameObjectFX("cmn/batte/fx/prefab/common/hit/light", CharacterFXSocketType.SELF);
                 }
                 break;
         }

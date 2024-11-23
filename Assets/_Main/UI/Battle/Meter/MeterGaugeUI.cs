@@ -28,8 +28,8 @@ public class MeterGaugeUI : PerSideUIElement<MeterGaugeUI> {
     private void Update() {
         if (!player) return;
         var gauge = player.meter;
-        var meter = gauge.meter.value;
-        var percentage = meter / gauge.meter.max;
+        var meter = gauge.gauge.value;
+        var percentage = meter / gauge.gauge.max;
 
         _current = Mathf.Lerp(_current, percentage, Time.deltaTime * 2f);
         if (percentage > _current) {

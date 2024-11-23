@@ -85,6 +85,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cfeab6e9ca48ae34c906f2669dfe5f34
+    m_Address: cmn/battle/sfx/burst_alert/0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e649ecaa99329dd4ba92811c870a8a4e
     m_Address: cmn/battle/sfx/attack/sword/1
     m_ReadOnly: 0

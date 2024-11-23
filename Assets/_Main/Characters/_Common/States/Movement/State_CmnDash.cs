@@ -44,8 +44,9 @@ public class State_CmnDash : CharacterState {
             owner.rb.AddForceX(PhysicsUtil.NormalizeSide(force, owner.side));
             owner.rb.linearVelocityX = Mathf.Clamp(owner.rb.linearVelocityX, -player.characterConfig.dashSpeed, player.characterConfig.dashSpeed);
             
-            player.meter.meter.value += 0.05f * player.meter.meterGainMultiplier;
-            player.meter.meterBalance.value += 0.0012f * player.meter.meterGainMultiplier;
+            player.meter.gauge.value += 0.05f * player.meter.meterGainMultiplier;
+            player.meter.balance.value += 0.0012f * player.meter.meterGainMultiplier;
+            player.burst.AddDelta(0.03f, 1);
             yield return 1;
         }
         

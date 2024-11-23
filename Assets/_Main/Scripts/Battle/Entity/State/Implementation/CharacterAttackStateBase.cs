@@ -56,15 +56,19 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public virtual void OnHit(Entity target) {
         player.audioManager.PlaySound(GetHitSfx(target), .6f);
         // Debug.Log(player.meter.meterGainMultiplier);
-        player.meter.meter.value += GetMeterGain(target, false) * player.meter.meterGainMultiplier;
-        player.meter.meterBalance.value += .05f * GetUnscaledDamage(target) * player.meter.meterGainMultiplier;
+        player.meter.gauge.value += GetMeterGain(target, false) * player.meter.meterGainMultiplier;
+        player.meter.balance.value += .05f * GetUnscaledDamage(target) * player.meter.meterGainMultiplier;
+        
+        player.burst.AddDeltaTotal((GetUnscaledDamage(target) * .25f) * player.comboCounter.finalScale, 120);
         // Debug.Log($"on hit, {GetMeterGain(target, true)}");
     }
     
     public virtual void OnBlock(Entity target) {
         player.audioManager.PlaySound(GetBlockedSfx(target), .4f);
-        player.meter.meter.value += GetMeterGain(target, true) * player.meter.meterGainMultiplier;;
-        player.meter.meterBalance.value += .02f * GetUnscaledDamage(target) * player.meter.meterGainMultiplier;;
+        player.meter.gauge.value += GetMeterGain(target, true) * player.meter.meterGainMultiplier;;
+        player.meter.balance.value += .02f * GetUnscaledDamage(target) * player.meter.meterGainMultiplier;;
+        
+        player.burst.AddDeltaTotal((GetUnscaledDamage(target) * .18f) * player.comboCounter.finalScale, 240);
     }
     
 

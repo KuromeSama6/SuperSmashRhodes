@@ -17,6 +17,9 @@ MonoBehaviour:
   states:
   - NmlAtk5CS
   - NmlAtk5S
+  - NmlAtk2S
   - NmlAtk5H
   - NmlAtk2H
+  - NmlAtk5P
+  - NmlAtk2P
   - NmlAtkGndThrow

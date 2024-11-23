@@ -43,6 +43,7 @@ public class PlayerCharacter : Entity {
     public CharacterFXManager fxManager { get; private set; }
     public float neutralAniTransitionOverride { get; set; } = 0.05f;
     public PlayerMeterGauge meter { get; private set; }
+    public PlayerBurstGauge burst { get; private set; }
     public CharacterUnmanagedTimeData unmanagedTime { get; set; }
 
     public bool atWall => pushboxManager.atWall;
@@ -99,6 +100,7 @@ public class PlayerCharacter : Entity {
         pushboxManager = GetComponentInChildren<PushboxManager>();
         fxManager = GetComponentInChildren<CharacterFXManager>();
         meter = GetComponent<PlayerMeterGauge>();
+        burst = GetComponent<PlayerBurstGauge>();
         
         pushboxManager.onGroundContact.AddListener(OnGroundContact);
         
@@ -168,7 +170,7 @@ public class PlayerCharacter : Entity {
             select (CharacterState)state).ToList();
         
         foreach (var state in li) {
-            if (state == activeState) continue;
+            if (state == activeState && !activeState.isSelfCancellable) continue;
             
             if (activeState.stateData.cancelOptions.Contains(state) || BitUtil.CheckFlag((ulong)activeState.stateData.cancelFlag, (ulong)state.type)) {
                 // state is valid
@@ -317,9 +319,16 @@ public class PlayerCharacter : Entity {
         ApplyGroundedFriction();
         if (blocked) {
             this.frameData.blockstunFrames = framesRemaining + frameData.onBlock;
-            if (!activeState.type.HasFlag(EntityStateType.CHR_BLOCKSTUN)) BeginState(crouching ? "CmnBlockStunCrouch" : "CmnBlockStun");
-            attack.OnBlock(this);
+            bool inBlockstun = activeState.type.HasFlag(EntityStateType.CHR_BLOCKSTUN);
             
+            if (!inBlockstun) BeginState(crouching ? "CmnBlockStunCrouch" : "CmnBlockStun");
+            attack.OnBlock(this);
+            burst.AddDeltaTotal(inBlockstun ? -8.5f : -12.5f, 90);
+
+            var chipDamage = attack.GetChipDamagePercentage(this);
+            if (chipDamage > 0)
+                ApplyDamage(attack.GetUnscaledDamage(this) * chipDamage, data, DamageSpecialProperties.SKIP_REGISTER);
+
         } else {
             this.frameData.SetHitstunFrames(framesRemaining + frameData.onHit, Mathf.Max(frameData.total - attack.GetCurrentFrame(this), 0));
             
@@ -494,6 +503,7 @@ public class PlayerCharacter : Entity {
         dmg *= gutsDamageModifier;
         if (attack != null && activeState is State_CmnHardKnockdown) dmg *= attack.GetOtgDamagePercentage(this);
         health -= Mathf.Max(1, dmg);
+        burst.AddDeltaTotal(dmg / 2.5f, 60);
     }
     
 }

@@ -15,11 +15,11 @@ public class State_CmnWhiteForceReset : CharacterState {
     public override bool IsInputValid(InputBuffer buffer) {
         return buffer.TimeSlice(6).ScanForInput(new InputFrame(InputType.FORCE_RESET, InputFrameType.PRESSED));
     }
-    public override bool mayEnterState => player.meter.meter.value >= 50f && player.activeState is CharacterAttackStateBase;
+    public override bool mayEnterState => player.meter.gauge.value >= 50f && player.activeState is CharacterAttackStateBase;
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
-        player.meter.meter.value -= 50f;
+        player.meter.gauge.value -= 50f;
         player.ApplyGroundedFrictionImmediate();
         opponent.comboCounter.comboDecay = 0f;
         player.fxManager.PlayGameObjectFX("cmn/batte/fx/prefab/common/force_reset/0", CharacterFXSocketType.SELF);

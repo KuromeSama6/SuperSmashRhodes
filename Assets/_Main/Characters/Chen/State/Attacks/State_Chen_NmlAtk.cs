@@ -58,6 +58,32 @@ public class State_Chen_NmlAtk5S : State_Common_NmlAtk5S {
     }
 }
 
+[NamedToken("Chen_NmlAtk2S")]
+public class State_Chen_NmlAtk2S : State_Common_NmlAtk2S {
+    public State_Chen_NmlAtk2S(Entity owner) : base(owner) { }
+    public override AttackFrameData frameData => new() {
+        startup = 11,
+        active = 3,
+        recovery = 20,
+        onHit = -5,
+        onBlock = -8,
+    };
+    public override float GetUnscaledDamage(Entity to) {
+        return 32;
+    }
+    public override string GetAttackNormalSfx() {
+        return "cmn/battle/sfx/attack/sword/2";
+    }
+    public override void OnHit(Entity target) {
+        base.OnHit(target);
+        if (target is PlayerCharacter c) {
+            Vector3 angle = new(0f, 0f, Random.Range(20, 80));
+            Vector3 offset = new(Random.Range(-.1f, .1f), Random.Range(-.1f, .1f), 0);
+            c.PlayOwnedFx("prefab/nml/slash/1", CharacterFXSocketType.SELF, offset, angle);
+        }
+    }
+}
+
 
 [NamedToken("Chen_NmlAtk5H")]
 public class State_Chen_NmlAtk5H : State_Common_NmlAtk5H {
@@ -110,6 +136,45 @@ public class State_Chen_NmlAtkGndThrow : State_Common_NmlAtkGndThrow {
     protected override int animationLength => 71;
     protected override int[] GetCosmeticHitFrames(PlayerCharacter to) {
         return new[] { 39 };
+    }
+}
+
+[NamedToken("Chen_NmlAtk5P")]
+public class State_Chen_NmlAtk5P : State_Common_NmlAtk5P {
+
+    public State_Chen_NmlAtk5P(Entity owner) : base(owner) { }
+    public override AttackFrameData frameData => new() {
+        startup = 5,
+        active = 4,
+        recovery = 7,
+        onHit = +2,
+        onBlock = -1,
+    };
+    public override float GetUnscaledDamage(Entity to) {
+        return 25f;
+    }
+
+    public override string GetAttackNormalSfx() {
+        return "cmn/battle/sfx/attack/fist/1";
+    }
+}
+
+[NamedToken("Chen_NmlAtk2P")]
+public class State_Chen_NmlAtk2P : State_Common_NmlAtk2P {
+    public State_Chen_NmlAtk2P(Entity owner) : base(owner) { }
+    public override AttackFrameData frameData => new() {
+        startup = 5,
+        active = 4,
+        recovery = 7,
+        onHit = +1,
+        onBlock = -2,
+    };
+    public override float GetUnscaledDamage(Entity to) {
+        return 21f;
+    }
+
+    public override string GetAttackNormalSfx() {
+        return "cmn/battle/sfx/attack/fist/1";
     }
 }
 

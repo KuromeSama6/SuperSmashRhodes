@@ -87,6 +87,7 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
             hasHit = true;
             bool switchSides = ShouldSwitchSides(opponent);
             player.audioManager.PlaySound("cmn/battle/sfx/throw/1");
+            stateData.ClearCancelOptions();
             
             var dist = player.opponentDistance * 2;
             if (switchSides) {
@@ -123,6 +124,8 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
 
             opponent.unmanagedTime = default;
             opponent.BeginState("CmnHardKnockdown");
+
+            yield return 5f;
 
         } else {
             phase = AttackPhase.RECOVERY;

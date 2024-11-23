@@ -32,7 +32,7 @@ public class State_Chen_SklUnsheathLight : State_Common_SpecialAttack {
     }
 
     public override float GetUnscaledDamage(Entity to) {
-        return 44f;
+        return 40f;
     }
     public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
         if (blocked) return new(3.5f, 0f);
