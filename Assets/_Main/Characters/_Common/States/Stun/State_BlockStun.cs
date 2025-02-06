@@ -15,7 +15,7 @@ public class State_CmnBlockStun : State_Common_Stun {
     public override EntityStateType type => EntityStateType.CHR_BLOCKSTUN;
     public override bool mayEnterState => owner.activeState is State_CmnBlockStunCrouch;
     public override bool IsInputValid(InputBuffer buffer) {
-        return !buffer.thisFrame.HasInput(InputType.DOWN, InputFrameType.HELD);
+        return !buffer.thisFrame.HasInput(owner.side, InputType.DOWN, InputFrameType.HELD);
     }
     protected override void OnStateBegin() {
         base.OnStateBegin();
@@ -33,7 +33,7 @@ public class State_CmnBlockStunCrouch : State_Common_Stun {
 
     public override bool mayEnterState => owner.activeState is State_CmnBlockStun;
     public override bool IsInputValid(InputBuffer buffer) {
-        return buffer.thisFrame.HasInput(InputType.DOWN, InputFrameType.HELD);
+        return buffer.thisFrame.HasInput(owner.side, InputType.DOWN, InputFrameType.HELD);
     }
 
     protected override void OnStateBegin() {

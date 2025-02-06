@@ -150,7 +150,7 @@ public abstract class CharacterState : EntityState {
         if (!(owner is PlayerCharacter player))
             throw new NotSupportedException();
 
-        return player.inputModule.localBuffer;
+        return player.inputProvider.inputBuffer;
     }
     public CharacterState(Entity owner) : base(owner) {
         player = (PlayerCharacter)owner;

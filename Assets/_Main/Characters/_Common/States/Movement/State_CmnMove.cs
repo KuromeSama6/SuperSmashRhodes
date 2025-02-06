@@ -15,8 +15,8 @@ public class State_CmnMoveForward : CharacterState {
     public override float inputPriority => 1;
     
     public override bool IsInputValid(InputBuffer buffer) {
-        return buffer.thisFrame.HasInput(InputType.FORWARD, InputFrameType.HELD) &&
-               !buffer.thisFrame.HasInput(InputType.BACKWARD, InputFrameType.HELD);
+        return buffer.thisFrame.HasInput(owner.side, InputType.FORWARD, InputFrameType.HELD) &&
+               !buffer.thisFrame.HasInput(owner.side, InputType.BACKWARD, InputFrameType.HELD);
     }
 
     protected override void OnStateBegin() {
@@ -24,10 +24,11 @@ public class State_CmnMoveForward : CharacterState {
         AddCancelOption("CmnJump");
         AddCancelOption(EntityStateType.CHR_ATK_ALL);
         AddCancelOption("CmnNeutralCrouch");
+        AddCancelOption("CmnBackdash");
     }
 
     public override IEnumerator MainRoutine() {
-        owner.animation.AddUnmanagedAnimation("std/walk", true);
+        owner.animation.AddUnmanagedAnimation("std/walk", true, .05f);
         
         while (RevalidateInput()) {
             owner.rb.AddForceX(PhysicsUtil.NormalizeSide(50, owner.side));
@@ -49,8 +50,8 @@ public class State_CmnMoveBackward : CharacterState {
     public override float inputPriority => 1;
     
     public override bool IsInputValid(InputBuffer buffer) {
-        return buffer.thisFrame.HasInput(InputType.BACKWARD, InputFrameType.HELD)
-            && !buffer.thisFrame.HasInput(InputType.FORWARD, InputFrameType.HELD);
+        return buffer.thisFrame.HasInput(owner.side, InputType.BACKWARD, InputFrameType.HELD)
+            && !buffer.thisFrame.HasInput(owner.side, InputType.FORWARD, InputFrameType.HELD);
     }
 
     protected override void OnStateBegin() {
@@ -60,10 +61,11 @@ public class State_CmnMoveBackward : CharacterState {
         AddCancelOption("CmnJump");
         AddCancelOption(EntityStateType.CHR_ATK_ALL);
         AddCancelOption("CmnNeutralCrouch");
+        AddCancelOption("CmnBackdash");
     }
 
     public override IEnumerator MainRoutine() {
-        owner.animation.AddUnmanagedAnimation("std/walk", true);
+        owner.animation.AddUnmanagedAnimation("std/walk", true, .05f);
         
         while (RevalidateInput()) {
             owner.rb.AddForceX(PhysicsUtil.NormalizeSide(-50, owner.side));

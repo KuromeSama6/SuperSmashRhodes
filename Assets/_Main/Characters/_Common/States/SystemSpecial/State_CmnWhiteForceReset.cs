@@ -13,7 +13,7 @@ public class State_CmnWhiteForceReset : CharacterState {
     public override EntityStateType type => EntityStateType.CHR_ATK_SYSTEMSPECIAL;
     public override float inputPriority => 20f;
     public override bool IsInputValid(InputBuffer buffer) {
-        return buffer.TimeSlice(6).ScanForInput(new InputFrame(InputType.FORCE_RESET, InputFrameType.PRESSED));
+        return buffer.TimeSlice(6).ScanForInput(owner.side, new InputFrame(InputType.FORCE_RESET, InputFrameType.PRESSED));
     }
     public override bool mayEnterState => player.meter.gauge.value >= 50f && player.activeState is CharacterAttackStateBase;
 

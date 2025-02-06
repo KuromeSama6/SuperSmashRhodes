@@ -42,15 +42,15 @@ public class InputBuffer {
         return new InputBuffer(maxSize, ret.ToArray());
     }
 
-    public bool ScanForInput(params InputFrame[] seq) {
+    public bool ScanForInput(EntitySide side, params InputFrame[] seq) {
         List<InputFrame[]> args = new();
         foreach (var frame in seq) {
             args.Add(new[]{ frame });
         }
-        return ScanForInput(args.ToArray());
+        return ScanForInput(side, args.ToArray());
     }
     
-    public bool ScanForInput(params InputFrame[][] seq) {
+    public bool ScanForInput(EntitySide side, params InputFrame[][] seq) {
         var req = seq.ToList();
         if (req.Count == 0)
             throw new ArgumentException("Input sequence must have at least one element");
@@ -59,7 +59,7 @@ public class InputBuffer {
         List<InputChord> toConsume = new();
         
         for (int i = buffer.Count - 1; i >= 0; i--) {
-            if (req[0].ToList().TrueForAll(c => buffer[i].HasInput(c))) {
+            if (req[0].ToList().TrueForAll(c => buffer[i].HasInput(side, c))) {
                 // Debug.Log(string.Join(", ", buffer));
                 req.RemoveAt(0);
                 toConsume.Add(buffer[i]);
@@ -78,18 +78,19 @@ public class InputBuffer {
         return result;
     }
     
-    public static InputType TranslateRawDirectionInput(InputType input, EntitySide side) {
-        if (input == InputType.RAW_MOVE_LEFT) {
-            if (side == EntitySide.LEFT) return InputType.FORWARD;
-            return InputType.BACKWARD;
+    public static InputType TranslateToRawDirection(InputType input, EntitySide side) {
+        if (input == InputType.FORWARD) {
+            if (side == EntitySide.RIGHT) return InputType.RAW_MOVE_RIGHT;
+            return InputType.RAW_MOVE_LEFT;
 
         }
-        if (input == InputType.RAW_MOVE_RIGHT) {
-            if (side == EntitySide.LEFT) return InputType.BACKWARD;
-            return InputType.FORWARD;
+        if (input == InputType.BACKWARD) {
+            if (side == EntitySide.RIGHT) return InputType.RAW_MOVE_LEFT;
+            return InputType.RAW_MOVE_RIGHT;
 
         }
-        throw new ArgumentException("Input must be RAW_MOVE_LEFT or RAW_MOVE_RIGHT");
+        
+        return input;
     }
 }
 
@@ -100,7 +101,7 @@ public enum InputFrameType {
 }
 
 public struct InputFrame : IEquatable<InputFrame> {
-    public InputType type { get; }
+    public InputType type { get; set; }
     public InputFrameType frameType { get; }
     
     public InputFrame(InputType type, InputFrameType frameType) {
@@ -128,13 +129,14 @@ public class InputChord {
         this.inputs = inputs;
     }
 
-    public bool HasInput(InputType type, InputFrameType frameType) {
+    public bool HasInput(EntitySide side, InputType type, InputFrameType frameType) {
+        type = InputBuffer.TranslateToRawDirection(type, side);
         return inputs.Contains(new(type, frameType));
     }
-
     
-    public bool HasInput(InputFrame type) {
-        return inputs.Contains(type);
+    public bool HasInput(EntitySide side, InputFrame frame) {
+        frame.type = InputBuffer.TranslateToRawDirection(frame.type, side);
+        return inputs.Contains(frame);
     }
 
     public void Consume() {

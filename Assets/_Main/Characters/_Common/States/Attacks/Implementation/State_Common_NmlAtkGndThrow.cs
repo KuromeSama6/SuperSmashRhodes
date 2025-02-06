@@ -9,7 +9,7 @@ public abstract class State_Common_NmlAtkGndThrow : ThrowAttackStateBase {
     public override float inputPriority => 4f;
     public override bool IsInputValid(InputBuffer buffer) {
         var frame = buffer.thisFrame;
-        return (frame.HasInput(InputType.FORWARD, InputFrameType.HELD) || frame.HasInput(InputType.BACKWARD, InputFrameType.HELD)) && frame.HasInput(InputType.D, InputFrameType.PRESSED);
+        return (frame.HasInput(owner.side, InputType.FORWARD, InputFrameType.HELD) || frame.HasInput(owner.side, InputType.BACKWARD, InputFrameType.HELD)) && frame.HasInput(owner.side, InputType.D, InputFrameType.PRESSED);
     }
     protected override string mainAnimation => "cmn/NmlAtkGndThrow";
     protected override string whiffAnimation => "cmn/NmlAtkGndThrow_W";
@@ -26,7 +26,7 @@ public abstract class State_Common_NmlAtkGndThrow : ThrowAttackStateBase {
         return other is State_Common_NmlAtkGndThrow;
     }
     protected override bool ShouldSwitchSides(PlayerCharacter other) {
-        return player.inputModule.localBuffer.thisFrame.HasInput(InputType.BACKWARD, InputFrameType.HELD);
+        return player.inputProvider.inputBuffer.thisFrame.HasInput(owner.side, InputType.BACKWARD, InputFrameType.HELD);
     }
 
 }

@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      bg_rhodes_day_left_0: 3242948398143466716
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

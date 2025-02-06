@@ -47,10 +47,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  backdashInvuln: 5
   dashSpeed: 3
   airDashAvailableFrame: 0
   airDashDuration: 0
-  backdashDuration: 0
-  backdashInvuln: 0
-  backdashAirborne: 0
-  backdashDistance: 0
+  backdashVelocity: {x: -3, y: 3}

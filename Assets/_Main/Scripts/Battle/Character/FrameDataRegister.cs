@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
 public class FrameDataRegister : RuntimeCharacterDataRegister {
     public int hitstunFrames { get => _hitstunFrames + carriedHitstunFrames; }
     public int blockstunFrames { get; set; }
     public int throwInvulnFrames { get; set; }
+    public int landingRecoveryFrames { get; set; }
 
     private int _hitstunFrames;
     private int carriedHitstunFrames;
@@ -38,4 +40,5 @@ public class FrameDataRegister : RuntimeCharacterDataRegister {
     }
     
 }
+
 }

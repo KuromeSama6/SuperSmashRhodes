@@ -43,7 +43,7 @@ public class State_CmnNeutralCrouch : CharacterState {
     public override EntityStateType type => EntityStateType.CHR_NEUTRAL;
     public override float inputPriority => 0;
     public override bool IsInputValid(InputBuffer buffer) {
-        return buffer.thisFrame.HasInput(InputType.DOWN, InputFrameType.HELD);
+        return buffer.thisFrame.HasInput(owner.side, InputType.DOWN, InputFrameType.HELD);
     }
 
     protected override void OnStateBegin() {
@@ -85,10 +85,8 @@ public class State_CmnAirNeutral : CharacterState {
         owner.animation.AddUnmanagedAnimation("std/jump_down", true, 0.1f);
         while (player.airborne) yield return 1;
         
-        owner.animation.AddUnmanagedAnimation("std/land", false);
-        // TODO: Landing recovery
-        player.ApplyGroundedFriction(7);
-        yield return 7;
+        // landing recovery    
+        CancelInto(player.airActionPerformed  ? "CmnAttackLandingRecovery" : "CmnNeutralLandingRecovery");
     }
 }
 

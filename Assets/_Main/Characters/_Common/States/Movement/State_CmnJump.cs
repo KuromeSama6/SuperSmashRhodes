@@ -14,8 +14,8 @@ public class State_CmnJump : CharacterState {
     public override float inputPriority => 2;
     
     public override bool IsInputValid(InputBuffer buffer) {
-        return buffer.thisFrame.HasInput(InputType.UP, InputFrameType.HELD) 
-            || buffer.TimeSlice(5).ScanForInput(new InputFrame(InputType.UP, InputFrameType.PRESSED));
+        return buffer.thisFrame.HasInput(owner.side, InputType.UP, InputFrameType.HELD) 
+            || buffer.TimeSlice(5).ScanForInput(owner.side, new InputFrame(InputType.UP, InputFrameType.PRESSED));
     }
     
     public override IEnumerator MainRoutine() {
@@ -33,11 +33,11 @@ public class State_CmnJump : CharacterState {
         float xForce = 0;
         float amount = 3f;
 
-        if (player.inputModule.localBuffer.thisFrame.HasInput(InputType.DASH, InputFrameType.HELD)) {
+        if (player.inputProvider.inputBuffer.thisFrame.HasInput(owner.side, InputType.DASH, InputFrameType.HELD)) {
             xForce = PhysicsUtil.NormalizeSide(amount * 1.5f, owner.side);
-        } if (player.inputModule.localBuffer.thisFrame.HasInput(InputType.FORWARD, InputFrameType.HELD)) {
+        } if (player.inputProvider.inputBuffer.thisFrame.HasInput(owner.side, InputType.FORWARD, InputFrameType.HELD)) {
             xForce = PhysicsUtil.NormalizeSide(amount, owner.side);
-        } else if (player.inputModule.localBuffer.thisFrame.HasInput(InputType.BACKWARD, InputFrameType.HELD)) {
+        } else if (player.inputProvider.inputBuffer.thisFrame.HasInput(owner.side, InputType.BACKWARD, InputFrameType.HELD)) {
             xForce = PhysicsUtil.NormalizeSide(-amount, owner.side);
         }
         

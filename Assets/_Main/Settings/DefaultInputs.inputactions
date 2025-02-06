@@ -125,7 +125,7 @@
                     "path": "<Keyboard>/a",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -136,7 +136,7 @@
                     "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -169,7 +169,7 @@
                     "path": "<Keyboard>/leftArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard2",
+                    "groups": "keyboard2",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -180,7 +180,62 @@
                     "path": "<Keyboard>/rightArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard2",
+                    "groups": "keyboard2",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "2D Vector",
+                    "id": "f66f63bb-4718-49ae-be68-031226c5ea47",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "5365a990-cfe9-4a0b-9a93-551f099204d5",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "ps4_test",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "d959e3d5-7f83-4a1f-97a8-f562ff64db9a",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "ps4_test",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "7d1a7658-adec-4490-98d0-e525f6a93b4f",
+                    "path": "<HID::Brook P4 Wired Gamepad V2.8>/hat/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "ps4_test",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "eaae7a94-7d33-464c-85f6-4177e20be569",
+                    "path": "<HID::Brook P4 Wired Gamepad V2.8>/hat/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "ps4_test",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -191,7 +246,7 @@
                     "path": "<Keyboard>/leftShift",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "Dash",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -213,7 +268,18 @@
                     "path": "<Keyboard>/rightShift",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard2",
+                    "groups": "keyboard2",
+                    "action": "Dash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9b0c23a6-61d6-48ad-9ecf-7ed0c8ba05c5",
+                    "path": "<HID::Brook P4 Wired Gamepad V2.8>/trigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "ps4_test",
                     "action": "Dash",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -224,7 +290,7 @@
                     "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -235,7 +301,7 @@
                     "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard",
+                    "groups": "keyboard1",
                     "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -268,7 +334,18 @@
                     "path": "<Keyboard>/upArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard2",
+                    "groups": "keyboard2",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8fdb2fcb-52db-4802-b210-e35d494a7da3",
+                    "path": "<HID::Brook P4 Wired Gamepad V2.8>/hat/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "ps4_test",
                     "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -279,7 +356,7 @@
                     "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "Crouch",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -290,7 +367,7 @@
                     "path": "<Keyboard>/downArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard2",
+                    "groups": "keyboard2",
                     "action": "Crouch",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -319,11 +396,22 @@
                 },
                 {
                     "name": "",
+                    "id": "addd0f80-6ffe-4f6a-a1e6-5844a3d22b4b",
+                    "path": "<HID::Brook P4 Wired Gamepad V2.8>/hat/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "ps4_test",
+                    "action": "Crouch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "91442beb-ec2e-4a0c-b5c0-74d7a2a4dde5",
                     "path": "<Keyboard>/semicolon",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "Punch",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -334,7 +422,7 @@
                     "path": "<Keyboard>/h",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "Punch",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -356,7 +444,18 @@
                     "path": "<Keyboard>/numpad1",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard2",
+                    "groups": "keyboard2",
+                    "action": "Punch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1a8ebc2f-24e8-431c-ae1f-22243b2038b9",
+                    "path": "<HID::Brook P4 Wired Gamepad V2.8>/button2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "ps4_test",
                     "action": "Punch",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -367,7 +466,7 @@
                     "path": "<Keyboard>/rightAlt",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "Kick",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -378,7 +477,7 @@
                     "path": "<Keyboard>/j",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "Kick",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -400,7 +499,18 @@
                     "path": "<Keyboard>/numpad0",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard2",
+                    "groups": "keyboard2",
+                    "action": "Kick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b119dc18-1c4a-4789-8217-e0ab76f1187b",
+                    "path": "<HID::Brook P4 Wired Gamepad V2.8>/button3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
                     "action": "Kick",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -411,7 +521,7 @@
                     "path": "<Keyboard>/backslash",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "Slash",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -422,7 +532,7 @@
                     "path": "<Keyboard>/k",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "Slash",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -444,7 +554,18 @@
                     "path": "<Keyboard>/numpad6",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard2",
+                    "groups": "keyboard2",
+                    "action": "Slash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6afbca36-5438-46c3-bde9-b80560bd0f99",
+                    "path": "<HID::Brook P4 Wired Gamepad V2.8>/button8",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";ps4_test",
                     "action": "Slash",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -455,7 +576,7 @@
                     "path": "<Keyboard>/rightBracket",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "HeavySlash",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -466,7 +587,7 @@
                     "path": "<Keyboard>/l",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "HeavySlash",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -488,7 +609,18 @@
                     "path": "<Keyboard>/numpad5",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard2",
+                    "groups": "keyboard2",
+                    "action": "HeavySlash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1c0b164f-705a-42c6-bf35-b39843b9d32a",
+                    "path": "<HID::Brook P4 Wired Gamepad V2.8>/button7",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";ps4_test",
                     "action": "HeavySlash",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -499,7 +631,7 @@
                     "path": "<Keyboard>/leftAlt",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "Dust",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -510,18 +642,7 @@
                     "path": "<Keyboard>/o",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
-                    "action": "Dust",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "0c1c3a16-5c8f-4699-936d-5f0446e51be4",
-                    "path": "<Gamepad>/rightShoulder",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
+                    "groups": "keyboard1",
                     "action": "Dust",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -532,7 +653,18 @@
                     "path": "<Keyboard>/numpad8",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard2",
+                    "groups": "keyboard2",
+                    "action": "Dust",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9ecde6f6-d795-43d5-bb61-f3f11eabd982",
+                    "path": "<HID::Brook P4 Wired Gamepad V2.8>/button12",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";ps4_test",
                     "action": "Dust",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -543,7 +675,7 @@
                     "path": "<Keyboard>/g",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "ForceReset",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -554,18 +686,18 @@
                     "path": "<Keyboard>/numpadMinus",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard2",
+                    "groups": "keyboard2",
                     "action": "ForceReset",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "61d85e45-a730-4a7c-a944-b8d17f813df3",
-                    "path": "<Gamepad>/rightTrigger",
+                    "id": "4432037e-774a-4970-968d-5d2f52befe62",
+                    "path": "<HID::Brook P4 Wired Gamepad V2.8>/button6",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";ps4_test",
                     "action": "ForceReset",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -795,7 +927,7 @@
                     "path": "<Joystick>/stick/up",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Joystick",
+                    "groups": "ps4_test",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -806,7 +938,7 @@
                     "path": "<Joystick>/stick/down",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Joystick",
+                    "groups": "ps4_test",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -817,7 +949,7 @@
                     "path": "<Joystick>/stick/left",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Joystick",
+                    "groups": "ps4_test",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -828,7 +960,7 @@
                     "path": "<Joystick>/stick/right",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Joystick",
+                    "groups": "ps4_test",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -850,7 +982,7 @@
                     "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -861,7 +993,7 @@
                     "path": "<Keyboard>/upArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -872,7 +1004,7 @@
                     "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -883,7 +1015,7 @@
                     "path": "<Keyboard>/downArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -894,7 +1026,7 @@
                     "path": "<Keyboard>/a",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -905,7 +1037,7 @@
                     "path": "<Keyboard>/leftArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -916,7 +1048,7 @@
                     "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -927,7 +1059,7 @@
                     "path": "<Keyboard>/rightArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -938,7 +1070,7 @@
                     "path": "*/{Submit}",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Gamepad;Touch;Joystick;XR;Keyboard",
+                    "groups": "Gamepad;Touch;XR;ps4_test;keyboard1",
                     "action": "Submit",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -949,7 +1081,7 @@
                     "path": "*/{Cancel}",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Gamepad;Touch;Joystick;XR;Keyboard",
+                    "groups": "Gamepad;Touch;XR;ps4_test;keyboard1",
                     "action": "Cancel",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -960,7 +1092,7 @@
                     "path": "<Mouse>/position",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "Point",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -971,7 +1103,7 @@
                     "path": "<Pen>/position",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "Point",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -993,7 +1125,7 @@
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "Click",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -1004,7 +1136,7 @@
                     "path": "<Pen>/tip",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "Click",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -1037,7 +1169,7 @@
                     "path": "<Mouse>/scroll",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "ScrollWheel",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -1048,7 +1180,7 @@
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "RightClick",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -1059,7 +1191,7 @@
                     "path": "<Mouse>/middleButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "keyboard1",
                     "action": "MiddleClick",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -1091,8 +1223,8 @@
     ],
     "controlSchemes": [
         {
-            "name": "Keyboard",
-            "bindingGroup": "Keyboard",
+            "name": "keyboard1",
+            "bindingGroup": "keyboard1",
             "devices": [
                 {
                     "devicePath": "<Keyboard>",
@@ -1102,22 +1234,22 @@
             ]
         },
         {
-            "name": "Gamepad",
-            "bindingGroup": "Gamepad",
+            "name": "keyboard2",
+            "bindingGroup": "keyboard2",
             "devices": [
                 {
-                    "devicePath": "<Gamepad>",
+                    "devicePath": "<Keyboard>",
                     "isOptional": false,
                     "isOR": false
                 }
             ]
         },
         {
-            "name": "Keyboard2",
-            "bindingGroup": "Keyboard2",
+            "name": "ps4_test",
+            "bindingGroup": "ps4_test",
             "devices": [
                 {
-                    "devicePath": "<Keyboard>",
+                    "devicePath": "<Joystick>",
                     "isOptional": false,
                     "isOR": false
                 }

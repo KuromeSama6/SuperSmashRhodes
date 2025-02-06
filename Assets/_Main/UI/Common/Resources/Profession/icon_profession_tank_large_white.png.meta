@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      icon_profession_tank_large_white_0: -5700055414943617476
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

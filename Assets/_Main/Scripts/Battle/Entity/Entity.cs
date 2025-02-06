@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using NUnit.Framework;
 using SingularityGroup.HotReload;
 using Sirenix.OdinInspector;
@@ -9,6 +10,7 @@ using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Util;
 using UnityEngine;
+using Vector2 = UnityEngine.Vector2;
 
 namespace SuperSmashRhodes.Battle {
 /// <summary>
@@ -73,7 +75,7 @@ public abstract class Entity : MonoBehaviour {
     protected virtual void FixedUpdate() {
         if (!logicStarted) return;
         
-        if (PhysicsTickManager.inst.globalFreezeFrames > 0) {
+        if (TimeManager.inst.globalFreezeFrames > 0) {
             return;
         }
         
@@ -167,6 +169,10 @@ public abstract class Entity : MonoBehaviour {
 
     public void QueueInboundAttack(AttackData attack) {
         queuedInboundAttacks.Add(attack);
+    }
+
+    public Vector2 TranslateDirectionalForce(Vector2 force) {
+        return new Vector2(force.x * (side == EntitySide.LEFT ? 1f : -1f), force.y);
     }
     
     // Implemented methods

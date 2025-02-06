@@ -23,9 +23,9 @@ public class State_CmnDash : CharacterState {
     }
 
     public override bool IsInputValid(InputBuffer buffer) {
-        if (buffer.thisFrame.HasInput(InputType.BACKWARD, InputFrameType.HELD)) return false;
+        if (buffer.thisFrame.HasInput(owner.side, InputType.BACKWARD, InputFrameType.HELD)) return false;
         
-        return buffer.thisFrame.HasInput(InputType.DASH, InputFrameType.HELD);
+        return buffer.thisFrame.HasInput(owner.side, InputType.DASH, InputFrameType.HELD);
     }
 
     protected override void OnStateBegin() {
@@ -33,6 +33,7 @@ public class State_CmnDash : CharacterState {
         AddCancelOption(EntityStateType.CHR_ATK_ALL);
         AddCancelOption(EntityStateType.CHR_MOVEMENT_SINGLE);
         AddCancelOption("CmnNeutralCrouch");
+        AddCancelOption("CmnBackdash");
     }
 
     public override IEnumerator MainRoutine() {
@@ -52,7 +53,7 @@ public class State_CmnDash : CharacterState {
         
         // state end
         var buffer = GetCurrentInputBuffer();
-        if (buffer.thisFrame.HasInput(InputType.FORWARD, InputFrameType.HELD)) {
+        if (buffer.thisFrame.HasInput(owner.side, InputType.FORWARD, InputFrameType.HELD)) {
             CancelInto("CmnMoveForward");
             yield break;
         }

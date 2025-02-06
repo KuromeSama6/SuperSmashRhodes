@@ -24,7 +24,6 @@ public class GameManager : SingletonBehaviour<GameManager> {
     
     [Title("Debug")]
     public GameObject p1Prefab;
-    [FormerlySerializedAs("p2Prfab")]
     public GameObject p2Prefab;
         
     private PlayerInputManager inputManager;
@@ -36,9 +35,8 @@ public class GameManager : SingletonBehaviour<GameManager> {
         
         targetGroup.Targets.Clear();
         
-        //TODO: Change debug
-        CreatePlayer(0, p1Prefab, "Keyboard", Keyboard.current);
-        CreatePlayer(1, p2Prefab,"Keyboard2", Keyboard.current);
+        CreatePlayer(0, p1Prefab);
+        CreatePlayer(1, p2Prefab);
 
         yield return new WaitForFixedUpdate();
         foreach (var player in players.Values) {
@@ -52,8 +50,8 @@ public class GameManager : SingletonBehaviour<GameManager> {
         AssetManager.inst.PreloadAll("cmn/battle/fx/**");
     }
 
-    private void CreatePlayer(int index, GameObject prefab, string controlScheme, InputDevice device) {
-        var input = PlayerInput.Instantiate(prefab, controlScheme: controlScheme, pairWithDevice: device);
+    private void CreatePlayer(int index, GameObject prefab) {
+        var input = Instantiate(prefab);
         var player = input.GetComponent<PlayerCharacter>();
         player.Init(index);
         player.name = "Player" + index;

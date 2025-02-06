@@ -30,3 +30,5 @@ MonoBehaviour:
   - CmnSoftKnockdown
   - CmnWhiteForceReset
   - CmnHardKnockdown
+  - CmnNeutralLandingRecovery
+  - CmnBackdash

@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      F_Hanging buckle_B_0: 12767336138627341
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

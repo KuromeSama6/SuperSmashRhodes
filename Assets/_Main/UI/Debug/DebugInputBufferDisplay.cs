@@ -10,7 +10,7 @@ public class DebugInputBufferDisplay : PerSideUIElement<DebugInputBufferDisplay>
 
     private void Update() {
         if (!player) return;
-        var buffer = player.inputModule.localBuffer;
+        var buffer = player.inputProvider.inputBuffer;
         
         StringBuilder sb = new();
         foreach (var chord in buffer.buffer) {

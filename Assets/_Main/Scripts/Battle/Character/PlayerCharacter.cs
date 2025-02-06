@@ -27,10 +27,10 @@ public class PlayerCharacter : Entity {
     public bool isDashing { get; private set; }
     public bool isCrouching { get; private set; }
     public bool airborne { get; set; }
+    public bool airActionPerformed { get; set; }
     public PlayerCharacter opponent => GameManager.inst.GetOpponent(this);
     public float opponentDistance => Mathf.Abs(transform.position.x - opponent.transform.position.x);
     public bool inUnmanagedTime => unmanagedTime.frames > 0;
-    public PlayerInputModule inputModule { get; private set; }
     public ComboCounter comboCounter { get; private set; }
     public FrameDataRegister frameData { get; private set; }
 
@@ -45,6 +45,7 @@ public class PlayerCharacter : Entity {
     public PlayerMeterGauge meter { get; private set; }
     public PlayerBurstGauge burst { get; private set; }
     public CharacterUnmanagedTimeData unmanagedTime { get; set; }
+    public IInputProvider inputProvider { get; private set; } = new NOPInputProvider(); // InputProvider assigned on round start
 
     public bool atWall => pushboxManager.atWall;
     public float wallDistance {
@@ -96,7 +97,6 @@ public class PlayerCharacter : Entity {
         comboCounter = new(this);
         frameData = new(this);
         
-        inputModule = GetComponent<PlayerInputModule>();
         pushboxManager = GetComponentInChildren<PushboxManager>();
         fxManager = GetComponentInChildren<CharacterFXManager>();
         meter = GetComponent<PlayerMeterGauge>();
@@ -162,7 +162,7 @@ public class PlayerCharacter : Entity {
     }
     
     private void UpdateInput() { 
-        if (inputModule.localBuffer == null) return;
+        if (inputProvider.inputBuffer == null) return;
         
         // get priority sorted list
         var li = (from state in states.Values
@@ -174,7 +174,7 @@ public class PlayerCharacter : Entity {
             
             if (activeState.stateData.cancelOptions.Contains(state) || BitUtil.CheckFlag((ulong)activeState.stateData.cancelFlag, (ulong)state.type)) {
                 // state is valid
-                if (state.IsInputValid(inputModule.localBuffer) && state.mayEnterState) {
+                if (state.IsInputValid(inputProvider.inputBuffer) && state.mayEnterState) {
                     // check cancel state
                 
                     BeginState(state);
@@ -223,8 +223,7 @@ public class PlayerCharacter : Entity {
     }
     
     public void ApplyGroundedFriction(int frames = 1) {
-        return;
-        applyGroundedFrictionFrames = frames;
+        // applyGroundedFrictionFrames = frames;
     }
 
     public void ApplyGroundedFrictionImmediate() {
@@ -233,7 +232,7 @@ public class PlayerCharacter : Entity {
     }
     
     protected override EntityState GetDefaultState() {
-        string name = inputModule.localBuffer.thisFrame.HasInput(InputType.DOWN, InputFrameType.HELD) ? "CmnNeutralCrouch" : "CmnNeutral";
+        string name = inputProvider.inputBuffer.thisFrame.HasInput(side, InputType.DOWN, InputFrameType.HELD) ? "CmnNeutralCrouch" : "CmnNeutral";
         
         if (!EntityStateRegistry.inst.CreateInstance(name, out var ret, this))
             throw new Exception("Default state [CmnNeutral] not assigned");
@@ -248,6 +247,10 @@ public class PlayerCharacter : Entity {
         // TODO: Z index management
         transform.position = new(playerIndex == 0 ? -1.5f : 1.5f, 0f, 0f);
         onRoundInit.Invoke();
+        airActionPerformed = false;
+        
+        // input provider
+        inputProvider = LocalInputManager.inst.GetInputProvider(this);
     }
 
     public void SetZPriority() {
@@ -387,7 +390,7 @@ public class PlayerCharacter : Entity {
         // apply freeze frames
 
         var freezeFrames = attack.GetFreezeFrames(this);
-        if (addFreezeFrames) PhysicsTickManager.inst.Schedule(4, freezeFrames);
+        if (addFreezeFrames) TimeManager.inst.Schedule(4, freezeFrames);
     }
 
     private void HandleOnHitStateTransition(IAttack attack, bool crouching, out bool addFreezeFrames) {
@@ -422,7 +425,7 @@ public class PlayerCharacter : Entity {
         
         var blockType = attack.GetGuardType(this);
         bool crouching = activeState is State_CmnNeutralCrouch || activeState is State_CmnBlockStunCrouch;
-        bool blockHeld = inputModule.localBuffer.thisFrame.HasInput(InputType.BACKWARD, InputFrameType.HELD);
+        bool blockHeld = inputProvider.inputBuffer.thisFrame.HasInput(side, InputType.BACKWARD, InputFrameType.HELD);
 
         AttackGuardType currentGuardType = crouching ? AttackGuardType.CROUCHING : AttackGuardType.STANDING;
         

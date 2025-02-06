@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      diagonal-stripe_0: 2197284600450549902
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

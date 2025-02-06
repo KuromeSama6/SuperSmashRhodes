@@ -23,6 +23,10 @@ public class CharacterConfiguration : ScriptableObject {
     public AnimationCurve dashAccelCurve;
     
     [TabGroup("playerConfig", "Dash", SdfIconType.ArrowRight, TextColor = "yellow")]
-    public float dashSpeed, airDashAvailableFrame, airDashDuration, backdashDuration, backdashInvuln, backdashAirborne, backdashDistance;
+    public int backdashInvuln;
+    [TabGroup("playerConfig", "Dash", SdfIconType.ArrowRight, TextColor = "yellow")]
+    public float dashSpeed, airDashAvailableFrame, airDashDuration;
+    [TabGroup("playerConfig", "Dash", SdfIconType.ArrowRight, TextColor = "yellow")]
+    public Vector2 backdashVelocity;
 }
 }

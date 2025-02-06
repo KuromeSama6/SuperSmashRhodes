@@ -19,7 +19,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         hitsRemaining = 1;
         stateData.disableSideSwap = true;
         player.SetZPriority();
-        PhysicsTickManager.inst.globalFreezeFrames = 0; 
+        TimeManager.inst.globalFreezeFrames = 0; 
     }
 
     public override IEnumerator MainRoutine() {
@@ -95,7 +95,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
             frames = normalInputBufferLength;
         }
 
-        return buffer.TimeSlice(frames).ScanForInput(input); 
+        return buffer.TimeSlice(frames).ScanForInput(owner.side, input); 
     }
     
     public float GetMeterGain(Entity to, bool blocked) {
