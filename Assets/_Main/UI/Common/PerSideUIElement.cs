@@ -19,8 +19,6 @@ public abstract class PerSideUIElement<T> : MonoBehaviour where T: MonoBehaviour
         
         instances[playerIndex] = GetComponent<T>();
     }
-
-    
     
     public T this[int index] {
         get {

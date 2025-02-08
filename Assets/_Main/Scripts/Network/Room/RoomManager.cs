@@ -1,46 +1,28 @@
 ﻿using System;
-using SuperSmashRhodes.Network.Rollbit;
-using UnityEngine;
+using SuperSmashRhodes.Framework;
 
 namespace SuperSmashRhodes.Network.Room {
-public class RoomManager : MonoBehaviour, IPacketHandler {
-    public RoomStatus status { get; private set; } = RoomStatus.STANDBY;
-    public int playerCount { get; private set; } = 0;
-    public int spectatorCount { get; private set; } = 0;
-    public bool matchAccepted { get; private set; }
-    
-    private NetworkSession session;
+public class RoomManager : AutoInitSingletonBehaviour<RoomManager> {
+    public Room current { get; private set; }
 
     private void Start() {
         
     }
 
-    public void Init(NetworkSession session) {
-        this.session = session;
-        session.AddPacketHandler(this);
-        this.session.onDisconnected.AddListener(OnDisconnected);
-    }
-    
-    public void NotifyMatchAccept(bool accepted) {
-        if (status != RoomStatus.WAIT_ACCEPT || matchAccepted) return;
-
-        session.SendPacket<PacketPlayOutGenericResponse>(new PacketPlayInAcceptMatch(session, accepted))
-            .ContinueWith(p => {
-                matchAccepted = p.Result.header.statusCode == 0;
-            });
-    }
-    
-    private void OnDisconnected() {
+    public void CreateRoom(Room room) {
+        if (current != null) return;
+        current = room;
         
+        room.onDestroy.AddListener(OnRoomDestroy);
     }
-    
-    // Packet handlers
-    [PacketHandler]
-    public void OnRoomStatusUpdate(PacketPlayOutRoomStatus packet) {
-        print($"Room status update: {packet.status}");
-        status = packet.status;
-        playerCount = packet.playerCount;
-        spectatorCount = packet.spectatorCount;
+
+    public void CloseRoom() {
+        if (current == null) return;
+        current.Destroy();
+    }
+
+    private void OnRoomDestroy() {
+        current = null;
     }
 }
 }

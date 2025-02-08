@@ -9,7 +9,7 @@ public abstract class State_Common_NmlAtkGndThrow : ThrowAttackStateBase {
     public override float inputPriority => 4f;
     public override bool IsInputValid(InputBuffer buffer) {
         var frame = buffer.thisFrame;
-        return (frame.HasInput(owner.side, InputType.FORWARD, InputFrameType.HELD) || frame.HasInput(owner.side, InputType.BACKWARD, InputFrameType.HELD)) && frame.HasInput(owner.side, InputType.D, InputFrameType.PRESSED);
+        return (frame.HasInput(owner.side, InputType.FORWARD, InputFrameType.HELD) || frame.HasInput(owner.side, InputType.BACKWARD, InputFrameType.HELD)) && frame.HasInput(owner.side, InputType.D, InputFrameType.PRESSED); 
     }
     protected override string mainAnimation => "cmn/NmlAtkGndThrow";
     protected override string whiffAnimation => "cmn/NmlAtkGndThrow_W";

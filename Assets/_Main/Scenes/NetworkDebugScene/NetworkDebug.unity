@@ -3230,6 +3230,7 @@ MonoBehaviour:
   portInput: {fileID: 1908675078}
   connectButton: {fileID: 1662502782}
   clientConfiguration: {fileID: 11400000, guid: e850290aaca6e7245809e60103b7fcec, type: 2}
+  roomConfiguration: {fileID: 11400000, guid: 70b8d11fdd38b304d810a50dedfc323e, type: 2}
   buttonText: {fileID: 1662638370}
   statusText: {fileID: 1638845622}
   roomInfoPanel: {fileID: 361712001}

@@ -43,6 +43,8 @@ public class LocalInputManager : SingletonBehaviour<LocalInputManager> {
         //TODO: Change debug
         if (player.playerIndex == 0) {
             return localInputModules["keyboard1"];
+        } else {
+            return localInputModules["keyboard2"];
         }
         return new NOPInputProvider();
     }

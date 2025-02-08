@@ -1,4 +1,5 @@
-﻿using SuperSmashRhodes.Util;
+﻿using SuperSmashRhodes.Network.Room;
+using SuperSmashRhodes.Util;
 
 namespace SuperSmashRhodes.Network.Rollbit {
 public class PacketPlayOutRoomStatus : ClientboundPacket{
@@ -17,13 +18,5 @@ public class PacketPlayOutRoomStatus : ClientboundPacket{
     public override PacketType type { get; } = PacketType.PLAY_OUT_ROOM_STATUS;
 }
 
-public enum RoomStatus : ushort {
-    STANDBY = 0,
-    WAIT_ACCEPT = 1,
-    CHARACTER_SELECT = 2,
-    NEGOTIATING = 3,
-    CLIENT_LOADING = 4,
-    PLAYING = 5,
-    FINISHED = 6
-}
+
 }

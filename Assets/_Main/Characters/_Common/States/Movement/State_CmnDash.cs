@@ -37,7 +37,7 @@ public class State_CmnDash : CharacterState {
     }
 
     public override IEnumerator MainRoutine() {
-        owner.animation.AddUnmanagedAnimation("std/dash_start", false, .2f);
+        // owner.animation.AddUnmanagedAnimation("std/dash_start", false, .2f);
         owner.animation.AddUnmanagedAnimation("std/dash_loop", true);
         
         while (RevalidateInput()) {

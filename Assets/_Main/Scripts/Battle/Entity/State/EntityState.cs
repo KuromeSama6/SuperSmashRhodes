@@ -77,6 +77,12 @@ public abstract class EntityState : NamedToken {
         active = false;
         OnStateEnd();
     }
+
+    public void FastForward(int frames) {
+        for (var i = 0; i < frames; ++i) {
+            TickState();
+        }
+    }
     
     private void HandleRoutineReturn(object obj) {
         if (obj == null) return;

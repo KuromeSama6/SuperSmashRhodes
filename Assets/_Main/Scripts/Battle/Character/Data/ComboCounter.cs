@@ -26,24 +26,25 @@ public class ComboCounter : RuntimeCharacterDataRegister {
 
     }
 
-    public void RegisterAttack(IAttack move, Entity victim, bool skipRegister = false) {
-        ++displayedCount;
+    public void RegisterAttack(IAttack move, Entity victim, bool skipRegister = false, float multiplier = 1f, bool countSameMove = true) {
         if (skipRegister) return;
+        ++displayedCount;
         
-        ++count;
-        
-        if (count == 1) {
+        if (count == 0) {
             overallProration = move.GetFirstHitProration(victim);
         }
+        count += 1;
 
         appliedProration *= move.GetComboProration(victim);
         
         // same move penalty
-        if (movesUsed.ContainsKey(move.id)) {
-            ++movesUsed[move.id];
-            comboDecay += 0.4f * (movesUsed[move.id] + 1);
+        if (countSameMove) {
+            if (movesUsed.ContainsKey(move.id)) {
+                ++movesUsed[move.id];
+                comboDecay += 0.4f * (movesUsed[move.id] + 1) * multiplier;
 
-        } else movesUsed[move.id] = 1;
+            } else movesUsed[move.id] = 1;   
+        }
 
         {
             // combo decay
@@ -52,7 +53,7 @@ public class ComboCounter : RuntimeCharacterDataRegister {
                 if (!player.airborne) amount *= .1f;
             }
 
-            comboDecay += amount;
+            comboDecay += amount * multiplier;
         }
     }
 

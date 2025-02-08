@@ -7,8 +7,8 @@ namespace SuperSmashRhodes.Battle.State.Implementation {
 public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public AttackPhase phase { get; protected set; }
     public bool hasActiveFrames => hitsRemaining > 0;
-    private int hitsRemaining = 1;
-    
+    public int hitsRemaining { get; protected set; }  = 1;
+
     public CharacterAttackStateBase(Entity owner) : base(owner) {
         
     }
@@ -126,12 +126,23 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public virtual AttackSpecialProperties GetSpecialProperties(Entity to) {
         return AttackSpecialProperties.NONE;
     }
+
+    public virtual float GetComboDecayIncreaseMultiplier(Entity to) {
+        return 1f;
+    }
+    public virtual float GetAtWallPushbackMultiplier(Entity to) {
+        return 1f;
+    }
+
     public abstract float GetUnscaledDamage(Entity to);
     public abstract float GetChipDamagePercentage(Entity to);
     public abstract float GetOtgDamagePercentage(Entity to);
     public abstract Vector2 GetPushback(Entity to, bool airborne, bool blocked);
     public virtual Vector2 GetCarriedMomentumPercentage(Entity to) {
         return new(0.5f, 0.5f);
+    }
+    public virtual bool ShouldCountSameMove(Entity to) {
+        return false;
     }
     public abstract float GetComboProration(Entity to);
     public abstract float GetFirstHitProration(Entity to);

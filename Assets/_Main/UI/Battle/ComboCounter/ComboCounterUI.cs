@@ -44,15 +44,17 @@ public class ComboCounterUI : PerSideUIElement<ComboCounterUI> {
 
         if (shown) {
             if (count > counter.target) {
-                counter.target = count;
+                counter.target = Math.Min(count, 99);
                 if (lastCount < count) {
                     OnIncrement();
                     lastCount = count;
                 }
+                canvasGroup.alpha = count > 20 ? 0.5f : 1f;
                 
             } else if (count < counter.target){
                 StopAllCoroutines();
                 StartCoroutine(Hide());
+                canvasGroup.alpha = 1;
             }
         }
 
@@ -61,7 +63,7 @@ public class ComboCounterUI : PerSideUIElement<ComboCounterUI> {
     }
 
     private void OnIncrement() {
-        sizeTarget = Mathf.Min(3f, sizeTarget + .1f);
+        sizeTarget = Mathf.Min(1.5f, sizeTarget + .1f);
         sizeCurrent += .5f;
     }
     

@@ -288,7 +288,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: portraits#1.merged_7
+      name: portraits#1.exusiai
       rect:
         serializedVersion: 2
         x: 184
@@ -433,6 +433,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      p: 833747068
+      portraits#1.exusiai: 833747068
       portraits#1.merged_0: -2108449654
       portraits#1.merged_1: -1221400964
       portraits#1.merged_10: -326641382
@@ -443,7 +445,6 @@ TextureImporter:
       portraits#1.merged_4: 822580744
       portraits#1.merged_5: 1211719030
       portraits#1.merged_6: -996740467
-      portraits#1.merged_7: 833747068
       portraits#1.merged_8: 537132871
       portraits#1.merged_9: 381173089
   mipmapLimitGroupName: 

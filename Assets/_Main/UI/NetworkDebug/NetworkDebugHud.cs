@@ -1,6 +1,8 @@
 using Sirenix.OdinInspector;
+using SuperSmashRhodes.Config.Global;
 using SuperSmashRhodes.Network;
 using SuperSmashRhodes.Network.Rollbit;
+using SuperSmashRhodes.Network.Room;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,7 +15,8 @@ public class NetworkDebugUI : MonoBehaviour {
     public TMP_InputField portInput;
     public Button connectButton;
     public RollbitClientConfiguration clientConfiguration;
-
+    public RoomConfiguration roomConfiguration;
+    
     public TMP_Text buttonText;
     public TMP_Text statusText;
 
@@ -40,8 +43,7 @@ public class NetworkDebugUI : MonoBehaviour {
         
         // room info
         {
-            var room = NetworkManager.inst.room;
-            if (room) {
+            if (RoomManager.inst.current is NetworkRoom room) {
                 roomInfoPanel.SetActive(true);
                 roomStatusText.text = $"Status: {room.status}";;
                 playerCountText.text = $"Players: {room.playerCount}";
@@ -78,11 +80,11 @@ public class NetworkDebugUI : MonoBehaviour {
         baseConfiguration.userId = "debug-" + Random.Range(0, 1000000).ToString("D6");
         print($"Using userId: {baseConfiguration.userId}");
         
-        NetworkManager.inst.BeginSession(baseConfiguration);
+        NetworkManager.inst.BeginSession(baseConfiguration, roomConfiguration);
     }
 
     private void AcceptMatch(bool accepted) {
-        NetworkManager.inst.room.NotifyMatchAccept(accepted);
+        (RoomManager.inst.current as NetworkRoom)?.NotifyMatchAccept(accepted);
     }
 
     private void Disconnect() {

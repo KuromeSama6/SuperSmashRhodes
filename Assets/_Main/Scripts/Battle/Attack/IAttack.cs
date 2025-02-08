@@ -11,11 +11,18 @@ public interface IAttack {
     public float GetChipDamagePercentage(Entity to);
     public float GetOtgDamagePercentage(Entity to);
     public Vector2 GetPushback(Entity to, bool airborne, bool blocked);
+    /**
+     * If the target player is against the wall, the pushback applied
+     * to the attacker is multiplied by this value.
+     */
+    public float GetAtWallPushbackMultiplier(Entity to);
     public Vector2 GetCarriedMomentumPercentage(Entity to);
     
     public float GetComboProration(Entity to);
     public float GetFirstHitProration(Entity to);
     public float GetComboDecay(Entity to);
+    public float GetComboDecayIncreaseMultiplier(Entity to);
+    public bool ShouldCountSameMove(Entity to);
     
     public AttackGuardType GetGuardType(Entity to);
     public int GetFreezeFrames(Entity to);

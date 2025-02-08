@@ -384,7 +384,7 @@ public class PlayerCharacter : Entity {
                 }
             }
             
-            ApplyCarriedPushback(amount, attack.GetCarriedMomentumPercentage(this));
+            ApplyCarriedPushback(amount, attack.GetCarriedMomentumPercentage(this), attack.GetAtWallPushbackMultiplier(this));
         }
         
         // apply freeze frames
@@ -454,12 +454,12 @@ public class PlayerCharacter : Entity {
         if (airborne) airborne = false;
     }
 
-    public void ApplyCarriedPushback(Vector2 vec, Vector2 carriedMomentum) {
+    public void ApplyCarriedPushback(Vector2 vec, Vector2 carriedMomentum, float atWallMultiplier = 1f) {
         float direction = side == EntitySide.LEFT ? -1 : 1;
         
         if (pushboxManager.atWall) {
             opponent.rb.linearVelocity *= carriedMomentum;
-            opponent.rb.AddForceX(vec.x * -direction, ForceMode2D.Impulse);
+            opponent.rb.AddForceX(vec.x * -direction * atWallMultiplier, ForceMode2D.Impulse);
             opponent.groundedFrictionAlpha = 0;
             // Debug.Log("at wall");
             // Debug.Log("add opponent force");
@@ -479,7 +479,11 @@ public class PlayerCharacter : Entity {
     }
     
     public void PlayOwnedFx(string fx, CharacterFXSocketType type, Vector3 offset = default, Vector3 direction = default) {
-        AssetManager.Get<GameObject>($"chr/{config.id}/battle/fx/{fx}", go => {
+        PlayFx($"chr/{config.id}/battle/fx/{fx}", type, offset, direction);
+    }
+    
+    public void PlayFx(string fx, CharacterFXSocketType type, Vector3 offset = default, Vector3 direction = default) {
+        AssetManager.Get<GameObject>(fx, go => {
             fxManager.PlayGameObjectFX(go, type, offset, direction);
         });
     }
@@ -489,7 +493,15 @@ public class PlayerCharacter : Entity {
         var dmg = rawDamage;
 
         var skipRegister = flags.HasFlag(DamageSpecialProperties.SKIP_REGISTER);
-        if (attack != null || skipRegister) comboCounter.RegisterAttack(attack, this, skipRegister);
+        if (attack != null || skipRegister) {
+            comboCounter.RegisterAttack(
+                attack, 
+                this, 
+                skipRegister, 
+                data != null && attack != null ? attack.GetComboDecayIncreaseMultiplier(data.to) : 1f,
+                data != null && attack != null ? attack.ShouldCountSameMove(data.to) : false
+            );
+        }
         
         if (!flags.HasFlag(DamageSpecialProperties.IGNORE_COMBO)) {
             dmg *= comboCounter.finalScale * (attack == null ? 1 : comboCounter.GetMoveSpecificProration(attack));

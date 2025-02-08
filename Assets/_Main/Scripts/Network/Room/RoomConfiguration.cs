@@ -1,0 +1,20 @@
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
+
+namespace SuperSmashRhodes.Network.Room {
+[CreateAssetMenu(fileName = "NewRoomConfiguration", menuName = "SSR/Room/RoomConfiguration", order = 0)]
+public class RoomConfiguration : ScriptableObject {
+    [Title("General Config")]
+    public bool isNetworked;
+    public bool isTraining;
+    
+    [Title("Round Config")]
+    public int winRounds;
+    public int roundTime;
+
+    [Title("Character Select")]
+    public bool singleSided;
+    public bool infiniteCharacterSelect;
+    public int characterSelectTime;
+}
+}

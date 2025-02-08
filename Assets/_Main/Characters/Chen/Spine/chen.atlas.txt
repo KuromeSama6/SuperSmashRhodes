@@ -1,6 +1,7 @@
 chen.png
 size:173,995
 filter:Linear,Linear
+pma:true
 BG
 bounds:2,372,105,99
 offsets:4,1,113,101

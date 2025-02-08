@@ -5,7 +5,6 @@ public enum InputType {
     UP = 8,
     DOWN = 2,
     P = 10,
-    K = 11, 
     S = 12, 
     HS = 13, 
     D = 14,

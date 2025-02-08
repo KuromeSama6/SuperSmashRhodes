@@ -45,6 +45,10 @@ public class EntityAnimationController : MonoBehaviour {
         animation.Update(frames * Time.fixedDeltaTime);
         
     }
+
+    public void SetFrame(int frame) {
+        state.GetCurrent(0).TrackTime = frame * Time.fixedDeltaTime;
+    }
     
     private void OnUserDefinedEvent(TrackEntry trackEntry, Spine.Event e) {
         var name = e.Data.Name;
@@ -55,6 +59,10 @@ public class EntityAnimationController : MonoBehaviour {
                 var path = args[0];
                 var volume = args.Length > 1 ? float.Parse(args[1]) : 1f;
                 player.audioManager.PlaySound(path, volume);
+                break;
+            
+            case "AddActiveFrame":
+                //TODO: Add active frame
                 break;
         }
 

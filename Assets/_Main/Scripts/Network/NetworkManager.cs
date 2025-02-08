@@ -10,25 +10,19 @@ public class NetworkManager : AutoInitSingletonBehaviour<NetworkManager> {
     public NetworkSession currentSession { get; private set; }
     public bool isConnected => currentSession != null && currentSession.connected;
     
-    public RoomManager room { get; private set; }
-
-    public void BeginSession(RollbitClientConfiguration configuration) {
+    public void BeginSession(RollbitClientConfiguration configuration, RoomConfiguration roomConfiguration) {
         if (isConnected) return; 
         currentSession = new NetworkSession(configuration);
-        currentSession.onEstablished.AddListener(() => MainThreadDispatcher.RunOnMain(CreateRoomManger));
+        currentSession.onEstablished.AddListener(() => MainThreadDispatcher.RunOnMain(() => CreateRoom(roomConfiguration)));
         currentSession.onDisconnected.AddListener(() => {
             currentSession.Dispose();
             currentSession = null;
-            MainThreadDispatcher.RunOnMain(() => Destroy(room.gameObject));
         });
     }
 
-    private void CreateRoomManger() {
-        var go = new GameObject();
-        go.transform.parent = transform;
-        go.name = "RoomManager";
-        room = go.AddComponent<RoomManager>();
-        room.Init(currentSession);
+    private void CreateRoom(RoomConfiguration configuration) {
+        var room = new NetworkRoom(configuration, currentSession);
+        RoomManager.inst.CreateRoom(room);
     }
     
     private void OnDestroy() {

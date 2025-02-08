@@ -53,6 +53,7 @@ public class GameManager : SingletonBehaviour<GameManager> {
     private void CreatePlayer(int index, GameObject prefab) {
         var input = Instantiate(prefab);
         var player = input.GetComponent<PlayerCharacter>();
+        AssetManager.inst.PreloadAll($"chr/{player.config.id}/**");
         player.Init(index);
         player.name = "Player" + index;
         

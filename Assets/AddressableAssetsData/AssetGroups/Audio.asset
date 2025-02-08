@@ -20,8 +20,28 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0b58b7a3003ffce4eba7e71ffdde6dfd
+    m_Address: chr/exusiai/battle/sfx/gun_shell_2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 142a317b614e59e47a565b217df1cdab
+    m_Address: chr/exusiai/battle/sfx/gun_loop
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 14c08d25ec14f1f469e32c9a41c9d0b0
     m_Address: cmn/battle/sfx/throw/1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 225b841305205ad419b54a400764f408
+    m_Address: chr/exusiai/battle/sfx/gun_bolt
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a7f0c2464afad8409f5121d903638b3
+    m_Address: cmn/battle/sfx/attack/fist/heavy/3
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -35,8 +55,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 362628f81f7684743befcb15ec19e340
+    m_Address: chr/exusiai/battle/sfx/gun_2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3ca18596f4ac1794f90cce427b664e33
     m_Address: cmn/battle/sfx/throw_break/1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3f0dd766559761e4db18d45571efb9d8
+    m_Address: chr/exusiai/battle/sfx/gun_shell_3
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -52,6 +82,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 472b8350041b1eb4faaae0f4fd2483e5
     m_Address: cmn/battle/sfx/block/1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 53cd1f5a311062544943ae37dda76107
+    m_Address: chr/exusiai/battle/sfx/gun_shell_1
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -75,8 +110,43 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c2ec1904ab112a459a1c842d0314ece
+    m_Address: chr/exusiai/battle/sfx/gun_empty
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 91846e7b73d7ac44595da362d34a30a2
     m_Address: cmn/battle/sfx/force_reset/0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 93493571ec53ea9458b1163281aeada8
+    m_Address: chr/exusiai/battle/sfx/gun_magin
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 950e5c7c636d2954bb9a3a71f64d7256
+    m_Address: chr/exusiai/battle/vo/modal/0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9532769e599ceda45893eae104ed9dd9
+    m_Address: chr/exusiai/battle/vo/modal/1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 96fea8a920fb2c3479453261d0c3c28c
+    m_Address: chr/exusiai/battle/sfx/gun_1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9b605ea729776ca4186b833136d9ab06
+    m_Address: chr/exusiai/battle/sfx/gun_magout
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9f9d24cad7e2dae45a6c0c25e45735f0
+    m_Address: chr/exusiai/battle/vo/modal/3
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -85,13 +155,33 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b3270193c6333fb4bb3682563d792e78
+    m_Address: cmn/battle/sfx/attack/fist/heavy/2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bdd3ea0bd2cffbd44a4a276d7bb4cb09
+    m_Address: cmn/battle/sfx/attack/fist/heavy/1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cfeab6e9ca48ae34c906f2669dfe5f34
     m_Address: cmn/battle/sfx/burst_alert/0
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e04b79744e709e546bb3c3408c8accaa
+    m_Address: chr/exusiai/battle/vo/modal/2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e649ecaa99329dd4ba92811c870a8a4e
     m_Address: cmn/battle/sfx/attack/sword/1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8c22a21db99af54c9b3ec79b329eaae
+    m_Address: chr/exusiai/battle/sfx/gun_loop_tail
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
