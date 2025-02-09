@@ -44,6 +44,11 @@ public class ManagedAsset {
             Load(() => callback.Invoke((T)handle.Result));
         }
     }
+
+    public T GetNow<T>() {
+        if (status == AssetStatus.STANDBY) return (T)handle.Result;
+        return default;
+    }
     
     public void Release() {
         if (status == AssetStatus.RELEASED) {

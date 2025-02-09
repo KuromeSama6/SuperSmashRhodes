@@ -51,15 +51,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Kick",
-                    "type": "Button",
-                    "id": "66905854-cda4-4d26-9d03-ba41d8671ac6",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Slash",
                     "type": "Button",
                     "id": "4367bbb5-6899-4804-afda-0001280d929d",
@@ -78,7 +69,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Dust",
+                    "name": "Drive",
                     "type": "Button",
                     "id": "5372b8b3-e603-41b3-9a72-5e6dab202e65",
                     "expectedControlType": "",
@@ -462,61 +453,6 @@
                 },
                 {
                     "name": "",
-                    "id": "a79fcb7e-59d2-42b4-9a54-94a03f3cb933",
-                    "path": "<Keyboard>/rightAlt",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "keyboard1",
-                    "action": "Kick",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "79fdf39a-940f-4de5-94cc-47b24f577a04",
-                    "path": "<Keyboard>/j",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "keyboard1",
-                    "action": "Kick",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "9d30b78a-ca87-4d57-9d61-c8662f16312a",
-                    "path": "<Gamepad>/buttonSouth",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Gamepad",
-                    "action": "Kick",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "3bc16727-2290-420d-bb81-4f465e0b4fb9",
-                    "path": "<Keyboard>/numpad0",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "keyboard2",
-                    "action": "Kick",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "b119dc18-1c4a-4789-8217-e0ab76f1187b",
-                    "path": "<HID::Brook P4 Wired Gamepad V2.8>/button3",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Kick",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "f6fbd7a3-b014-4000-8f1c-78ff0f439dd2",
                     "path": "<Keyboard>/backslash",
                     "interactions": "",
@@ -628,11 +564,11 @@
                 {
                     "name": "",
                     "id": "2663cdff-7dee-4dbe-9045-e0429f2692f0",
-                    "path": "<Keyboard>/leftAlt",
+                    "path": "<Keyboard>/slash",
                     "interactions": "",
                     "processors": "",
                     "groups": "keyboard1",
-                    "action": "Dust",
+                    "action": "Drive",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -643,7 +579,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "keyboard1",
-                    "action": "Dust",
+                    "action": "Drive",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -654,7 +590,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "keyboard2",
-                    "action": "Dust",
+                    "action": "Drive",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -665,7 +601,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";ps4_test",
-                    "action": "Dust",
+                    "action": "Drive",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

@@ -10,7 +10,7 @@ namespace SuperSmashRhodes.Runtime.State {
 
 [NamedToken("CmnDash")]
 public class State_CmnDash : CharacterState {
-    public State_CmnDash(Entity owner) : base(owner) { }
+    public State_CmnDash(Entity entity) : base(entity) { }
 
     public override EntityStateType type => EntityStateType.CHR_MOVEMENT_LOOP;
     public override float inputPriority => 1;
@@ -23,9 +23,9 @@ public class State_CmnDash : CharacterState {
     }
 
     public override bool IsInputValid(InputBuffer buffer) {
-        if (buffer.thisFrame.HasInput(owner.side, InputType.BACKWARD, InputFrameType.HELD)) return false;
+        if (buffer.thisFrame.HasInput(entity.side, InputType.BACKWARD, InputFrameType.HELD)) return false;
         
-        return buffer.thisFrame.HasInput(owner.side, InputType.DASH, InputFrameType.HELD);
+        return buffer.thisFrame.HasInput(entity.side, InputType.DASH, InputFrameType.HELD);
     }
 
     protected override void OnStateBegin() {
@@ -38,12 +38,12 @@ public class State_CmnDash : CharacterState {
 
     public override IEnumerator MainRoutine() {
         // owner.animation.AddUnmanagedAnimation("std/dash_start", false, .2f);
-        owner.animation.AddUnmanagedAnimation("std/dash_loop", true);
+        entity.animation.AddUnmanagedAnimation("std/dash_loop", true);
         
         while (RevalidateInput()) {
             var force = player.characterConfig.dashAccelCurve.Evaluate(frame);
-            owner.rb.AddForceX(PhysicsUtil.NormalizeSide(force, owner.side));
-            owner.rb.linearVelocityX = Mathf.Clamp(owner.rb.linearVelocityX, -player.characterConfig.dashSpeed, player.characterConfig.dashSpeed);
+            entity.rb.AddForceX(PhysicsUtil.NormalizeSide(force, entity.side));
+            entity.rb.linearVelocityX = Mathf.Clamp(entity.rb.linearVelocityX, -player.characterConfig.dashSpeed, player.characterConfig.dashSpeed);
             
             player.meter.gauge.value += 0.05f * player.meter.meterGainMultiplier;
             player.meter.balance.value += 0.0012f * player.meter.meterGainMultiplier;
@@ -53,7 +53,7 @@ public class State_CmnDash : CharacterState {
         
         // state end
         var buffer = GetCurrentInputBuffer();
-        if (buffer.thisFrame.HasInput(owner.side, InputType.FORWARD, InputFrameType.HELD)) {
+        if (buffer.thisFrame.HasInput(entity.side, InputType.FORWARD, InputFrameType.HELD)) {
             CancelInto("CmnMoveForward");
             yield break;
         }

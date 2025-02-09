@@ -9,17 +9,14 @@ using UnityEngine;
 
 namespace SuperSmashRhodes.Runtime.State {
 public abstract class State_Common_NmlAtk5CS : State_Common_NormalAttack {
-    public State_Common_NmlAtk5CS(Entity owner) : base(owner) { }
+    public State_Common_NmlAtk5CS(Entity entity) : base(entity) { }
     public override EntityStateType type => EntityStateType.CHR_ATK_5CS;
     public override float inputPriority => 3.1f;
 
     protected override string mainAnimation => "cmn/NmlAtk5CS";
 
-    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_SPECIAL_SUPER | 
-                                                             EntityStateType.CHR_ATK_5S | EntityStateType.CHR_ATK_2S
-                                                                                         | EntityStateType.CHR_ATK_6P
-                                                                                         | EntityStateType.CHR_ATK_5H | EntityStateType.CHR_ATK_6H | EntityStateType.CHR_ATK_2H
-                                                                                         | EntityStateType.CHR_ATK_5D | EntityStateType.CHR_ATK_2D;
+    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER |
+                                                              EntityStateType.CHR_ATK_5S | EntityStateType.CHR_ATK_2S | EntityStateType.CHR_ATK_NORMAL_H;
     public override bool mayEnterState => player.opponentDistance <= triggerRange;
 
     protected override InputFrame[] requiredInput => new InputFrame[] {new(InputType.S, InputFrameType.PRESSED)};

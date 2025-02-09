@@ -9,7 +9,7 @@ using UnityEngine;
 namespace SuperSmashRhodes.Runtime.State {
 [NamedToken("Chen_SklUnsheathHeavy")]
 public class State_Chen_SklUnsheathHeavy : State_Common_SpecialAttack {
-    public State_Chen_SklUnsheathHeavy(Entity owner) : base(owner) { }
+    public State_Chen_SklUnsheathHeavy(Entity entity) : base(entity) { }
     protected override string mainAnimation => "chr/SklUnsheathHeavy";
 
     public override AttackFrameData frameData => new() {
@@ -58,13 +58,13 @@ public class State_Chen_SklUnsheathHeavy : State_Common_SpecialAttack {
 
     protected override void OnActive() {
         base.OnActive();
-        owner.audioManager.PlaySound($"chr/chen/battle/vo/modal/{Random.Range(0, 3)}");
+        entity.audioManager.PlaySound($"chr/chen/battle/vo/modal/{Random.Range(0, 3)}");
     }
 
     protected override void OnTick() {
         base.OnTick();
         if (frame == 10) {
-            owner.audioManager.PlaySound("chr/chen/battle/sfx/skl_214h/0");
+            entity.audioManager.PlaySound("chr/chen/battle/sfx/skl_214h/0");
         }
     }
 

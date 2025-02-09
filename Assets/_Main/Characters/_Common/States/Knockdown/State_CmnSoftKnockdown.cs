@@ -7,7 +7,7 @@ using SuperSmashRhodes.Input;
 namespace SuperSmashRhodes.Runtime.State {
 [NamedToken("CmnSoftKnockdown")]
 public class State_CmnSoftKnockdown : CharacterState {
-    public State_CmnSoftKnockdown(Entity owner) : base(owner) { }
+    public State_CmnSoftKnockdown(Entity entity) : base(entity) { }
     public override EntityStateType type => EntityStateType.CHR_SOFT_KNOCKDOWN;
     public override float inputPriority => -1;
     public override bool fullyInvincible => true;
@@ -18,7 +18,7 @@ public class State_CmnSoftKnockdown : CharacterState {
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
-        owner.animation.AddUnmanagedAnimation("std/ground_tech", false);
+        entity.animation.AddUnmanagedAnimation("std/ground_tech", false);
     }
     public override IEnumerator MainRoutine() {
         player.fxManager.staticOnGroundedTechFlashPlayer.PlayFeedbacks();

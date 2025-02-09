@@ -9,17 +9,13 @@ namespace SuperSmashRhodes.Runtime.State {
 public abstract class State_Exusiai_FireWeaponAttack : CharacterAttackStateBase {
     protected Gauge_Exusiai_AmmoGauge gauge { get; }
 
-    protected State_Exusiai_FireWeaponAttack(Entity owner) : base(owner) {
-        gauge = owner.GetComponent<Gauge_Exusiai_AmmoGauge>();
+    protected State_Exusiai_FireWeaponAttack(Entity entity) : base(entity) {
+        gauge = entity.GetComponent<Gauge_Exusiai_AmmoGauge>();
     }
     
-    public override float GetChipDamagePercentage(Entity to) {
-        return 0.01f;
-    }
     public override float GetOtgDamagePercentage(Entity to) {
         return 0.6f;
     }
-    
     public override float GetComboProration(Entity to) {
         return 0.75f;
     }
@@ -30,7 +26,7 @@ public abstract class State_Exusiai_FireWeaponAttack : CharacterAttackStateBase 
         return 1;
     }
     public override int GetAttackLevel(Entity to) {
-        return 1;
+        return 3;
     }
     public override bool ShouldCountSameMove(Entity to) {
         return false;

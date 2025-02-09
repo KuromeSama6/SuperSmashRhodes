@@ -9,11 +9,11 @@ using SuperSmashRhodes.Input;
 namespace SuperSmashRhodes.Runtime.State {
 [NamedToken("CmnWhiteForceReset")]
 public class State_CmnWhiteForceReset : CharacterState {
-    public State_CmnWhiteForceReset(Entity owner) : base(owner) { }
+    public State_CmnWhiteForceReset(Entity entity) : base(entity) { }
     public override EntityStateType type => EntityStateType.CHR_ATK_SYSTEMSPECIAL;
     public override float inputPriority => 20f;
     public override bool IsInputValid(InputBuffer buffer) {
-        return buffer.TimeSlice(6).ScanForInput(owner.side, new InputFrame(InputType.FORCE_RESET, InputFrameType.PRESSED));
+        return buffer.TimeSlice(6).ScanForInput(entity.side, new InputFrame(InputType.FORCE_RESET, InputFrameType.PRESSED));
     }
     public override bool mayEnterState => player.meter.gauge.value >= 50f && player.activeState is CharacterAttackStateBase;
 

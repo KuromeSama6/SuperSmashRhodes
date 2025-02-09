@@ -9,7 +9,7 @@ namespace SuperSmashRhodes.Runtime.State {
 public class State_Exusiai_SklReload : State_Common_SpecialAttack {
     private bool chambered;
     
-    public State_Exusiai_SklReload(Entity owner) : base(owner) { }
+    public State_Exusiai_SklReload(Entity entity) : base(entity) { }
     protected override string mainAnimation => "chr/SklReload";
     public override AttackFrameData frameData => new AttackFrameData() {
         startup = 20, active = 55, recovery = 16,
@@ -24,12 +24,12 @@ public class State_Exusiai_SklReload : State_Common_SpecialAttack {
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
-        chambered = owner.GetComponent<Gauge_Exusiai_AmmoGauge>().chambered;
+        chambered = entity.GetComponent<Gauge_Exusiai_AmmoGauge>().chambered;
     }
 
     protected override void OnTick() {
         base.OnTick();
-        var gauge = owner.GetComponent<Gauge_Exusiai_AmmoGauge>();
+        var gauge = entity.GetComponent<Gauge_Exusiai_AmmoGauge>();
         
         if (frame == 58) {
             // reload
@@ -40,7 +40,7 @@ public class State_Exusiai_SklReload : State_Common_SpecialAttack {
         }
 
         if (frame == 62 && !chambered && gauge.displayCount > 0) {
-            owner.audioManager.PlaySound("chr/exusiai/battle/sfx/gun_bolt");
+            entity.audioManager.PlaySound("chr/exusiai/battle/sfx/gun_bolt");
         }
         
     }

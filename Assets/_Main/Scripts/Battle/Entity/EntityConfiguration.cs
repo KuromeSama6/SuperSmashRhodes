@@ -18,12 +18,12 @@ public class EntityConfiguration : ScriptableObject {
     
     [BoxGroup("Basic Stats")]
     public float health;
-    
 
 }
 
 public enum EntityType {
     CHARACTER,
+    TOKEN,
     PROJECTILE,
     SUMMON
 }

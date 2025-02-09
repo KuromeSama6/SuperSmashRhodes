@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2352599458182130192}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Directional
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 12227297347566232}
   - component: {fileID: 3306227995989873759}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BoundingBoxes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,7 +88,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7307482532208467370}
   - component: {fileID: 417001626698689291}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cmn_Throw
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -149,7 +149,7 @@ GameObject:
   - component: {fileID: 4524501357402868674}
   - component: {fileID: 2512386437702889766}
   - component: {fileID: 4933393836554752299}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PlayerCharacter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -395,7 +395,7 @@ GameObject:
   - component: {fileID: 9047408469080022298}
   - component: {fileID: 3519271304117650831}
   - component: {fileID: 7313164139058482545}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Spine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -544,7 +544,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8847751513904932355}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ManagedPlayers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -576,7 +576,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6290204124899039702}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Tail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -608,7 +608,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4062847058628052552}
   - component: {fileID: 8660760084955558788}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GroundTechFlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -833,7 +833,7 @@ GameObject:
   - component: {fileID: 6101223103048855616}
   - component: {fileID: 1009633351226344783}
   - component: {fileID: 1020919261250586909}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RotationContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1011,7 +1011,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 876969173430784063}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Sockets
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1047,7 +1047,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8203927862961518414}
   - component: {fileID: 4417697445586725145}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Self
   m_TagString: Untagged
   m_Icon: {fileID: 0}

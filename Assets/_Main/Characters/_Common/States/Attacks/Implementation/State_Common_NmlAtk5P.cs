@@ -9,13 +9,13 @@ using UnityEngine;
 
 namespace SuperSmashRhodes.Runtime.State {
 public abstract class State_Common_NmlAtk5P : State_Common_NormalAttack {
-    public State_Common_NmlAtk5P(Entity owner) : base(owner) { }
+    public State_Common_NmlAtk5P(Entity entity) : base(entity) { }
     public override EntityStateType type => EntityStateType.CHR_ATK_5P;
     public override float inputPriority => 3;
 
     protected override string mainAnimation => "cmn/NmlAtk5P";
 
-    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_SPECIAL_SUPER | EntityStateType.CHR_ATK_5P | EntityStateType.CHR_ATK_2P | EntityStateType.CHR_ATK_5H;
+    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER | EntityStateType.CHR_ATK_5P | EntityStateType.CHR_ATK_2P | EntityStateType.CHR_ATK_NORMAL_S | EntityStateType.CHR_ATK_NORMAL_H;
     protected override InputFrame[] requiredInput => new InputFrame[] {new(InputType.P, InputFrameType.PRESSED)};
     public override bool isSelfCancellable => true;
 

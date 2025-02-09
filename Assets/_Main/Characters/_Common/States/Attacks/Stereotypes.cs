@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace SuperSmashRhodes.Runtime.State {
 public abstract class State_Common_NormalAttack : CharacterAttackStateBase {
-    protected State_Common_NormalAttack(Entity owner) : base(owner) { }
+    protected State_Common_NormalAttack(Entity entity) : base(entity) { }
     protected override int normalInputBufferLength => 6;
     
     public override float GetChipDamagePercentage(Entity to) {
@@ -20,7 +20,7 @@ public abstract class State_Common_NormalAttack : CharacterAttackStateBase {
 }
 
 public abstract class State_Common_SpecialAttack : CharacterAttackStateBase {
-    protected State_Common_SpecialAttack(Entity owner) : base(owner) { }
+    protected State_Common_SpecialAttack(Entity entity) : base(entity) { }
     public override EntityStateType type => EntityStateType.CHR_ATK_SPECIAL;
     public override float inputPriority => 5f;
     protected override EntityStateType commonCancelOptions => 0;

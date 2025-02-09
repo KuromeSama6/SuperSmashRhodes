@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.ResourceLocations;
 using UnityEngine.SceneManagement;
+using Object = UnityEngine.Object;
 
 namespace SuperSmashRhodes.Adressable {
 public class AssetManager : AutoInitSingletonBehaviour<AssetManager> {
@@ -58,6 +59,16 @@ public class AssetManager : AutoInitSingletonBehaviour<AssetManager> {
             if (asset.releaseMethod == AssetReleaseMethod.ON_SCENE_UNLOAD) {
                 asset.Release();
             }
+        }
+    }
+    
+    public static T Get<T>(string key) where T: Object {
+        if (inst.assets.ContainsKey(key)) {
+            return inst.assets[key].GetNow<T>();
+            
+        } else {
+            Debug.LogError($"Asset {key} not found");
+            return null;
         }
     }
     

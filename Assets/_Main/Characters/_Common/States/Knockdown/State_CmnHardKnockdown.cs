@@ -8,7 +8,7 @@ using UnityEngine.AddressableAssets;
 namespace SuperSmashRhodes.Runtime.State {
 [NamedToken("CmnHardKnockdown")]
 public class State_CmnHardKnockdown : CharacterState {
-    public State_CmnHardKnockdown(Entity owner) : base(owner) { }
+    public State_CmnHardKnockdown(Entity entity) : base(entity) { }
     public override EntityStateType type => EntityStateType.CHR_HARD_KNOCKDOWN;
     public override float inputPriority => -1;
 
@@ -18,7 +18,7 @@ public class State_CmnHardKnockdown : CharacterState {
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
-        owner.animation.AddUnmanagedAnimation("std/down", false);
+        entity.animation.AddUnmanagedAnimation("std/down", false);
     }
     public override IEnumerator MainRoutine() {
         yield return 55;

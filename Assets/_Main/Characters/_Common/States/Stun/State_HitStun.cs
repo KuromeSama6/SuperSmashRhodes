@@ -6,7 +6,7 @@ using SuperSmashRhodes.Framework;
 namespace SuperSmashRhodes.Runtime.State {
 [NamedToken("CmnHitStunGround")]
 public class State_CmnHitStun : State_Common_Stun {
-    public State_CmnHitStun(Entity owner) : base(owner) { }
+    public State_CmnHitStun(Entity entity) : base(entity) { }
     protected override int frames => player.frameData.hitstunFrames;
     protected override string animationName => "std/hitstun_ground";
     public override EntityStateType type => EntityStateType.CHR_HITSTUN;
@@ -20,7 +20,7 @@ public class State_CmnHitStun : State_Common_Stun {
 
 [NamedToken("CmnHitStunGroundCrouch")]
 public class State_CmnHitStunCrouch : State_Common_Stun {
-    public State_CmnHitStunCrouch(Entity owner) : base(owner) { }
+    public State_CmnHitStunCrouch(Entity entity) : base(entity) { }
     protected override int frames => player.frameData.hitstunFrames;
     protected override string animationName => "std/hitstun_ground_crouch";
     public override EntityStateType type => EntityStateType.CHR_HITSTUN;
@@ -34,7 +34,7 @@ public class State_CmnHitStunCrouch : State_Common_Stun {
 
 [NamedToken("CmnHitStunAir")]
 public class State_CmnHitStunAir : State_Common_Stun {
-    public State_CmnHitStunAir(Entity owner) : base(owner) { }
+    public State_CmnHitStunAir(Entity entity) : base(entity) { }
     protected override int frames => player.frameData.hitstunFrames;
     protected override string animationName => "std/hitstun_air";
     public override EntityStateType type => EntityStateType.CHR_HITSTUN;

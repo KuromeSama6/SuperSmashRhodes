@@ -21,7 +21,7 @@ public class PlayerCharacter : Entity {
     public CharacterConfiguration characterConfig;
     public CharacterDescriptor descriptor;
     public ComboDecayData comboDecayData;
-    
+
     public int playerIndex { get; private set; }
     public float moveDirection { get; private set; }
     public bool isDashing { get; private set; }
@@ -94,6 +94,7 @@ public class PlayerCharacter : Entity {
     
     protected override void Start() {
         base.Start();
+        owner = this;
         comboCounter = new(this);
         frameData = new(this);
         
@@ -329,8 +330,7 @@ public class PlayerCharacter : Entity {
             burst.AddDeltaTotal(inBlockstun ? -8.5f : -12.5f, 90);
 
             var chipDamage = attack.GetChipDamagePercentage(this);
-            if (chipDamage > 0)
-                ApplyDamage(attack.GetUnscaledDamage(this) * chipDamage, data, DamageSpecialProperties.SKIP_REGISTER);
+            if (chipDamage > 0) ApplyDamage(attack.GetUnscaledDamage(this) * chipDamage, data, DamageSpecialProperties.SKIP_REGISTER, true);
 
         } else {
             this.frameData.SetHitstunFrames(framesRemaining + frameData.onHit, Mathf.Max(frameData.total - attack.GetCurrentFrame(this), 0));
@@ -340,24 +340,6 @@ public class PlayerCharacter : Entity {
             
             attack.OnHit(this);
             airHitstunRotation = 0f;
-            
-            // Debug.Log($"unscaled damage: {attack.GetUnscaledDamage(this)}, final scale: {comboCounter.finalScale}, final dmg {attack.GetUnscaledDamage(this) * comboCounter.finalScale}");
-            // {
-            //     // damage
-            //     var dmg = attack.GetUnscaledDamage(this) * comboCounter.finalScale * comboCounter.GetMoveSpecificProration(attack);
-            //     
-            //     // combo decay
-            //     if (data.from is PlayerCharacter player) {
-            //         var decayData = player.comboDecayData;
-            //         if (comboCounter.inCombo) {
-            //             dmg *= decayData.extraProrationCurve.Evaluate(comboCounter.comboDecay);
-            //         }
-            //     }
-            //
-            //     dmg *= gutsDamageModifier;
-            //     if (knockedDown) dmg *= attack.GetOtgDamagePercentage(this);
-            //     health -= Mathf.Max(1, dmg);
-            // }
             
             ApplyDamage(attack.GetUnscaledDamage(this), data);
         }
@@ -488,18 +470,19 @@ public class PlayerCharacter : Entity {
         });
     }
 
-    public void ApplyDamage(float rawDamage, [CanBeNull] AttackData data, DamageSpecialProperties flags = DamageSpecialProperties.NONE) {
+    public void ApplyDamage(float rawDamage, [CanBeNull] AttackData data, DamageSpecialProperties flags = DamageSpecialProperties.NONE, bool blocked = false) {
         var attack = data == null ? null : data.attack;
         var dmg = rawDamage;
 
         var skipRegister = flags.HasFlag(DamageSpecialProperties.SKIP_REGISTER);
         if (attack != null || skipRegister) {
             comboCounter.RegisterAttack(
-                attack, 
+                attack,
                 this, 
                 skipRegister, 
                 data != null && attack != null ? attack.GetComboDecayIncreaseMultiplier(data.to) : 1f,
-                data != null && attack != null ? attack.ShouldCountSameMove(data.to) : false
+                data != null && attack != null ? attack.ShouldCountSameMove(data.to) : false,
+                blocked
             );
         }
         
@@ -517,7 +500,10 @@ public class PlayerCharacter : Entity {
 
         dmg *= gutsDamageModifier;
         if (attack != null && activeState is State_CmnHardKnockdown) dmg *= attack.GetOtgDamagePercentage(this);
-        health -= Mathf.Max(1, dmg);
+        
+        var minDmg = attack == null ? 0 : rawDamage * attack.GetMinimumDamagePercentage(this);
+        // Debug.Log(rawDamage);
+        health -= Mathf.Max(Mathf.Max(1, minDmg), dmg);
         burst.AddDeltaTotal(dmg / 2.5f, 60);
     }
     

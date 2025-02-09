@@ -26,9 +26,10 @@ public class ComboCounter : RuntimeCharacterDataRegister {
 
     }
 
-    public void RegisterAttack(IAttack move, Entity victim, bool skipRegister = false, float multiplier = 1f, bool countSameMove = true) {
+    public void RegisterAttack(IAttack move, Entity victim, bool skipRegister = false, float multiplier = 1f, bool countSameMove = true, bool blocked = false) {
+        // Debug.Log(blocked);
+        if (!blocked) ++displayedCount;
         if (skipRegister) return;
-        ++displayedCount;
         
         if (count == 0) {
             overallProration = move.GetFirstHitProration(victim);

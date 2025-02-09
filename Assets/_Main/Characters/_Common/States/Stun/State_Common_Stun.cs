@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace SuperSmashRhodes.Runtime.State {
 public abstract class State_Common_Stun : CharacterState {
-    protected State_Common_Stun(Entity owner) : base(owner) { }
+    protected State_Common_Stun(Entity entity) : base(entity) { }
     public override float inputPriority => -1;
     public override bool mayEnterState => false;
     public override bool IsInputValid(InputBuffer buffer) {
@@ -16,7 +16,7 @@ public abstract class State_Common_Stun : CharacterState {
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
-        owner.animation.AddUnmanagedAnimation(animationName, true, 0); 
+        entity.animation.AddUnmanagedAnimation(animationName, true, 0); 
     }
 
     public override IEnumerator MainRoutine() {

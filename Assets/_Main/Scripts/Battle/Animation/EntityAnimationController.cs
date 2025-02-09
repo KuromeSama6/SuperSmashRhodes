@@ -54,18 +54,8 @@ public class EntityAnimationController : MonoBehaviour {
         var name = e.Data.Name;
         var args = (e.String ?? "").Split();
         
-        switch (name) {
-            case "PlaySound":
-                var path = args[0];
-                var volume = args.Length > 1 ? float.Parse(args[1]) : 1f;
-                player.audioManager.PlaySound(path, volume);
-                break;
-            
-            case "AddActiveFrame":
-                //TODO: Add active frame
-                break;
-        }
-
+        var data = new AnimationEventData(e.String, e.Int, e.Float, e.Data.AudioPath);
+        player.activeState.HandleAnimationEvent(name, data);
     }
     
 }

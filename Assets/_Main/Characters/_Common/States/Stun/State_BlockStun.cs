@@ -9,13 +9,13 @@ namespace SuperSmashRhodes.Runtime.State {
 
 [NamedToken("CmnBlockStun")]
 public class State_CmnBlockStun : State_Common_Stun {
-    public State_CmnBlockStun(Entity owner) : base(owner) { }
+    public State_CmnBlockStun(Entity entity) : base(entity) { }
     protected override int frames => player.frameData.blockstunFrames;
     protected override string animationName => "std/blockstun";
     public override EntityStateType type => EntityStateType.CHR_BLOCKSTUN;
-    public override bool mayEnterState => owner.activeState is State_CmnBlockStunCrouch;
+    public override bool mayEnterState => entity.activeState is State_CmnBlockStunCrouch;
     public override bool IsInputValid(InputBuffer buffer) {
-        return !buffer.thisFrame.HasInput(owner.side, InputType.DOWN, InputFrameType.HELD);
+        return !buffer.thisFrame.HasInput(entity.side, InputType.DOWN, InputFrameType.HELD);
     }
     protected override void OnStateBegin() {
         base.OnStateBegin();
@@ -26,14 +26,14 @@ public class State_CmnBlockStun : State_Common_Stun {
 
 [NamedToken("CmnBlockStunCrouch")]
 public class State_CmnBlockStunCrouch : State_Common_Stun {
-    public State_CmnBlockStunCrouch(Entity owner) : base(owner) { }
+    public State_CmnBlockStunCrouch(Entity entity) : base(entity) { }
     protected override int frames => player.frameData.blockstunFrames;
     protected override string animationName => "std/blockstun_crouch";
     public override EntityStateType type => EntityStateType.CHR_BLOCKSTUN;
 
-    public override bool mayEnterState => owner.activeState is State_CmnBlockStun;
+    public override bool mayEnterState => entity.activeState is State_CmnBlockStun;
     public override bool IsInputValid(InputBuffer buffer) {
-        return buffer.thisFrame.HasInput(owner.side, InputType.DOWN, InputFrameType.HELD);
+        return buffer.thisFrame.HasInput(entity.side, InputType.DOWN, InputFrameType.HELD);
     }
 
     protected override void OnStateBegin() {

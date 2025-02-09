@@ -9,14 +9,14 @@ using UnityEngine;
 namespace SuperSmashRhodes.Runtime.State {
 [NamedToken("CmnMoveForward")]
 public class State_CmnMoveForward : CharacterState {
-    public State_CmnMoveForward(Entity owner) : base(owner) { }
+    public State_CmnMoveForward(Entity entity) : base(entity) { }
 
     public override EntityStateType type => EntityStateType.CHR_MOVEMENT_LOOP;
     public override float inputPriority => 1;
     
     public override bool IsInputValid(InputBuffer buffer) {
-        return buffer.thisFrame.HasInput(owner.side, InputType.FORWARD, InputFrameType.HELD) &&
-               !buffer.thisFrame.HasInput(owner.side, InputType.BACKWARD, InputFrameType.HELD);
+        return buffer.thisFrame.HasInput(entity.side, InputType.FORWARD, InputFrameType.HELD) &&
+               !buffer.thisFrame.HasInput(entity.side, InputType.BACKWARD, InputFrameType.HELD);
     }
 
     protected override void OnStateBegin() {
@@ -28,11 +28,11 @@ public class State_CmnMoveForward : CharacterState {
     }
 
     public override IEnumerator MainRoutine() {
-        owner.animation.AddUnmanagedAnimation("std/walk", true, .05f);
+        entity.animation.AddUnmanagedAnimation("std/walk", true, .05f);
         
         while (RevalidateInput()) {
-            owner.rb.AddForceX(PhysicsUtil.NormalizeSide(50, owner.side));
-            owner.rb.linearVelocityX = Mathf.Clamp(owner.rb.linearVelocityX, -player.characterConfig.walkSpeed, player.characterConfig.walkSpeed);
+            entity.rb.AddForceX(PhysicsUtil.NormalizeSide(50, entity.side));
+            entity.rb.linearVelocityX = Mathf.Clamp(entity.rb.linearVelocityX, -player.characterConfig.walkSpeed, player.characterConfig.walkSpeed);
             // 0.01% meter gain per frame
             player.meter.gauge.value += 0.02f;
             player.meter.balance.value += 0.0007f;
@@ -44,14 +44,14 @@ public class State_CmnMoveForward : CharacterState {
 
 [NamedToken("CmnMoveBackward")]
 public class State_CmnMoveBackward : CharacterState {
-    public State_CmnMoveBackward(Entity owner) : base(owner) { }
+    public State_CmnMoveBackward(Entity entity) : base(entity) { }
 
     public override EntityStateType type => EntityStateType.CHR_MOVEMENT_LOOP;
     public override float inputPriority => 1;
     
     public override bool IsInputValid(InputBuffer buffer) {
-        return buffer.thisFrame.HasInput(owner.side, InputType.BACKWARD, InputFrameType.HELD)
-            && !buffer.thisFrame.HasInput(owner.side, InputType.FORWARD, InputFrameType.HELD);
+        return buffer.thisFrame.HasInput(entity.side, InputType.BACKWARD, InputFrameType.HELD)
+            && !buffer.thisFrame.HasInput(entity.side, InputType.FORWARD, InputFrameType.HELD);
     }
 
     protected override void OnStateBegin() {
@@ -65,11 +65,11 @@ public class State_CmnMoveBackward : CharacterState {
     }
 
     public override IEnumerator MainRoutine() {
-        owner.animation.AddUnmanagedAnimation("std/walk", true, .05f);
+        entity.animation.AddUnmanagedAnimation("std/walk", true, .05f);
         
         while (RevalidateInput()) {
-            owner.rb.AddForceX(PhysicsUtil.NormalizeSide(-50, owner.side));
-            owner.rb.linearVelocityX = Mathf.Clamp(owner.rb.linearVelocityX, -player.characterConfig.backwalkSpeed, player.characterConfig.backwalkSpeed);
+            entity.rb.AddForceX(PhysicsUtil.NormalizeSide(-50, entity.side));
+            entity.rb.linearVelocityX = Mathf.Clamp(entity.rb.linearVelocityX, -player.characterConfig.backwalkSpeed, player.characterConfig.backwalkSpeed);
             
             player.burst.AddDelta(-0.1f, 1);
             yield return 1;

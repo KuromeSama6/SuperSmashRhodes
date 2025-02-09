@@ -12,7 +12,7 @@ public class State_CmnNeutral : CharacterState {
     public override float inputPriority => -1;
     public override EntityStateType type => EntityStateType.CHR_NEUTRAL;
 
-    public State_CmnNeutral(Entity owner) : base(owner) { }
+    public State_CmnNeutral(Entity entity) : base(entity) { }
     
     public override bool IsInputValid(InputBuffer buffer) {
         return false;
@@ -25,7 +25,7 @@ public class State_CmnNeutral : CharacterState {
     }
 
     public override IEnumerator MainRoutine() {
-        owner.animation.AddUnmanagedAnimation("std/neutral", true, player.neutralAniTransitionOverride);
+        entity.animation.AddUnmanagedAnimation("std/neutral", true, player.neutralAniTransitionOverride);
         player.neutralAniTransitionOverride = 0.05f;
 
         while (true) {
@@ -39,11 +39,11 @@ public class State_CmnNeutral : CharacterState {
 
 [NamedToken("CmnNeutralCrouch")]
 public class State_CmnNeutralCrouch : CharacterState {
-    public State_CmnNeutralCrouch(Entity owner) : base(owner) { }
+    public State_CmnNeutralCrouch(Entity entity) : base(entity) { }
     public override EntityStateType type => EntityStateType.CHR_NEUTRAL;
     public override float inputPriority => 0;
     public override bool IsInputValid(InputBuffer buffer) {
-        return buffer.thisFrame.HasInput(owner.side, InputType.DOWN, InputFrameType.HELD);
+        return buffer.thisFrame.HasInput(entity.side, InputType.DOWN, InputFrameType.HELD);
     }
 
     protected override void OnStateBegin() {
@@ -53,7 +53,7 @@ public class State_CmnNeutralCrouch : CharacterState {
     }
 
     public override IEnumerator MainRoutine() {
-        owner.animation.AddUnmanagedAnimation("std/crouch", true, player.neutralAniTransitionOverride);
+        entity.animation.AddUnmanagedAnimation("std/crouch", true, player.neutralAniTransitionOverride);
         player.neutralAniTransitionOverride = 0.05f;
         while (RevalidateInput()) {
             player.ApplyGroundedFriction();
@@ -64,7 +64,7 @@ public class State_CmnNeutralCrouch : CharacterState {
 
 [NamedToken("CmnAirNeutral")]
 public class State_CmnAirNeutral : CharacterState {
-    public State_CmnAirNeutral(Entity owner) : base(owner) { }
+    public State_CmnAirNeutral(Entity entity) : base(entity) { }
     public override EntityStateType type => EntityStateType.CHR_NEUTRAL;
     public override float inputPriority => -1;
     public override bool IsInputValid(InputBuffer buffer) {
@@ -78,11 +78,11 @@ public class State_CmnAirNeutral : CharacterState {
     }
 
     public override IEnumerator MainRoutine() {
-        owner.animation.AddUnmanagedAnimation("std/jump_up", true);
+        entity.animation.AddUnmanagedAnimation("std/jump_up", true);
         
-        while (owner.rb.linearVelocityY > 0f) yield return 1;
+        while (entity.rb.linearVelocityY > 0f) yield return 1;
         
-        owner.animation.AddUnmanagedAnimation("std/jump_down", true, 0.1f);
+        entity.animation.AddUnmanagedAnimation("std/jump_down", true, 0.1f);
         while (player.airborne) yield return 1;
         
         // landing recovery    

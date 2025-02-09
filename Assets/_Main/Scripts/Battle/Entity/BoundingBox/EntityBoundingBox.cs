@@ -26,6 +26,10 @@ public class EntityBoundingBox : MonoBehaviour {
         }
         
         SkeletonUtility.SetColliderPointsLocal(collider, bbFollower.Slot, bbFollower.CurrentAttachment);
+
+        if (type == BoundingBoxType.HITBOX) {
+            enabled = owner.activeState.enableHitboxes;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other) {

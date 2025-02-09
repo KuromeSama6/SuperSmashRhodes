@@ -77,6 +77,10 @@ public class InputBuffer {
         }
         return result;
     }
+
+    public bool HasInputUnordered(EntitySide side, params InputFrame[] seq) {
+        return seq.ToList().TrueForAll(c => buffer.Any(d => d.HasInput(side, c)));
+    }
     
     public static InputType TranslateToRawDirection(InputType input, EntitySide side) {
         if (input == InputType.FORWARD) {

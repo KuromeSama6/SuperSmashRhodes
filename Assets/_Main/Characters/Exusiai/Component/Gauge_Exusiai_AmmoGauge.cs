@@ -1,9 +1,15 @@
 ﻿using System.Collections.Generic;
+using Sirenix.OdinInspector;
+using SuperSmashRhodes.Adressable;
 using SuperSmashRhodes.Battle;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Runtime.Gauge {
 public class Gauge_Exusiai_AmmoGauge : CharacterComponent {
+    [Title("References")]
+    public Transform muzzleSocket;
+    public GameObject muzzleFlashPrefab;
+    
     public List<Magazine> magazines { get; private set; } = new();
     public bool chambered { get; private set; }
     
@@ -24,11 +30,12 @@ public class Gauge_Exusiai_AmmoGauge : CharacterComponent {
         if (currentMagazine.ammo > 0) {
             --currentMagazine.ammo;
             chambered = true;
+            PlayMuzzleFlash();
             return true;
         }
-        
         if (chambered) {
             chambered = false;
+            PlayMuzzleFlash();
             return true;
         }
         
@@ -53,6 +60,12 @@ public class Gauge_Exusiai_AmmoGauge : CharacterComponent {
         public Magazine(int ammo) {
             this.ammo = ammo;
         }
+    }
+
+    private void PlayMuzzleFlash() {
+        var go = Instantiate(muzzleFlashPrefab, muzzleSocket.position, muzzleSocket.rotation, muzzleSocket);
+        go.transform.localEulerAngles += new Vector3(0, 90, 0);
+        go.transform.localScale = Vector3.one * 0.2f;
     }
 }
 }

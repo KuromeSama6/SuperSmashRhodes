@@ -7,7 +7,7 @@ using SuperSmashRhodes.Input;
 namespace SuperSmashRhodes.Runtime.State {
 [NamedToken("CmnNeutralLandingRecovery")]
 public class State_NeutralLandingRecovery : CharacterState {
-    public State_NeutralLandingRecovery(Entity owner) : base(owner) { }
+    public State_NeutralLandingRecovery(Entity entity) : base(entity) { }
     public override EntityStateType type => EntityStateType.CHR_COMMON_RECOVERY;
     public override float inputPriority { get; }
     public override bool IsInputValid(InputBuffer buffer) {

@@ -6,7 +6,7 @@ using SuperSmashRhodes.Framework;
 namespace SuperSmashRhodes.Runtime.State {
 [NamedToken("Texas_NmlAtk5CS")]
 public class StateTexasNmlAtk5CS : State_Common_NmlAtk5CS {
-    public StateTexasNmlAtk5CS(Entity owner) : base(owner) { }
+    public StateTexasNmlAtk5CS(Entity entity) : base(entity) { }
     public override AttackFrameData frameData => new() {
         startup = 7,
         active = 6,

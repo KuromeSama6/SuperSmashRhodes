@@ -9,12 +9,12 @@ using UnityEngine;
 namespace SuperSmashRhodes.Runtime.State {
 [NamedToken("CmnBackdash")]
 public class State_CmnBackdash : CharacterState {
-    public State_CmnBackdash(Entity owner) : base(owner) { }
+    public State_CmnBackdash(Entity entity) : base(entity) { }
     public override EntityStateType type => EntityStateType.CHR_MOVEMENT_SINGLE;
     public override float inputPriority => 1.5f;
     public override bool IsInputValid(InputBuffer buffer) {
-        return buffer.thisFrame.HasInput(owner.side, InputType.BACKWARD, InputFrameType.HELD) &&
-               buffer.TimeSlice(3).ScanForInput(owner.side, new InputFrame(InputType.DASH, InputFrameType.PRESSED));
+        return buffer.thisFrame.HasInput(entity.side, InputType.BACKWARD, InputFrameType.HELD) &&
+               buffer.TimeSlice(3).ScanForInput(entity.side, new InputFrame(InputType.DASH, InputFrameType.PRESSED));
     }
     public override bool fullyInvincible => invincible;
     private bool invincible;

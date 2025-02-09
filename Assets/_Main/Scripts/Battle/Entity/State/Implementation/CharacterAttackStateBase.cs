@@ -6,29 +6,33 @@ using UnityEngine;
 namespace SuperSmashRhodes.Battle.State.Implementation {
 public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public AttackPhase phase { get; protected set; }
-    public bool hasActiveFrames => hitsRemaining > 0;
+    public virtual bool hasActiveFrames => hitsRemaining > 0;
     public int hitsRemaining { get; protected set; }  = 1;
+    public int hits { get; protected set; }
+    public int blockedHits { get; protected set; }
 
-    public CharacterAttackStateBase(Entity owner) : base(owner) {
+    public CharacterAttackStateBase(Entity entity) : base(entity) {
         
     }
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
         phase = AttackPhase.STARTUP;
-        hitsRemaining = 1;
+        hitsRemaining = totalHits;
         stateData.disableSideSwap = true;
         player.SetZPriority();
-        TimeManager.inst.globalFreezeFrames = 0; 
+        TimeManager.inst.globalFreezeFrames = 0;
+        hits = 0;
+        blockedHits = 0;
     }
 
     public override IEnumerator MainRoutine() {
-        owner.animation.AddUnmanagedAnimation(mainAnimation, false);
+        entity.animation.AddUnmanagedAnimation(mainAnimation, false);
         phase = AttackPhase.STARTUP;
         OnStartup();
         
         player.ApplyGroundedFriction(frameData.startup);
-        owner.audioManager.PlaySound(GetAttackNormalSfx());
+        entity.audioManager.PlaySound(GetAttackNormalSfx());
         yield return frameData.startup;
 
         phase = AttackPhase.ACTIVE;
@@ -54,21 +58,28 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     }
     
     public virtual void OnHit(Entity target) {
+        ++hits;
         player.audioManager.PlaySound(GetHitSfx(target), .6f);
         // Debug.Log(player.meter.meterGainMultiplier);
-        player.meter.gauge.value += GetMeterGain(target, false) * player.meter.meterGainMultiplier;
-        player.meter.balance.value += .05f * GetUnscaledDamage(target) * player.meter.meterGainMultiplier;
+        if (hits <= 1) {
+            player.meter.gauge.value += GetMeterGain(target, false) * player.meter.meterGainMultiplier;
+            player.meter.balance.value += .05f * GetUnscaledDamage(target) * player.meter.meterGainMultiplier;
         
-        player.burst.AddDeltaTotal((GetUnscaledDamage(target) * .25f) * player.comboCounter.finalScale, 120);
-        // Debug.Log($"on hit, {GetMeterGain(target, true)}");
+            player.burst.AddDeltaTotal((GetUnscaledDamage(target) * .25f) * player.comboCounter.finalScale, 120);
+            // Debug.Log($"on hit, {GetMeterGain(target, true)}");   
+        }
     }
     
     public virtual void OnBlock(Entity target) {
+        ++blockedHits;
         player.audioManager.PlaySound(GetBlockedSfx(target), .4f);
-        player.meter.gauge.value += GetMeterGain(target, true) * player.meter.meterGainMultiplier;;
-        player.meter.balance.value += .02f * GetUnscaledDamage(target) * player.meter.meterGainMultiplier;;
+
+        if (blockedHits <= 1) {
+            player.meter.gauge.value += GetMeterGain(target, true) * player.meter.meterGainMultiplier;;
+            player.meter.balance.value += .02f * GetUnscaledDamage(target) * player.meter.meterGainMultiplier;;
         
-        player.burst.AddDeltaTotal((GetUnscaledDamage(target) * .18f) * player.comboCounter.finalScale, 240);
+            player.burst.AddDeltaTotal((GetUnscaledDamage(target) * .18f) * player.comboCounter.finalScale, 240);   
+        }
     }
     
 
@@ -88,14 +99,14 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public override bool IsInputValid(InputBuffer buffer) {
         var input = requiredInput;
         int frames;
-        if (owner.activeState is CharacterAttackStateBase attack) {
+        if (entity.activeState is CharacterAttackStateBase attack) {
             // Debug.Log(attack.frameData.startup + frameData.startup + frameData.active);
             frames = Mathf.Max(1, attack.GetFreezeFrames(null) + frameData.startup + frameData.active);
         } else {
             frames = normalInputBufferLength;
         }
 
-        return buffer.TimeSlice(frames).ScanForInput(owner.side, input); 
+        return buffer.TimeSlice(frames).ScanForInput(entity.side, input); 
     }
     
     public float GetMeterGain(Entity to, bool blocked) {
@@ -126,6 +137,11 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public virtual AttackSpecialProperties GetSpecialProperties(Entity to) {
         return AttackSpecialProperties.NONE;
     }
+    public virtual DamageSpecialProperties GetDamageSpecialProperties(Entity to) {
+        var ret = DamageSpecialProperties.NONE;
+        if (hits > 1) ret |= DamageSpecialProperties.NO_METER_GAIN;
+        return ret;
+    }
 
     public virtual float GetComboDecayIncreaseMultiplier(Entity to) {
         return 1f;
@@ -149,6 +165,9 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public abstract AttackGuardType GetGuardType(Entity to);
     public abstract int GetFreezeFrames([CanBeNull] Entity to);
     public abstract int GetAttackLevel(Entity to);
+    public virtual float GetMinimumDamagePercentage(Entity to) {
+        return 0;
+    }
     public virtual string GetAttackNormalSfx() {
         return null;
     }

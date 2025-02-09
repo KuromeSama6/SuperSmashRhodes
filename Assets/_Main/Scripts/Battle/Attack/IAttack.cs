@@ -6,6 +6,7 @@ public interface IAttack {
     public AttackFrameData GetFrameData(Entity to);
     public int GetCurrentFrame(Entity to);
     public AttackSpecialProperties GetSpecialProperties(Entity to);
+    public DamageSpecialProperties GetDamageSpecialProperties(Entity to);
     
     public float GetUnscaledDamage(Entity to);
     public float GetChipDamagePercentage(Entity to);
@@ -22,6 +23,7 @@ public interface IAttack {
     public float GetFirstHitProration(Entity to);
     public float GetComboDecay(Entity to);
     public float GetComboDecayIncreaseMultiplier(Entity to);
+    public float GetMinimumDamagePercentage(Entity to);
     public bool ShouldCountSameMove(Entity to);
     
     public AttackGuardType GetGuardType(Entity to);

@@ -5,11 +5,11 @@ using SuperSmashRhodes.Input;
 
 namespace SuperSmashRhodes.Runtime.State {
 public abstract class State_Common_NmlAtkGndThrow : ThrowAttackStateBase {
-    public State_Common_NmlAtkGndThrow(Entity owner) : base(owner) { }
-    public override float inputPriority => 4f;
+    public State_Common_NmlAtkGndThrow(Entity entity) : base(entity) { }
+    public override float inputPriority => 5f;
     public override bool IsInputValid(InputBuffer buffer) {
-        var frame = buffer.thisFrame;
-        return (frame.HasInput(owner.side, InputType.FORWARD, InputFrameType.HELD) || frame.HasInput(owner.side, InputType.BACKWARD, InputFrameType.HELD)) && frame.HasInput(owner.side, InputType.D, InputFrameType.PRESSED); 
+        // return buffer.TimeSlice(3).ScanForInput(owner.side, new InputFrame(InputType.D, InputFrameType.PRESSED), new InputFrame(InputType.P, InputFrameType.PRESSED)); 
+        return buffer.TimeSlice(3).HasInputUnordered(entity.side, new InputFrame(InputType.D, InputFrameType.PRESSED), new InputFrame(InputType.P, InputFrameType.PRESSED)); 
     }
     protected override string mainAnimation => "cmn/NmlAtkGndThrow";
     protected override string whiffAnimation => "cmn/NmlAtkGndThrow_W";
@@ -26,7 +26,7 @@ public abstract class State_Common_NmlAtkGndThrow : ThrowAttackStateBase {
         return other is State_Common_NmlAtkGndThrow;
     }
     protected override bool ShouldSwitchSides(PlayerCharacter other) {
-        return player.inputProvider.inputBuffer.thisFrame.HasInput(owner.side, InputType.BACKWARD, InputFrameType.HELD);
+        return player.inputProvider.inputBuffer.thisFrame.HasInput(entity.side, InputType.BACKWARD, InputFrameType.HELD);
     }
 
 }

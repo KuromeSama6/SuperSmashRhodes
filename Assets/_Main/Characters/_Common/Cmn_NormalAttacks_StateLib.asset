@@ -20,7 +20,11 @@ MonoBehaviour:
   - NmlAtk2S
   - NmlAtk5H
   - NmlAtk2H
+  - NmlAtk6H
   - NmlAtk5P
   - NmlAtk2P
   - NmlAtkGndThrow
   - NmlAtk5D
+  - NmlAtk6D
+  - NmlAtk2D
+  - NmlAtk4D

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SuperSmashRhodes.Adressable;
+using SuperSmashRhodes.Battle.State;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
@@ -8,8 +10,8 @@ public class EntityAudioManager : MonoBehaviour {
     private Entity entity;
     private AudioSource audioSource;
 
-    private Dictionary<int, AudioSource> loopSources { get; } = new();
-    private int idCounter;
+    private Dictionary<int, AudioHandle> loopSources { get; } = new();
+    private int idCounter = 1;
 
     private void Start() {
         entity = GetComponent<Entity>();
@@ -32,19 +34,45 @@ public class EntityAudioManager : MonoBehaviour {
             source.loop = true;
             source.volume = volume;
             source.Play();
-            loopSources[id] = source;
+            loopSources[id] = new AudioHandle(soundName, source, entity.activeState);
         });
         return id;
     }
 
     public void StopSoundLoop(int id, string tailSound = null, float tailVolume = 1f) {
         if (loopSources.ContainsKey(id)) {
-            Destroy(loopSources[id].gameObject);
+            loopSources[id].Release();
             loopSources.Remove(id);
             
             if (tailSound != null) {
                 PlaySound(tailSound, tailVolume);
             }
+        }
+    }
+
+    public void StopSoundLoop(string soundName) {
+        var sound = loopSources.Keys.FirstOrDefault(c => loopSources[c].audioId == soundName);
+        StopSoundLoop(sound);
+    }
+
+    public class AudioHandle {
+        public readonly string audioId;
+        public readonly AudioSource source;
+        public readonly EntityState state;
+        public AudioHandle(string audioId, AudioSource source, EntityState state) {
+            this.audioId = audioId;
+            this.source = source;
+            this.state = state;
+            state.onStateEnd.AddListener(OnStateEnd);
+        }
+
+        public void Release() {
+            state.onStateEnd.RemoveListener(OnStateEnd);
+            Destroy(source.gameObject);
+        }
+
+        private void OnStateEnd() {
+            Release();
         }
     }
 }

@@ -10,7 +10,7 @@ using UnityEngine.AddressableAssets;
 namespace SuperSmashRhodes.Runtime.State {
 [NamedToken("Chen_NmlAtk5CS")]
 public class State_Chen_NmlAtk5CS : State_Common_NmlAtk5CS {
-    public State_Chen_NmlAtk5CS(Entity owner) : base(owner) { }
+    public State_Chen_NmlAtk5CS(Entity entity) : base(entity) { }
     public override AttackFrameData frameData => new() {
         startup = 7,
         active = 6,
@@ -30,7 +30,7 @@ public class State_Chen_NmlAtk5CS : State_Common_NmlAtk5CS {
 
 [NamedToken("Chen_NmlAtk5S")]
 public class State_Chen_NmlAtk5S : State_Common_NmlAtk5S {
-    public State_Chen_NmlAtk5S(Entity owner) : base(owner) { }
+    public State_Chen_NmlAtk5S(Entity entity) : base(entity) { }
     public override AttackFrameData frameData => new() {
         startup = 10,
         active = 3,
@@ -60,7 +60,7 @@ public class State_Chen_NmlAtk5S : State_Common_NmlAtk5S {
 
 [NamedToken("Chen_NmlAtk2S")]
 public class State_Chen_NmlAtk2S : State_Common_NmlAtk2S {
-    public State_Chen_NmlAtk2S(Entity owner) : base(owner) { }
+    public State_Chen_NmlAtk2S(Entity entity) : base(entity) { }
     public override AttackFrameData frameData => new() {
         startup = 11,
         active = 3,
@@ -87,7 +87,7 @@ public class State_Chen_NmlAtk2S : State_Common_NmlAtk2S {
 
 [NamedToken("Chen_NmlAtk5H")]
 public class State_Chen_NmlAtk5H : State_Common_NmlAtk5H {
-    public State_Chen_NmlAtk5H(Entity owner) : base(owner) { }
+    public State_Chen_NmlAtk5H(Entity entity) : base(entity) { }
     public override AttackFrameData frameData => new() {
         startup = 12,
         active = 6,
@@ -114,7 +114,7 @@ public class State_Chen_NmlAtk5H : State_Common_NmlAtk5H {
 
 [NamedToken("Chen_NmlAtk2H")]
 public class State_Chen_NmlAtk2H : State_Common_NmlAtk2H {
-    public State_Chen_NmlAtk2H(Entity owner) : base(owner) { } 
+    public State_Chen_NmlAtk2H(Entity entity) : base(entity) { } 
     public override AttackFrameData frameData => new() {
         startup = 11,
         active = 5,
@@ -132,17 +132,14 @@ public class State_Chen_NmlAtk2H : State_Common_NmlAtk2H {
 
 [NamedToken("Chen_NmlAtkGndThrow")]
 public class State_Chen_NmlAtkGndThrow : State_Common_NmlAtkGndThrow {
-    public State_Chen_NmlAtkGndThrow(Entity owner) : base(owner) { }
+    public State_Chen_NmlAtkGndThrow(Entity entity) : base(entity) { }
     protected override int animationLength => 71;
-    protected override int[] GetCosmeticHitFrames(PlayerCharacter to) {
-        return new[] { 39 };
-    }
 }
 
 [NamedToken("Chen_NmlAtk5P")]
 public class State_Chen_NmlAtk5P : State_Common_NmlAtk5P {
 
-    public State_Chen_NmlAtk5P(Entity owner) : base(owner) { }
+    public State_Chen_NmlAtk5P(Entity entity) : base(entity) { }
     public override AttackFrameData frameData => new() {
         startup = 5,
         active = 4,
@@ -161,7 +158,7 @@ public class State_Chen_NmlAtk5P : State_Common_NmlAtk5P {
 
 [NamedToken("Chen_NmlAtk2P")]
 public class State_Chen_NmlAtk2P : State_Common_NmlAtk2P {
-    public State_Chen_NmlAtk2P(Entity owner) : base(owner) { }
+    public State_Chen_NmlAtk2P(Entity entity) : base(entity) { }
     public override AttackFrameData frameData => new() {
         startup = 5,
         active = 4,

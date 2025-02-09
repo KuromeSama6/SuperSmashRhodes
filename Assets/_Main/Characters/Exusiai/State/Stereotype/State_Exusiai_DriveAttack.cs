@@ -13,7 +13,23 @@ public abstract class State_Exusiai_DriveAttack : State_Exusiai_FireWeaponAttack
 
     private int audioLoopHandle;
     
-    public State_Exusiai_DriveAttack(Entity owner) : base(owner) {
+    public override AttackFrameData frameData { get; } = new AttackFrameData() {
+        startup = 16,
+        active = 2,
+        recovery = 29,
+    };
+    
+    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER;
+    public override float GetUnscaledDamage(Entity to) {
+        var chargePercentage = Mathf.Clamp01((bulletsShot + 1) / 7f);
+        return 25 * chargePercentage;
+    }
+
+    public override AttackGuardType GetGuardType(Entity to) {
+        return AttackGuardType.ALL;
+    }
+    
+    public State_Exusiai_DriveAttack(Entity entity) : base(entity) {
         
     }
 
@@ -24,12 +40,12 @@ public abstract class State_Exusiai_DriveAttack : State_Exusiai_FireWeaponAttack
     }
 
     public override IEnumerator MainRoutine() {
-        owner.animation.AddUnmanagedAnimation(mainAnimation, false);
+        entity.animation.AddUnmanagedAnimation(mainAnimation, false);
         phase = AttackPhase.STARTUP;
         OnStartup();
         
         player.ApplyGroundedFriction(frameData.startup);
-        owner.audioManager.PlaySound(GetAttackNormalSfx());
+        entity.audioManager.PlaySound(GetAttackNormalSfx());
         yield return frameData.startup;
 
         phase = AttackPhase.ACTIVE;
@@ -37,11 +53,10 @@ public abstract class State_Exusiai_DriveAttack : State_Exusiai_FireWeaponAttack
         player.ApplyGroundedFriction(frameData.active);
         
         bulletsShot = 1;
-
-
+        
         if (gauge.mayFire) {
             gauge.Fire();
-            audioLoopHandle = owner.audioManager.PlaySoundLoop("chr/exusiai/battle/sfx/gun_loop", 0.5f);
+            audioLoopHandle = entity.audioManager.PlaySoundLoop("chr/exusiai/battle/sfx/gun_loop", 0.5f);
             do {
                 ++loopFrame;
                 if (loopFrame >= loopLength) {
@@ -50,27 +65,41 @@ public abstract class State_Exusiai_DriveAttack : State_Exusiai_FireWeaponAttack
                         ++hitsRemaining;
                         ++bulletsShot;
                         loopFrame = 0;
-                        owner.animation.SetFrame(loopStartFrame);
+                        entity.animation.SetFrame(loopStartFrame);
                         
                     } else {
                         hitsRemaining = 0;
-                        owner.audioManager.PlaySound("chr/exusiai/battle/sfx/gun_empty");
+                        entity.audioManager.PlaySound("chr/exusiai/battle/sfx/gun_empty");
                         break;
                     }
                 }
+                
+                // drive cancel
+                var thisFrame = GetCurrentInputBuffer().thisFrame;
+                // if (type != EntityStateType.CHR_ATK_8D && thisFrame.HasInput(owner.side, InputType.D, InputFrameType.HELD)) {
+                //     string targetType;
+                //     if (thisFrame.HasInput(owner.side, InputType.DOWN, InputFrameType.HELD)) targetType = "Exusiai_NmlAtk2D";
+                //     else if (thisFrame.HasInput(owner.side, InputType.FORWARD, InputFrameType.HELD)) targetType = "Exusiai_NmlAtk6D";
+                //     else if (thisFrame.HasInput(owner.side, InputType.BACKWARD, InputFrameType.HELD)) targetType = "Exusiai_NmlAtk4D";
+                //     else targetType = "Exusiai_NmlAtk5D";
+                //
+                //     if (targetType != id) {
+                //         CancelInto(targetType);
+                //     }
+                // }
+                
                 yield return 1;
+            } while (GetCurrentInputBuffer().thisFrame.HasInput(entity.side, InputType.D, InputFrameType.HELD));
             
-            } while (GetCurrentInputBuffer().thisFrame.HasInput(owner.side, InputType.D, InputFrameType.HELD));
-            
-            owner.audioManager.PlaySound($"chr/exusiai/battle/sfx/gun_shell_{Random.Range(1, 4)}");
+            entity.audioManager.PlaySound($"chr/exusiai/battle/sfx/gun_shell_{Random.Range(1, 4)}");
         } else {
             // whiff direct
             hitsRemaining = 0;
-            owner.audioManager.PlaySound("chr/exusiai/battle/sfx/gun_empty");
+            entity.audioManager.PlaySound("chr/exusiai/battle/sfx/gun_empty");
         }
         yield return frameData.active; 
         
-        owner.audioManager.StopSoundLoop(audioLoopHandle, "chr/exusiai/battle/sfx/gun_loop_tail", 0.5f);
+        entity.audioManager.StopSoundLoop(audioLoopHandle, "chr/exusiai/battle/sfx/gun_loop_tail", 0.5f);
         player.ApplyGroundedFriction(frameData.active);
         phase = AttackPhase.RECOVERY;
         OnRecovery();
@@ -84,9 +113,16 @@ public abstract class State_Exusiai_DriveAttack : State_Exusiai_FireWeaponAttack
     public override float GetComboDecayIncreaseMultiplier(Entity to) {
         return 0.2f;
     }
-    
+
+    public override float GetMinimumDamagePercentage(Entity to) {
+        return 0.1f;
+    }
+    public override float GetChipDamagePercentage(Entity to) {
+        return 0.01f;
+    }
+
     protected override int normalInputBufferLength => 6;
-    protected abstract int loopStartFrame { get; }
-    protected abstract int loopEndFrame { get; }
+    protected virtual int loopStartFrame => 16;
+    protected virtual int loopEndFrame => 19;
 }
 }

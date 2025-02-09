@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using SuperSmashRhodes.Battle.Animation;
 using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.Game;
@@ -10,7 +11,7 @@ using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.State.Implementation {
 public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
-    protected ThrowAttackStateBase(Entity owner) : base(owner) { }
+    protected ThrowAttackStateBase(Entity entity) : base(entity) { }
     public override EntityStateType type => EntityStateType.CHR_ATK_THROW;
     protected override EntityStateType commonCancelOptions => 0;
     protected override InputFrame[] requiredInput => null;
@@ -119,7 +120,6 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
             player.animation.AddUnmanagedAnimation(mainAnimation, false);
             yield return animationLength;
             OnFinalHit();
-            player.opponent.ApplyDamage(GetUnscaledDamage(player.opponent) - GetCosmeticHitFrames(player.opponent).Length, CreateAttackData());
             socket.Release();
 
             opponent.unmanagedTime = default;
@@ -129,7 +129,7 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
 
         } else {
             phase = AttackPhase.RECOVERY;
-            owner.animation.AddUnmanagedAnimation(whiffAnimation, false);
+            entity.animation.AddUnmanagedAnimation(whiffAnimation, false);
             
             OnThrowTech(opponent);
             yield return frameData.recovery;
@@ -139,15 +139,6 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
 
     protected override void OnTick() {
         base.OnTick();
-        if (hasHit) {
-            // cosmetic animation
-            var hitAnimationFrame = frame - hitAnimationStartFrame;
-            var cosmeticFrames = GetCosmeticHitFrames(player.opponent);
-            if (cosmeticFrames.Contains(hitAnimationFrame)) {
-                player.opponent.ApplyDamage(1, null, DamageSpecialProperties.REAL_DAMAGE | DamageSpecialProperties.SKIP_REGISTER);
-                OnCosmeticHit();
-            }
-        }
     }
 
     public override float GetChipDamagePercentage(Entity to) {
@@ -191,9 +182,6 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
     protected virtual string throwSocketBoneName => "throw_opponent";
 
     protected abstract bool ClashableWith(ThrowAttackStateBase other);
-    protected virtual int[] GetCosmeticHitFrames(PlayerCharacter to) {
-        return new int[0];
-    }
     protected virtual bool ShouldSwitchSides(PlayerCharacter other) {
         return false;
     }
@@ -221,8 +209,13 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
         player.opponent.fxManager.NotifyHit(CreateAttackData());
     }
     protected virtual void OnFinalHit() {
-        OnHit(player.opponent);
+        // OnHit(player.opponent);
+    }
+    
+    public override void OnApplyCinematicDamage(AnimationEventData data) {
         player.opponent.fxManager.NotifyHit(CreateAttackData()); 
+        player.opponent.ApplyDamage(data.integerValue, CreateAttackData(), DamageSpecialProperties.REAL_DAMAGE | DamageSpecialProperties.SKIP_REGISTER);
+        // Debug.Log("ThrowAttackStateBase.OnApplyCinematicDamage");
     }
 }
 }

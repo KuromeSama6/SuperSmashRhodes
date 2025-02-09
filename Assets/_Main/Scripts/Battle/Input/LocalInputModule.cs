@@ -47,7 +47,7 @@ public class LocalInputModule : MonoBehaviour, IInputProvider {
             {
                 if (input.actions.FindAction("Dash").ReadValue<float>() > 0f) toPush.Add(new(InputType.DASH, InputFrameType.HELD));
                 if (input.actions.FindAction("Crouch").ReadValue<float>() > 0f) toPush.Add(new(InputType.DOWN, InputFrameType.HELD));
-                if (input.actions.FindAction("Dust").ReadValue<float>() > 0f) toPush.Add(new(InputType.D, InputFrameType.HELD));
+                if (input.actions.FindAction("Drive").ReadValue<float>() > 0f) toPush.Add(new(InputType.D, InputFrameType.HELD));
             }
 
             localBuffer.PushAndTick(toPush.ToArray());
@@ -85,7 +85,7 @@ public class LocalInputModule : MonoBehaviour, IInputProvider {
         thisFrameInputs.Add(new(InputType.HS, InputFrameType.PRESSED));
     }
 
-    public void OnDust(InputValue input) {
+    public void OnDrive(InputValue input) {
         thisFrameInputs.Add(new(InputType.D, InputFrameType.PRESSED));
     }
 
