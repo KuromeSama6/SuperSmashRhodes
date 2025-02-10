@@ -2,43 +2,43 @@
 
 namespace SuperSmashRhodes.Battle {
 public interface IAttack {
-    public string id { get; }
-    public AttackFrameData GetFrameData(Entity to);
-    public int GetCurrentFrame(Entity to);
-    public AttackSpecialProperties GetSpecialProperties(Entity to);
-    public DamageSpecialProperties GetDamageSpecialProperties(Entity to);
+    string id { get; }
+    AttackFrameData GetFrameData(Entity to);
+    int GetStunFrames(Entity to, bool blocked);
+    AttackSpecialProperties GetSpecialProperties(Entity to);
+    DamageSpecialProperties GetDamageSpecialProperties(Entity to);
     
-    public float GetUnscaledDamage(Entity to);
-    public float GetChipDamagePercentage(Entity to);
-    public float GetOtgDamagePercentage(Entity to);
-    public Vector2 GetPushback(Entity to, bool airborne, bool blocked);
+    float GetUnscaledDamage(Entity to);
+    float GetChipDamagePercentage(Entity to);
+    float GetOtgDamagePercentage(Entity to);
+    Vector2 GetPushback(Entity to, bool airborne, bool blocked);
     /**
      * If the target player is against the wall, the pushback applied
      * to the attacker is multiplied by this value.
      */
-    public float GetAtWallPushbackMultiplier(Entity to);
-    public Vector2 GetCarriedMomentumPercentage(Entity to);
+    float GetAtWallPushbackMultiplier(Entity to);
+    Vector2 GetCarriedMomentumPercentage(Entity to);
     
-    public float GetComboProration(Entity to);
-    public float GetFirstHitProration(Entity to);
-    public float GetComboDecay(Entity to);
-    public float GetComboDecayIncreaseMultiplier(Entity to);
-    public float GetMinimumDamagePercentage(Entity to);
-    public bool ShouldCountSameMove(Entity to);
+    float GetComboProration(Entity to);
+    float GetFirstHitProration(Entity to);
+    float GetComboDecay(Entity to);
+    float GetComboDecayIncreaseMultiplier(Entity to);
+    float GetMinimumDamagePercentage(Entity to);
+    bool ShouldCountSameMove(Entity to);
     
-    public AttackGuardType GetGuardType(Entity to);
-    public int GetFreezeFrames(Entity to);
-    public int GetAttackLevel(Entity to);
+    AttackGuardType GetGuardType(Entity to);
+    int GetFreezeFrames(Entity to);
+    int GetAttackLevel(Entity to);
 
-    public float GetMeterGain(Entity to, bool blocked);
+    float GetMeterGain(Entity to, bool blocked);
     
-    public bool MayHit(Entity target);
-    public string GetAttackNormalSfx();
-    public string GetBlockedSfx(Entity to);
-    public string GetHitSfx(Entity to);
+    bool MayHit(Entity target);
+    string GetAttackNormalSfx();
+    string GetBlockedSfx(Entity to);
+    string GetHitSfx(Entity to);
     
-    public void OnContact(Entity to) {}
-    public void OnHit(Entity to);
-    public void OnBlock(Entity to);
+    void OnContact(Entity to) {}
+    void OnHit(Entity to);
+    void OnBlock(Entity to);
 }
 }

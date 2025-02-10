@@ -20,7 +20,7 @@ public class State_CmnNeutral : CharacterState {
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
-        AddCancelOption(EntityStateType.ALL);
+        AddCancelOption(EntityStateType.ALL & ~EntityStateType.CHR_ATK_SPECIAL_TRIGGER);
         player.comboCounter.Reset();
     }
 

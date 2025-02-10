@@ -181,5 +181,13 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public float GetComboDecay(Entity to) {
         return 1f;
     }
+    public int GetStunFrames(Entity to, bool blocked) {
+        var current = GetCurrentFrame(to);
+        if (blocked) {
+            return frameData.active + frameData.recovery + frameData.onBlock;
+        } else {
+            return frameData.active + frameData.recovery + frameData.onHit;
+        }
+    }
 }
 }

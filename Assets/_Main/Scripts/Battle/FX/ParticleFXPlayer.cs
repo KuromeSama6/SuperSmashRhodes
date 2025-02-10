@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.FX {
-public class AutoDestroyParticleFX : MonoBehaviour {
+public class ParticleFXPlayer : MonoBehaviour {
     private List<ParticleSystem> systems = new();
 
     private void Start() {
@@ -15,6 +16,10 @@ public class AutoDestroyParticleFX : MonoBehaviour {
         if (systems.Count == 0) {
             Destroy(gameObject);
         }
+    }
+
+    public IEnumerator WaitUntilComplete() {
+        yield return new WaitUntil(() => systems.Count == 0);
     }
 }
 }

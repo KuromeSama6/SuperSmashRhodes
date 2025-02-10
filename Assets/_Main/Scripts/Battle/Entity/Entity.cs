@@ -1,6 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
+using System.Text.RegularExpressions;
+using JetBrains.Annotations;
 using NUnit.Framework;
 using SingularityGroup.HotReload;
 using Sirenix.OdinInspector;
@@ -12,6 +16,7 @@ using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Util;
 using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
+using Vector3 = UnityEngine.Vector3;
 
 namespace SuperSmashRhodes.Battle {
 /// <summary>
@@ -40,9 +45,11 @@ public abstract class Entity : MonoBehaviour {
     public bool logicStarted { get; private set; }
     // public EntityAssetLibrary assetLibrary { get; private set; }
     public PlayerCharacter owner { get; protected set; }
+    public bool attached => transform.parent;
     
-    private List<AttackData> queuedInboundAttacks = new();
-    private List<Entity> summons { get; } = new();
+    public List<Entity> summons { get; } = new();
+    private readonly List<AttackData> queuedInboundAttacks = new();
+    private readonly Dictionary<string, CarriedStateVariable> carriedStateVariables = new();
 
     protected virtual void Start() {
         animation = GetComponent<EntityAnimationController>();
@@ -134,14 +141,26 @@ public abstract class Entity : MonoBehaviour {
         activeState = state;
         state.BeginState();
     }
+    
+    public EntityStateData CreateStateData(EntityState state) {
+        var ret = new EntityStateData();
+        foreach (var variable in carriedStateVariables.Values.ToArray()) {
+            if (variable.targetState == null || Regex.IsMatch(state.id, variable.targetState)) {
+                ret.carriedVariables[variable.key] = variable.value;
+                carriedStateVariables.Remove(variable.key);
+            }
+        }
+        
+        return ret;
+    }
 
     public virtual void BeginLogic() {
         logicStarted = true;
 
     }
 
-    public virtual void HandleEntityInteraction(EntityBoundingBox from, EntityBoundingBox to, EntityBBInteractionData data) {
-        if (from.owner == to.owner) return;
+    public virtual void HandleEntityInteraction(IEntityBoundingBox from, IEntityBoundingBox to, EntityBBInteractionData data) {
+        if (from.owningPlayer == to.owningPlayer) return;
 
         ulong fromType = (ulong)from.type;
         ulong toType = (ulong)to.type;
@@ -155,13 +174,13 @@ public abstract class Entity : MonoBehaviour {
 
         // Hit
         if (BitUtil.CheckFlag(fromType, (ulong)BoundingBoxType.HITBOX) && BitUtil.CheckFlag(toType, (ulong)BoundingBoxType.HURTBOX)) {
-            var ret = OnOutboundHit(to.owner, data);
+            var ret = OnOutboundHit(to.owningPlayer, data);
             if (ret != null) {
                 // to.owner.OnInboundHit(this, data);
-                to.owner.QueueInboundAttack(new() {
+                to.owningPlayer.QueueInboundAttack(new() {
                     attack = ret,
                     from = this,
-                    to = to.owner,
+                    to = to.owningPlayer,
                     interactionData = data,
                     result = AttackResult.PENDING
                 });
@@ -208,6 +227,67 @@ public abstract class Entity : MonoBehaviour {
         Destroy(entity.gameObject);
     }
 
+    public T GetSummon<T>() where T: Entity {
+        return summons.Find(c => c is T) as T;
+    }
+    
+    public void Attach(string socket) {
+        var go = owner.socketsContainer.Find(socket);
+        if (!go) {
+            Debug.LogError($"Could not find socket [{socket}] on entity [{name}]");
+            return;
+        }
+
+        transform.parent = go;
+        rb.simulated = false;
+        transform.localPosition = Vector3.zero;
+        transform.localEulerAngles = Vector3.zero;
+    }
+
+    public void AttachToBone(string boneName) {
+        var objectName = $"Bone_Hop_{boneName}";
+        var go = owner.socketsContainer.Find(objectName);
+        if (!go) {
+            // create object
+            go = new GameObject(objectName).transform;
+            go.parent = owner.socketsContainer;
+            go.localPosition = Vector3.zero;
+            
+            // bone follower
+            var follower = go.gameObject.AddComponent<BoneFollower>();
+            follower.SkeletonRenderer = owner.animation.animation;
+            var res = follower.SetBone(boneName);
+
+            if (!res) {
+                Debug.LogError($"Could not find Spine bone [{boneName}] on entity [{name}]");
+                Destroy(go.gameObject);
+                return;
+            }
+        }
+        
+        transform.parent = go;
+        rb.simulated = false;
+        transform.localPosition = Vector3.zero;
+        transform.localEulerAngles = Vector3.zero;
+    }
+    
+    public void Detach() {
+        transform.parent = null;
+        rb.simulated = true;
+    }
+
+    /// <summary>
+    /// Sets a state variable that is carried over to the next state. The target state may be specified by the targetState parameter as a regular expression that matches a state's id, or <code>null</code> to apply to all states.
+    /// When the target state is next activated, this value will be present by the specified key on the state's stateData. After the state is activated, the value will be removed.
+    /// </summary>
+    /// <param name="key">The key to identify the value. Must be unique globally.</param>
+    /// <param name="targetState">The target state.</param>
+    /// <param name="value">The value.</param>
+    public void SetCarriedStateVariable(string key, [CanBeNull] string targetState, object value) {
+        var variable = new CarriedStateVariable(key, targetState, value);
+        carriedStateVariables[key] = variable;
+    }
+    
 // Implemented methods
     public virtual bool shouldTickAnimation => true;
     public virtual bool shouldTickState => true;
@@ -225,5 +305,18 @@ public abstract class Entity : MonoBehaviour {
     // Abstract Methods
     protected abstract EntityState GetDefaultState();
 
+}
+
+class CarriedStateVariable {
+    public string key;
+    public string targetState;
+    public object value;
+    
+    public CarriedStateVariable(string key, string targetState, object value) {
+        this.key = key;
+        this.targetState = targetState;
+        this.value = value;
+    }
+    
 }
 }

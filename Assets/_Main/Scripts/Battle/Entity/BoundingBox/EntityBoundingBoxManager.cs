@@ -12,10 +12,11 @@ public class EntityBoundingBoxManager : MonoBehaviour {
     public int hitboxCount = 0;
     public int hurtboxCount = 0;
     public SkeletonAnimation skeleton;
+    public List<IEntityBoundingBox> explicitBoundingBoxes = new();
     
     public EntityBoundingBox pushbox { get; private set; }
     private Entity entity;
-    private List<EntityBoundingBox> boxes = new();
+    private List<IEntityBoundingBox> boxes = new();
 
     private void Start() {
         entity = GetComponentInParent<Entity>();
@@ -25,7 +26,7 @@ public class EntityBoundingBoxManager : MonoBehaviour {
         pushbox = CreateBoundingBox("pushbox", BoundingBoxType.CHR_MAIN_PUSHBOX);
         for (int i = 0; i < hitboxCount; i++) CreateBoundingBox($"hb_{i}", BoundingBoxType.HITBOX);
         for (int i = 0; i < hurtboxCount; i++) CreateBoundingBox($"ub_{i}", BoundingBoxType.HURTBOX);
-
+        boxes.AddRange(explicitBoundingBoxes);
     }
 
     private EntityBoundingBox CreateBoundingBox(string name, BoundingBoxType type) {
@@ -33,6 +34,7 @@ public class EntityBoundingBoxManager : MonoBehaviour {
             throw new ArgumentException($"No such bounding box: {name}");
         
         var go = new GameObject();
+        go.layer = LayerMask.NameToLayer("BoundingBox");
         go.transform.parent = transform;
         go.transform.Reset();
         go.name = $"{entity.name}-{name}";
@@ -43,7 +45,8 @@ public class EntityBoundingBoxManager : MonoBehaviour {
         follower.slotName = name;
 
         var bb = go.AddComponent<EntityBoundingBox>();
-        bb.owner = entity;
+        bb.entity = entity;
+        bb.owningPlayer = entity.owner;
         bb.type = type;
         boxes.Add(bb);
 
@@ -52,7 +55,7 @@ public class EntityBoundingBoxManager : MonoBehaviour {
 
     public void DisableAll() {
         foreach (var box in boxes) {
-            if (box != pushbox) box.collider.enabled = false;
+            if (box != pushbox) box.box.enabled = false;
         }
     }
     

@@ -27,8 +27,9 @@ public abstract class EntityState : NamedToken {
     
     private int interruptFrames;
     private int scheduledPauseAnimationFrames;
-    private IEnumerator routine;
     private readonly Dictionary<string, List<MethodInfo>> animationEventHandlers = new();
+    private readonly Stack<IEnumerator> routines = new();
+    private IEnumerator currentRoutine => routines.Count > 0 ? routines.Peek() : null;
     
     public EntityState(Entity entity) {
         this.entity = entity;
@@ -51,11 +52,12 @@ public abstract class EntityState : NamedToken {
 
     private void Init() {
         OnStateBegin();
-        routine = MainRoutine();
+        routines.Push(MainRoutine());
     }
 
     public void BeginState() {
-        stateData = new();
+        stateData = entity.CreateStateData(this);
+        
         frame = 0;
         interruptFrames = 0;
         scheduledPauseAnimationFrames = 0;
@@ -76,7 +78,7 @@ public abstract class EntityState : NamedToken {
                 --scheduledPauseAnimationFrames;
             
             } else {
-                entity.animation.Tick();
+                if (entity.animation) entity.animation.Tick();
             }   
         }
         
@@ -88,12 +90,18 @@ public abstract class EntityState : NamedToken {
             return;
         }
         
-        if (routine.MoveNext()) {
-            var current = routine.Current;
+        if (currentRoutine.MoveNext()) {
+            var current = currentRoutine.Current;
             HandleRoutineReturn(current);
             
         } else {
-            EndState();
+            if (routines.Count > 1) {
+                routines.Pop();
+                HandleRoutineReturn(null);
+                
+            } else {
+                EndState();
+            }
         }
     }
 
@@ -132,6 +140,11 @@ public abstract class EntityState : NamedToken {
 
         if (obj is EntityStateYieldInstruction yieldInstruction) {
             yieldInstruction.Execute(stateData);
+            return;
+        }
+
+        if (obj is IEnumerator enumerator) {
+            routines.Push(enumerator);
             return;
         }
         

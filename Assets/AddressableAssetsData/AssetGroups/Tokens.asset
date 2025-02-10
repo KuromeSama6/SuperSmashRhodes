@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Tokens
+  m_EditorClassIdentifier: 
+  m_GroupName: Tokens
+  m_GUID: 23e6d5e2f10a26d4587d644841cef439
+  m_SerializeEntries:
+  - m_GUID: f4e32f212df33804ba66ab462303cbb4
+    m_Address: chr/exusiai/battle/token/ApplePie
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 47af94df76536e94698dc26068dd4147, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 5e24f0ff5c25c7a498f10d41a3caab0e, type: 2}
+    - {fileID: 11400000, guid: 171aa9bb01de1ab4cbd8c0bf6b9cfbff, type: 2}

@@ -3,17 +3,18 @@ using Spine.Unity;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
-public class EntityBoundingBox : MonoBehaviour {
+public class EntityBoundingBox : MonoBehaviour, IEntityBoundingBox {
     public BoundingBoxType type { get; set; }
-    public Entity owner { get; set; }
-    
+    public Entity entity { get; set; }
+    public PlayerCharacter owningPlayer { get; set; }
     private BoundingBoxFollower bbFollower;
     public PolygonCollider2D collider { get; private set; }
+    public Collider2D box => collider;
 
     private void Start() {
         bbFollower = GetComponent<BoundingBoxFollower>();
-
         bbFollower.isTrigger = true;
+        owningPlayer = entity.owner;
     }
 
     private void FixedUpdate() {
@@ -28,7 +29,7 @@ public class EntityBoundingBox : MonoBehaviour {
         SkeletonUtility.SetColliderPointsLocal(collider, bbFollower.Slot, bbFollower.CurrentAttachment);
 
         if (type == BoundingBoxType.HITBOX) {
-            enabled = owner.activeState.enableHitboxes;
+            enabled = entity.activeState.enableHitboxes;
         }
     }
 
@@ -45,25 +46,16 @@ public class EntityBoundingBox : MonoBehaviour {
         
         // handle
         var bb = other.gameObject.GetComponent<EntityBoundingBox>();
-        if (bb == null || bb.owner == owner) return;
+        if (bb == null || bb.entity == entity) return;
 
         // Debug.Log($"{owner.name}: {name} hit {bb}");
          
-        owner.HandleEntityInteraction(this, bb, new() {
+        entity.HandleEntityInteraction(this, bb, new() {
             point = other.ClosestPoint(transform.position)
         });
     }
     
 
-}
-
-[Flags]
-public enum BoundingBoxType {
-    PUSHBOX = 1 << 0,
-    HITBOX = 1 << 1,
-    HURTBOX = 1 << 2,
-    
-    CHR_MAIN_PUSHBOX = PUSHBOX | HURTBOX
 }
 
 public struct EntityBBInteractionData {

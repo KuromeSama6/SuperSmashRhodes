@@ -25,6 +25,7 @@ public enum EntityType {
     CHARACTER,
     TOKEN,
     PROJECTILE,
-    SUMMON
+    SUMMON,
+    SUBATTACK
 }
 }

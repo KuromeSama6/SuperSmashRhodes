@@ -12,7 +12,7 @@ public class EntityStateData {
     /// A flag that determines if the current state can be cancelled into a specific type of states.
     /// </summary>
     public EntityStateType cancelFlag;
-
+    public Dictionary<string, object> carriedVariables { get; } = new();
     public bool disableSideSwap = false;
 
     public void ClearCancelOptions() {

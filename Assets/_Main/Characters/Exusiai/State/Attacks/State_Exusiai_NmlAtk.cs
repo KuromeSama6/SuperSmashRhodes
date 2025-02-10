@@ -145,7 +145,7 @@ public class State_Exusiai_NmlAtk2H : State_Exusiai_MultihitWeaponAttack {
         return 31;
     }
     public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
-        return new Vector2(1.2f, 7f) * (blocked ? 0.7f : 1f);
+        return new Vector2(1.2f, 10f) * (blocked ? 0.7f : 1f);
     }
     public override AttackGuardType GetGuardType(Entity to) {
         return AttackGuardType.CROUCHING;

@@ -105,7 +105,7 @@ public class PlayerCharacter : Entity {
         
         pushboxManager.onGroundContact.AddListener(OnGroundContact);
         
-        AssetManager.inst.PreloadAll($"chr/chen/battle/**");
+        AssetManager.inst.PreloadAll($"chr/{config.id}/battle/**");
     }
 
     protected override void Update() {
@@ -315,25 +315,34 @@ public class PlayerCharacter : Entity {
         
         // register hit
         var frameData = attack.GetFrameData(this);
-        int framesRemaining = frameData.active + frameData.recovery;
         bool addFreezeFrames = true;
         bool knockedDown = activeState.type.HasFlag(EntityStateType.CHR_HARD_KNOCKDOWN);
         
         // Debug.Log($"inbound hit 1, neutral: {neutral}, blockheld: {blockHeld}, blockType: {blockType} blocked: {blocked}, framesRemaining: {framesRemaining}, blockstun {framesRemaining + move.frameData.onBlock}");
         ApplyGroundedFriction();
         if (blocked) {
-            this.frameData.blockstunFrames = framesRemaining + frameData.onBlock;
+            this.frameData.blockstunFrames = attack.GetStunFrames(this, true);
             bool inBlockstun = activeState.type.HasFlag(EntityStateType.CHR_BLOCKSTUN);
             
             if (!inBlockstun) BeginState(crouching ? "CmnBlockStunCrouch" : "CmnBlockStun");
+            // Debug.Log("blocked");
             attack.OnBlock(this);
             burst.AddDeltaTotal(inBlockstun ? -8.5f : -12.5f, 90);
 
             var chipDamage = attack.GetChipDamagePercentage(this);
             if (chipDamage > 0) ApplyDamage(attack.GetUnscaledDamage(this) * chipDamage, data, DamageSpecialProperties.SKIP_REGISTER, true);
 
+            foreach (var summon in summons.ToArray()) {
+                if (summon is Token token) {
+                    if (token.flags.HasFlag(TokenFlag.DESTROY_ON_OWNER_BLOCK)) {
+                        DestroySummon(token);
+                    }
+                }
+            }
+
         } else {
-            this.frameData.SetHitstunFrames(framesRemaining + frameData.onHit, Mathf.Max(frameData.total - attack.GetCurrentFrame(this), 0));
+            // this.frameData.SetHitstunFrames(framesRemaining + frameData.onHit, Mathf.Max(frameData.total - attack.GetCurrentFrame(this), 0));
+            this.frameData.SetHitstunFrames(attack.GetStunFrames(this, false), 0);
             
             // hit state select
             HandleOnHitStateTransition(attack, crouching, out addFreezeFrames);
@@ -342,6 +351,14 @@ public class PlayerCharacter : Entity {
             airHitstunRotation = 0f;
             
             ApplyDamage(attack.GetUnscaledDamage(this), data);
+            
+            foreach (var summon in summons.ToArray()) {
+                if (summon is Token token) {
+                    if (token.flags.HasFlag(TokenFlag.DESTROY_ON_OWNER_DAMAGE)) {
+                        DestroySummon(token);
+                    }
+                }
+            }
         }
 
         data.result = blocked ? AttackResult.BLOCKED : AttackResult.HIT;

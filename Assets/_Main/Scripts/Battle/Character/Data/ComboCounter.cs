@@ -73,6 +73,10 @@ public class ComboCounter : RuntimeCharacterDataRegister {
         appliedProration = 1f;
         comboDecay = 0;
         movesUsed.Clear();
+        
+        //TODO: Demove Debug
+        owner.health = owner.config.health;
+
         // Debug.Log($"{owner} combo end");
     }
     

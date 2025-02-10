@@ -35,8 +35,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1b34af6520d57d74d9e6d98824ff97d5
+    m_Address: chr/exusiai/battle/sfx/apple_pie_explode1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 225b841305205ad419b54a400764f408
     m_Address: chr/exusiai/battle/sfx/gun_bolt
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 24fb35c996e4204419ad6a6b8bcc797a
+    m_Address: chr/exusiai/battle/sfx/apple_pie_explode2
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

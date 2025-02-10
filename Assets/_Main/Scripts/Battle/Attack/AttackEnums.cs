@@ -7,6 +7,7 @@ public enum AttackGuardType {
     STANDING = 1 << 0,
     CROUCHING = 1 << 1,
     THROW = 1 << 2,
+    EITHER_SIDE = 1 << 3,
     
     ALL = STANDING | CROUCHING
 }
