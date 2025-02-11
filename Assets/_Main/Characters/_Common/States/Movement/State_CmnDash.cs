@@ -43,9 +43,9 @@ public class State_CmnDash : CharacterState {
         while (RevalidateInput()) {
             var force = player.characterConfig.dashAccelCurve.Evaluate(frame);
             entity.rb.AddForceX(PhysicsUtil.NormalizeSide(force, entity.side));
-            entity.rb.linearVelocityX = Mathf.Clamp(entity.rb.linearVelocityX, -player.characterConfig.dashSpeed, player.characterConfig.dashSpeed);
+            entity.rb.linearVelocityX = Mathf.Clamp(entity.rb.linearVelocityX, -player.characterConfig.dashSpeedFinal, player.characterConfig.dashSpeedFinal);
             
-            player.meter.gauge.value += 0.05f * player.meter.meterGainMultiplier;
+            player.meter.AddMeter(0.05f);
             player.meter.balance.value += 0.0012f * player.meter.meterGainMultiplier;
             player.burst.AddDelta(0.03f, 1);
             yield return 1;

@@ -63,7 +63,7 @@ public abstract class Entity : MonoBehaviour {
                 string prefix = stateLibrary.useTokenNameAsPrefix ? (config.tokenName + "_") : stateLibrary.prefix;
                 var tokenName = prefix + name;
                 if (!EntityStateRegistry.inst.CreateInstance(tokenName, out var state, this)) {
-                    Debug.LogError($"State {tokenName} not found");
+                    Debug.LogWarning($"State {tokenName} not found");
                     continue;
                 }
 
@@ -286,6 +286,10 @@ public abstract class Entity : MonoBehaviour {
     public void SetCarriedStateVariable(string key, [CanBeNull] string targetState, object value) {
         var variable = new CarriedStateVariable(key, targetState, value);
         carriedStateVariables[key] = variable;
+    }
+
+    public void ApplyForwardVelocity(Vector2 force) {
+        rb.AddForce(TranslateDirectionalForce(force), ForceMode2D.Impulse);
     }
     
 // Implemented methods

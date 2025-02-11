@@ -8,7 +8,7 @@ namespace SuperSmashRhodes.Battle {
 public class ComboCounter : RuntimeCharacterDataRegister {
     public int displayedCount { get; private set; }
     public int count { get; private set; }
-    public bool inCombo => count >= 2;
+    public bool inCombo => count >= 1;
     
     private float overallProration = 1f;
     private float appliedProration = 1f;
@@ -75,7 +75,7 @@ public class ComboCounter : RuntimeCharacterDataRegister {
         movesUsed.Clear();
         
         //TODO: Demove Debug
-        owner.health = owner.config.health;
+        // owner.health = owner.config.health;
 
         // Debug.Log($"{owner} combo end");
     }

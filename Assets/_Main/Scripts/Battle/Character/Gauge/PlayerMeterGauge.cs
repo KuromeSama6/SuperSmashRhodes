@@ -11,8 +11,11 @@ public class PlayerMeterGauge : CharacterComponent {
     public float meterGainMultiplier {
         get {
             float ret = 1f * meterBalanceMultiplier;
-            
-            if (player.opponent.comboCounter.inCombo) ret *= player.comboDecayData.meterGainProrationCurve.Evaluate(player.opponent.comboCounter.comboDecay);
+
+            if (player.opponent.comboCounter.inCombo) {
+                // Debug.Log(player.comboDecayData.meterGainProrationCurve.Evaluate(player.opponent.comboCounter.comboDecay));
+                ret *= player.comboDecayData.meterGainProrationCurve.Evaluate(player.opponent.comboCounter.comboDecay);
+            }
 
             var distance = player.opponentDistance;
             if (distance >= 2f) ret *= 0.8f;
@@ -35,6 +38,10 @@ public class PlayerMeterGauge : CharacterComponent {
             if (balance >= -200f) return .7f;
             return .5f;
         }
+    }
+
+    public void AddMeter(float amount) {
+        gauge.value += amount * meterGainMultiplier;
     }
     
     public override void OnRoundInit() {

@@ -20,7 +20,7 @@ public class Gauge_Exusiai_AmmoGauge : CharacterComponent {
     public override void OnRoundInit() {
         base.OnRoundInit();
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 2; i++) {
             magazines.Add(new Magazine(30));
         }
         chambered = true;

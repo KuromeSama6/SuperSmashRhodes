@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.State {
 public class EntityStateData {
@@ -18,6 +19,30 @@ public class EntityStateData {
     public void ClearCancelOptions() {
         cancelFlag = 0;
         cancelOptions.Clear();
+    }
+    
+    public T GetCarriedVariable<T>(string key, T def = default) {
+        if (carriedVariables.TryGetValue(key, out var value)) {
+            if (!(value is T)) {
+                Debug.LogError($"Carried variable [{key}] type mismatch, expected {typeof(T)}, got {value.GetType()}");
+                return def;
+            }
+            return (T)value;
+        }
+        
+        Debug.LogError($"Carried variable [{key}] not found");
+        return def;
+    }
+    
+    public bool TryGetCarriedVariable<T>(string key, out T value) {
+        if (carriedVariables.TryGetValue(key, out var obj)) {
+            if (obj is T t) {
+                value = t;
+                return true;
+            }
+        }
+        value = default;
+        return false;
     }
 }
 }

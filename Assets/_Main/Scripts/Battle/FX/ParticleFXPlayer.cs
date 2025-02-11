@@ -7,6 +7,8 @@ namespace SuperSmashRhodes.Battle.FX {
 public class ParticleFXPlayer : MonoBehaviour {
     private List<ParticleSystem> systems = new();
 
+    public bool allDone => systems.Count == 0;
+    
     private void Start() {
         systems.AddRange(GetComponentsInChildren<ParticleSystem>());
     }

@@ -4,22 +4,15 @@ using SuperSmashRhodes.Input;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.State.Implementation {
-public abstract class CharacterAttackStateBase : CharacterState, IAttack {
+public abstract class SummonAttackStateBase : EntityState, IAttack {
     public AttackPhase phase { get; protected set; }
-    public virtual bool hasActiveFrames => hitsRemaining > 0; 
+    public virtual bool hasActiveFrames => hitsRemaining > 0;
     public int hitsRemaining { get; protected set; }  = 1;
     public int hits { get; protected set; }
     public int blockedHits { get; protected set; }
+    public PlayerCharacter player => entity.owner;
 
-    public override bool mayEnterState {
-        get {
-            if (!airOk.HasFlag(AttackAirOkType.GROUND) && !player.airborne) return false;
-            if (!airOk.HasFlag(AttackAirOkType.AIR) && player.airborne) return false;
-            return true;
-        }
-    }
-
-    public CharacterAttackStateBase(Entity entity) : base(entity) {
+    public SummonAttackStateBase(Entity entity) : base(entity) {
         
     }
 
@@ -27,51 +20,56 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         base.OnStateBegin();
         phase = AttackPhase.STARTUP;
         hitsRemaining = totalHits;
-        stateData.disableSideSwap = true;
         player.SetZPriority();
-        TimeManager.inst.globalFreezeFrames = 0;
         hits = 0;
         blockedHits = 0;
+        entity.boundingBoxManager.SetAll(false);
     }
 
     public override IEnumerator MainRoutine() {
-        entity.animation.AddUnmanagedAnimation(mainAnimation, false);
+        if (mainAnimation != null) {
+            entity.animation.AddUnmanagedAnimation(mainAnimation, false);   
+        }
         phase = AttackPhase.STARTUP;
+        entity.boundingBoxManager.SetAll(false);
         OnStartup();
         
-        player.ApplyGroundedFriction(frameData.startup);
-        entity.audioManager.PlaySound(GetAttackNormalSfx());
         yield return frameData.startup;
 
         phase = AttackPhase.ACTIVE;
+        entity.boundingBoxManager.SetAll(true);
         OnActive();
-        player.ApplyGroundedFriction(frameData.active);
         yield return frameData.active;
         
-        player.ApplyGroundedFriction(frameData.active);
         phase = AttackPhase.RECOVERY;
+        entity.boundingBoxManager.SetAll(false);
         OnRecovery();
         yield return frameData.recovery;
+
+        if (!mayDestroy) {
+            yield return 1;
+        }
     }
 
     protected override void OnStateEnd() {
         base.OnStateEnd();
-        player.boundingBoxManager.SetAll(false);
+        entity.boundingBoxManager.SetAll(false);
+        player.DestroySummon(entity);
     }
 
+    public string GetHitSfx(Entity to) {
+        return null;
+    }
     public virtual void OnContact(Entity to) {
         if (hitsRemaining > 0) --hitsRemaining;
-        // Debug.Log("cancel added"); 
-        AddCancelOption(commonCancelOptions);
     }
     
     public virtual void OnHit(Entity target) {
         ++hits;
-        player.audioManager.PlaySound(GetHitSfx(target), .6f);
         // Debug.Log(player.meter.meterGainMultiplier);
         if (hits <= 1) {
             player.meter.AddMeter(GetMeterGain(target, false));
-            player.meter.balance.value += .05f * GetUnscaledDamage(target) * player.meter.meterBalanceMultiplier;
+            player.meter.balance.value += .05f * GetUnscaledDamage(target) * player.meter.meterGainMultiplier;
         
             player.burst.AddDeltaTotal((GetUnscaledDamage(target) * .25f) * player.comboCounter.finalScale, 120);
             // Debug.Log($"on hit, {GetMeterGain(target, true)}");   
@@ -80,11 +78,9 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     
     public virtual void OnBlock(Entity target) {
         ++blockedHits;
-        player.audioManager.PlaySound(GetBlockedSfx(target), .4f);
-
         if (blockedHits <= 1) {
             player.meter.AddMeter(GetMeterGain(target, true));
-            player.meter.balance.value += .02f * GetUnscaledDamage(target) * player.meter.meterGainMultiplier;;
+            player.meter.balance.value += .02f * GetUnscaledDamage(target) * player.meter.meterGainMultiplier;
         
             player.burst.AddDeltaTotal((GetUnscaledDamage(target) * .18f) * player.comboCounter.finalScale, 240);   
         }
@@ -95,6 +91,12 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         if (!hasActiveFrames) return false;
         return true;
     }
+    public string GetAttackNormalSfx() {
+        return null;
+    }
+    public string GetBlockedSfx(Entity to) {
+        return null;
+    }
 
     public AttackFrameData GetFrameData(Entity to) {
         return frameData;
@@ -103,43 +105,23 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public int GetCurrentFrame(Entity to) {
         return frame;
     }
-
-    public override bool IsInputValid(InputBuffer buffer) {
-        var input = requiredInput;
-        int frames;
-        if (entity.activeState is CharacterAttackStateBase attack) {
-            // Debug.Log(attack.frameData.startup + frameData.startup + frameData.active);
-            frames = Mathf.Max(1, attack.GetFreezeFrames(null) + frameData.startup + frameData.active);
-        } else {
-            frames = normalInputBufferLength;
-        }
-
-        return buffer.TimeSlice(frames).ScanForInput(entity.side, input); 
-    }
     
     public float GetMeterGain(Entity to, bool blocked) {
         var attackLevel = GetAttackLevel(to);
-        return (attackLevel + 1) * 1.5f * (blocked ? 1f : 2f) * player.comboCounter.finalScale;
+        return (attackLevel + 1) * 1.5f * (blocked ? 1f : 2f);
     }
 
     // Abstract Properties
     protected abstract string mainAnimation { get; }
     public abstract AttackFrameData frameData { get; }
-    protected abstract EntityStateType commonCancelOptions { get; }
-    protected abstract InputFrame[] requiredInput { get; }
-    protected abstract int normalInputBufferLength { get; }
-    protected abstract float inputMeter { get; }
     
     protected virtual int totalHits => 1;
-    protected virtual AttackAirOkType airOk => AttackAirOkType.GROUND;
+    protected virtual bool mayDestroy => true;
     
     // Events
     protected virtual void OnStartup() {
-        player.meter.AddMeter(inputMeter); 
     }
     protected virtual void OnActive() {
-        // Debug.Log($"onactive addcancel {commonCancelOptions}");
-        AddCancelOption("CmnWhiteForceReset");
     }
     protected virtual void OnRecovery() {
     }
@@ -153,7 +135,6 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         if (hits > 1) ret |= DamageSpecialProperties.NO_METER_GAIN;
         return ret;
     }
-
     public virtual float GetComboDecayIncreaseMultiplier(Entity to) {
         return 1f;
     }
@@ -162,8 +143,12 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     }
 
     public abstract float GetUnscaledDamage(Entity to);
-    public abstract float GetChipDamagePercentage(Entity to);
-    public abstract float GetOtgDamagePercentage(Entity to);
+    public virtual float GetChipDamagePercentage(Entity to) {
+        return 0.12f;
+    }
+    public virtual float GetOtgDamagePercentage(Entity to) {
+        return 0.6f;
+    }
     public abstract Vector2 GetPushback(Entity to, bool airborne, bool blocked);
     public virtual Vector2 GetCarriedMomentumPercentage(Entity to) {
         return new(0.5f, 0.5f);
@@ -172,22 +157,14 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         return false;
     }
     public abstract float GetComboProration(Entity to);
-    public abstract float GetFirstHitProration(Entity to);
+    public virtual float GetFirstHitProration(Entity to) {
+        return 1f;
+    }
     public abstract AttackGuardType GetGuardType(Entity to);
     public abstract int GetFreezeFrames([CanBeNull] Entity to);
     public abstract int GetAttackLevel(Entity to);
     public virtual float GetMinimumDamagePercentage(Entity to) {
         return 0;
-    }
-    public virtual string GetAttackNormalSfx() {
-        return null;
-    }
-
-    public string GetHitSfx(Entity to) {
-        return "cmn/battle/sfx/hit/1";
-    }
-    public string GetBlockedSfx(Entity to) {
-        return "cmn/battle/sfx/block/2";
     }
     public float GetComboDecay(Entity to) {
         return 1f;
@@ -195,10 +172,15 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public int GetStunFrames(Entity to, bool blocked) {
         var current = GetCurrentFrame(to);
         if (blocked) {
-            return frameData.active + frameData.recovery + frameData.onBlock;
+            return frameData.onBlock;
         } else {
-            return frameData.active + frameData.recovery + frameData.onHit;
+            return frameData.onHit;
         }
     }
+}
+
+public abstract class TokenAttackStateBase : SummonAttackStateBase {
+    public override EntityStateType type => EntityStateType.ENT_TOKEN;
+    protected TokenAttackStateBase(Entity entity) : base(entity) { }
 }
 }

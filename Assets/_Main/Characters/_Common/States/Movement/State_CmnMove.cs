@@ -32,9 +32,9 @@ public class State_CmnMoveForward : CharacterState {
         
         while (RevalidateInput()) {
             entity.rb.AddForceX(PhysicsUtil.NormalizeSide(50, entity.side));
-            entity.rb.linearVelocityX = Mathf.Clamp(entity.rb.linearVelocityX, -player.characterConfig.walkSpeed, player.characterConfig.walkSpeed);
+            entity.rb.linearVelocityX = Mathf.Clamp(entity.rb.linearVelocityX, -player.characterConfig.walkSpeedFinal, player.characterConfig.walkSpeedFinal);
             // 0.01% meter gain per frame
-            player.meter.gauge.value += 0.02f;
+            player.meter.AddMeter(0.02f);
             player.meter.balance.value += 0.0007f;
             player.burst.AddDelta(0.015f, 1);
             yield return 1;
@@ -69,7 +69,7 @@ public class State_CmnMoveBackward : CharacterState {
         
         while (RevalidateInput()) {
             entity.rb.AddForceX(PhysicsUtil.NormalizeSide(-50, entity.side));
-            entity.rb.linearVelocityX = Mathf.Clamp(entity.rb.linearVelocityX, -player.characterConfig.backwalkSpeed, player.characterConfig.backwalkSpeed);
+            entity.rb.linearVelocityX = Mathf.Clamp(entity.rb.linearVelocityX, -player.characterConfig.backwalkSpeedFinal, player.characterConfig.backwalkSpeedFinal);
             
             player.burst.AddDelta(-0.1f, 1);
             yield return 1;

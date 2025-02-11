@@ -108,6 +108,7 @@ GameObject:
   - component: {fileID: 7414824549226224702}
   - component: {fileID: 2833968329119930672}
   - component: {fileID: 8018242750606793132}
+  - component: {fileID: 6502587709526943304}
   m_Layer: 7
   m_Name: ApplePie
   m_TagString: Untagged
@@ -629,3 +630,21 @@ MonoBehaviour:
         MaterialIndexes: 
         UseMaterialPropertyBlocks: 0
         SpriteRendererTextureProperty: _MainTex
+--- !u!114 &6502587709526943304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2905835800824237426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5c77768a5ff49b6b331bb5ed5279c4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  createPushbox: 1
+  hitboxCount: 0
+  hurtboxCount: 0
+  skeleton: {fileID: 0}
+  explicitBoundingBoxes:
+  - {fileID: 3634626215368251426}

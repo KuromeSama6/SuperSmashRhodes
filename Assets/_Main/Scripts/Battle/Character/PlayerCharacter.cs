@@ -58,6 +58,7 @@ public class PlayerCharacter : Entity {
     
     private float airHitstunRotation = 0f;
     private float yRotationTarget = 0f;
+    public int backdashCooldown { get; set; }
 
     public float gutsDamageModifier {
         get {
@@ -120,6 +121,9 @@ public class PlayerCharacter : Entity {
         UpdatePosition();
         UpdateGravity();
         UpdateRotation();
+        if (backdashCooldown > 0) {
+            --backdashCooldown;
+        }
 
         if (applyGroundedFrictionFrames > 0) {
             --applyGroundedFrictionFrames;
@@ -130,7 +134,7 @@ public class PlayerCharacter : Entity {
     }
 
     private void UpdateGravity() {
-        var ret = characterConfig.baseGravity;
+        var ret = characterConfig.baseGravityFinal;
         if (comboCounter.inCombo) {
             var decay = comboCounter.comboDecay;
             var data = opponent.comboDecayData;
@@ -233,7 +237,12 @@ public class PlayerCharacter : Entity {
     }
     
     protected override EntityState GetDefaultState() {
-        string name = inputProvider.inputBuffer.thisFrame.HasInput(side, InputType.DOWN, InputFrameType.HELD) ? "CmnNeutralCrouch" : "CmnNeutral";
+        string name;
+        if (airborne) {
+            name = "CmnAirNeutral";
+        } else {
+            name = inputProvider.inputBuffer.thisFrame.HasInput(side, InputType.DOWN, InputFrameType.HELD) ? "CmnNeutralCrouch" : "CmnNeutral";
+        } 
         
         if (!EntityStateRegistry.inst.CreateInstance(name, out var ret, this))
             throw new Exception("Default state [CmnNeutral] not assigned");
@@ -278,6 +287,7 @@ public class PlayerCharacter : Entity {
 
     protected override void OnInboundHit(AttackData data) {
         base.OnInboundHit(data);
+        if (activeState.fullyInvincible) return;
         ApplyStandardAttack(data);
     }
 
@@ -286,8 +296,7 @@ public class PlayerCharacter : Entity {
             // invalid attack state1
             return null;
         }
-
-        if (to.activeState.fullyInvincible) return null;
+        
         // reject if move has no active frames
         if (!move.hasActiveFrames) return null;
         // reject if move is not active
@@ -327,7 +336,11 @@ public class PlayerCharacter : Entity {
             if (!inBlockstun) BeginState(crouching ? "CmnBlockStunCrouch" : "CmnBlockStun");
             // Debug.Log("blocked");
             attack.OnBlock(this);
-            burst.AddDeltaTotal(inBlockstun ? -8.5f : -12.5f, 90);
+            
+            // burst penalty
+            {
+                burst.AddDeltaTotal(inBlockstun ? -5.3f : -8.5f, 90);   
+            }
 
             var chipDamage = attack.GetChipDamagePercentage(this);
             if (chipDamage > 0) ApplyDamage(attack.GetUnscaledDamage(this) * chipDamage, data, DamageSpecialProperties.SKIP_REGISTER, true);
@@ -473,8 +486,9 @@ public class PlayerCharacter : Entity {
         // y force
         // Debug.Log(vec);
         rb.linearVelocityY = 0;
-        rb.AddForceY(vec.y, ForceMode2D.Impulse);
-        
+
+        var yAmp = (Mathf.Max(1, characterConfig.baseGravityFinal / 1.9f) - 1) / 2f;
+        rb.AddForceY(vec.y + yAmp, ForceMode2D.Impulse);
     }
     
     public void PlayOwnedFx(string fx, CharacterFXSocketType type, Vector3 offset = default, Vector3 direction = default) {
@@ -516,6 +530,7 @@ public class PlayerCharacter : Entity {
         }
 
         dmg *= gutsDamageModifier;
+        dmg *= characterConfig.defenseModifierFinal;
         if (attack != null && activeState is State_CmnHardKnockdown) dmg *= attack.GetOtgDamagePercentage(this);
         
         var minDmg = attack == null ? 0 : rawDamage * attack.GetMinimumDamagePercentage(this);

@@ -13,6 +13,8 @@ public abstract class State_Common_NmlAtkGndThrow : ThrowAttackStateBase {
     }
     protected override string mainAnimation => "cmn/NmlAtkGndThrow";
     protected override string whiffAnimation => "cmn/NmlAtkGndThrow_W";
+    protected override float inputMeter => 0;
+
     public override AttackFrameData frameData => new() {
         startup = 2,
         active = 3,

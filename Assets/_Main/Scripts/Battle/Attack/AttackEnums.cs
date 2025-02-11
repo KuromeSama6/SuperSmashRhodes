@@ -42,4 +42,12 @@ public enum DamageSpecialProperties {
     
     REAL_DAMAGE = IGNORE_COMBO | IGNORE_COMBO_DECAY
 }
+
+[Flags]
+public enum AttackAirOkType {
+    NONE = 0,
+    GROUND = 1 << 0,
+    AIR = 1 << 1,
+    ALL = GROUND | AIR
+}
 }

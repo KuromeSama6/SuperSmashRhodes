@@ -3,8 +3,8 @@ using Sirenix.OdinInspector;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.State;
+using SuperSmashRhodes.Battle.State.Implementation;
 using SuperSmashRhodes.Framework;
-using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Runtime.Tokens {
@@ -33,19 +33,25 @@ public class Token_Exusiai_ApplePie : Token {
 }
 
 [NamedToken("Token_Exusiai_ApplePie_Main")]
-public class State_Token_Exusiai_ApplePie_Main : TokenState, ITokenSingleAttack {
+public class State_Token_Exusiai_ApplePie_Main : EntityState {
     private Token_Exusiai_ApplePie applePie;
     private float flashCounter;
     private int fuse;
     private int fuseLength => 180;
 
     private float flashInterval => Mathf.Lerp(0.05f, 0.7f, fuse / (float)fuseLength);
+    public override EntityStateType type => EntityStateType.ENT_TOKEN;
     private Vector3 baseScale;
     public bool isLargeExplosion { get; set; }
     
     public State_Token_Exusiai_ApplePie_Main(Entity entity) : base(entity) {
         applePie = (Token_Exusiai_ApplePie)entity;
         baseScale = entity.transform.localScale;
+    }
+    
+    protected override void OnTick() {
+        base.OnTick();
+        entity.transform.localScale = Vector3.Lerp(entity.transform.localScale, baseScale, Time.fixedDeltaTime * 10f);
     }
     
     protected override void OnStateBegin() {
@@ -68,10 +74,53 @@ public class State_Token_Exusiai_ApplePie_Main : TokenState, ITokenSingleAttack 
             yield return 1;
         }
         
-        // yield return Detonate(true);
-        // entity.DestroySummon(entity);
-        
-        // Debug.Log("Detonate1");
+        Detonate();
+    }
+
+    private IEnumerator Flash() {
+        applePie.spriteRenderer.color = Color.red;
+        yield return new WaitForSeconds(0.1f);
+        applePie.spriteRenderer.color = Color.white;
+    }
+    
+    public void DetonateImmediate() {
+        isLargeExplosion = false;
+        fuse = 0;
+        Detonate();
+    }
+
+    private void Detonate() {
+        entity.SetCarriedStateVariable("isLargeExplosion", null, isLargeExplosion);
+        CancelInto("Token_Exusiai_ApplePie_Attack");
+    }
+}
+
+[NamedToken("Token_Exusiai_ApplePie_Attack")]
+public class State_Token_Exusiai_ApplePie_Attack : TokenAttackStateBase {
+    private bool isLargeExplosion;
+    private Token_Exusiai_ApplePie applePie;
+    private ParticleFXPlayer fxPlayer;
+    
+    public State_Token_Exusiai_ApplePie_Attack(Entity entity) : base(entity) {
+        applePie = (Token_Exusiai_ApplePie)entity;
+    }
+    protected override string mainAnimation { get; } = null;
+    public override AttackFrameData frameData => new AttackFrameData() {
+        startup = 0, active = 5, recovery = 1,
+        onBlock = isLargeExplosion ? 20 : 10, onHit = 10
+    };
+
+    protected override bool mayDestroy => fxPlayer && fxPlayer.allDone;
+
+    protected override void OnStateBegin() {
+        base.OnStateBegin();
+        isLargeExplosion = stateData.GetCarriedVariable<bool>("isLargeExplosion");
+        Object.Destroy(fxPlayer);
+        fxPlayer = null;
+    }
+
+    protected override void OnActive() {
+        base.OnActive();
         var fx = isLargeExplosion ? applePie.explosionFxLarge : applePie.explosionFxSmall;
         var sfx = $"chr/exusiai/battle/sfx/apple_pie_explode{Random.Range(1, 3)}";
         var shake = isLargeExplosion ? applePie.shakeLarge : applePie.shakeSmall;
@@ -85,81 +134,37 @@ public class State_Token_Exusiai_ApplePie_Main : TokenState, ITokenSingleAttack 
         explosion.transform.localScale *= 5f;
         explosion.transform.localPosition += new Vector3(0, 1f, 0);
         explosion.transform.localEulerAngles += new Vector3(0, 90f, 0);
-        var fxPlayer = explosion.GetComponent<ParticleFXPlayer>() ?? explosion.AddComponent<ParticleFXPlayer>(); 
+        fxPlayer = explosion.GetComponent<ParticleFXPlayer>() ?? explosion.AddComponent<ParticleFXPlayer>(); 
         entity.owner.audioManager.PlaySound(sfx);
         SimpleCameraShakePlayer.inst.Play(shake);
         applePie.spriteRenderer.color = Color.clear;
 
         applePie.boundingBox.boxEnabled = true;
-        
-        int framesElapsed = 0;
-        while (fxPlayer) {
-            applePie.spriteRenderer.color = Color.clear;
-            ++framesElapsed;
-            if (framesElapsed > 5f) {
-                applePie.boundingBox.boxEnabled = false;
-            }
-            yield return 1;
-        }
     }
 
-    private IEnumerator Flash() {
-        applePie.spriteRenderer.color = Color.red;
-        yield return new WaitForSeconds(0.1f);
-        applePie.spriteRenderer.color = Color.white;
-    }
-    
-    public void DetonateImmediate() {
-        isLargeExplosion = false;
-        fuse = 0;
-    }
-    
     protected override void OnTick() {
         base.OnTick();
-        entity.transform.localScale = Vector3.Lerp(entity.transform.localScale, baseScale, Time.fixedDeltaTime * 10f);
+        applePie.spriteRenderer.color = Color.clear;
     }
-    public int GetCurrentFrame(Entity to) {
-        return frame;
-    }
-    public AttackSpecialProperties GetSpecialProperties(Entity to) {
-        return AttackSpecialProperties.NONE;
-    }
-    public float GetUnscaledDamage(Entity to) {
-        // Debug.Log(isLargeExplosion ? 65 : 40);
+
+    public override float GetUnscaledDamage(Entity to) {
         return isLargeExplosion ? 65 : 40;
     }
-    public Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
+    public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
         if (blocked) return isLargeExplosion ? new Vector2(5f, 0) : new Vector2(3f, 0);
         return isLargeExplosion ? new Vector2(5f, 15f) : new Vector2(1.5f, 10f);
     }
-    public float GetComboProration(Entity to) {
+    public override float GetComboProration(Entity to) {
         return .9f;
     }
-    public float GetFirstHitProration(Entity to) {
-        return 1f;
-    }
-    public AttackGuardType GetGuardType(Entity to) {
+    public override AttackGuardType GetGuardType(Entity to) {
         return AttackGuardType.ALL;
     }
-    public int GetFreezeFrames(Entity to) {
+    public override int GetFreezeFrames(Entity to) {
         return isLargeExplosion ? 15 : 8;
     }
-    public int GetAttackLevel(Entity to) {
+    public override int GetAttackLevel(Entity to) {
         return isLargeExplosion ? 3 : 2;
-    }
-    public bool MayHit(Entity target) {
-        return true;
-    }
-    public void OnHit(Entity to) {
-        applePie.boundingBox.boxEnabled = false;
-    }
-    
-    public void OnBlock(Entity to) {
-        applePie.boundingBox.boxEnabled = false;
-        
-    }
-    public int GetStunFrames(Entity to, bool blocked) {
-        return 10;
     }
 }
 }

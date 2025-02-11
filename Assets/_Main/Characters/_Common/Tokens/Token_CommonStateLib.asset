@@ -16,3 +16,4 @@ MonoBehaviour:
   useTokenNameAsPrefix: 1
   states:
   - Main
+  - Attack

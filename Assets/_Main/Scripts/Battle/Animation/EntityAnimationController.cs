@@ -25,6 +25,12 @@ public class EntityAnimationController : MonoBehaviour {
         // blend updates
     }
 
+    public void ApplyNeutralPose() {
+        state.ClearTrack(0);
+        state.SetAnimation(0, "std/neutral", true);
+        Tick();
+    }
+    
     public void AddUnmanagedAnimation(string name, bool loop, float transitionTime = 0f) {
         var track = state.GetCurrent(0);
         // transitionTime = Mathf.Max(Time.fixedDeltaTime, transitionTime);
@@ -43,7 +49,6 @@ public class EntityAnimationController : MonoBehaviour {
     public void Tick(int frames = 1) {
         if (animation == null) return;
         animation.Update(frames * Time.fixedDeltaTime);
-        
     }
 
     public void SetFrame(int frame) {

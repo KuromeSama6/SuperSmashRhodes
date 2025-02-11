@@ -21,7 +21,7 @@ public class State_CmnJump : CharacterState {
     public override IEnumerator MainRoutine() {
         entity.animation.AddUnmanagedAnimation("std/prejump", false, .1f);
         
-        var prejumpFrames = player.characterConfig.prejump;
+        var prejumpFrames = player.characterConfig.prejumpFinal;
         var originalX = player.rb.linearVelocityX;
         
         player.ApplyGroundedFrictionImmediate();
@@ -41,7 +41,7 @@ public class State_CmnJump : CharacterState {
             xForce = PhysicsUtil.NormalizeSide(-amount, entity.side);
         }
         
-        entity.rb.AddForce(new(xForce, player.characterConfig.jumpVelocity), ForceMode2D.Impulse);
+        entity.rb.AddForce(new(xForce, player.characterConfig.jumpVelocityFinal), ForceMode2D.Impulse);
 
         //TODO: Air options available on frame #
         yield return 5;

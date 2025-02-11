@@ -12,6 +12,12 @@ public enum InputType {
     FORCE_RESET = 16,
     
     RAW_MOVE_RIGHT = 98,
-    RAW_MOVE_LEFT = 99
+    RAW_MOVE_LEFT = 99,
+    
+    // Control sequences
+    /// <summary>
+    /// Simulates a clearing of the current input buffer. During networked games, in order to ensure determinism, the input buffer is oftentimes not modifiable (appart from appending to it). To simulate a clearing of the buffer, this input type can be appended into an input buffer, which causes any reads or scans of the buffer to immediately end upon reaching this escape sequence, effectively clearing the buffer.
+    /// </summary>
+    ESC_CLEAR_BUFFER = 1000,
 }
 }

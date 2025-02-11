@@ -56,10 +56,12 @@ public class PlayerBurstGauge : CharacterComponent {
     }
 
     public void AddDelta(float amount, int frames) {
+        if (amount == 0) return;
         deltas.Add(new(frames, amount));
     }
     
     public void AddDeltaTotal(float amount, int frames) {
+        if (amount == 0) return;
         deltas.Add(new(frames, amount / frames));
     }
     

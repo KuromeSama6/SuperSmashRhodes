@@ -26,9 +26,9 @@ public class HealthBar : PerSideUIElement<HealthBar> {
         barFill.fillAmount = percent;
         
         // set counter
-        counter.target = (percent) * 1000f;
+        counter.target = (percent) * 100f;
         
-        barCounterFill.fillAmount = counter.current / 1000f;
+        barCounterFill.fillAmount = counter.current / 100f;
         
         // set change indicator
         var step = Time.deltaTime * 100;

@@ -25,7 +25,7 @@ public class State_CmnBackdash : CharacterState {
         player.airborne = true;
         player.rb.linearVelocity = Vector2.zero;
 
-        var velocity = player.characterConfig.backdashVelocity;
+        var velocity = player.characterConfig.backdashVelocityFinal;
         if (player.atWall) {
             player.rb.AddForceY(velocity.y, ForceMode2D.Impulse);
         } else {
@@ -35,14 +35,17 @@ public class State_CmnBackdash : CharacterState {
         player.animation.AddUnmanagedAnimation("std/backdash", false);
         
         // burst penalty
-        player.burst.AddDeltaTotal(-20, 120);
-        
+        if (player.backdashCooldown > 75) {
+            player.burst.AddDeltaTotal(-20, 120);
+        }
+        player.backdashCooldown += 90;
+
         // player.neutralAniTransitionOverride = 0f;
     }
     
     public override IEnumerator MainRoutine() {
         while (player.airborne) {
-            if (frame > player.characterConfig.backdashInvuln) invincible = false;
+            if (frame > player.characterConfig.backdashInvulnFinal) invincible = false;
             yield return 1;
         }
     }

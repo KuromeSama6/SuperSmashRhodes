@@ -149,6 +149,7 @@ GameObject:
   - component: {fileID: 4524501357402868674}
   - component: {fileID: 2512386437702889766}
   - component: {fileID: 4933393836554752299}
+  - component: {fileID: 2000286692026596378}
   m_Layer: 6
   m_Name: PlayerCharacter
   m_TagString: Untagged
@@ -215,7 +216,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!114 &2209743025246663691
 MonoBehaviour:
@@ -382,6 +383,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0924a2b623d6446d9563d8e0c5566226, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2000286692026596378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3132066959301301514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c95b28417d2944d3b3e6f14bad8567fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ghost: {fileID: 5574956727174541571}
 --- !u!1 &3325930714307935595
 GameObject:
   m_ObjectHideFlags: 0
@@ -395,6 +409,7 @@ GameObject:
   - component: {fileID: 9047408469080022298}
   - component: {fileID: 3519271304117650831}
   - component: {fileID: 7313164139058482545}
+  - component: {fileID: 5574956727174541571}
   m_Layer: 6
   m_Name: Spine
   m_TagString: Untagged
@@ -535,6 +550,30 @@ MonoBehaviour:
   _animationName: std/neutral
   loop: 1
   timeScale: 1
+--- !u!114 &5574956727174541571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3325930714307935595}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02f2fa991881c6d419500ccc40ad443f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ghostingEnabled: 0
+  spawnInterval: 0.033333335
+  maximumGhosts: 10
+  fadeSpeed: 10
+  ghostShader: {fileID: 4800000, guid: 3873d4699ee8a4b4da8fa6b8c229b94d, type: 3}
+  color:
+    serializedVersion: 2
+    rgba: 16777215
+  additive: 1
+  textureFade: 1
+  sortWithDistanceOnly: 0
+  zOffset: 0
 --- !u!1 &3485470091450703339
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,17 +5,22 @@ namespace SuperSmashRhodes.Battle {
 [CreateAssetMenu( menuName = "SSR/Battle/Character Config", order = 0)]
 public class CharacterConfiguration : ScriptableObject {
     public string prettyName;
-    public float defenseModifier = 1f;
-    public float baseGravity = 1.9f;
+    [SerializeField]
+    private float defenseModifier = 1f;
+    [SerializeField]
+    private float baseGravity = 1.9f;
     public int guts;
     
     [TabGroup("playerConfig", "Grounded Movement", SdfIconType.ArrowsMove, TextColor = "green")]
-    public float walkSpeed, backwalkSpeed;
+    [SerializeField]
+    private float walkSpeed, backwalkSpeed;
 
     [TabGroup("playerConfig", "Jumping", SdfIconType.ArrowUp, TextColor = "blue")]
-    public int prejump;
+    [SerializeField]
+    private int prejump;
     [TabGroup("playerConfig", "Jumping", SdfIconType.ArrowUp, TextColor = "blue")]
-    public float jumpDuration, jumpVelocity, jumpGravity;
+    [SerializeField]
+    private float jumpDuration, jumpVelocity, jumpGravity;
 
     [TabGroup("playerConfig", "Dash", SdfIconType.ArrowRight, TextColor = "yellow")]
     public bool mayDash = true;
@@ -23,10 +28,27 @@ public class CharacterConfiguration : ScriptableObject {
     public AnimationCurve dashAccelCurve;
     
     [TabGroup("playerConfig", "Dash", SdfIconType.ArrowRight, TextColor = "yellow")]
-    public int backdashInvuln;
+    [SerializeField]
+    private int backdashInvuln;
     [TabGroup("playerConfig", "Dash", SdfIconType.ArrowRight, TextColor = "yellow")]
-    public float dashSpeed, airDashAvailableFrame, airDashDuration;
+    [SerializeField]
+    private float dashSpeed, airDashAvailableFrame, airDashDuration;
     [TabGroup("playerConfig", "Dash", SdfIconType.ArrowRight, TextColor = "yellow")]
-    public Vector2 backdashVelocity;
+    [SerializeField]
+    private Vector2 backdashVelocity;
+    
+    public float defenseModifierFinal => 1f + defenseModifier;
+    public float baseGravityFinal => 2.3f + baseGravity;
+    public float walkSpeedFinal => 1 + walkSpeed;
+    public float backwalkSpeedFinal => 0.8f + backwalkSpeed;
+    public int prejumpFinal => 4 + prejump;
+    public float jumpDurationFinal => 41 + jumpDuration;
+    public float jumpVelocityFinal => 9 + jumpVelocity;
+    public float jumpGravityFinal => 0f + jumpGravity;
+    public int backdashInvulnFinal => 5 + backdashInvuln;
+    public float dashSpeedFinal => 3 + dashSpeed;
+    public float airDashAvailableFrameFinal => 0 + airDashAvailableFrame;
+    public float airDashDurationFinal => 0 + airDashDuration;
+    public Vector2 backdashVelocityFinal => new Vector2(-3, 3) + backdashVelocity;
 }
 }

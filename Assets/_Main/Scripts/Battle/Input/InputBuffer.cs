@@ -59,6 +59,10 @@ public class InputBuffer {
         List<InputChord> toConsume = new();
         
         for (int i = buffer.Count - 1; i >= 0; i--) {
+            if (buffer[i].HasInput(side, InputType.ESC_CLEAR_BUFFER, InputFrameType.PRESSED)) {
+                break;
+            }
+            
             if (req[0].ToList().TrueForAll(c => buffer[i].HasInput(side, c))) {
                 // Debug.Log(string.Join(", ", buffer));
                 req.RemoveAt(0);
@@ -80,6 +84,10 @@ public class InputBuffer {
 
     public bool HasInputUnordered(EntitySide side, params InputFrame[] seq) {
         return seq.ToList().TrueForAll(c => buffer.Any(d => d.HasInput(side, c)));
+    }
+
+    public void SimulatedClear() {
+        PushAndTick(new InputFrame(InputType.ESC_CLEAR_BUFFER, InputFrameType.PRESSED));
     }
     
     public static InputType TranslateToRawDirection(InputType input, EntitySide side) {

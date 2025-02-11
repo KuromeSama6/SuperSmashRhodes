@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace SuperSmashRhodes.UI.Generic {
 public class RotaryCounter : MonoBehaviour {
@@ -12,11 +11,12 @@ public class RotaryCounter : MonoBehaviour {
     public int initialValue;
     public float speedThresholdScale = 1f;
     public float speedScale = 1f;
+    public int freeSpinDigits = 1;
+    public float borderThreshold = 1f;
     public bool useSpecialZeroes = true;
     public bool autoCreateDigits = true;
     public List<RotaryCounterDigit> digits = new();
     
-    public RotaryCounterDirection direction { get; set; } = RotaryCounterDirection.DOWN;
     public float target { get; set; }
     public float current { get; private set; }
 
@@ -38,10 +38,7 @@ public class RotaryCounter : MonoBehaviour {
 
     private void Update() {
         // if (UnityEngine.Input.GetKeyDown(KeyCode.Minus)) target -= 30;
-        
-        if (!Mathf.Approximately(target, current)) direction = target > current ? RotaryCounterDirection.UP : RotaryCounterDirection.DOWN;
         var step = Time.deltaTime * GetRotarySpeed(1);
-        
         if (Math.Abs(current - target) > step) {
             if (current > target) {
                 current -= step;
@@ -56,22 +53,41 @@ public class RotaryCounter : MonoBehaviour {
     }
 
     public void SetNumber(float number) {
+        float firstDigit = 0;
         for (int i = 0; i < supportedDigits; i++) {
             var digit = digits[i];
-            digit.speed = GetRotarySpeed(i + 1);
-            digit.SetUseSpecialVeroes(Mathf.Pow(10, i + 1) > number && useSpecialZeroes);
+            bool freeSpin = i < freeSpinDigits;
             
-            float digitValue = number % Mathf.Pow(10, i + 1) / Mathf.Pow(10, i);
-            // Debug.Log($"{i}: {digitValue}");
+            digit.SetUseSpecialZeroes(Mathf.Pow(10, i + 1) > number && useSpecialZeroes);
+
+            var digitFloat = number % Mathf.Pow(10, i + 1) / Mathf.Pow(10, i);
+            if (i == 0) {
+                firstDigit = digitFloat;
+            }
             
-            digit.number = (int)digitValue + (i == 0 ? (number % 1) : 0);
+            if (freeSpin) {
+                digit.number = digitFloat;
+                
+            } else {
+                // var firstDigit = GetFirstDigitAndDecimal(number);
+                // Debug.Log($"{transform.parent.parent} #{i+1} threshold {(10 - borderThreshold) / 10f} diff {digitFloat % 1}");
+                if ((10 - firstDigit < borderThreshold) && (digitFloat % 1 > (10 - borderThreshold) / 10f)) {
+                    // rolling up
+                    digit.number = (int)digitFloat + (1 - ((10 - firstDigit) / borderThreshold));
+                } else {
+                    digit.number = (int)digitFloat;
+                }
+            }
+            
+            // float digitValue = number % Mathf.Pow(10, order) / Mathf.Pow(10, i);
+            // digit.number = (int)digitValue + (i == 0 ? (number % 1) : 0);
         }
     }
 
     public void ApplyImmediately() {
         current = target;
         SetNumber(current);
-        foreach (var digit in digits) digit.ApplyImmediately();
+        foreach (var digit in digits) digit.number = current;
     }
 
     private float GetRotarySpeed(int order) {
@@ -83,6 +99,10 @@ public class RotaryCounter : MonoBehaviour {
         if (delta >= 100 * speedThresholdScale * multiplier) speed = 32f;
         if (delta >= 1000 * speedThresholdScale * multiplier) speed = 64f;
         return speed * speedScale;
+    }
+    
+    private static float GetFirstDigitAndDecimal(float num) {
+        return (int)(num / Math.Pow(10, (int)Math.Floor(Math.Log10(num)))) + (num % 1);
     }
 }
 

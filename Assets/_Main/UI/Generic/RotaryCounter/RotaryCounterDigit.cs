@@ -12,16 +12,13 @@ public class RotaryCounterDigit : MonoBehaviour {
     public List<GameObject> specialZeroes = new();
     
     public float number { get; set; }
-    public float speed { get; set; } = 2f;
     
     private float height;
-    private float current;
     private RotaryCounter counter;
     
     private void Start() {
         counter = GetComponentInParent<RotaryCounter>();
         
-        current = number;
     }
 
     private void Update() {
@@ -34,34 +31,15 @@ public class RotaryCounterDigit : MonoBehaviour {
             container.anchoredPosition = new(container.anchoredPosition.x, 0);
         }
         
-        var direction = counter.direction;
-        var target = number;
-
-        var step = Time.deltaTime * speed;
-        if (Math.Abs(current - target) > step) {
-            if (direction == RotaryCounterDirection.DOWN) {
-                current -= step;
-                if (current <= 0) current = 10;
-
-            } else {
-                current += step;
-                if (current >= 10) current = 0;
-            }
-            
-        } else current = target;
-
-        var y = height / 11f * (10 - current);
+        // var direction = counter.direction;
+        var y = height / 11f * (10 - number);
         var pos = container.anchoredPosition;
         pos.y = y;
         container.anchoredPosition = pos;
     }
 
-    public void SetUseSpecialVeroes(bool use) {
+    public void SetUseSpecialZeroes(bool use) {
         foreach (var zero in specialZeroes) zero.SetActive(use);
-    }
-    
-    public void ApplyImmediately() {
-        current = number;
     }
 }
 

@@ -1,4 +1,5 @@
 ﻿using MoreMountains.Feedbacks;
+using Spine.Unity.Examples;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.Animation;
 using SuperSmashRhodes.Battle.Game;
@@ -18,6 +19,7 @@ public class State_Exusiai_SklApplePie : State_Common_SummonOnlySpecialAttack {
         
     }
     protected override string mainAnimation => "chr/SklApplePie";
+    protected override float inputMeter => 1f;
     public override AttackFrameData frameData => new AttackFrameData() {
         startup = 11, active = 12, recovery = 14,
         onHit = 0, onBlock = 0
@@ -60,18 +62,18 @@ public class State_Exusiai_SklApplePie_FDetonate : State_Common_SummonOnlySpecia
     public State_Exusiai_SklApplePie_FDetonate(Entity entity) : base(entity) { }
     public override EntityStateType type => EntityStateType.CHR_ATK_SPECIAL_TRIGGER;
     protected override string mainAnimation => "chr/SklApplePie_FDetonate";
+    protected override float inputMeter => 1.5f;
     public override AttackFrameData frameData => new AttackFrameData() {
         startup = 9, active = 15, recovery = 12,
         onHit = 0, onBlock = 0
     };
     public override float inputPriority => 5;
-    protected override InputFrame[] requiredInput => new[] { new InputFrame(InputType.FORWARD, InputFrameType.HELD), new InputFrame(InputType.HS, InputFrameType.PRESSED)};
+    protected override InputFrame[] requiredInput => new[] { new InputFrame(InputType.BACKWARD, InputFrameType.HELD), new InputFrame(InputType.HS, InputFrameType.PRESSED)};
     
     [AnimationEventHandler("ApplePie_Detonate")]
     private void OnApplePieDetonate() {
         // Debug.Log("detonate");
-        if (stateData.carriedVariables.TryGetValue("Token_ApplePie", out var obj)) {
-            var pie = (Token_Exusiai_ApplePie)obj;
+        if (stateData.TryGetCarriedVariable("Token_ApplePie", out Token_Exusiai_ApplePie pie)) {
             ((State_Token_Exusiai_ApplePie_Main)pie.activeState).DetonateImmediate();
         }
     }

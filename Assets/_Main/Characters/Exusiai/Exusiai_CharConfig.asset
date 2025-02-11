@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: Exusiai_CharConfig
   m_EditorClassIdentifier: 
   prettyName: "\u80FD\u5929\u4F7F"
-  defenseModifier: 1.0313
-  baseGravity: 1.9
+  defenseModifier: 0.0313
+  baseGravity: 0
   guts: 1
-  walkSpeed: 1.2
-  backwalkSpeed: 0.9
-  prejump: 4
-  jumpDuration: 42
-  jumpVelocity: 9.2
+  walkSpeed: 0.2
+  backwalkSpeed: 0.1
+  prejump: 0
+  jumpDuration: 1
+  jumpVelocity: 0.2
   jumpGravity: 0
   mayDash: 1
   dashAccelCurve:
@@ -47,8 +47,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  backdashInvuln: 5
-  dashSpeed: 3.3
+  backdashInvuln: 0
+  dashSpeed: 0.3
   airDashAvailableFrame: 0
   airDashDuration: 0
-  backdashVelocity: {x: -3.15, y: 3}
+  backdashVelocity: {x: -0.15, y: 0}

@@ -9,10 +9,11 @@ using UnityEngine;
 namespace SuperSmashRhodes.Battle {
 public class EntityBoundingBoxManager : MonoBehaviour {
     [Title("Configuration")]
+    public bool createPushbox = true;
     public int hitboxCount = 0;
     public int hurtboxCount = 0;
     public SkeletonAnimation skeleton;
-    public List<IEntityBoundingBox> explicitBoundingBoxes = new();
+    public List<ExplicitBoundingBox> explicitBoundingBoxes = new();
     
     public EntityBoundingBox pushbox { get; private set; }
     private Entity entity;
@@ -23,9 +24,11 @@ public class EntityBoundingBoxManager : MonoBehaviour {
         
         // register
         // main pushbox
-        pushbox = CreateBoundingBox("pushbox", BoundingBoxType.CHR_MAIN_PUSHBOX);
-        for (int i = 0; i < hitboxCount; i++) CreateBoundingBox($"hb_{i}", BoundingBoxType.HITBOX);
-        for (int i = 0; i < hurtboxCount; i++) CreateBoundingBox($"ub_{i}", BoundingBoxType.HURTBOX);
+        if (skeleton) {
+            pushbox = CreateBoundingBox("pushbox", BoundingBoxType.CHR_MAIN_PUSHBOX);
+            for (int i = 0; i < hitboxCount; i++) CreateBoundingBox($"hb_{i}", BoundingBoxType.HITBOX);
+            for (int i = 0; i < hurtboxCount; i++) CreateBoundingBox($"ub_{i}", BoundingBoxType.HURTBOX);   
+        }
         boxes.AddRange(explicitBoundingBoxes);
     }
 
@@ -53,9 +56,9 @@ public class EntityBoundingBoxManager : MonoBehaviour {
         return bb;
     }
 
-    public void DisableAll() {
+    public void SetAll(bool enabled) {
         foreach (var box in boxes) {
-            if (box != pushbox) box.box.enabled = false;
+            if (box != pushbox) box.box.enabled = enabled;
         }
     }
     

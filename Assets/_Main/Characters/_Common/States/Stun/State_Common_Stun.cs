@@ -16,7 +16,8 @@ public abstract class State_Common_Stun : CharacterState {
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
-        entity.animation.AddUnmanagedAnimation(animationName, true, 0); 
+        entity.animation.ApplyNeutralPose();
+        entity.animation.AddUnmanagedAnimation(animationName, true, 0);
     }
 
     public override IEnumerator MainRoutine() {
