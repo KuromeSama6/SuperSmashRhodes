@@ -28,19 +28,17 @@ public class State_Exusiai_SklRoll : State_Common_UtilityMove {
         } else {
             player.ApplyForwardVelocity(new(15f, 0));
         }
+        
     }
 
     protected override void OnRecovery() {
         base.OnRecovery();
+        AddCancelOption("Exusiai_SklRoll_FThrow");
     }
 
-    protected override void OnStateEnd() {
-        base.OnStateEnd();
-        if (player.airborne) {
-            
-        } else {
-            player.ApplyGroundedFrictionImmediate();
-        }
+    protected override void OnStateEnd(string nextState) {
+        base.OnStateEnd(nextState);
+        player.ApplyGroundedFrictionImmediate();
     }
 }
 }

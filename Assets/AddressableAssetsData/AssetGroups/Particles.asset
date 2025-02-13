@@ -30,6 +30,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5aeff62d673ea3940b01e9afbc90c5f6
+    m_Address: cmn/battle/fx/prefab/common/airdash
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5bb94a7e79778004c95f2c6b9228be17
     m_Address: chr/chen/battle/fx/prefab/skl_214s/hit/0
     m_ReadOnly: 0
@@ -72,6 +77,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a616a7f35c67cd84d8de5163ceb3e6c4
     m_Address: chr/chen/battle/fx/prefab/skl_214h/0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a8f3e1082567e7c4c8b51788feba1cff
+    m_Address: cmn/batte/fx/prefab/common/burst
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

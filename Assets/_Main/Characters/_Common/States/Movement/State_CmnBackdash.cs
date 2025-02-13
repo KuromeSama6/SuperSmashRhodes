@@ -13,10 +13,11 @@ public class State_CmnBackdash : CharacterState {
     public override EntityStateType type => EntityStateType.CHR_MOVEMENT_SINGLE;
     public override float inputPriority => 1.5f;
     public override bool IsInputValid(InputBuffer buffer) {
-        return buffer.thisFrame.HasInput(entity.side, InputType.BACKWARD, InputFrameType.HELD) &&
-               buffer.TimeSlice(3).ScanForInput(entity.side, new InputFrame(InputType.DASH, InputFrameType.PRESSED));
+        if (buffer.thisFrame.HasInput(entity.side, InputType.BACKWARD, InputFrameType.HELD) && buffer.TimeSlice(3).ScanForInput(entity.side, new InputFrame(InputType.DASH, InputFrameType.PRESSED))) return true;
+        var ret = buffer.TimeSlice(10).ScanForInput(entity.side, InputType.BACKWARD, InputFrameType.PRESSED, 2);
+        return ret;
     }
-    public override bool fullyInvincible => invincible;
+    public override AttackType invincibility => AttackType.STRIKE | AttackType.THROW;
     private bool invincible;
     
     protected override void OnStateBegin() {

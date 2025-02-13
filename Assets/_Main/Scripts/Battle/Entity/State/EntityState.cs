@@ -19,7 +19,7 @@ public abstract class EntityState : NamedToken {
     public int frame { get; private set; }
     public abstract EntityStateType type { get; }
     public virtual bool mayEnterState => true;
-    public virtual bool fullyInvincible => false;
+    public virtual AttackType invincibility => AttackType.NONE;
     public virtual bool isSelfCancellable => false;
     public virtual bool enableHitboxes => true;
 
@@ -100,14 +100,14 @@ public abstract class EntityState : NamedToken {
                 HandleRoutineReturn(null);
                 
             } else {
-                EndState();
+                EndState(entity.GetDefaultState().id);
             }
         }
     }
 
-    public void EndState() {
+    public void EndState(string nextState) {
         active = false;
-        OnStateEnd();
+        OnStateEnd(nextState);
         onStateEnd.Invoke();
     }
 
@@ -177,7 +177,7 @@ public abstract class EntityState : NamedToken {
         if (!entity.states.TryGetValue(name, out var state))
             throw new KeyNotFoundException($"State {name} not found");
         
-        EndState();
+        EndState(name);
         entity.BeginState(state);
     }
     
@@ -188,7 +188,8 @@ public abstract class EntityState : NamedToken {
     // Virtual methods / Events
     protected virtual void OnTick() { }
     protected virtual void OnStateBegin() { }
-    protected virtual void OnStateEnd() {}
+    protected virtual void OnStateEnd(string nextState) {}
+    public virtual void OnLand(LandingRecoveryFlag flag, int recoveryFrames) {}
     // Abstract methods
     public abstract IEnumerator MainRoutine();
     

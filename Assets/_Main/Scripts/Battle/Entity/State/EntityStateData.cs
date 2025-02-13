@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using SuperSmashRhodes.UI.Battle;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.State {
 public class EntityStateData {
+    private readonly Entity owner;
     // Cancel options
     /// <summary>
     /// States that can be canceled into from this state.
@@ -15,6 +17,17 @@ public class EntityStateData {
     public EntityStateType cancelFlag;
     public Dictionary<string, object> carriedVariables { get; } = new();
     public bool disableSideSwap = false;
+    public float gravityScale = 1;
+    public BackgroundUIData backgroundUIData = BackgroundUIData.DEFAULT;
+
+    public EntityStateData(Entity owner) {
+        this.owner = owner;
+    }
+    
+    public string carriedLandingAnimation {
+        get => GetCarriedVariable<string>("_landingAnimation");
+        set => owner.SetCarriedStateVariable("_landingAnimation", "CmnLandingRecovery", value);
+    }
 
     public void ClearCancelOptions() {
         cancelFlag = 0;
@@ -30,7 +43,7 @@ public class EntityStateData {
             return (T)value;
         }
         
-        Debug.LogError($"Carried variable [{key}] not found");
+        // Debug.LogError($"Carried variable [{key}] not found");
         return def;
     }
     

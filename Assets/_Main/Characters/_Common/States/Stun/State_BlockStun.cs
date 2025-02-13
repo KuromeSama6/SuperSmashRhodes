@@ -54,4 +54,31 @@ public class State_CmnBlockStunCrouch : State_Common_Stun {
     }
 
 }
+
+[NamedToken("CmnBlockStunAir")]
+public class State_CmnBlockStunAir : State_Common_Stun {
+    public State_CmnBlockStunAir(Entity entity) : base(entity) { }
+    protected override int frames => player.frameData.blockstunFrames;
+    protected override string animationName => "std/blockstun";
+    public override EntityStateType type => EntityStateType.CHR_BLOCKSTUN;
+    public override bool mayEnterState => entity.activeState is State_CmnBlockStunCrouch;
+    public override bool IsInputValid(InputBuffer buffer) {
+        return false;
+    }
+    protected override void OnStateBegin() {
+        base.OnStateBegin();
+        AddCancelOption("CmnBlockStun");
+    }
+
+    public override IEnumerator MainRoutine() {
+        while (true) yield return 1;
+    }
+
+    public override void OnLand(LandingRecoveryFlag flag, int recoveryFrames) {
+        base.OnLand(flag, recoveryFrames);
+        //19F Forced blockstun
+        player.frameData.blockstunFrames = 19;
+        CancelInto("CmnBlockStun");
+    }
+}
 }

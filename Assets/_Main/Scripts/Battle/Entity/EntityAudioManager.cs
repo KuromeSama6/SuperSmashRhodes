@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SuperSmashRhodes.Adressable;
 using SuperSmashRhodes.Battle.State;
+using SuperSmashRhodes.Scripts.Audio; 
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
@@ -12,10 +13,13 @@ public class EntityAudioManager : MonoBehaviour {
 
     private Dictionary<int, AudioHandle> loopSources { get; } = new();
     private int idCounter = 1;
+    private Transform container;
 
     private void Start() {
         entity = GetComponent<Entity>();
         audioSource = GetComponent<AudioSource>();
+        container = new GameObject("AudioContainer").transform;
+        container.parent = transform;
     }
 
     public void PlaySound(string soundName, float volume = 1f) {
@@ -23,6 +27,16 @@ public class EntityAudioManager : MonoBehaviour {
         AssetManager.Get<AudioClip>(soundName, clip => audioSource.PlayOneShot(clip, volume)); 
     }
 
+    public void PlaySoundClip(string soundName) {
+        if (soundName == null) return;
+        AssetManager.Get<AudioClipData>(soundName, data => {
+            var go = new GameObject($"Player: {soundName}");
+            go.transform.parent = container;
+            var comp = go.AddComponent<AudioClipDataPlayer>();
+            comp.Play(data);
+        });
+    }
+    
     public int PlaySoundLoop(string soundName, float volume = 1f) {
         var id = idCounter++;
         AssetManager.Get<AudioClip>(soundName, clip => {

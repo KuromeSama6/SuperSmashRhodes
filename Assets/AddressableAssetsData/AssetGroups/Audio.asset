@@ -175,6 +175,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c07f178f04a5a7e48b312baa56eaa83c
+    m_Address: cmn/battle/sfx/movemnt/airdash
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf7dc64d7468f2041aba9b3831c99de9
+    m_Address: cmn/battle/sfx/burst
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cfeab6e9ca48ae34c906f2669dfe5f34
     m_Address: cmn/battle/sfx/burst_alert/0
     m_ReadOnly: 0

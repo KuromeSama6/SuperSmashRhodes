@@ -23,6 +23,7 @@ MonoBehaviour:
   - CmnAirNeutral
   - CmnBlockStun
   - CmnBlockStunCrouch
+  - CmnBlockStunAir
   - CmnNeutralCrouch
   - CmnHitStunGround
   - CmnHitStunGroundCrouch
@@ -30,5 +31,7 @@ MonoBehaviour:
   - CmnSoftKnockdown
   - CmnWhiteForceReset
   - CmnHardKnockdown
-  - CmnNeutralLandingRecovery
+  - CmnLandingRecovery
   - CmnBackdash
+  - CmnAirDash
+  - CmnBurst

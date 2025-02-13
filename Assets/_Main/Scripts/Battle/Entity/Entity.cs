@@ -136,14 +136,14 @@ public abstract class Entity : MonoBehaviour {
             throw new Exception("Cannot begin null state");
 
         if (activeState != null && activeState.active)
-            activeState.EndState();
+            activeState.EndState(state.id);
 
         activeState = state;
         state.BeginState();
     }
     
     public EntityStateData CreateStateData(EntityState state) {
-        var ret = new EntityStateData();
+        var ret = new EntityStateData(this);
         foreach (var variable in carriedStateVariables.Values.ToArray()) {
             if (variable.targetState == null || Regex.IsMatch(state.id, variable.targetState)) {
                 ret.carriedVariables[variable.key] = variable.value;
@@ -307,7 +307,7 @@ public abstract class Entity : MonoBehaviour {
     }
     
     // Abstract Methods
-    protected abstract EntityState GetDefaultState();
+    public abstract EntityState GetDefaultState();
 
 }
 

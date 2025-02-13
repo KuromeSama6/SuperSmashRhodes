@@ -3,6 +3,8 @@
 namespace SuperSmashRhodes.Battle {
 public interface IAttack {
     string id { get; }
+    AttackType attackType { get; }
+    
     AttackFrameData GetFrameData(Entity to);
     int GetStunFrames(Entity to, bool blocked);
     AttackSpecialProperties GetSpecialProperties(Entity to);

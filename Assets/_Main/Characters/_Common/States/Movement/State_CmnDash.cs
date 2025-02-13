@@ -13,7 +13,7 @@ public class State_CmnDash : CharacterState {
     public State_CmnDash(Entity entity) : base(entity) { }
 
     public override EntityStateType type => EntityStateType.CHR_MOVEMENT_LOOP;
-    public override float inputPriority => 1;
+    public override float inputPriority => 1.1f;
 
     public override bool mayEnterState {
         get {
@@ -24,8 +24,9 @@ public class State_CmnDash : CharacterState {
 
     public override bool IsInputValid(InputBuffer buffer) {
         if (buffer.thisFrame.HasInput(entity.side, InputType.BACKWARD, InputFrameType.HELD)) return false;
-        
-        return buffer.thisFrame.HasInput(entity.side, InputType.DASH, InputFrameType.HELD);
+        if (buffer.thisFrame.HasInput(entity.side, InputType.DASH, InputFrameType.HELD)) return true;
+        var ret = buffer.TimeSlice(10).ScanForInput(entity.side, InputType.FORWARD, InputFrameType.PRESSED, 2);
+        return ret;
     }
 
     protected override void OnStateBegin() {
@@ -40,7 +41,7 @@ public class State_CmnDash : CharacterState {
         // owner.animation.AddUnmanagedAnimation("std/dash_start", false, .2f);
         entity.animation.AddUnmanagedAnimation("std/dash_loop", true);
         
-        while (RevalidateInput()) {
+        while (GetCurrentInputBuffer().thisFrame.HasInput(entity.side, InputType.DASH, InputFrameType.HELD) || GetCurrentInputBuffer().thisFrame.HasInput(entity.side, InputType.FORWARD, InputFrameType.HELD)) {
             var force = player.characterConfig.dashAccelCurve.Evaluate(frame);
             entity.rb.AddForceX(PhysicsUtil.NormalizeSide(force, entity.side));
             entity.rb.linearVelocityX = Mathf.Clamp(entity.rb.linearVelocityX, -player.characterConfig.dashSpeedFinal, player.characterConfig.dashSpeedFinal);

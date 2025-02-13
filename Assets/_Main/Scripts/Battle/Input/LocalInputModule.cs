@@ -96,6 +96,14 @@ public class LocalInputModule : MonoBehaviour, IInputProvider {
     public void OnForceReset(InputValue input) {
         thisFrameInputs.Add(new(InputType.FORCE_RESET, InputFrameType.PRESSED));
     }
+
+    public void OnBurst(InputValue input) {
+        // Debug.Log("burst");
+        thisFrameInputs.Add(new InputFrame(InputType.P, InputFrameType.PRESSED));
+        thisFrameInputs.Add(new InputFrame(InputType.D, InputFrameType.PRESSED));
+        thisFrameInputs.Add(new InputFrame(InputType.S, InputFrameType.PRESSED));
+        thisFrameInputs.Add(new InputFrame(InputType.HS, InputFrameType.PRESSED));
+    }
     
 }
 }

@@ -85,6 +85,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Burst",
+                    "type": "Button",
+                    "id": "ce823efb-0b2e-4d67-8593-b7a4590ca377",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -635,6 +644,39 @@
                     "processors": "",
                     "groups": ";ps4_test",
                     "action": "ForceReset",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ffdff932-184d-4931-ac2c-aecf69f6f889",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";keyboard1",
+                    "action": "Burst",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dbbee7cf-cc48-4d05-936d-4b79e1361f2d",
+                    "path": "<Keyboard>/numpadMultiply",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";keyboard2",
+                    "action": "Burst",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e06cca62-74cd-4e40-9710-c2f91e47788a",
+                    "path": "<HID::Brook P4 Wired Gamepad V2.8>/button5",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";ps4_test",
+                    "action": "Burst",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

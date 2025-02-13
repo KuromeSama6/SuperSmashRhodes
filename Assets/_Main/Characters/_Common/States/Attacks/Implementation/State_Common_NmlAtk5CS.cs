@@ -17,7 +17,7 @@ public abstract class State_Common_NmlAtk5CS : State_Common_NormalAttack {
 
     protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER |
                                                               EntityStateType.CHR_ATK_5S | EntityStateType.CHR_ATK_2S | EntityStateType.CHR_ATK_NORMAL_H;
-    public override bool mayEnterState => player.opponentDistance <= triggerRange;
+    public override bool mayEnterState => player.opponentDistance <= triggerRange && !GetCurrentInputBuffer().thisFrame.HasInput(entity.side, InputType.DOWN, InputFrameType.HELD);
 
     protected override InputFrame[] requiredInput => new InputFrame[] {new(InputType.S, InputFrameType.PRESSED)};
 

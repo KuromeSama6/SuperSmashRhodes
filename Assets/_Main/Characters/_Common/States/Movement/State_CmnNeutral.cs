@@ -67,13 +67,17 @@ public class State_CmnAirNeutral : CharacterState {
     public State_CmnAirNeutral(Entity entity) : base(entity) { }
     public override EntityStateType type => EntityStateType.CHR_NEUTRAL;
     public override float inputPriority => -1;
+
+    private bool cancelOptionsAdded;
+    
     public override bool IsInputValid(InputBuffer buffer) {
         return false;
     }
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
-        AddCancelOption(EntityStateType.CHR_ATK_AIR_NORMAL | EntityStateType.CHR_ATK_SPECIAL_SUPER);
+        cancelOptionsAdded = false;
+        TryAddCancelOptions();
         player.comboCounter.Reset();
     }
 
@@ -84,9 +88,25 @@ public class State_CmnAirNeutral : CharacterState {
         
         entity.animation.AddUnmanagedAnimation("std/jump_down", true, 0.1f);
         while (player.airborne) yield return 1;
-        
-        // landing recovery    
-        CancelInto(player.airActionPerformed  ? "CmnAttackLandingRecovery" : "CmnNeutralLandingRecovery");
+    }
+
+    public override void OnLand(LandingRecoveryFlag flag, int recoveryFrames) {
+        base.OnLand(flag, recoveryFrames);
+        CancelInto("CmnLandingRecovery");
+    }
+
+    protected override void OnTick() {
+        base.OnTick();
+        TryAddCancelOptions();
+    }
+
+    private void TryAddCancelOptions() {
+        if (cancelOptionsAdded) return;
+        if (!player.frameData.landingFlag.HasFlag(LandingRecoveryFlag.UNTIL_LAND) || !player.airborne) {
+            AddCancelOption(EntityStateType.CHR_ATK_AIR_NORMAL | EntityStateType.CHR_ATK_THROW | EntityStateType.CHR_ATK_SPECIAL_SUPER);
+            AddCancelOption("CmnAirDash");
+            AddCancelOption("CmnJump");
+        }
     }
 }
 

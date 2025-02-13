@@ -533,6 +533,19 @@ public static class RectTransformExtensions {
         // Return the screen space position
         return new Vector2(screenPosition.x, screenPosition.y);
     }
+
+    public static T RandomChoiceWeighted<T>(this Dictionary<T, float> dict) {
+        var total = dict.Values.Sum();
+        var rand = UnityEngine.Random.Range(0, total);
+        var current = 0f;
+
+        foreach (var kvp in dict) {
+            current += kvp.Value;
+            if (rand <= current) return kvp.Key;
+        }
+
+        return default;
+    }
 }
 
 public class ClampedFloat {

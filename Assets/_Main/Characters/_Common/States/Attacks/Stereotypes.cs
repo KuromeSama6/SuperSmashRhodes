@@ -110,4 +110,15 @@ public abstract class State_Common_UtilityMove : CharacterAttackStateBase {
         return 0;
     }
 }
+
+public abstract class State_Common_CommandThrow : ThrowAttackStateBase {
+    public State_Common_CommandThrow(Entity entity) : base(entity) { }
+    protected override float inputMeter => 1;
+    public override float GetUnscaledDamage(Entity to) {
+        return 0;
+    }
+    protected override bool ClashableWith(ThrowAttackStateBase other) {
+        return false;
+    }
+}
 }

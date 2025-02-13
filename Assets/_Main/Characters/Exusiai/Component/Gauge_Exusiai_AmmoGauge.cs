@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using SuperSmashRhodes.Adressable;
 using SuperSmashRhodes.Battle;
@@ -54,18 +56,33 @@ public class Gauge_Exusiai_AmmoGauge : CharacterComponent {
         }
     }
 
-    public class Magazine {
-        public int ammo;
-        
-        public Magazine(int ammo) {
-            this.ammo = ammo;
-        }
+    public void AddMagazine() {
+        if (magazines.Count(c => c.ammo > 0) >= 5) return;
+        magazines.Add(new Magazine(30));
+    }
+
+    private void Update() {
+        // remove empty
+        // if (magazines.Count > 5) {
+        //     var firstEmpty = magazines.First(c => c.ammo == 0);
+        //     magazines.Remove(firstEmpty);
+        // }
+
+        magazines.RemoveAll(c => c != currentMagazine && c.ammo == 0);
     }
 
     private void PlayMuzzleFlash() {
         var go = Instantiate(muzzleFlashPrefab, muzzleSocket.position, muzzleSocket.rotation, muzzleSocket);
         go.transform.localEulerAngles += new Vector3(0, 90, 0);
         go.transform.localScale = Vector3.one * 0.2f;
+    }
+    
+    public class Magazine {
+        public int ammo;
+        
+        public Magazine(int ammo) {
+            this.ammo = ammo;
+        }
     }
 }
 }

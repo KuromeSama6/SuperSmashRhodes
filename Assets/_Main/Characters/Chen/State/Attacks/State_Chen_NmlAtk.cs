@@ -135,6 +135,11 @@ public class State_Chen_NmlAtkGndThrow : State_Common_NmlAtkGndThrow {
     public State_Chen_NmlAtkGndThrow(Entity entity) : base(entity) { }
     protected override int animationLength => 71;
 }
+[NamedToken("Chen_NmlAtkAirThrow")]
+public class State_Chen_NmlAtkAirThrow : State_Common_NmlAtkAirThrow {
+    public State_Chen_NmlAtkAirThrow(Entity entity) : base(entity) { }
+    protected override int animationLength => 71;
+}
 
 [NamedToken("Chen_NmlAtk5P")]
 public class State_Chen_NmlAtk5P : State_Common_NmlAtk5P {

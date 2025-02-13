@@ -36,6 +36,7 @@ public class PlayerCharacter : Entity {
 
     public UnityEvent onSideSwap { get; } = new();
     public UnityEvent onRoundInit { get; } = new();
+    public UnityEvent onLand { get; } = new();
     
     private int applyGroundedFrictionFrames = 0;
     public float groundedFrictionAlpha { get; set; }
@@ -45,6 +46,7 @@ public class PlayerCharacter : Entity {
     public PlayerMeterGauge meter { get; private set; }
     public PlayerBurstGauge burst { get; private set; }
     public CharacterUnmanagedTimeData unmanagedTime { get; set; }
+    public int airOptions { get; set; }
     public IInputProvider inputProvider { get; private set; } = new NOPInputProvider(); // InputProvider assigned on round start
 
     public bool atWall => pushboxManager.atWall;
@@ -55,6 +57,7 @@ public class PlayerCharacter : Entity {
             return Mathf.Min(Mathf.Abs(stageData.leftWallPosition - transform.position.x), Mathf.Abs(stageData.rightWallPosition - transform.position.x));
         }
     }
+    public bool burstDisabled => unmanagedTime.flags.HasFlag(UnmanagedTimeSlotFlags.DISABLE_BURST);
     
     private float airHitstunRotation = 0f;
     private float yRotationTarget = 0f;
@@ -91,6 +94,10 @@ public class PlayerCharacter : Entity {
 
     public void Init(int playerIndex) {
         this.playerIndex = playerIndex;
+    }
+    
+    public void ResetAirOptions() {
+        airOptions = characterConfig.airOptionsFinal;
     }
     
     protected override void Start() {
@@ -141,7 +148,14 @@ public class PlayerCharacter : Entity {
             ret *= data.opponentGravityCurve.Evaluate(decay);
         }
 
+        // Debug.Log($"p{playerIndex} {activeState.stateData.gravityScale}");
+        ret *= activeState.stateData.gravityScale;
+        
         if (inUnmanagedTime && unmanagedTime.flags.HasFlag(UnmanagedTimeSlotFlags.PAUSE_PHYSICS)) {
+            ret = 0f;
+        }
+        
+        if (activeState is State_CmnAirDash) {
             ret = 0f;
         }
         
@@ -215,11 +229,10 @@ public class PlayerCharacter : Entity {
         }
 
         if (side != this.side) {
-            if (activeState != null && activeState.stateData.disableSideSwap)
-                return;
-            if (Mathf.Abs(pos - opponentPos) < pushboxManager.pushbox.size.x)
-                return;
+            if (activeState != null && activeState.stateData.disableSideSwap) return;
+            if (Mathf.Abs(pos - opponentPos) < pushboxManager.pushbox.size.x) return;
             if ((airborne && activeState is State_CmnHitStunAir) || (opponent.airborne && opponent.activeState is State_CmnHitStunAir)) return;
+            if (airborne) return;
             
             this.side = side;
             onSideSwap.Invoke();
@@ -236,7 +249,7 @@ public class PlayerCharacter : Entity {
         rb.linearVelocityX = 0f;
     }
     
-    protected override EntityState GetDefaultState() {
+    public override EntityState GetDefaultState() {
         string name;
         if (airborne) {
             name = "CmnAirNeutral";
@@ -261,6 +274,8 @@ public class PlayerCharacter : Entity {
         
         // input provider
         inputProvider = LocalInputManager.inst.GetInputProvider(this);
+        
+        airOptions = characterConfig.airOptionsFinal;
     }
 
     public void SetZPriority() {
@@ -287,7 +302,11 @@ public class PlayerCharacter : Entity {
 
     protected override void OnInboundHit(AttackData data) {
         base.OnInboundHit(data);
-        if (activeState.fullyInvincible) return;
+
+        if (!data.attack.GetSpecialProperties(this).HasFlag(AttackSpecialProperties.IGNORE_INVINCIBILITY)) {
+            if (activeState.invincibility.HasFlag(data.attack.attackType)) return;   
+        }
+        
         ApplyStandardAttack(data);
     }
 
@@ -332,8 +351,11 @@ public class PlayerCharacter : Entity {
         if (blocked) {
             this.frameData.blockstunFrames = attack.GetStunFrames(this, true);
             bool inBlockstun = activeState.type.HasFlag(EntityStateType.CHR_BLOCKSTUN);
-            
-            if (!inBlockstun) BeginState(crouching ? "CmnBlockStunCrouch" : "CmnBlockStun");
+
+            if (!inBlockstun) {
+                if (airborne) BeginState("CmnBlockStunAir");
+                else BeginState(crouching ? "CmnBlockStunCrouch" : "CmnBlockStun");
+            }
             // Debug.Log("blocked");
             attack.OnBlock(this);
             
@@ -415,8 +437,11 @@ public class PlayerCharacter : Entity {
         }
         
         if (specialProperties.HasFlag(AttackSpecialProperties.HARD_KNOCKDOWN)) {
-            if (activeState is State_CmnHitStunAir hitStunAir) {
-                hitStunAir.hardKnockdownOnLand = true;
+            // Debug.Log(activeState.id);
+            if (airborne || specialProperties.HasFlag(AttackSpecialProperties.FORCE_LAUNCH)) {
+                frameData.landingFlag |= LandingRecoveryFlag.HARD_KNOCKDOWN_LAND;
+                BeginState("CmnHitStunAir");
+                
             } else {
                 addFreezeFrames = false;
                 BeginState("CmnHardKnockdown");
@@ -428,7 +453,10 @@ public class PlayerCharacter : Entity {
             transform.position += new Vector3(0, .5f, 0);
             BeginState("CmnHitStunAir");
         } else {
-            if (!activeState.type.HasFlag(EntityStateType.CHR_HITSTUN)) BeginState(crouching ? "CmnHitStunGroundCrouch" : "CmnHitStunGround"); 
+            if (!activeState.type.HasFlag(EntityStateType.CHR_HITSTUN)) {
+                if (airborne) BeginState("CmnHitStunAir");
+                else BeginState(crouching ? "CmnHitStunGroundCrouch" : "CmnHitStunGround");
+            } 
         }
     }
     
@@ -463,7 +491,27 @@ public class PlayerCharacter : Entity {
     }
     
     private void OnGroundContact() {
-        if (airborne) airborne = false;
+        if (airborne) {
+            airborne = false;
+            onLand.Invoke();
+            
+            // effect
+            {
+                var flag = frameData.landingFlag;
+                SimpleCameraShakeData shakeData;
+                if (flag.HasFlag(LandingRecoveryFlag.HARD_LAND_COSMETIC)) shakeData = fxManager.fxLibrary.cameraShakeOnLandLarge;
+                else if (flag.HasFlag(LandingRecoveryFlag.HARD_KNOCKDOWN_LAND)) shakeData = fxManager.fxLibrary.cameraShakeOnLandMedium;
+                else if (activeState is State_CmnHitStunAir) shakeData = fxManager.fxLibrary.cameraShakeOnLandSmall;
+                else shakeData = fxManager.fxLibrary.cameraShakeOnLandNormal;
+                
+                SimpleCameraShakePlayer.inst.Play(shakeData);
+            }
+            
+            activeState.OnLand(frameData.landingFlag, frameData.landingRecoveryFrames);
+            frameData.landingFlag = LandingRecoveryFlag.NONE;
+        }
+
+        airOptions = characterConfig.airOptionsFinal;
     }
 
     public void ApplyCarriedPushback(Vector2 vec, Vector2 carriedMomentum, float atWallMultiplier = 1f) {
@@ -537,6 +585,13 @@ public class PlayerCharacter : Entity {
         // Debug.Log(rawDamage);
         health -= Mathf.Max(Mathf.Max(1, minDmg), dmg);
         burst.AddDeltaTotal(dmg / 2.5f, 60);
+    }
+
+    public bool MatchesAirState(AttackAirOkType flag) {
+        if (flag.HasFlag(AttackAirOkType.ALL)) return true;
+        if (!flag.HasFlag(AttackAirOkType.GROUND) && !airborne) return false;
+        if (!flag.HasFlag(AttackAirOkType.AIR) && airborne) return false;
+        return true;
     }
     
 }

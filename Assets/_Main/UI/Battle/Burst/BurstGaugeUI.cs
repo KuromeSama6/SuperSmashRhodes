@@ -15,7 +15,7 @@ public class BurstGaugeUI : PerSideUIElement<BurstGaugeUI> {
     public Image outlineImage;
     public TMP_Text burstText;
     public GameObject burstAvailableTick;
-    public GameObject burstAvailableIndicator;
+    public Image burstAvailableIndicator, burstDisabledIndicator;
     
     [Title("Config")]
     public Vector2 yRange;
@@ -52,7 +52,9 @@ public class BurstGaugeUI : PerSideUIElement<BurstGaugeUI> {
         }
         
         burstAvailableTick.SetActive(!burst.burstUsed && !burst.burstAvailable);
-        burstAvailableIndicator.SetActive(burst.burstAvailable);
+        burstAvailableIndicator.enabled = burst.burstAvailable;
+        burstDisabledIndicator.enabled = player.burstDisabled;
+        burstAvailableIndicator.color = player.burstDisabled ? "B0B0B0".HexToColor() : "4FFF00".HexToColor();
     }
 }
 }

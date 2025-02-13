@@ -1,4 +1,5 @@
 ﻿using Spine.Unity;
+using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Util;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ public class CinematicCharacterSocket {
     
     private GameObject parentGameObject;
     private GameObject containerGameObject;
-    private bool attached;
+    public bool attached { get; private set; }
     
     public CinematicCharacterSocket(PlayerCharacter target, PlayerCharacter owner, string boneName, Vector3 offset = default) {
         this.target = target;
@@ -27,7 +28,7 @@ public class CinematicCharacterSocket {
         var follower = parentGameObject.AddComponent<BoneFollower>();
 
         follower.SkeletonRenderer = owner.animation.animation;
-        follower.followBoneRotation = false;
+        follower.followBoneRotation = true;
         
         var suc = follower.SetBone(boneName);
         if (!suc) {
@@ -45,20 +46,31 @@ public class CinematicCharacterSocket {
         target.transform.SetParent(containerGameObject.transform);
         target.rb.linearVelocity = Vector2.zero;
         target.transform.Reset();
+        // Debug.Log($"target {target} pos {target.transform.localPosition}");
 
         attached = true;
     }
 
+    public void Tick() {
+        if (!attached) return;
+        target.transform.localPosition = Vector3.zero - offset;
+        target.transform.localEulerAngles = Vector3.zero;
+        // Debug.Log(target.transform.position);
+        // Debug.Log("tick");
+    }
+    
     public void Release() {
-        var pos = parentGameObject.transform.position;
+        if (!attached) return;
+        attached = false;
+        var pos = target.transform.position;
+        var rot = target.transform.eulerAngles;
         target.transform.SetParent(null);
 
         // var ea = target.transform.localEulerAngles;
         // ea.y = 0;
         // ea.z = 0;
         target.transform.localEulerAngles = Vector3.zero;
-
-        target.transform.position = pos;
+        target.transform.position = pos + new Vector3(owner.side == EntitySide.LEFT ? 1 : -1, 0, 0);
         
         GameObject.Destroy(parentGameObject);
     }

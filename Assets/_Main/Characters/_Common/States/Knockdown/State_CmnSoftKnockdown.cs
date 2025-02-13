@@ -10,7 +10,7 @@ public class State_CmnSoftKnockdown : CharacterState {
     public State_CmnSoftKnockdown(Entity entity) : base(entity) { }
     public override EntityStateType type => EntityStateType.CHR_SOFT_KNOCKDOWN;
     public override float inputPriority => -1;
-    public override bool fullyInvincible => true;
+    public override AttackType invincibility => AttackType.FULL;
 
     public override bool IsInputValid(InputBuffer buffer) {
         return false;
@@ -28,8 +28,8 @@ public class State_CmnSoftKnockdown : CharacterState {
         player.neutralAniTransitionOverride = 0f;
     }
 
-    protected override void OnStateEnd() {
-        base.OnStateEnd();
+    protected override void OnStateEnd(string nextState) {
+        base.OnStateEnd(nextState);
         player.frameData.throwInvulnFrames = 5;
     }
 }

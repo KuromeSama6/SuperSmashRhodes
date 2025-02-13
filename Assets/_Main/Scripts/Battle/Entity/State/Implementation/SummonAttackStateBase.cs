@@ -11,6 +11,7 @@ public abstract class SummonAttackStateBase : EntityState, IAttack {
     public int hits { get; protected set; }
     public int blockedHits { get; protected set; }
     public PlayerCharacter player => entity.owner;
+    public abstract AttackType attackType { get; }
 
     public SummonAttackStateBase(Entity entity) : base(entity) {
         
@@ -46,13 +47,13 @@ public abstract class SummonAttackStateBase : EntityState, IAttack {
         OnRecovery();
         yield return frameData.recovery;
 
-        if (!mayDestroy) {
+        while (!mayDestroy) {
             yield return 1;
         }
     }
 
-    protected override void OnStateEnd() {
-        base.OnStateEnd();
+    protected override void OnStateEnd(string nextState) {
+        base.OnStateEnd(nextState);
         entity.boundingBoxManager.SetAll(false);
         player.DestroySummon(entity);
     }
@@ -97,7 +98,6 @@ public abstract class SummonAttackStateBase : EntityState, IAttack {
     public string GetBlockedSfx(Entity to) {
         return null;
     }
-
     public AttackFrameData GetFrameData(Entity to) {
         return frameData;
     }
@@ -181,6 +181,7 @@ public abstract class SummonAttackStateBase : EntityState, IAttack {
 
 public abstract class TokenAttackStateBase : SummonAttackStateBase {
     public override EntityStateType type => EntityStateType.ENT_TOKEN;
+    public override AttackType attackType => AttackType.TOKEN;
     protected TokenAttackStateBase(Entity entity) : base(entity) { }
 }
 }

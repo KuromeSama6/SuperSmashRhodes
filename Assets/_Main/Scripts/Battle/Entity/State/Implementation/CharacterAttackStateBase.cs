@@ -10,14 +10,9 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public int hitsRemaining { get; protected set; }  = 1;
     public int hits { get; protected set; }
     public int blockedHits { get; protected set; }
-
-    public override bool mayEnterState {
-        get {
-            if (!airOk.HasFlag(AttackAirOkType.GROUND) && !player.airborne) return false;
-            if (!airOk.HasFlag(AttackAirOkType.AIR) && player.airborne) return false;
-            return true;
-        }
-    }
+    
+    public virtual AttackType attackType => AttackType.STRIKE;
+    public override bool mayEnterState => player.MatchesAirState(airOk);
 
     public CharacterAttackStateBase(Entity entity) : base(entity) {
         
@@ -51,11 +46,22 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         player.ApplyGroundedFriction(frameData.active);
         phase = AttackPhase.RECOVERY;
         OnRecovery();
-        yield return frameData.recovery;
+        // Debug.Log($"{id} {player.frameData.landingFlag} {player.airborne}");
+        if (player.airborne && player.frameData.landingFlag.HasFlag(LandingRecoveryFlag.UNTIL_LAND)) {
+            player.frameData.landingRecoveryFrames = frameData.recovery;
+            while (player.airborne) {
+                // Debug.Log("wait");
+                yield return 1;
+            }
+            CancelInto("CmnLandingRecovery");
+            
+        } else {
+            yield return frameData.recovery;   
+        }
     }
 
-    protected override void OnStateEnd() {
-        base.OnStateEnd();
+    protected override void OnStateEnd(string nextState) {
+        base.OnStateEnd(nextState);
         player.boundingBoxManager.SetAll(false);
     }
 
@@ -106,6 +112,8 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
 
     public override bool IsInputValid(InputBuffer buffer) {
         var input = requiredInput;
+        if (input == null) return false;
+        
         int frames;
         if (entity.activeState is CharacterAttackStateBase attack) {
             // Debug.Log(attack.frameData.startup + frameData.startup + frameData.active);
@@ -132,6 +140,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     
     protected virtual int totalHits => 1;
     protected virtual AttackAirOkType airOk => AttackAirOkType.GROUND;
+    public virtual LandingRecoveryFlag landingRecoveryFlag => LandingRecoveryFlag.NONE;
     
     // Events
     protected virtual void OnStartup() {
@@ -142,6 +151,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         AddCancelOption("CmnWhiteForceReset");
     }
     protected virtual void OnRecovery() {
+        player.frameData.landingFlag = landingRecoveryFlag;
     }
 
     // Member Methods

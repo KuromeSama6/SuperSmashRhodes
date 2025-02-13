@@ -5,6 +5,7 @@ namespace SuperSmashRhodes.Battle.State {
 [Flags]
 public enum EntityStateType : ulong {
     ALL = ulong.MaxValue,
+    NONE = 0,
     CHR_NEUTRAL = 1 << 0,
     CHR_MOVEMENT_LOOP = 1 << 1,
     

@@ -12,14 +12,15 @@ using UnityEngine;
 namespace SuperSmashRhodes.Battle.State.Implementation {
 public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
     protected ThrowAttackStateBase(Entity entity) : base(entity) { }
-    public override EntityStateType type => EntityStateType.CHR_ATK_THROW;
     protected override EntityStateType commonCancelOptions => 0;
     protected override InputFrame[] requiredInput => null;
     protected override int normalInputBufferLength => 1;
-    
+    public override AttackType attackType => AttackType.THROW;
+
     public bool connected { get; private set; }
     protected bool hasHit { get; private set; }
     private int hitAnimationStartFrame;
+    private CinematicCharacterSocket socket;
     
     protected override void OnStateBegin() {
         base.OnStateBegin();
@@ -27,12 +28,17 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
         connected = false;
         hitAnimationStartFrame = 0;
         hasHit = false;
+        if (socket != null) {
+            socket.Release();
+            socket = null;
+        }
     }
 
     public override IEnumerator MainRoutine() {
         phase = AttackPhase.STARTUP;
+        // Debug.Log("start");
         var opponent = player.opponent;
-        
+        player.animation.AddUnmanagedAnimation(mainAnimation, false);
         OnStartup();
         
         yield return frameData.startup;
@@ -66,21 +72,20 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
             }
         }
         
+
         if (connected && mayHit) {
             if (clash) {
-                player.BeginState("CmnSoftKnockdown");
-                opponent.BeginState("CmnSoftKnockdown");
-
-                Vector2 force = new(5, 0);
-                player.ApplyCarriedPushback(force, new(0.5f, 0));
-                opponent.ApplyCarriedPushback(force, new(0.5f, 0));
-                
+                // Debug.Log(player.transform.position.y);
                 player.fxManager.PlayGameObjectFX(
                     "cmn/batte/fx/prefab/common/throw_clash/0", 
                     CharacterFXSocketType.WORLD_UNBOUND,
-                    new(Mathf.Lerp(player.transform.position.x, opponent.transform.position.x, .5f), 1, 0)
+                    new(
+                        Mathf.Lerp(player.transform.position.x, opponent.transform.position.x, .5f), 
+                        Mathf.Lerp(player.transform.position.y, opponent.transform.position.y, .5f) + 1, 
+                        0)
                 );
                 player.audioManager.PlaySound("cmn/battle/sfx/throw_break/1");
+                OnThrowTech(opponent);
                 yield break;
             }
 
@@ -107,6 +112,9 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
             }
             
             OnThrowHit(opponent);
+            opponent.inputProvider.inputBuffer.SimulatedClear();
+            player.inputProvider.inputBuffer.SimulatedClear();
+            
             // process throw hit
             opponent.BeginState("CmnHitStunGround");
             opponent.unmanagedTime = new() {
@@ -114,24 +122,20 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
                 flags = UnmanagedTimeSlotFlags.TIME_THROW,
             };
 
-            var socket = new CinematicCharacterSocket(opponent, player, throwSocketBoneName, new(0, -1, 0));
+            socket = new CinematicCharacterSocket(opponent, player, throwSocketBoneName, new(0, -1, 0));
             socket.Attach();
             hitAnimationStartFrame = frame;
-            player.animation.AddUnmanagedAnimation(mainAnimation, false);
-            yield return animationLength;
+            yield return animationLength - frameData.startup;
             OnFinalHit();
             socket.Release();
-
+            socket = null;
             opponent.unmanagedTime = default;
-            opponent.BeginState("CmnHardKnockdown");
-
-            yield return 5f;
+            CancelInto("CmnNeutral");
 
         } else {
             phase = AttackPhase.RECOVERY;
+            OnThrowWhiff(opponent);
             entity.animation.AddUnmanagedAnimation(whiffAnimation, false);
-            
-            OnThrowTech(opponent);
             yield return frameData.recovery;
         }
 
@@ -139,6 +143,9 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
 
     protected override void OnTick() {
         base.OnTick();
+        if (socket != null && socket.attached) {
+            socket.Tick();
+        }
     }
 
     public override float GetChipDamagePercentage(Entity to) {
@@ -187,9 +194,9 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
     }
     protected virtual bool MayHit(PlayerCharacter other) {
         if (other.frameData.throwInvulnFrames > 0) return false;
-        if (player.airborne != other.airborne) return false;
+        // if (player.airborne != other.airborne) return false;
         if (other.inUnmanagedTime) return false;
-        if (other.activeState.fullyInvincible) return false;
+        if (other.activeState.invincibility.HasFlag(AttackType.THROW)) return false;
         if (other.activeState.type.CheckFlag((ulong)EntityStateType.CHR_STUN)) return false;
         if (other.activeState.type.CheckFlag((ulong)EntityStateType.CHR_KNOCKDOWN)) return false;
 
@@ -202,7 +209,12 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
         
     }
     protected virtual void OnThrowTech(PlayerCharacter other) {
+        Vector2 force = new(5, 0);
+        player.ApplyCarriedPushback(force, new(0.5f, 0));
+        opponent.ApplyCarriedPushback(force, new(0.5f, 0));
         
+        player.BeginState("CmnSoftKnockdown");
+        opponent.BeginState("CmnSoftKnockdown");
     }
     protected virtual void OnCosmeticHit() {
         player.audioManager.PlaySound(GetHitSfx(player.opponent), .6f);
@@ -210,6 +222,7 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
     }
     protected virtual void OnFinalHit() {
         // OnHit(player.opponent);
+        opponent.BeginState("CmnHardKnockdown");
     }
     
     public override void OnApplyCinematicDamage(AnimationEventData data) {

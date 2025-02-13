@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SuperSmashRhodes.Battle;
+using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Util;
 using UnityEngine;
 
@@ -8,8 +9,10 @@ namespace SuperSmashRhodes.Character.Gauge {
 public class PlayerBurstGauge : CharacterComponent {
     public ClampedFloat gauge { get; } = new(0f, 620f, 300f);
     private List<BurstGaugeDelta> deltas { get; } = new();
-    public bool burstAvailable { get; private set; }
-    public bool burstUsed { get; private set; }
+    public bool burstAvailable { get; set; }
+    public bool burstUsed { get; set; }
+
+    public bool canBurst => burstAvailable && !burstUsed && !player.unmanagedTime.flags.HasFlag(UnmanagedTimeSlotFlags.DISABLE_BURST);
     
     private void Start() {
         
@@ -25,16 +28,18 @@ public class PlayerBurstGauge : CharacterComponent {
     private void FixedUpdate() {
         {
             // passive gain
-            if (gauge.value >= 500f) {
-                AddDelta(1f / 60f, 1);
-            } else if (gauge.value >= 400f) {
-                AddDelta(1.5f / 60f, 1);
-            } else if (gauge.value >= 200f) {
-                AddDelta(2f / 60f, 1);
-            } else if (gauge.value >= 100f) {
-                AddDelta(3f / 60f, 1);
-            } else {
-                AddDelta(4f / 60f, 1);
+            if (gauge.value < 600f) {
+                if (gauge.value >= 500f) {
+                    AddDelta(1f / 60f, 1);
+                } else if (gauge.value >= 400f) {
+                    AddDelta(1.5f / 60f, 1);
+                } else if (gauge.value >= 200f) {
+                    AddDelta(2f / 60f, 1);
+                } else if (gauge.value >= 100f) {
+                    AddDelta(3f / 60f, 1);
+                } else {
+                    AddDelta(4f / 60f, 1);
+                }
             }
         }
         

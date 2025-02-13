@@ -14,6 +14,7 @@ public class EntityAnimationController : MonoBehaviour {
     private float currentBlendProgress = 0f;
     private List<TrackBlend> blends = new();
     private PlayerCharacter player;
+    private float currentTimeScale = 1f;
     
     private void Start() {
         animation = GetComponentInChildren<SkeletonAnimation>();
@@ -31,8 +32,9 @@ public class EntityAnimationController : MonoBehaviour {
         Tick();
     }
     
-    public void AddUnmanagedAnimation(string name, bool loop, float transitionTime = 0f) {
+    public void AddUnmanagedAnimation(string name, bool loop, float transitionTime = 0f, float timeScale = 1) {
         var track = state.GetCurrent(0);
+        
         // transitionTime = Mathf.Max(Time.fixedDeltaTime, transitionTime);
         
         if (transitionTime == 0) {
@@ -40,15 +42,23 @@ public class EntityAnimationController : MonoBehaviour {
             // state.Update(track.TrackEnd - track.TrackTime);
             state.ClearTrack(0);
             
-        } else {
+        } else if (track != null) {
             track.Loop = false;
         }
-        state.AddAnimation(0, name, loop, transitionTime);
+        
+        try {
+            state.AddAnimation(0, name, loop, transitionTime);
+            currentTimeScale = 1;
+
+        } catch (ArgumentException e) {
+            Debug.LogWarning($"Animation {name} not found in {animation.skeletonDataAsset.name}");
+        }
+        
     }
 
     public void Tick(int frames = 1) {
         if (animation == null) return;
-        animation.Update(frames * Time.fixedDeltaTime);
+        animation.Update(frames * Time.fixedDeltaTime * currentTimeScale);
     }
 
     public void SetFrame(int frame) {

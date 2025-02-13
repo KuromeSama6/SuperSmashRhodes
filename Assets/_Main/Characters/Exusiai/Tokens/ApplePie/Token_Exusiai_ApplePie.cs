@@ -23,7 +23,7 @@ public class Token_Exusiai_ApplePie : Token {
         boundingBox.boxEnabled = false;
     }
 
-    protected override EntityState GetDefaultState() {
+    public override EntityState GetDefaultState() {
         return new State_Token_Exusiai_ApplePie_Main(this);
     }
 
@@ -110,7 +110,7 @@ public class State_Token_Exusiai_ApplePie_Attack : TokenAttackStateBase {
         onBlock = isLargeExplosion ? 20 : 10, onHit = 10
     };
 
-    protected override bool mayDestroy => fxPlayer && fxPlayer.allDone;
+    protected override bool mayDestroy => !fxPlayer || fxPlayer.allDone;
 
     protected override void OnStateBegin() {
         base.OnStateBegin();

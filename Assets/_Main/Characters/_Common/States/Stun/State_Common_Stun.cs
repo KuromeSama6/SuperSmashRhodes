@@ -18,6 +18,8 @@ public abstract class State_Common_Stun : CharacterState {
         base.OnStateBegin();
         entity.animation.ApplyNeutralPose();
         entity.animation.AddUnmanagedAnimation(animationName, true, 0);
+        
+        AddCancelOption("CmnBurst");
     }
 
     public override IEnumerator MainRoutine() {
@@ -34,8 +36,8 @@ public abstract class State_Common_Stun : CharacterState {
         }
     }
 
-    protected override void OnStateEnd() {
-        base.OnStateEnd();
+    protected override void OnStateEnd(string nextState) {
+        base.OnStateEnd(nextState);
         player.frameData.throwInvulnFrames = 5;
     }
 

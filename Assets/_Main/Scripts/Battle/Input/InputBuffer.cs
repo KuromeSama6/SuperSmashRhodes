@@ -49,7 +49,15 @@ public class InputBuffer {
         }
         return ScanForInput(side, args.ToArray());
     }
-    
+
+    public bool ScanForInput(EntitySide side, InputType type, InputFrameType frameType, int presses) {
+        InputFrame[] arr = new InputFrame[presses];
+        for (int i = 0; i < presses; i++) {
+            arr[i] = new(type, frameType);
+        }
+        return ScanForInput(side, arr);
+    }
+
     public bool ScanForInput(EntitySide side, params InputFrame[][] seq) {
         var req = seq.ToList();
         if (req.Count == 0)

@@ -212,6 +212,12 @@ public class State_Exusiai_NmlAtkGndThrow : State_Common_NmlAtkGndThrow {
     protected override int animationLength => 59;
 }
 
+[NamedToken("Exusiai_NmlAtkAirThrow")]
+public class State_Exusiai_NmlAtkAirThrow : State_Common_NmlAtkAirThrow {
+    public State_Exusiai_NmlAtkAirThrow(Entity entity) : base(entity) { }
+    protected override int animationLength => 59;
+}
+
 [NamedToken("Exusiai_NmlAtk5P")]
 public class State_Exusiai_NmlAtk5P : State_Common_NmlAtk5P {
 

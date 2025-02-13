@@ -25,8 +25,8 @@ public class State_CmnHardKnockdown : CharacterState {
         CancelInto("CmnSoftKnockdown");
     }
 
-    protected override void OnStateEnd() {
-        base.OnStateEnd();
+    protected override void OnStateEnd(string nextState) {
+        base.OnStateEnd(nextState);
         player.frameData.throwInvulnFrames = 5;
     }
 }

@@ -9,5 +9,12 @@ public class CharacterFXLibrary : ScriptableObject {
     public SimpleCameraShakeData cameraShakeOnHitSmall;
     public SimpleCameraShakeData cameraShakeOnHitMedium;
     public SimpleCameraShakeData cameraShakeOnHitLarge;
+    
+    public SimpleCameraShakeData cameraShakeOnLandNormal;
+    public SimpleCameraShakeData cameraShakeOnLandSmall;
+    public SimpleCameraShakeData cameraShakeOnLandMedium;
+    public SimpleCameraShakeData cameraShakeOnLandLarge;
+
+    public SimpleCameraShakeData cameraShakeBurst;
 }
 }

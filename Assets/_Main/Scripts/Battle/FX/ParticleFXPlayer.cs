@@ -9,6 +9,9 @@ public class ParticleFXPlayer : MonoBehaviour {
 
     public bool allDone => systems.Count == 0;
     
+    private void Awake() {
+    }
+
     private void Start() {
         systems.AddRange(GetComponentsInChildren<ParticleSystem>());
     }
