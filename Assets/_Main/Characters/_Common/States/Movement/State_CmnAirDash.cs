@@ -29,12 +29,12 @@ public class State_CmnAirDash : CharacterState {
     public override IEnumerator MainRoutine() {
         player.animation.AddUnmanagedAnimation("std/airdash", false);
         player.rb.linearVelocity = Vector2.zero;
-        player.rb.AddForce(player.TranslateDirectionalForce(new(player.characterConfig.airdashSpeedFinal, 0)), ForceMode2D.Impulse);
+        player.rb.AddForce(player.TranslateDirectionalForce(new(player.characterConfig.airDashSpeedFinal, 0)), ForceMode2D.Impulse);
 
         var pos = player.transform.position + new Vector3(0, 1, 0);
         player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/airdash", CharacterFXSocketType.WORLD_UNBOUND, pos);
 
-        player.audioManager.PlaySoundClip("cmn/battle/sfx/movemnt/airdash");
+        player.audioManager.PlaySoundClip("cmn/battle/sfx/movement/airdash");
         
         yield return player.characterConfig.airDashDurationFinal;
         
@@ -48,7 +48,8 @@ public class State_CmnAirDash : CharacterState {
         base.OnTick();
         // add cancel options
         if (frame == player.characterConfig.airDashCancellableFrameFinal) {
-            
+            AddCancelOption(EntityStateType.CHR_ATK_AIR_NORMAL | EntityStateType.CHR_ATK_SPECIAL_SUPER);
+            AddCancelOption(EntityStateType.CHR_ATK_THROW);
         }
     }
 

@@ -257,6 +257,44 @@ public class State_Exusiai_NmlAtk2P : State_Common_NmlAtk2P {
     }
 }
 
+[NamedToken("Exusiai_NmlAtk8P")]
+public class State_Exusiai_NmlAtk8P : State_Common_NmlAtk8P { 
+    public State_Exusiai_NmlAtk8P(Entity entity) : base(entity) { }
+    public override AttackFrameData frameData => new() {
+        startup = 6,
+        active = 3,
+        recovery = 9,
+        onHit = 0,
+        onBlock = 0,
+    };
+    public override float GetUnscaledDamage(Entity to) {
+        return 20f;
+    }
+
+    public override string GetAttackNormalSfx() {
+        return "cmn/battle/sfx/attack/fist/1";
+    }
+}
+
+[NamedToken("Exusiai_NmlAtk8S")]
+public class State_Exusiai_NmlAtk8S : State_Common_NmlAtk8S { 
+    public State_Exusiai_NmlAtk8S(Entity entity) : base(entity) { }
+    public override AttackFrameData frameData => new() {
+        startup = 7,
+        active = 4,
+        recovery = 8,
+        onHit = 0,
+        onBlock = 0,
+    };
+    public override float GetUnscaledDamage(Entity to) {
+        return 26f;
+    }
+
+    public override string GetAttackNormalSfx() {
+        return "cmn/battle/sfx/attack/fist/1";
+    }
+}
+
 [NamedToken("Exusiai_NmlAtk5D")]
 public class State_Exusiai_NmlAtk5D : State_Exusiai_DriveAttack {
 

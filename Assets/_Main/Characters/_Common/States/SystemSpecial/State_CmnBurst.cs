@@ -5,6 +5,7 @@ using SuperSmashRhodes.Battle.State.Implementation;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Input;
 using SuperSmashRhodes.UI.Battle;
+using SuperSmashRhodes.UI.Battle.AnnouncerHud;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Runtime.State {
@@ -24,7 +25,8 @@ public class State_CmnBurst : CharacterAttackStateBase {
     protected override int normalInputBufferLength => 3;
     protected override float inputMeter => 0;
     public override AttackType invincibility => phase == AttackPhase.RECOVERY ? AttackType.NONE : AttackType.FULL;
-    public override bool mayEnterState => player.activeState is State_Common_Stun && player.burst.canBurst || true;
+    public override bool mayEnterState => player.activeState is State_Common_Stun && player.burst.canBurst;
+    public override StateIndicatorFlag stateIndicator => StateIndicatorFlag.REVERSAL | (phase == AttackPhase.RECOVERY ? StateIndicatorFlag.NONE : StateIndicatorFlag.INVINCIBLE);
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
@@ -35,7 +37,7 @@ public class State_CmnBurst : CharacterAttackStateBase {
         player.burst.burstAvailable = false;
         player.burst.burstUsed = true;
 
-        stateData.backgroundUIData = new(1, .95f, 16f, BackgroundType.NONE, Color.white);
+        stateData.backgroundUIData = new(1, .95f, 16f, BackgroundType.NONE, Color.white, 0);
         stateData.gravityScale = 0;
     }
 
@@ -43,7 +45,7 @@ public class State_CmnBurst : CharacterAttackStateBase {
         base.OnActive();
         RemoveCancelOption("CmnWhiteForceReset");
         var pos = player.transform.position;
-        player.fxManager.PlayGameObjectFX("cmn/batte/fx/prefab/common/burst", CharacterFXSocketType.WORLD_UNBOUND, pos);
+        player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/burst", CharacterFXSocketType.WORLD_UNBOUND, pos);
         player.audioManager.PlaySoundClip("cmn/battle/sfx/burst");
         stateData.gravityScale = 0;
         player.rb.linearVelocity = Vector2.zero;

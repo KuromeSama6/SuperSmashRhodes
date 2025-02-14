@@ -71,7 +71,7 @@ public class Gauge_Exusiai_AmmoGauge : CharacterComponent {
         magazines.RemoveAll(c => c != currentMagazine && c.ammo == 0);
     }
 
-    private void PlayMuzzleFlash() {
+    public void PlayMuzzleFlash() {
         var go = Instantiate(muzzleFlashPrefab, muzzleSocket.position, muzzleSocket.rotation, muzzleSocket);
         go.transform.localEulerAngles += new Vector3(0, 90, 0);
         go.transform.localScale = Vector3.one * 0.2f;

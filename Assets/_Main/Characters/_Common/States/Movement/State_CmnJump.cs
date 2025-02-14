@@ -53,7 +53,10 @@ public class State_CmnJump : CharacterState {
             xForce = PhysicsUtil.NormalizeSide(-amount, entity.side);
         }
         
+        entity.rb.linearVelocity = Vector2.zero;
         entity.rb.AddForce(new(xForce, player.characterConfig.jumpVelocityFinal), ForceMode2D.Impulse);
+        
+        AddCancelOption(EntityStateType.CHR_ATK_AIR_NORMAL | EntityStateType.CHR_ATK_SPECIAL_SUPER);
 
         //TODO: Air options available on frame #
         // Debug.Log(player.characterConfig.airDashAvailableFrameFinal);

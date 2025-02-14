@@ -21,6 +21,7 @@ public class PlayerCharacter : Entity {
     public CharacterConfiguration characterConfig;
     public CharacterDescriptor descriptor;
     public ComboDecayData comboDecayData;
+    public Transform cameraFollowSocket;
 
     public int playerIndex { get; private set; }
     public float moveDirection { get; private set; }
@@ -30,7 +31,6 @@ public class PlayerCharacter : Entity {
     public bool airActionPerformed { get; set; }
     public PlayerCharacter opponent => GameManager.inst.GetOpponent(this);
     public float opponentDistance => Mathf.Abs(transform.position.x - opponent.transform.position.x);
-    public bool inUnmanagedTime => unmanagedTime.frames > 0;
     public ComboCounter comboCounter { get; private set; }
     public FrameDataRegister frameData { get; private set; }
 
@@ -45,7 +45,7 @@ public class PlayerCharacter : Entity {
     public float neutralAniTransitionOverride { get; set; } = 0.05f;
     public PlayerMeterGauge meter { get; private set; }
     public PlayerBurstGauge burst { get; private set; }
-    public CharacterUnmanagedTimeData unmanagedTime { get; set; }
+    public CharacterStateFlag stateFlags { get; set; }
     public int airOptions { get; set; }
     public IInputProvider inputProvider { get; private set; } = new NOPInputProvider(); // InputProvider assigned on round start
 
@@ -57,7 +57,15 @@ public class PlayerCharacter : Entity {
             return Mathf.Min(Mathf.Abs(stageData.leftWallPosition - transform.position.x), Mathf.Abs(stageData.rightWallPosition - transform.position.x));
         }
     }
-    public bool burstDisabled => unmanagedTime.flags.HasFlag(UnmanagedTimeSlotFlags.DISABLE_BURST);
+    public bool burstDisabled => stateFlags.HasFlag(CharacterStateFlag.DISABLE_BURST);
+    public float cameraGroupWeight {
+        get {
+            if (stateFlags.HasFlag(CharacterStateFlag.NO_CAMERA_WEIGHT)) {
+                return 0;
+            }
+            return 1f;
+        }
+    }
     
     private float airHitstunRotation = 0f;
     private float yRotationTarget = 0f;
@@ -81,13 +89,13 @@ public class PlayerCharacter : Entity {
 
     public override bool shouldTickAnimation {
         get {
-            if (inUnmanagedTime && unmanagedTime.flags.HasFlag(UnmanagedTimeSlotFlags.PAUSE_ANIMATIONS)) return false;
+            if (stateFlags.HasFlag(CharacterStateFlag.PAUSE_ANIMATIONS)) return false;
             return true;
         }
     }
     public override bool shouldTickState {
         get {
-            if (inUnmanagedTime && unmanagedTime.flags.HasFlag(UnmanagedTimeSlotFlags.PAUSE_STATE)) return false;
+            if (stateFlags.HasFlag(CharacterStateFlag.PAUSE_STATE)) return false;
             return true;
         }
     }
@@ -151,7 +159,7 @@ public class PlayerCharacter : Entity {
         // Debug.Log($"p{playerIndex} {activeState.stateData.gravityScale}");
         ret *= activeState.stateData.gravityScale;
         
-        if (inUnmanagedTime && unmanagedTime.flags.HasFlag(UnmanagedTimeSlotFlags.PAUSE_PHYSICS)) {
+        if (stateFlags.HasFlag(CharacterStateFlag.PAUSE_PHYSICS)) {
             ret = 0f;
         }
         
@@ -467,7 +475,12 @@ public class PlayerCharacter : Entity {
         bool crouching = activeState is State_CmnNeutralCrouch || activeState is State_CmnBlockStunCrouch;
         bool blockHeld = inputProvider.inputBuffer.thisFrame.HasInput(side, InputType.BACKWARD, InputFrameType.HELD);
 
-        AttackGuardType currentGuardType = crouching ? AttackGuardType.CROUCHING : AttackGuardType.STANDING;
+        AttackGuardType currentGuardType;
+        if (airborne) {
+            currentGuardType = blockType;
+        } else {
+            currentGuardType = crouching ? AttackGuardType.CROUCHING : AttackGuardType.STANDING;
+        }
         
         if (blockType == AttackGuardType.THROW) {
             throw new NotImplementedException("Throw guard not implemented");
@@ -485,7 +498,6 @@ public class PlayerCharacter : Entity {
         if (blockHeld && (BitUtil.CheckFlag((ulong)activeState.type, (ulong)EntityStateType.CHR_NEUTRAL) || activeState is State_CmnMoveBackward)) {
             return false;
         }
-        
 
         return true;
     }
@@ -494,6 +506,12 @@ public class PlayerCharacter : Entity {
         if (airborne) {
             airborne = false;
             onLand.Invoke();
+
+            if (activeState is State_CmnHitStun) {
+                fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/land/medium", CharacterFXSocketType.WORLD_UNBOUND, transform.position);
+            } else {
+                fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/land/light", CharacterFXSocketType.WORLD_UNBOUND, transform.position);
+            }
             
             // effect
             {

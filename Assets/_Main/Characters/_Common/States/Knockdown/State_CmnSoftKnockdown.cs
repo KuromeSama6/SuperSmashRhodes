@@ -3,6 +3,7 @@ using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Input;
+using SuperSmashRhodes.UI.Battle.AnnouncerHud;
 
 namespace SuperSmashRhodes.Runtime.State {
 [NamedToken("CmnSoftKnockdown")]
@@ -11,6 +12,15 @@ public class State_CmnSoftKnockdown : CharacterState {
     public override EntityStateType type => EntityStateType.CHR_SOFT_KNOCKDOWN;
     public override float inputPriority => -1;
     public override AttackType invincibility => AttackType.FULL;
+    public override StateIndicatorFlag stateIndicator {
+        get {
+            var ret = StateIndicatorFlag.NONE;
+            if (stateData.TryGetCarriedVariable<bool>("_fromThrowTech", out _)) {
+                ret |= StateIndicatorFlag.THROW_TECH;
+            }
+            return ret;
+        }
+    }
 
     public override bool IsInputValid(InputBuffer buffer) {
         return false;
@@ -21,7 +31,6 @@ public class State_CmnSoftKnockdown : CharacterState {
         entity.animation.AddUnmanagedAnimation("std/ground_tech", false);
     }
     public override IEnumerator MainRoutine() {
-        player.fxManager.staticOnGroundedTechFlashPlayer.PlayFeedbacks();
         yield return 1;
         player.comboCounter.Reset();
         yield return 30;

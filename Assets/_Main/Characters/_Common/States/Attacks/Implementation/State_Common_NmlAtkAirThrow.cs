@@ -18,7 +18,7 @@ public abstract class State_Common_NmlAtkAirThrow : ThrowAttackStateBase {
     protected override string mainAnimation => "cmn/NmlAtkGndThrow";
     protected override string whiffAnimation => "cmn/NmlAtkGndThrow_W";
     protected override float inputMeter => 0;
-    public override bool mayEnterState => player.airborne;
+    protected override AttackAirOkType airOk => AttackAirOkType.AIR;
 
     public override AttackFrameData frameData => new() {
         startup = 2,

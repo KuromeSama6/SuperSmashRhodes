@@ -20,7 +20,10 @@ public abstract class State_Common_NmlAtk5CS : State_Common_NormalAttack {
     public override bool mayEnterState => player.opponentDistance <= triggerRange && !GetCurrentInputBuffer().thisFrame.HasInput(entity.side, InputType.DOWN, InputFrameType.HELD);
 
     protected override InputFrame[] requiredInput => new InputFrame[] {new(InputType.S, InputFrameType.PRESSED)};
-
+    public override void OnContact(Entity to) {
+        base.OnContact(to);
+        AddCancelOption("CmnJump");
+    }
     public override int GetFreezeFrames(Entity to) {
         return 7;
     }

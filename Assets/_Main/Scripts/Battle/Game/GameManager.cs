@@ -29,6 +29,8 @@ public class GameManager : SingletonBehaviour<GameManager> {
     private PlayerInputManager inputManager;
     private Dictionary<int, PlayerCharacter> players = new();
     private bool pushboxCorrectionLock = false;
+    private readonly Dictionary<int, Entity> entityTable = new();
+    private int entityIdCounter;
     
     private IEnumerator Start() {
         inputManager = GetComponent<PlayerInputManager>();
@@ -59,6 +61,8 @@ public class GameManager : SingletonBehaviour<GameManager> {
         
         players[index] = player;
         targetGroup.AddMember(player.transform, 1, 0.5f);
+        
+        
     }
     
     public PlayerCharacter GetOpponent(PlayerCharacter player) {
@@ -72,6 +76,14 @@ public class GameManager : SingletonBehaviour<GameManager> {
     public Vector3 ClampPositionToStage(Vector3 position) {
         var x = Mathf.Clamp(position.x, stageData.leftWallPosition, stageData.rightWallPosition);
         return new Vector3(x, position.y, position.z);
+    }
+
+    private void Update() {
+        foreach (var target in targetGroup.Targets) {
+            var player = GetPlayer(targetGroup.Targets.IndexOf(target));
+            target.Object = player.stateFlags.HasFlag(CharacterStateFlag.CAMERA_FOLLOW_BONE) ? player.cameraFollowSocket : player.transform;
+            target.Weight = player.cameraGroupWeight;
+        }
     }
 
     private void FixedUpdate() {
@@ -99,6 +111,12 @@ public class GameManager : SingletonBehaviour<GameManager> {
         float offset = (target.transform.position.x <= target.opponent.transform.position.x ? -1 : 1) * (size + .1f);
         target.transform.position += new Vector3(offset, 0, 0);
 
+    }
+    
+    public int RegisterEntity(Entity entity) {
+        var id = entityIdCounter++;
+        entityTable[id] = entity;
+        return id;
     }
 }
 

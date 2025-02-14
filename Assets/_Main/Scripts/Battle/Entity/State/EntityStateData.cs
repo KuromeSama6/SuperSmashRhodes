@@ -19,6 +19,7 @@ public class EntityStateData {
     public bool disableSideSwap = false;
     public float gravityScale = 1;
     public BackgroundUIData backgroundUIData = BackgroundUIData.DEFAULT;
+    public float targetFrameRate = 60f;
 
     public EntityStateData(Entity owner) {
         this.owner = owner;

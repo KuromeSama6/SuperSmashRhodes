@@ -66,6 +66,14 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 46c1722eca13d874f9d8010228260490, type: 2}
+    - target: {fileID: 1135697620480440147, guid: 869df265edc9b1e489d328c95c4d65cf, type: 3}
+      propertyPath: boneName
+      value: F_Waist
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701132693039117471, guid: 869df265edc9b1e489d328c95c4d65cf, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2764539944195769258, guid: 869df265edc9b1e489d328c95c4d65cf, type: 3}
       propertyPath: config
       value: 
@@ -126,6 +134,10 @@ PrefabInstance:
       propertyPath: boneName
       value: F_Waist
       objectReference: {fileID: 0}
+    - target: {fileID: 5912529609646579051, guid: 869df265edc9b1e489d328c95c4d65cf, type: 3}
+      propertyPath: boneName
+      value: F_Waist
+      objectReference: {fileID: 0}
     - target: {fileID: 7307482532208467370, guid: 869df265edc9b1e489d328c95c4d65cf, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -144,7 +156,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 18692362a6df2a84daf2dacb1099e857, type: 2}
     - target: {fileID: 7313164139058482545, guid: 869df265edc9b1e489d328c95c4d65cf, type: 3}
       propertyPath: separatorSlotNames.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7313164139058482545, guid: 869df265edc9b1e489d328c95c4d65cf, type: 3}
       propertyPath: 'separatorSlotNames.Array.data[0]'
@@ -152,7 +164,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7702110325327955290, guid: 869df265edc9b1e489d328c95c4d65cf, type: 3}
       propertyPath: m_Materials.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7702110325327955290, guid: 869df265edc9b1e489d328c95c4d65cf, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'

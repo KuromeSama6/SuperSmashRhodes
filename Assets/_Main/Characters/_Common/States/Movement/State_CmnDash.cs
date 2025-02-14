@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using SuperSmashRhodes.Battle;
+using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Input;
@@ -35,6 +36,8 @@ public class State_CmnDash : CharacterState {
         AddCancelOption(EntityStateType.CHR_MOVEMENT_SINGLE);
         AddCancelOption("CmnNeutralCrouch");
         AddCancelOption("CmnBackdash");
+        
+        player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/dash_dust", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position);
     }
 
     public override IEnumerator MainRoutine() {
@@ -59,6 +62,10 @@ public class State_CmnDash : CharacterState {
             yield break;
         }
         
+    }
+
+    protected override void OnTick() {
+        base.OnTick();
     }
 }
 }

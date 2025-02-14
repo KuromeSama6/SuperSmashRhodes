@@ -1,6 +1,7 @@
 ﻿using System;
 using MoreMountains.Feedbacks;
 using MoreMountains.FeedbacksForThirdParty;
+using SuperSmashRhodes.Adressable;
 using SuperSmashRhodes.FX;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -27,6 +28,16 @@ public class SimpleCameraShakePlayer : ManagedSingletonFeedbackPlayer<SimpleCame
         shake.Velocity = data.velocity;
         
         player.PlayFeedbacks();
+    }
+
+    public void Play(string libraryPath, string shakeId) {
+        AssetManager.Get<CameraShakeLibrary>(libraryPath, lib => {
+            if (!lib.shakes.TryGetValue(shakeId, out var data)) {
+                Debug.LogError($"Camera shake {shakeId} not found in library {libraryPath}");
+                return;
+            }
+            Play(data);
+        });
     }
 }
 

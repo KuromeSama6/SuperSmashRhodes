@@ -6,6 +6,7 @@ using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Input;
+using SuperSmashRhodes.UI.Battle.AnnouncerHud;
 using SuperSmashRhodes.Util;
 using UnityEngine;
 
@@ -19,6 +20,7 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
 
     public bool connected { get; private set; }
     protected bool hasHit { get; private set; }
+    public override StateIndicatorFlag stateIndicator => hasHit ? StateIndicatorFlag.THROW : StateIndicatorFlag.NONE;
     private int hitAnimationStartFrame;
     private CinematicCharacterSocket socket;
     
@@ -77,7 +79,7 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
             if (clash) {
                 // Debug.Log(player.transform.position.y);
                 player.fxManager.PlayGameObjectFX(
-                    "cmn/batte/fx/prefab/common/throw_clash/0", 
+                    "cmn/battle/fx/prefab/common/throw_clash/0", 
                     CharacterFXSocketType.WORLD_UNBOUND,
                     new(
                         Mathf.Lerp(player.transform.position.x, opponent.transform.position.x, .5f), 
@@ -117,10 +119,7 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
             
             // process throw hit
             opponent.BeginState("CmnHitStunGround");
-            opponent.unmanagedTime = new() {
-                frames = animationLength,
-                flags = UnmanagedTimeSlotFlags.TIME_THROW,
-            };
+            opponent.stateFlags = CharacterStateFlag.TIME_THROW;
 
             socket = new CinematicCharacterSocket(opponent, player, throwSocketBoneName, new(0, -1, 0));
             socket.Attach();
@@ -129,8 +128,8 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
             OnFinalHit();
             socket.Release();
             socket = null;
-            opponent.unmanagedTime = default;
-            CancelInto("CmnNeutral");
+            opponent.stateFlags = default;
+            CancelInto(player.airborne ? "CmnAirNeutral" : "CmnNeutral");
 
         } else {
             phase = AttackPhase.RECOVERY;
@@ -173,7 +172,7 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
         return 3;
     }
 
-    protected AttackData CreateAttackData() {
+    public AttackData CreateAttackData() {
         return new() {
             attack = this,
             from = player,
@@ -195,7 +194,6 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
     protected virtual bool MayHit(PlayerCharacter other) {
         if (other.frameData.throwInvulnFrames > 0) return false;
         // if (player.airborne != other.airborne) return false;
-        if (other.inUnmanagedTime) return false;
         if (other.activeState.invincibility.HasFlag(AttackType.THROW)) return false;
         if (other.activeState.type.CheckFlag((ulong)EntityStateType.CHR_STUN)) return false;
         if (other.activeState.type.CheckFlag((ulong)EntityStateType.CHR_KNOCKDOWN)) return false;
@@ -213,6 +211,9 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
         player.ApplyCarriedPushback(force, new(0.5f, 0));
         opponent.ApplyCarriedPushback(force, new(0.5f, 0));
         
+        player.SetCarriedStateVariable("_fromThrowTech", "CmnSoftKnockdown", true);
+        opponent.SetCarriedStateVariable("_fromThrowTech", "CmnSoftKnockdown", true);
+        
         player.BeginState("CmnSoftKnockdown");
         opponent.BeginState("CmnSoftKnockdown");
     }
@@ -227,7 +228,7 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
     
     public override void OnApplyCinematicDamage(AnimationEventData data) {
         player.opponent.fxManager.NotifyHit(CreateAttackData()); 
-        player.opponent.ApplyDamage(data.integerValue, CreateAttackData(), DamageSpecialProperties.REAL_DAMAGE | DamageSpecialProperties.SKIP_REGISTER);
+        player.opponent.ApplyDamage(data.integerValue, CreateAttackData(), DamageSpecialProperties.SKIP_REGISTER);
         // Debug.Log("ThrowAttackStateBase.OnApplyCinematicDamage");
     }
 }

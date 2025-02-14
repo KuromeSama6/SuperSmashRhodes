@@ -82,7 +82,7 @@ public class State_CmnAirNeutral : CharacterState {
     }
 
     public override IEnumerator MainRoutine() {
-        entity.animation.AddUnmanagedAnimation("std/jump_up", true);
+        entity.animation.AddUnmanagedAnimation("std/jump_up", true, player.neutralAniTransitionOverride);
         
         while (entity.rb.linearVelocityY > 0f) yield return 1;
         
@@ -105,6 +105,7 @@ public class State_CmnAirNeutral : CharacterState {
         if (!player.frameData.landingFlag.HasFlag(LandingRecoveryFlag.UNTIL_LAND) || !player.airborne) {
             AddCancelOption(EntityStateType.CHR_ATK_AIR_NORMAL | EntityStateType.CHR_ATK_THROW | EntityStateType.CHR_ATK_SPECIAL_SUPER);
             AddCancelOption("CmnAirDash");
+            AddCancelOption("CmnAirBackdash");
             AddCancelOption("CmnJump");
         }
     }

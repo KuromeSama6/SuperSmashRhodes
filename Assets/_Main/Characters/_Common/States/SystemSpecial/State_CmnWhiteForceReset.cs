@@ -22,7 +22,7 @@ public class State_CmnWhiteForceReset : CharacterState {
         player.meter.gauge.value -= 50f;
         player.ApplyGroundedFrictionImmediate();
         opponent.comboCounter.comboDecay = 0f;
-        player.fxManager.PlayGameObjectFX("cmn/batte/fx/prefab/common/force_reset/0", CharacterFXSocketType.SELF);
+        player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/force_reset/0", CharacterFXSocketType.SELF);
         player.audioManager.PlaySound("cmn/battle/sfx/force_reset/0");
     }
 

@@ -1,4 +1,5 @@
 ﻿using SuperSmashRhodes.Battle;
+using SuperSmashRhodes.Battle.Animation;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Battle.State.Implementation;
 using SuperSmashRhodes.Input;
@@ -31,6 +32,12 @@ public abstract class State_Exusiai_FireWeaponAttack : CharacterAttackStateBase 
     }
     public override bool ShouldCountSameMove(Entity to) {
         return false;
+    }
+    
+        
+    [AnimationEventHandler("FireWeaponSfx")]
+    public virtual void OnFireWeaponSfx(AnimationEventData args) {
+        gauge.PlayMuzzleFlash();
     }
 }
 }

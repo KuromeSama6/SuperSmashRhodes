@@ -37,7 +37,7 @@ public class EntityAudioManager : MonoBehaviour {
         });
     }
     
-    public int PlaySoundLoop(string soundName, float volume = 1f) {
+    public int PlaySoundLoop(string soundName, float volume = 1f, bool releaseOnStateEnd = false) {
         var id = idCounter++;
         AssetManager.Get<AudioClip>(soundName, clip => {
             var go = new GameObject($"LoopSource_{id}");
@@ -48,7 +48,7 @@ public class EntityAudioManager : MonoBehaviour {
             source.loop = true;
             source.volume = volume;
             source.Play();
-            loopSources[id] = new AudioHandle(soundName, source, entity.activeState);
+            loopSources[id] = new AudioHandle(soundName, source, releaseOnStateEnd ? entity.activeState : null);
         });
         return id;
     }
@@ -64,9 +64,13 @@ public class EntityAudioManager : MonoBehaviour {
         }
     }
 
+    
     public void StopSoundLoop(string soundName) {
-        var sound = loopSources.Keys.FirstOrDefault(c => loopSources[c].audioId == soundName);
-        StopSoundLoop(sound);
+        foreach (var id in loopSources.Keys.ToList()) {
+            if (loopSources[id].audioId == soundName) {
+                StopSoundLoop(id);
+            }
+        }
     }
 
     public class AudioHandle {
@@ -77,11 +81,15 @@ public class EntityAudioManager : MonoBehaviour {
             this.audioId = audioId;
             this.source = source;
             this.state = state;
-            state.onStateEnd.AddListener(OnStateEnd);
+
+            if (state != null) {
+                state.onStateEnd.AddListener(OnStateEnd);   
+            }
         }
 
         public void Release() {
-            state.onStateEnd.RemoveListener(OnStateEnd);
+            if (!source) return;
+            if (state != null) state.onStateEnd.RemoveListener(OnStateEnd);
             Destroy(source.gameObject);
         }
 

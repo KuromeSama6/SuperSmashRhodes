@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using SuperSmashRhodes.Battle;
+using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Framework;
@@ -17,7 +18,7 @@ public class State_CmnBackdash : CharacterState {
         var ret = buffer.TimeSlice(10).ScanForInput(entity.side, InputType.BACKWARD, InputFrameType.PRESSED, 2);
         return ret;
     }
-    public override AttackType invincibility => AttackType.STRIKE | AttackType.THROW;
+    public override AttackType invincibility => invincible ? AttackType.STRIKE | AttackType.THROW : AttackType.NONE;
     private bool invincible;
     
     protected override void OnStateBegin() {
@@ -42,6 +43,7 @@ public class State_CmnBackdash : CharacterState {
         player.backdashCooldown += 90;
 
         // player.neutralAniTransitionOverride = 0f;
+        player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/dash_dust", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position, Vector3.zero, new(-1, 1, 1));
     }
     
     public override IEnumerator MainRoutine() {

@@ -12,6 +12,7 @@ using Spine.Unity;
 using SuperSmashRhodes.Adressable;
 using SuperSmashRhodes.Battle.Animation;
 using SuperSmashRhodes.Battle.Enums;
+using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Util;
 using UnityEngine;
@@ -30,6 +31,7 @@ public abstract class Entity : MonoBehaviour {
     public EntityConfiguration config;
     // public List<EntityAssetLibrary> assetLibraries = new();
 
+    public int entityId { get; private set; }
     public EntitySide side { get; set; } = EntitySide.LEFT;
     public EntityAnimationController animation { get; private set; }
     public Rigidbody2D rb { get; private set; }
@@ -78,6 +80,8 @@ public abstract class Entity : MonoBehaviour {
         // }
 
         // Debug.Log($"Loaded states {string.Join(", ", states.Keys)}");
+
+        entityId = GameManager.inst.RegisterEntity(this);
     }
 
     protected virtual void Update() { }

@@ -19,6 +19,11 @@ public abstract class State_Common_NmlAtk2P : State_Common_NormalAttack {
     protected override InputFrame[] requiredInput => new InputFrame[] {new(InputType.DOWN, InputFrameType.HELD), new(InputType.P, InputFrameType.PRESSED)};
     public override bool isSelfCancellable => true;
 
+    public override void OnContact(Entity to) {
+        base.OnContact(to);
+        AddCancelOption("CmnJump");
+    }
+
     public override int GetFreezeFrames(Entity to) {
         return 4;
     }

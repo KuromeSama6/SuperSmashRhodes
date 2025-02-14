@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1135697620480440147, guid: 869df265edc9b1e489d328c95c4d65cf, type: 3}
+      propertyPath: boneName
+      value: F_Waist_B
+      objectReference: {fileID: 0}
     - target: {fileID: 2764539944195769258, guid: 869df265edc9b1e489d328c95c4d65cf, type: 3}
       propertyPath: config
       value: 
@@ -71,6 +75,10 @@ PrefabInstance:
     - target: {fileID: 3132066959301301514, guid: 869df265edc9b1e489d328c95c4d65cf, type: 3}
       propertyPath: m_Name
       value: Chen
+      objectReference: {fileID: 0}
+    - target: {fileID: 5912529609646579051, guid: 869df265edc9b1e489d328c95c4d65cf, type: 3}
+      propertyPath: boneName
+      value: F_Waist_B
       objectReference: {fileID: 0}
     - target: {fileID: 7313164139058482545, guid: 869df265edc9b1e489d328c95c4d65cf, type: 3}
       propertyPath: skeletonDataAsset

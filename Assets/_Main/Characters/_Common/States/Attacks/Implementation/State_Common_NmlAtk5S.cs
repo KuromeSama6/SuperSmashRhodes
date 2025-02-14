@@ -17,7 +17,10 @@ public abstract class State_Common_NmlAtk5S : State_Common_NormalAttack {
 
     protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER | EntityStateType.CHR_ATK_NORMAL_H;
     protected override InputFrame[] requiredInput => new InputFrame[] {new(InputType.S, InputFrameType.PRESSED)};
-
+    public override void OnContact(Entity to) {
+        base.OnContact(to);
+        AddCancelOption("CmnJump");
+    }
     public override int GetFreezeFrames(Entity to) {
         return 6;
     }

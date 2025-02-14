@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using Spine;
 using Spine.Unity;
+using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEngine;
 using UnityEngine.Events;
 using AnimationState = Spine.AnimationState;
@@ -15,6 +16,10 @@ public class EntityAnimationController : MonoBehaviour {
     private List<TrackBlend> blends = new();
     private PlayerCharacter player;
     private float currentTimeScale = 1f;
+
+    private float extractedFrameTime = 0f;
+    
+    public float targetFrameRate => player.activeState.stateData.targetFrameRate;
     
     private void Start() {
         animation = GetComponentInChildren<SkeletonAnimation>();
@@ -49,6 +54,7 @@ public class EntityAnimationController : MonoBehaviour {
         try {
             state.AddAnimation(0, name, loop, transitionTime);
             currentTimeScale = 1;
+            extractedFrameTime = 0;
 
         } catch (ArgumentException e) {
             Debug.LogWarning($"Animation {name} not found in {animation.skeletonDataAsset.name}");
@@ -58,11 +64,29 @@ public class EntityAnimationController : MonoBehaviour {
 
     public void Tick(int frames = 1) {
         if (animation == null) return;
-        animation.Update(frames * Time.fixedDeltaTime * currentTimeScale);
+
+        if (1 / targetFrameRate <= Time.fixedDeltaTime) {
+            animation.Update(frames * Time.fixedDeltaTime * currentTimeScale);  
+            return;
+        }
+        
+        var frameTime = 1f / targetFrameRate;
+
+        bool shouldPlay = extractedFrameTime == 0;
+        extractedFrameTime += Time.fixedDeltaTime;
+        if (extractedFrameTime > frameTime) {
+            extractedFrameTime = 0;
+            shouldPlay = true;
+        }
+        
+        if (shouldPlay) {
+            animation.Update(frames * frameTime * currentTimeScale * .5f);   
+        }
     }
 
     public void SetFrame(int frame) {
         state.GetCurrent(0).TrackTime = frame * Time.fixedDeltaTime;
+        extractedFrameTime = 0;
     }
     
     private void OnUserDefinedEvent(TrackEntry trackEntry, Spine.Event e) {

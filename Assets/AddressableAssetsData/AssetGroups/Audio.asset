@@ -20,8 +20,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 07d4c7978273e3843b7547b155d74303
+    m_Address: cmn/battle/sfx/super
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0b58b7a3003ffce4eba7e71ffdde6dfd
     m_Address: chr/exusiai/battle/sfx/gun_shell_2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1181d72451737b547a901ed21b686ba9
+    m_Address: chr/exusiai/battle/fx/camerashake/632146d
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -65,8 +75,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3234be45de38b464a8ba73185604c77d
+    m_Address: chr/exusiai/battle/vo/632146d/0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 362628f81f7684743befcb15ec19e340
     m_Address: chr/exusiai/battle/sfx/gun_2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 39c7a34694734ae41ac8a97c63f7fa4a
+    m_Address: chr/exusiai/battle/vo/632146d/1
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -117,6 +137,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 635b697f859c57b49aa1b94dc9859a99
     m_Address: cmn/battle/sfx/attack/sword/10
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7cca05b640721d74e876a3dddc9ee06a
+    m_Address: chr/exusiai/battle/sfx/632146d/shot
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -176,7 +201,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c07f178f04a5a7e48b312baa56eaa83c
-    m_Address: cmn/battle/sfx/movemnt/airdash
+    m_Address: cmn/battle/sfx/movement/airdash
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -207,6 +232,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e9ed3ab2096d8f2479253b64cf89e015
     m_Address: cmn/battle/sfx/attack/sword/11
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e9ff09133d5309648bcab82013b52f16
+    m_Address: chr/exusiai/battle/sfx/632146d/blast
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -12,7 +12,7 @@ public class PlayerBurstGauge : CharacterComponent {
     public bool burstAvailable { get; set; }
     public bool burstUsed { get; set; }
 
-    public bool canBurst => burstAvailable && !burstUsed && !player.unmanagedTime.flags.HasFlag(UnmanagedTimeSlotFlags.DISABLE_BURST);
+    public bool canBurst => burstAvailable && !burstUsed && !player.stateFlags.HasFlag(CharacterStateFlag.DISABLE_BURST);
     
     private void Start() {
         

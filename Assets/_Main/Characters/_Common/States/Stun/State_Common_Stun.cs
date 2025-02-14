@@ -24,6 +24,7 @@ public abstract class State_Common_Stun : CharacterState {
 
     public override IEnumerator MainRoutine() {
         while (frames > 0) {
+            // Debug.Log("tick");
             player.ApplyGroundedFriction();
             // Debug.Log($"stun {frames}");
 

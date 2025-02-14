@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using SuperSmashRhodes.Battle;
+using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Framework;
 using UnityEngine;
@@ -40,19 +41,28 @@ public class State_CmnHitStunAir : State_Common_Stun {
     protected override string animationName => "std/hitstun_air";
     public override EntityStateType type => EntityStateType.CHR_HITSTUN;
     public override bool mayEnterState => player.airborne;
-
+    private bool landed = false;
+    private LandingRecoveryFlag landingRecoveryFlag;
+    
     protected override void OnStateBegin() {
         base.OnStateBegin();
         player.airborne = true;
+        stateData.targetFrameRate = 12;
+        landed = false;
+        landingRecoveryFlag = LandingRecoveryFlag.NONE;
     }
 
     public override IEnumerator MainRoutine() {
-        while (true) yield return 1;
+        while (!landed) {
+            yield return 1;
+        }
+        CancelInto(landingRecoveryFlag.HasFlag(LandingRecoveryFlag.HARD_KNOCKDOWN_LAND) ? "CmnHardKnockdown" : "CmnSoftKnockdown");
     }
 
     public override void OnLand(LandingRecoveryFlag flag, int recoveryFrames) {
         base.OnLand(flag, recoveryFrames);
-        CancelInto(flag.HasFlag(LandingRecoveryFlag.HARD_KNOCKDOWN_LAND) ? "CmnHardKnockdown" : "CmnSoftKnockdown");
+        landed = true;
+        landingRecoveryFlag = flag;
     }
 }
 

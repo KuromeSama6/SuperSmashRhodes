@@ -125,7 +125,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         return buffer.TimeSlice(frames).ScanForInput(entity.side, input); 
     }
     
-    public float GetMeterGain(Entity to, bool blocked) {
+    public virtual float GetMeterGain(Entity to, bool blocked) {
         var attackLevel = GetAttackLevel(to);
         return (attackLevel + 1) * 1.5f * (blocked ? 1f : 2f) * player.comboCounter.finalScale;
     }
@@ -209,6 +209,11 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         } else {
             return frameData.active + frameData.recovery + frameData.onHit;
         }
+    }
+    public override void OnLand(LandingRecoveryFlag flag, int recoveryFrames) {
+        base.OnLand(flag, recoveryFrames);
+        player.frameData.landingRecoveryFrames = 3;
+        CancelInto("CmnLandingRecovery");
     }
 }
 }

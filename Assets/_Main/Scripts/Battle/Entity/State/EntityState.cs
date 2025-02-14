@@ -6,8 +6,10 @@ using System.Reflection;
 using NUnit.Framework;
 using Spine;
 using SuperSmashRhodes.Battle.Animation;
+using SuperSmashRhodes.Battle.State.Implementation;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Input;
+using SuperSmashRhodes.UI.Battle.AnnouncerHud;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -61,6 +63,7 @@ public abstract class EntityState : NamedToken {
         frame = 0;
         interruptFrames = 0;
         scheduledPauseAnimationFrames = 0;
+        
         Init();
         active = true;
     }
@@ -197,7 +200,7 @@ public abstract class EntityState : NamedToken {
     [AnimationEventHandler("std/ApplyCinematicDamage")]
     public virtual void OnApplyCinematicDamage(AnimationEventData data) {
         if (entity is PlayerCharacter player) {
-            player.opponent.ApplyDamage(data.integerValue, null, DamageSpecialProperties.REAL_DAMAGE | DamageSpecialProperties.SKIP_REGISTER);
+            player.opponent.ApplyDamage(data.integerValue, null, DamageSpecialProperties.SKIP_REGISTER);
         }
     }
     
@@ -217,7 +220,7 @@ public abstract class EntityState : NamedToken {
     public virtual void OnPlaySoundLoop(AnimationEventData data) {
         var path = data.args[0];
         var volume = data.args.Length > 1 ? float.Parse(data.args[1]) : 1f;
-        entity.audioManager.PlaySoundLoop(path, volume);
+        entity.audioManager.PlaySoundLoop(path, volume, true);
     }
     
     [AnimationEventHandler("std/StopSoundLoop")]
@@ -230,6 +233,7 @@ public abstract class CharacterState : EntityState {
     public PlayerCharacter player { get; private set; }
     protected PlayerCharacter opponent => player.opponent;
     public abstract float inputPriority { get; }
+    public virtual StateIndicatorFlag stateIndicator => StateIndicatorFlag.NONE;
 
     protected bool RevalidateInput() {
         return IsInputValid(GetCurrentInputBuffer());
@@ -244,6 +248,11 @@ public abstract class CharacterState : EntityState {
     public CharacterState(Entity entity) : base(entity) {
         player = (PlayerCharacter)entity;
     }
+
+    protected override void OnStateBegin() {
+        base.OnStateBegin();
+    }
+
     public abstract bool IsInputValid(InputBuffer buffer);
 }
 

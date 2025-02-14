@@ -29,10 +29,10 @@ public class CharacterConfiguration : ScriptableObject {
     
     [TabGroup("playerConfig", "Dash", SdfIconType.ArrowRight, TextColor = "yellow")]
     [SerializeField]
-    private int backdashInvuln, airOptions, airDashCancellableFrame, airDashAvailableFrame, airDashDuration;
+    private int backdashInvuln, airOptions, airDashCancellableFrame, airDashAvailableFrame, airDashDuration, airBackdashDuration;
     [TabGroup("playerConfig", "Dash", SdfIconType.ArrowRight, TextColor = "yellow")]
     [SerializeField]
-    private float dashSpeed, airdashSpeed;
+    private float dashSpeed, airdashSpeed, airBackdashSpeed;
     [TabGroup("playerConfig", "Dash", SdfIconType.ArrowRight, TextColor = "yellow")]
     [SerializeField]
     private Vector2 backdashVelocity;
@@ -49,8 +49,10 @@ public class CharacterConfiguration : ScriptableObject {
     public float dashSpeedFinal => 3 + dashSpeed;
     public int airDashAvailableFrameFinal => 7 + airDashAvailableFrame;
     public int airDashDurationFinal => 24 + airDashDuration;
-    public int airDashCancellableFrameFinal => 18 + airDashCancellableFrame;
-    public float airdashSpeedFinal => 7 + airdashSpeed;
+    public int airDashCancellableFrameFinal => 9 + airDashCancellableFrame;
+    public float airDashSpeedFinal => 7 + airdashSpeed;
+    public float airBackdashSpeedFinal => 5.5f + airBackdashSpeed;
+    public int airBackdashDurationFinal => 14 + airBackdashDuration;
     public int airOptionsFinal => 1 + airOptions;
     public Vector2 backdashVelocityFinal => new Vector2(-3, 3) + backdashVelocity;
 }

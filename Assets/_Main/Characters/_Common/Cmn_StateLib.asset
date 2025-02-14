@@ -34,4 +34,5 @@ MonoBehaviour:
   - CmnLandingRecovery
   - CmnBackdash
   - CmnAirDash
+  - CmnAirBackdash
   - CmnBurst
