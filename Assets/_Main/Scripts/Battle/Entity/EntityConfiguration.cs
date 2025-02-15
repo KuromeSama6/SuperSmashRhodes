@@ -26,6 +26,7 @@ public enum EntityType {
     TOKEN,
     PROJECTILE,
     SUMMON,
-    SUBATTACK
+    SUBATTACK,
+    COSMETIC
 }
 }

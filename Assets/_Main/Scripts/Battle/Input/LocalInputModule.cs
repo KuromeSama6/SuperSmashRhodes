@@ -47,7 +47,12 @@ public class LocalInputModule : MonoBehaviour, IInputProvider {
             {
                 if (input.actions.FindAction("Dash").ReadValue<float>() > 0f) toPush.Add(new(InputType.DASH, InputFrameType.HELD));
                 if (input.actions.FindAction("Crouch").ReadValue<float>() > 0f) toPush.Add(new(InputType.DOWN, InputFrameType.HELD));
+                if (input.actions.FindAction("Jump").ReadValue<float>() > 0f) toPush.Add(new(InputType.UP, InputFrameType.HELD));
+                
                 if (input.actions.FindAction("Drive").ReadValue<float>() > 0f) toPush.Add(new(InputType.D, InputFrameType.HELD));
+                if (input.actions.FindAction("HeavySlash").ReadValue<float>() > 0f) toPush.Add(new(InputType.HS, InputFrameType.HELD));
+                if (input.actions.FindAction("Slash").ReadValue<float>() > 0f) toPush.Add(new(InputType.S, InputFrameType.HELD));
+                if (input.actions.FindAction("Punch").ReadValue<float>() > 0f) toPush.Add(new(InputType.P, InputFrameType.HELD));
             }
 
             localBuffer.PushAndTick(toPush.ToArray());

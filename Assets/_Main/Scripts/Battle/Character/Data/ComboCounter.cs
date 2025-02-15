@@ -39,22 +39,27 @@ public class ComboCounter : RuntimeCharacterDataRegister {
         appliedProration *= move.GetComboProration(victim);
         
         // same move penalty
+
         if (countSameMove) {
             if (movesUsed.ContainsKey(move.id)) {
                 ++movesUsed[move.id];
                 comboDecay += 0.4f * (movesUsed[move.id] + 1) * multiplier;
 
-            } else movesUsed[move.id] = 1;   
+            } else {
+                movesUsed[move.id] = 1;
+            }    
         }
 
-        {
+        if (countSameMove || !movesUsed.ContainsKey(move.id)) {
             // combo decay
+            // Debug.Log($"add decay, {countSameMove} {movesUsed.ContainsKey(move.id)}");
             var amount = move.GetComboDecay(victim);
             if (victim is PlayerCharacter player) {
-                if (!player.airborne) amount *= .1f;
+                if (!player.airborne) amount *= .5f;
             }
-
             comboDecay += amount * multiplier;
+            
+            if (!countSameMove) movesUsed[move.id] = 1;
         }
     }
 
@@ -75,7 +80,7 @@ public class ComboCounter : RuntimeCharacterDataRegister {
         movesUsed.Clear();
         
         //TODO: Demove Debug
-        // owner.health = owner.config.health;
+        owner.health = owner.config.health;
 
         // Debug.Log($"{owner} combo end");
     }

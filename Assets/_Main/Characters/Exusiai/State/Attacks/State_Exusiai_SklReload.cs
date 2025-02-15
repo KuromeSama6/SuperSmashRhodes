@@ -22,6 +22,8 @@ public class State_Exusiai_SklReload : State_Common_SpecialAttack {
         new InputFrame(InputType.D, InputFrameType.PRESSED),
     };
 
+    public override Hitstate hitstate => Hitstate.COUNTER;
+
     protected override void OnStateBegin() {
         base.OnStateBegin();
         chambered = entity.GetComponent<Gauge_Exusiai_AmmoGauge>().chambered;
@@ -59,6 +61,9 @@ public class State_Exusiai_SklReload : State_Common_SpecialAttack {
     }
     public override int GetAttackLevel(Entity to) {
         return 0;
+    }
+    public override CounterHitType GetCounterHitType(Entity to) {
+        return CounterHitType.EXSMALL;
     }
 }
 }

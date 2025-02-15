@@ -1,4 +1,5 @@
-﻿using SuperSmashRhodes.Battle;
+﻿using System.Collections;
+using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Battle.State.Implementation;
@@ -84,6 +85,9 @@ public class State_Exusiai_NmlAtk2S : State_Exusiai_MultihitWeaponAttack {
     public override int GetAttackLevel(Entity to) {
         return 1;
     }
+    public override CounterHitType GetCounterHitType(Entity to) {
+        return CounterHitType.MEDIUM;
+    }
 }
 
 [NamedToken("Exusiai_NmlAtk5H")]
@@ -123,6 +127,9 @@ public class State_Exusiai_NmlAtk5H : State_Exusiai_MultihitWeaponAttack {
     public override int GetAttackLevel(Entity to) {
         return 4;
     }
+    public override CounterHitType GetCounterHitType(Entity to) {
+        return CounterHitType.MEDIUM;
+    }
 }
 
 [NamedToken("Exusiai_NmlAtk2H")]
@@ -145,7 +152,7 @@ public class State_Exusiai_NmlAtk2H : State_Exusiai_MultihitWeaponAttack {
         return 31;
     }
     public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
-        return new Vector2(1.2f, 10f) * (blocked ? 0.7f : 1f);
+        return new Vector2(0.2f, 9f) * (blocked ? 0.7f : 1f);
     }
     public override AttackGuardType GetGuardType(Entity to) {
         return AttackGuardType.CROUCHING;
@@ -161,13 +168,16 @@ public class State_Exusiai_NmlAtk2H : State_Exusiai_MultihitWeaponAttack {
     public override int GetAttackLevel(Entity to) {
         return 4;
     }
+    public override CounterHitType GetCounterHitType(Entity to) {
+        return CounterHitType.LARGE;
+    }
 }
 
 [NamedToken("Exusiai_NmlAtk6H")]
 public class State_Exusiai_NmlAtk6H : State_Exusiai_MultihitWeaponAttack {
     private int audioHandle;
     public State_Exusiai_NmlAtk6H(Entity entity) : base(entity) {
-        onFireStart.AddListener(() => audioHandle = entity.audioManager.PlaySoundLoop("chr/exusiai/battle/sfx/gun_loop", 0.5f));
+        onFireStart.AddListener(() => audioHandle = entity.audioManager.PlaySoundLoop("chr/exusiai/battle/sfx/gun_loop", 0.5f, true));
         onFireEnd.AddListener(() => entity.audioManager.StopSoundLoop(audioHandle, "chr/exusiai/battle/sfx/gun_loop_tail", 0.5f));
     }
     protected override string mainAnimation => "cmn/NmlAtk6H";
@@ -187,7 +197,7 @@ public class State_Exusiai_NmlAtk6H : State_Exusiai_MultihitWeaponAttack {
         return 38;
     }
     public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
-        return new Vector2(1.5f, 7f) * (blocked ? 0.7f : 1f);
+        return new Vector2(1f, 7.5f) * (blocked ? 0.7f : 1f);
     }
     public override AttackGuardType GetGuardType(Entity to) {
         return AttackGuardType.ALL;
@@ -203,6 +213,13 @@ public class State_Exusiai_NmlAtk6H : State_Exusiai_MultihitWeaponAttack {
 
     public override int GetAttackLevel(Entity to) {
         return 4;
+    }
+    public override CounterHitType GetCounterHitType(Entity to) {
+        return CounterHitType.LARGE;
+    }
+
+    public override float GetAtWallPushbackMultiplier(Entity to) {
+        return 0.2f;
     }
 }
 
@@ -310,6 +327,11 @@ public class State_Exusiai_NmlAtk5D : State_Exusiai_DriveAttack {
         }
         return new Vector2(1.5f, 1f);
     }
+
+    public override void OnHit(Entity target) {
+        base.OnHit(target);
+        AddCancelOption("CmnJump");
+    }
 }
 
 [NamedToken("Exusiai_NmlAtk2D")]
@@ -320,7 +342,7 @@ public class State_Exusiai_NmlAtk2D : State_Exusiai_DriveAttack {
     protected override string mainAnimation => "cmn/NmlAtk2D";
     protected override InputFrame[] requiredInput => new InputFrame[] {new (InputType.DOWN, InputFrameType.HELD), new(InputType.D, InputFrameType.PRESSED)};
     public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
-        return new Vector2(0.7f, 2.3f) * (blocked ? 0.7f : 1f);
+        return new Vector2(0.7f, 2.3f);
     }
 }
 
@@ -350,5 +372,98 @@ public class State_Exusiai_NmlAtk4D : State_Exusiai_DriveAttack {
         return new Vector2(2f, 0f) * (blocked ? 0.7f : 1f);
     }
 }
+
+[NamedToken("Exusiai_NmlAtk8D")]
+public class State_Exusiai_NmlAtk8D : State_Exusiai_DriveAttack {
+    public State_Exusiai_NmlAtk8D(Entity entity) : base(entity) { }
+    public override EntityStateType type => EntityStateType.CHR_ATK_8D;
+    public override float inputPriority => 3f;
+
+    protected override string mainAnimation => "cmn/NmlAtk8D";
+    protected override InputFrame[] requiredInput => new InputFrame[] {new(InputType.D, InputFrameType.PRESSED)};
+    protected override AttackAirOkType airOk => AttackAirOkType.AIR;
+    public override LandingRecoveryFlag landingRecoveryFlag => LandingRecoveryFlag.UNTIL_LAND;
+    public override AttackFrameData frameData => new AttackFrameData() {
+        startup = 16,
+        active = 2,
+        recovery = 12,
+        onBlock = 0
+    };
+
+    public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
+        if (bulletsShot > 7) {
+            return new Vector2(1.7f, 1.5f);
+        }
+        return new Vector2(1.5f, 1f);
+    }
+
+    protected override void OnStateBegin() {
+        base.OnStateBegin();
+    }
+
+    protected override void OnActive() {
+        base.OnActive();
+        stateData.gravityScale = 0;
+        player.rb.linearVelocity = Vector2.zero;
+    }
+
+    protected override void OnRecovery() {
+        base.OnRecovery();
+        stateData.gravityScale = 1;
+    }
+
+    protected override void OnShotFired() {
+        base.OnShotFired();
+        player.rb.linearVelocity = Vector2.zero;
+        player.rb.AddForce(player.TranslateDirectionalForce(new(-1, 0)), ForceMode2D.Impulse);
+    }
+}
+
+[NamedToken("Exusiai_NmlAtk82D")]
+public class State_Exusiai_NmlAtk82D : State_Exusiai_DriveAttack {
+    public State_Exusiai_NmlAtk82D(Entity entity) : base(entity) { }
+    public override EntityStateType type => EntityStateType.CHR_ATK_82D;
+    public override float inputPriority => 3.1f;
+    protected override string mainAnimation => "cmn/NmlAtk82D";
+    protected override InputFrame[] requiredInput => new InputFrame[] {new (InputType.DOWN, InputFrameType.HELD), new(InputType.D, InputFrameType.PRESSED)};
+    protected override AttackAirOkType airOk => AttackAirOkType.AIR;
+    public override LandingRecoveryFlag landingRecoveryFlag => LandingRecoveryFlag.UNTIL_LAND;
+    public override AttackFrameData frameData => new AttackFrameData() {
+        startup = 16,
+        active = 2,
+        recovery = 20,
+        onBlock = -18
+    };
+
+    public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
+        if (bulletsShot > 7) {
+            return new Vector2(1.7f, 1.5f);
+        }
+        return new Vector2(1.5f, 1f);
+    }
+
+    protected override void OnStateBegin() {
+        base.OnStateBegin();
+    }
+
+    protected override void OnActive() {
+        base.OnActive();
+        stateData.gravityScale = 0;
+        player.rb.linearVelocity = Vector2.zero;
+    }
+
+    protected override void OnRecovery() {
+        base.OnRecovery();
+        stateData.gravityScale = 1;
+    }
+
+    protected override void OnShotFired() {
+        base.OnShotFired();
+        player.rb.linearVelocity = Vector2.zero;
+        player.rb.AddForce(player.TranslateDirectionalForce(new(-1, 1)), ForceMode2D.Impulse);
+    }
+
+}
+
 
 }

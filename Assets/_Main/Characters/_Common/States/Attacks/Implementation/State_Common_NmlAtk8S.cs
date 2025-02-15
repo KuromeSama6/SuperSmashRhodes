@@ -35,5 +35,9 @@ public abstract class State_Common_NmlAtk8S : State_Common_AirNormalAttack {
     public override int GetAttackLevel(Entity to) {
         return 2;
     }
+    
+    public override CounterHitType GetCounterHitType(Entity to) {
+        return CounterHitType.MEDIUM;
+    }
 }
 }

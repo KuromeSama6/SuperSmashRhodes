@@ -30,8 +30,8 @@ public class State_Exusiai_OvrSklOverload : State_Common_OverdriveAttack {
     protected override int framesBeforeSuperfreeze => 13;
     protected override int farHitSkipFrame => 360;
     protected override int farHitActiveFrames => 2;
-    protected override float cinematicHitDistance => 3.5f;
-    protected override float cinematicTotalLength => 381;
+    protected override float cinematicHitDistance => 4f;
+    protected override float cinematicTotalLength => 381; 
     public override StateIndicatorFlag stateIndicator => base.stateIndicator | (cinematicHit ? StateIndicatorFlag.INVINCIBLE : StateIndicatorFlag.NONE);
 
     public State_Exusiai_OvrSklOverload(Entity entity) : base(entity) { }
@@ -52,6 +52,9 @@ public class State_Exusiai_OvrSklOverload : State_Common_OverdriveAttack {
         if (cinematic) {
             opponent.stateFlags |= CharacterStateFlag.NO_CAMERA_WEIGHT;
             player.stateFlags |= CharacterStateFlag.CAMERA_FOLLOW_BONE;
+
+            var gauge = player.GetComponent<Gauge_Exusiai_AmmoGauge>();
+            if (gauge.chambered) gauge.currentMagazine.ammo = 30;
 
             player.CallLaterCoroutine(1.3f, () => {
                 player.audioManager.PlaySound($"chr/exusiai/battle/vo/632146d/{Random.Range(0, 2)}");
@@ -93,7 +96,7 @@ public class State_Exusiai_OvrSklOverload : State_Common_OverdriveAttack {
         
         if (cinematicHit) {
             opponent.fxManager.PlayGameObjectFX("chr/exusiai/fx/prefab/632146d/explosion", CharacterFXSocketType.WORLD_UNBOUND, opponent.transform.position);
-            player.opponent.ApplyDamage(38f, null, DamageSpecialProperties.SKIP_REGISTER);
+            player.opponent.ApplyDamage(38f, CreateAttackData(opponent), DamageSpecialProperties.SKIP_REGISTER);
         }
         
         TimeManager.inst.globalFreezeFrames = 15;
@@ -110,6 +113,9 @@ public class State_Exusiai_OvrSklOverload : State_Common_OverdriveAttack {
         
         SimpleCameraShakePlayer.inst.Play("chr/exusiai/battle/fx/camerashake/632146d", "shot");
         
+    }
+    public override CounterHitType GetCounterHitType(Entity to) {
+        return CounterHitType.MEDIUM;
     }
 }
 }

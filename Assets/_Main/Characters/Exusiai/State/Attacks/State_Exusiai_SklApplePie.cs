@@ -25,6 +25,8 @@ public class State_Exusiai_SklApplePie : State_Common_SummonOnlySpecialAttack {
         onHit = 0, onBlock = 0
     };
 
+    public override Hitstate hitstate => Hitstate.COUNTER;
+
     protected override InputFrame[] requiredInput => new[] {
         new InputFrame(InputType.DOWN, InputFrameType.HELD), new InputFrame(InputType.FORWARD, InputFrameType.PRESSED), new InputFrame(InputType.HS, InputFrameType.PRESSED)
     };

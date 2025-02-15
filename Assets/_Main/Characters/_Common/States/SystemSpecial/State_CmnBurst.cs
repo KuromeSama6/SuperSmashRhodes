@@ -97,6 +97,9 @@ public class State_CmnBurst : CharacterAttackStateBase {
     public override int GetAttackLevel(Entity to) {
         return 3;
     }
+    public override CounterHitType GetCounterHitType(Entity to) {
+        return CounterHitType.EXSMALL;
+    }
     public override AttackSpecialProperties GetSpecialProperties(Entity to) {
         return AttackSpecialProperties.IGNORE_INVINCIBILITY | AttackSpecialProperties.HARD_KNOCKDOWN | AttackSpecialProperties.FORCE_LAUNCH;
     }

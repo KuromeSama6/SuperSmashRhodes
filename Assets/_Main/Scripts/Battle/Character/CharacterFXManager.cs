@@ -12,8 +12,6 @@ using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.FX {
 public class CharacterFXManager : MonoBehaviour {
-    [Title("References")]
-    public CharacterFXLibrary fxLibrary;
     [Title("Sockets")]
     public UDictionary<CharacterFXSocketType, Transform> sockets = new();
     [BoxGroup("Direct Managed")]
@@ -49,6 +47,18 @@ public class CharacterFXManager : MonoBehaviour {
         });
     }
 
+    public void PlayGameObjectFXAtSocket(string key, String socket, Vector3 offset = default, Vector3 direction = default, Vector3? scale = null) {
+        AssetManager.Get<GameObject>(key, (prefab) => {
+            var target = player.socketsContainer.Find(socket);
+            if (target == null) {
+                Debug.LogError($"Socket {socket} not found");
+                return;
+            }
+            
+            PlayGameObjectFX(prefab, CharacterFXSocketType.WORLD_UNBOUND, target.position + offset, direction, scale);
+        });
+    }
+    
     public void PlayFlipbookFX(string key, CharacterFXSocketType type, Vector3 offset = default, Vector3 direction = default, Vector3? scale = null, string sortingLayer = "BehindCharacter") {
         AssetManager.Get<FlipbookData>(key, data => {
             var go = new GameObject($"Flipbook_{key}");
@@ -105,14 +115,14 @@ public class CharacterFXManager : MonoBehaviour {
 
         switch (attack.GetAttackLevel(data.to)) {
             case 1:
-                SimpleCameraShakePlayer.inst.Play(fxLibrary.cameraShakeOnHitSmall);
+                SimpleCameraShakePlayer.inst.PlayCommon("hit_small");
                 break;
             case 2:
             case 3:
-                SimpleCameraShakePlayer.inst.Play(fxLibrary.cameraShakeOnHitMedium);
+                SimpleCameraShakePlayer.inst.PlayCommon("hit_medium");
                 break;
             case 4:
-                SimpleCameraShakePlayer.inst.Play(fxLibrary.cameraShakeOnHitLarge);
+                SimpleCameraShakePlayer.inst.PlayCommon("hit_large");
                 break;
         }
         

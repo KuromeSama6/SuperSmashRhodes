@@ -24,14 +24,15 @@ public abstract class EntityState : NamedToken {
     public virtual AttackType invincibility => AttackType.NONE;
     public virtual bool isSelfCancellable => false;
     public virtual bool enableHitboxes => true;
+    public int activeRoutines => routines.Count;
 
     public UnityEvent onStateEnd { get; } = new();
     
     private int interruptFrames;
     private int scheduledPauseAnimationFrames;
     private readonly Dictionary<string, List<MethodInfo>> animationEventHandlers = new();
-    private readonly Stack<IEnumerator> routines = new();
-    private IEnumerator currentRoutine => routines.Count > 0 ? routines.Peek() : null;
+    private readonly Stack<SubroutineWrapper> routines = new();
+    private SubroutineWrapper currentRoutine => routines.Count > 0 ? routines.Peek() : null;
     
     public EntityState(Entity entity) {
         this.entity = entity;
@@ -54,7 +55,7 @@ public abstract class EntityState : NamedToken {
 
     private void Init() {
         OnStateBegin();
-        routines.Push(MainRoutine());
+        routines.Push(new SubroutineWrapper(MainRoutine(), 0));
     }
 
     public void BeginState() {
@@ -70,13 +71,14 @@ public abstract class EntityState : NamedToken {
     
     public void TickState() {
         if (!active) return;
+        
         ++frame;
 
-        // Debug.Log($"frames: {PhysicsTickManager.inst.globalFreezeFrames}"); 
+        // if (entity.entityId == 0) Debug.Log($"frame {frame} {currentRoutine.enumerator}"); 
         OnTick();
         
         // scheduled animation
-        if (entity.shouldTickAnimation) {
+        if (entity.shouldTickAnimation && !currentRoutine.flags.HasFlag(SubroutineFlags.PAUSE_ANIMATION)) {
             if (scheduledPauseAnimationFrames > 0) {
                 --scheduledPauseAnimationFrames;
             
@@ -90,18 +92,25 @@ public abstract class EntityState : NamedToken {
         
         if (interruptFrames > 0) {
             --interruptFrames;
+            // Debug.Log("interrupt");
             return;
         }
         
-        if (currentRoutine.MoveNext()) {
-            var current = currentRoutine.Current;
+        if (currentRoutine.enumerator.MoveNext()) {
+            var current = currentRoutine.enumerator.Current;
             HandleRoutineReturn(current);
+            // if (entity.entityId == 0) Debug.Log($"routine tick, state={id} routine={currentRoutine}, rem={routines.Count}, current={current}");
             
         } else {
             if (routines.Count > 1) {
-                routines.Pop();
+                var popped = routines.Pop();
                 HandleRoutineReturn(null);
-                
+                frame = popped.parentFrame;
+                if (entity.shouldTickAnimation) {
+                    entity.animation.Tick();
+                }
+                // Debug.Log($"routine end, rem={routines.Count}");
+
             } else {
                 EndState(entity.GetDefaultState().id);
             }
@@ -136,8 +145,14 @@ public abstract class EntityState : NamedToken {
         if (obj == null) return;
         
         // interrupt frames
+        // if (entity.entityId == 0) Debug.Log($"handle ret {obj} {obj.GetType()}");
         if (obj is int framesSkipped) {
             interruptFrames += Mathf.Max(framesSkipped - 1, 0);
+            return;
+        }
+        
+        if (obj is float framesSkippedFloat) {
+            interruptFrames += Mathf.Max((int)framesSkippedFloat - 1, 0);
             return;
         }
 
@@ -147,10 +162,19 @@ public abstract class EntityState : NamedToken {
         }
 
         if (obj is IEnumerator enumerator) {
-            routines.Push(enumerator);
+            routines.Push(new SubroutineWrapper(enumerator, frame));
             return;
         }
         
+        if (obj is SubroutineWrapper wrapper) {
+            routines.Push(wrapper);
+            return;
+        }
+        
+    }
+    
+    public void BeginSubroutine(IEnumerator routine, SubroutineFlags flags = SubroutineFlags.PAUSE_ANIMATION) {
+        routines.Push(new SubroutineWrapper(routine, frame, flags));
     }
     
     // Member methods
@@ -189,7 +213,9 @@ public abstract class EntityState : NamedToken {
     }
     
     // Virtual methods / Events
-    protected virtual void OnTick() { }
+    protected virtual void OnTick() {
+    }
+    
     protected virtual void OnStateBegin() { }
     protected virtual void OnStateEnd(string nextState) {}
     public virtual void OnLand(LandingRecoveryFlag flag, int recoveryFrames) {}
@@ -200,7 +226,7 @@ public abstract class EntityState : NamedToken {
     [AnimationEventHandler("std/ApplyCinematicDamage")]
     public virtual void OnApplyCinematicDamage(AnimationEventData data) {
         if (entity is PlayerCharacter player) {
-            player.opponent.ApplyDamage(data.integerValue, null, DamageSpecialProperties.SKIP_REGISTER);
+            player.opponent.ApplyDamage(data.integerValue, null, DamageSpecialProperties.SKIP_REGISTER | DamageSpecialProperties.IGNORE_COMBO_DECAY); 
         }
     }
     
@@ -231,10 +257,15 @@ public abstract class EntityState : NamedToken {
 
 public abstract class CharacterState : EntityState {
     public PlayerCharacter player { get; private set; }
+    public int chargeLevel { get; protected set; }
+    
     protected PlayerCharacter opponent => player.opponent;
     public abstract float inputPriority { get; }
     public virtual StateIndicatorFlag stateIndicator => StateIndicatorFlag.NONE;
-
+    public virtual Hitstate hitstate => Hitstate.NONE;
+    public bool charging { get; protected set; }
+    
+    
     protected bool RevalidateInput() {
         return IsInputValid(GetCurrentInputBuffer());
     }
@@ -251,8 +282,35 @@ public abstract class CharacterState : EntityState {
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
+        chargeLevel = 0;
+        charging = false;
     }
 
+    protected override void OnTick() {
+        base.OnTick();
+        {
+            // charge
+            if (this is IChargable chargable && !charging) {
+                // Debug.Log($"chargable, entry = {chargable.chargeEntryFrame}, mayCharge = {chargable.mayCharge}");
+                if (frame == chargable.chargeEntryFrame && chargable.mayCharge) {
+                    // Debug.Log("charge start");
+                    BeginSubroutine(chargable.ChargeRoutine());
+                    OnChargeBegin();
+                }
+            }
+        }
+    }
+
+    public void AddCharge(int levels) {
+        chargeLevel += levels;
+        OnCharge(chargeLevel);
+    }
+
+    protected virtual void OnChargeBegin() {
+        charging = true;
+    }
+    protected virtual void OnCharge(int newLevel) {}
+    
     public abstract bool IsInputValid(InputBuffer buffer);
 }
 

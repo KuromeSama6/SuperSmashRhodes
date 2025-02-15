@@ -16,6 +16,7 @@ public class State_CmnSoftKnockdown : CharacterState {
         get {
             var ret = StateIndicatorFlag.NONE;
             if (stateData.TryGetCarriedVariable<bool>("_fromThrowTech", out _)) {
+                // ret |= StateIndicatorFlag.THROW;
                 ret |= StateIndicatorFlag.THROW_TECH;
             }
             return ret;

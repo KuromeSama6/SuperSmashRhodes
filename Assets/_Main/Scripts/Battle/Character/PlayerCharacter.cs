@@ -2,15 +2,19 @@
 using System.Linq;
 using JetBrains.Annotations;
 using Sirenix.OdinInspector;
+using Spine.Unity;
 using SuperSmashRhodes.Adressable;
 using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.Game;
+using SuperSmashRhodes.Battle.Postprocess;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Battle.State.Implementation;
 using SuperSmashRhodes.Character.Gauge;
 using SuperSmashRhodes.Input;
 using SuperSmashRhodes.Runtime.State;
+using SuperSmashRhodes.UI.Battle;
+using SuperSmashRhodes.UI.Battle.AnnouncerHud;
 using SuperSmashRhodes.Util;
 using UnityEngine;
 using UnityEngine.Events;
@@ -93,6 +97,7 @@ public class PlayerCharacter : Entity {
             return true;
         }
     }
+    
     public override bool shouldTickState {
         get {
             if (stateFlags.HasFlag(CharacterStateFlag.PAUSE_STATE)) return false;
@@ -152,6 +157,7 @@ public class PlayerCharacter : Entity {
         var ret = characterConfig.baseGravityFinal;
         if (comboCounter.inCombo) {
             var decay = comboCounter.comboDecay;
+            // Debug.Log(decay);
             var data = opponent.comboDecayData;
             ret *= data.opponentGravityCurve.Evaluate(decay);
         }
@@ -298,7 +304,6 @@ public class PlayerCharacter : Entity {
 
     protected override IAttack OnOutboundHit(Entity victim, EntityBBInteractionData data) {
         base.OnOutboundHit(victim, data);
-        // Debug.Log("outbound");
         
         if (victim is PlayerCharacter player) {
             return ProcessOutboundHit(player);
@@ -326,6 +331,7 @@ public class PlayerCharacter : Entity {
         
         // reject if move has no active frames
         if (!move.hasActiveFrames) return null;
+        // Debug.Log($"move {move.phase} {move.frame}"); 
         // reject if move is not active
         if (move.phase != AttackPhase.ACTIVE) return null;
         
@@ -353,6 +359,9 @@ public class PlayerCharacter : Entity {
         var frameData = attack.GetFrameData(this);
         bool addFreezeFrames = true;
         bool knockedDown = activeState.type.HasFlag(EntityStateType.CHR_HARD_KNOCKDOWN);
+        var hitstate = ((CharacterState)activeState).hitstate;
+        
+        opponent.SetZPriority();
         
         // Debug.Log($"inbound hit 1, neutral: {neutral}, blockheld: {blockHeld}, blockType: {blockType} blocked: {blocked}, framesRemaining: {framesRemaining}, blockstun {framesRemaining + move.frameData.onBlock}");
         ApplyGroundedFriction();
@@ -385,15 +394,32 @@ public class PlayerCharacter : Entity {
 
         } else {
             // this.frameData.SetHitstunFrames(framesRemaining + frameData.onHit, Mathf.Max(frameData.total - attack.GetCurrentFrame(this), 0));
+            
+            // counterhit hit state
             this.frameData.SetHitstunFrames(attack.GetStunFrames(this, false), 0);
             
             // hit state select
             HandleOnHitStateTransition(attack, crouching, out addFreezeFrames);
+            float hitStateDamageMultiplier = 1f;
+            if (hitstate == Hitstate.COUNTER) {
+                opponent.activeState.stateData.extraIndicatorFlag |= StateIndicatorFlag.COUNTER;
+                hitStateDamageMultiplier = 1.1f;
+                
+            } else {
+                
+            }
+            
+            if (hitstate == Hitstate.PUNISH) {
+                opponent.activeState.stateData.extraIndicatorFlag |= StateIndicatorFlag.PUNISH;
+                hitStateDamageMultiplier = 1.05f;
+            }
+            
+            // Debug.Log($"{activeState} {activeState.stateData.extraIndicatorFlag}");
             
             attack.OnHit(this);
             airHitstunRotation = 0f;
             
-            ApplyDamage(attack.GetUnscaledDamage(this), data);
+            ApplyDamage(attack.GetUnscaledDamage(this) * hitStateDamageMultiplier, data);
             
             foreach (var summon in summons.ToArray()) {
                 if (summon is Token token) {
@@ -407,10 +433,58 @@ public class PlayerCharacter : Entity {
         data.result = blocked ? AttackResult.BLOCKED : AttackResult.HIT;
         fxManager.NotifyHit(data);
         
+        // counter hit effects
+        if (hitstate == Hitstate.COUNTER && !blocked) {
+            var level = attack.GetCounterHitType(this);
+            // Debug.Log(level);
+            if (level == CounterHitType.LARGE) {
+                SimpleCameraShakePlayer.inst.Play("cmn/battle/fx/camerashake/counter", "slide_large");
+                SimpleCameraShakePlayer.inst.Play("cmn/battle/fx/camerashake/counter", "zoomin_large");
+                PostProcessManager.inst.PlayShaker("chromab_counter_large");
+                PostProcessManager.inst.PlayShaker("vignette_counter_large");
+                PostProcessManager.inst.PlayShaker("panini_counter_large");
+                // PostProcessManager.inst.PlayShaker("dof_counter_large");
+                
+                audioManager.PlaySoundClip("cmn/battle/sfx/counter/large");
+                fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/counter/flash", CharacterFXSocketType.SELF);
+                
+                BackgroundUIManager.inst.Flash(0.1f);
+                
+                TimeManager.inst.Queue(() => slowdownFrames = 35);
+                inputProvider.inputBuffer.SimulatedClear();
+
+            } else if (level == CounterHitType.MEDIUM) {
+                SimpleCameraShakePlayer.inst.Play("cmn/battle/fx/camerashake/counter", "slide_medium");
+                SimpleCameraShakePlayer.inst.Play("cmn/battle/fx/camerashake/counter", "zoomin_medium");
+                TimeManager.inst.Queue(() => slowdownFrames = 35);
+                PostProcessManager.inst.PlayShaker("chromab_counter_medium");
+                PostProcessManager.inst.PlayShaker("vignette_counter_medium");
+                
+                BackgroundUIManager.inst.Flash(0.05f);
+                
+                fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/counter/flash", CharacterFXSocketType.WORLD_UNBOUND, transform.position, new(side == EntitySide.LEFT ? 0 : 180, 0, 0));
+                
+                audioManager.PlaySoundClip("cmn/battle/sfx/counter/large");
+                inputProvider.inputBuffer.SimulatedClear();
+
+
+            } else if (level == CounterHitType.SMALL) {
+                slowdownFrames = 11;
+            }
+        }
+        
         // pushback
         {
             var amount = attack.GetPushback(this, airborne, blocked);
-            if (blocked) amount.y = 0f;
+            if (blocked) {
+                amount.y = 0f;
+                
+            } else {
+                if (hitstate == Hitstate.COUNTER) {
+                    amount.y *= 1.2f;
+                }
+            }
+            
             if (knockedDown) {
                 amount.y = 0f;
                 amount.x *= .2f;
@@ -432,7 +506,17 @@ public class PlayerCharacter : Entity {
         // apply freeze frames
 
         var freezeFrames = attack.GetFreezeFrames(this);
-        if (addFreezeFrames) TimeManager.inst.Schedule(4, freezeFrames);
+        if (addFreezeFrames) {
+            var delay = 4;
+            if (hitstate == Hitstate.COUNTER) {
+                var level = attack.GetCounterHitType(this);
+                // Debug.Log(level);
+                if (level == CounterHitType.LARGE) freezeFrames = 31;
+                else if (level == CounterHitType.MEDIUM) freezeFrames = 21;
+            }
+            
+            TimeManager.inst.Schedule(delay, freezeFrames);
+        }
     }
 
     private void HandleOnHitStateTransition(IAttack attack, bool crouching, out bool addFreezeFrames) {
@@ -516,13 +600,13 @@ public class PlayerCharacter : Entity {
             // effect
             {
                 var flag = frameData.landingFlag;
-                SimpleCameraShakeData shakeData;
-                if (flag.HasFlag(LandingRecoveryFlag.HARD_LAND_COSMETIC)) shakeData = fxManager.fxLibrary.cameraShakeOnLandLarge;
-                else if (flag.HasFlag(LandingRecoveryFlag.HARD_KNOCKDOWN_LAND)) shakeData = fxManager.fxLibrary.cameraShakeOnLandMedium;
-                else if (activeState is State_CmnHitStunAir) shakeData = fxManager.fxLibrary.cameraShakeOnLandSmall;
-                else shakeData = fxManager.fxLibrary.cameraShakeOnLandNormal;
+                string shakeData;
+                if (flag.HasFlag(LandingRecoveryFlag.HARD_LAND_COSMETIC)) shakeData = "land_large";
+                else if (flag.HasFlag(LandingRecoveryFlag.HARD_KNOCKDOWN_LAND)) shakeData = "land_medium";
+                else if (activeState is State_CmnHitStunAir) shakeData = "land_small";
+                else shakeData = "land_normal";
                 
-                SimpleCameraShakePlayer.inst.Play(shakeData);
+                SimpleCameraShakePlayer.inst.PlayCommon(shakeData);
             }
             
             activeState.OnLand(frameData.landingFlag, frameData.landingRecoveryFrames);

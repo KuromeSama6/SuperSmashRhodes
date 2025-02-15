@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using SuperSmashRhodes.Battle;
+using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Battle.State;
@@ -43,7 +44,7 @@ public class State_CmnBackdash : CharacterState {
         player.backdashCooldown += 90;
 
         // player.neutralAniTransitionOverride = 0f;
-        player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/dash_dust", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position, Vector3.zero, new(-1, 1, 1));
+        player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/dash_dust", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position, Vector3.zero, new Vector3(player.side == EntitySide.LEFT ? 1 : -1, 1, 1));
     }
     
     public override IEnumerator MainRoutine() {

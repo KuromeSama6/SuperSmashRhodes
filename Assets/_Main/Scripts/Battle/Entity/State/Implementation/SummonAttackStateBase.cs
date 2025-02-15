@@ -166,6 +166,9 @@ public abstract class SummonAttackStateBase : EntityState, IAttack {
     public virtual float GetMinimumDamagePercentage(Entity to) {
         return 0;
     }
+    public CounterHitType GetCounterHitType(Entity to) {
+        return CounterHitType.EXSMALL;
+    }
     public float GetComboDecay(Entity to) {
         return 1f;
     }

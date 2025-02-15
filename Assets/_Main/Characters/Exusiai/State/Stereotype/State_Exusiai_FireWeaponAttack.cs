@@ -33,7 +33,6 @@ public abstract class State_Exusiai_FireWeaponAttack : CharacterAttackStateBase 
     public override bool ShouldCountSameMove(Entity to) {
         return false;
     }
-    
         
     [AnimationEventHandler("FireWeaponSfx")]
     public virtual void OnFireWeaponSfx(AnimationEventData args) {

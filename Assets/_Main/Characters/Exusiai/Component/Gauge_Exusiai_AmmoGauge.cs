@@ -28,16 +28,16 @@ public class Gauge_Exusiai_AmmoGauge : CharacterComponent {
         chambered = true;
     }
 
-    public bool Fire() {
+    public bool Fire(bool playMuzzleFlash = true) {
         if (currentMagazine.ammo > 0) {
-            --currentMagazine.ammo;
+            // --currentMagazine.ammo;
             chambered = true;
-            PlayMuzzleFlash();
+            if (playMuzzleFlash) PlayMuzzleFlash();
             return true;
         }
         if (chambered) {
             chambered = false;
-            PlayMuzzleFlash();
+            if (playMuzzleFlash) PlayMuzzleFlash();
             return true;
         }
         

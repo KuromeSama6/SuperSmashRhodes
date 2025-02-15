@@ -39,6 +39,10 @@ public class SimpleCameraShakePlayer : ManagedSingletonFeedbackPlayer<SimpleCame
             Play(data);
         });
     }
+
+    public void PlayCommon(string shakeId) {
+        Play("cmn/battle/fx/camerashake/common", shakeId);
+    }
 }
 
 [Serializable]

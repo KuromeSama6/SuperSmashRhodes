@@ -14,8 +14,7 @@ public class State_CmnJump : CharacterState {
     public override float inputPriority => 2;
     
     public override bool IsInputValid(InputBuffer buffer) {
-        return buffer.thisFrame.HasInput(entity.side, InputType.UP, InputFrameType.HELD) 
-            || buffer.TimeSlice(5).ScanForInput(entity.side, new InputFrame(InputType.UP, InputFrameType.PRESSED));
+        return buffer.TimeSlice(5).ScanForInput(entity.side, new InputFrame(InputType.UP, InputFrameType.PRESSED));
     }
 
     public override bool mayEnterState {

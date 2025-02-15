@@ -48,6 +48,7 @@ public abstract class Entity : MonoBehaviour {
     // public EntityAssetLibrary assetLibrary { get; private set; }
     public PlayerCharacter owner { get; protected set; }
     public bool attached => transform.parent;
+    public int slowdownFrames { get; set; }
     
     public List<Entity> summons { get; } = new();
     private readonly List<AttackData> queuedInboundAttacks = new();
@@ -89,10 +90,19 @@ public abstract class Entity : MonoBehaviour {
     protected virtual void FixedUpdate() {
         if (!logicStarted) return;
 
+        rb.simulated = shouldSimulatePhysics;
+        
         if (TimeManager.inst.globalFreezeFrames > 0) {
             return;
         }
 
+        if (slowdownFrames > 0) {
+            --slowdownFrames;
+            if (slowdownFrames % 2 == 0) {
+                return;
+            }
+        } 
+        
         // state
         {
             HandleInboundAttacks();
@@ -190,7 +200,6 @@ public abstract class Entity : MonoBehaviour {
                 });
             }
         }
-
     }
 
     public void QueueInboundAttack(AttackData attack) {
@@ -299,6 +308,14 @@ public abstract class Entity : MonoBehaviour {
 // Implemented methods
     public virtual bool shouldTickAnimation => true;
     public virtual bool shouldTickState => true;
+    public virtual bool shouldSimulatePhysics {
+        get {
+            if (transform.parent != null) return false;
+            if (TimeManager.inst.globalFreezeFrames > 0) return false;
+            if (slowdownFrames > 0 && slowdownFrames % 2 == 0) return false;
+            return true;
+        }
+    }
     public virtual void OnRoundInit() {
         health = config.health;
     }

@@ -20,6 +20,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0ad8c33c16849c849b4fc9d8fe7de739
+    m_Address: chr/exusiai/fx/prefab/214h/shot_impact/lv3
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 109ce3249ff7f9e49b2036cae9deed47
+    m_Address: cmn/battle/fx/camerashake/common
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1181d72451737b547a901ed21b686ba9
+    m_Address: chr/exusiai/battle/fx/camerashake/632146d
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 200b4a47f1c44e74d89dcb757b480353
     m_Address: cmn/battle/fx/prefab/common/block/0
     m_ReadOnly: 0
@@ -32,6 +47,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 331b22e95c05a4d40a82dba0a94fe56e
     m_Address: cmn/battle/fx/prefab/common/throw_clash/0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 37446f5c3df9c7b4d956d92846038eb1
+    m_Address: chr/exusiai/fx/prefab/214h/charge
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b693bc271922284cb7b6ca8263e64e3
+    m_Address: chr/exusiai/fx/prefab/214h/shot/lv2
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -55,6 +80,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76692ae2634e2b94f81ddd3e610c6778
+    m_Address: cmn/battle/fx/prefab/common/counter/flash
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 782d423118be8dd47af103272cfa916a
     m_Address: chr/chen/battle/fx/prefab/skl_214s/0
     m_ReadOnly: 0
@@ -62,6 +92,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8092d09a7c6747a478a194b8c81d5c32
     m_Address: cmn/battle/fx/prefab/common/force_reset/0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 89f6bad4aa01c5e44b2bd7307707993b
+    m_Address: chr/exusiai/fx/prefab/214h/shot_impact/lv2
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -75,8 +110,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9740e2f9d6df9e74db431866b8eedf01
+    m_Address: chr/exusiai/battle/fx/camerashake/214h
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 97b1966f009bdca41a20562c2a9d2a9d
     m_Address: cmn/battle/fx/prefab/common/land/medium
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 97e2f8efff4143a4c88d88bd5898033a
+    m_Address: cmn/battle/fx/camerashake/counter
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -132,6 +177,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e35d9a7abcb92e7479d529ff3cf2b109
     m_Address: chr/chen/battle/fx/prefab/skl_214h/hit/0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ee09c108c95d7cd48a322c5d0612ea1c
+    m_Address: chr/exusiai/fx/prefab/214h/shot/lv3
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

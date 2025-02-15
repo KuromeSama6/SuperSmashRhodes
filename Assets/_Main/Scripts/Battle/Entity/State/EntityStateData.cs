@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using SuperSmashRhodes.UI.Battle;
+using SuperSmashRhodes.UI.Battle.AnnouncerHud;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.State {
@@ -20,6 +21,7 @@ public class EntityStateData {
     public float gravityScale = 1;
     public BackgroundUIData backgroundUIData = BackgroundUIData.DEFAULT;
     public float targetFrameRate = 60f;
+    public StateIndicatorFlag extraIndicatorFlag = StateIndicatorFlag.NONE;
 
     public EntityStateData(Entity owner) {
         this.owner = owner;

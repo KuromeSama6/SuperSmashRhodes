@@ -78,4 +78,11 @@ public enum AttackType {
     
     FULL = STRIKE | THROW | PROJECTILE | TOKEN
 }
+
+public enum CounterHitType {
+    EXSMALL,
+    SMALL,
+    MEDIUM,
+    LARGE
+}
 }

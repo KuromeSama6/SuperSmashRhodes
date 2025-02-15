@@ -23,6 +23,7 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
     public override bool mayEnterState => player.meter.gauge.value >= meterCost || true;
     public override StateIndicatorFlag stateIndicator => StateIndicatorFlag.SUPER;
 
+    
     protected CinematicCharacterSocket socket { get; private set; }
     protected bool cinematicHit { get; private set; }
     protected bool hasHit { get; private set; }
@@ -51,6 +52,8 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
         player.rb.linearVelocity = Vector2.zero;
         player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/super/smoke", CharacterFXSocketType.WORLD_UNBOUND, pos);
         player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/super/star", CharacterFXSocketType.WORLD_UNBOUND, pos);
+
+        PortraitCutscenePlayer.Get(player.playerIndex).Play(player.descriptor.superPortrait, 1f);
         
         player.ApplyGroundedFriction(frameData.startup);
         // Superfreeze effects
@@ -121,10 +124,19 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
         }
     }
 
+    protected override void OnStateEnd(string nextState) {
+        base.OnStateEnd(nextState);
+        if (socket != null && socket.attached) {
+            socket.Release();
+            opponent.stateFlags = player.stateFlags = default;
+        }
+    }
+
     protected override void OnTick() {
         base.OnTick();
         if (socket != null && socket.attached) socket.Tick();
     }
+
     public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
         return new Vector2(10, 5);
     }

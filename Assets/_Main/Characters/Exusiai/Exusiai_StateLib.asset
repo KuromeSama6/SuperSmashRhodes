@@ -20,4 +20,7 @@ MonoBehaviour:
   - Exusiai_SklApplePie_FDetonate
   - Exusiai_SklRoll
   - Exusiai_SklRoll_FThrow
+  - Exusiai_SklRoll_FSlide
+  - Exusiai_SklRoll_FEvade
   - Exusiai_OvrSklOverload
+  - Exusiai_SklOriginiumBullet

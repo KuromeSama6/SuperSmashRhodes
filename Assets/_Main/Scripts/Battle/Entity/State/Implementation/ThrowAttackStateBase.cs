@@ -20,7 +20,8 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
 
     public bool connected { get; private set; }
     protected bool hasHit { get; private set; }
-    public override StateIndicatorFlag stateIndicator => hasHit ? StateIndicatorFlag.THROW : StateIndicatorFlag.NONE;
+    public override StateIndicatorFlag stateIndicator => connected ? StateIndicatorFlag.THROW : StateIndicatorFlag.NONE;
+    public override Hitstate hitstate => Hitstate.COUNTER;
     private int hitAnimationStartFrame;
     private CinematicCharacterSocket socket;
     
@@ -202,6 +203,10 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
     }
     
     protected virtual void OnThrowHit(PlayerCharacter other) {
+        if (other.activeState is CharacterState attack) {
+            if (attack.hitstate == Hitstate.COUNTER) player.activeState.stateData.extraIndicatorFlag |= StateIndicatorFlag.COUNTER;
+            if (attack.hitstate == Hitstate.PUNISH) player.activeState.stateData.extraIndicatorFlag |= StateIndicatorFlag.PUNISH;
+        }
     }
     protected virtual void OnThrowWhiff(PlayerCharacter other) {
         
@@ -230,6 +235,10 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
         player.opponent.fxManager.NotifyHit(CreateAttackData()); 
         player.opponent.ApplyDamage(data.integerValue, CreateAttackData(), DamageSpecialProperties.SKIP_REGISTER);
         // Debug.Log("ThrowAttackStateBase.OnApplyCinematicDamage");
+    }
+    
+    public override CounterHitType GetCounterHitType(Entity to) {
+        return CounterHitType.EXSMALL;
     }
 }
 }

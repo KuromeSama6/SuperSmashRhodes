@@ -7,7 +7,7 @@ namespace SuperSmashRhodes.Runtime.State {
 [NamedToken("Exusiai_SklRoll")]
 public class State_Exusiai_SklRoll : State_Common_UtilityMove {
     public State_Exusiai_SklRoll(Entity entity) : base(entity) { }
-    public override float inputPriority => 4;
+    public override float inputPriority => 5f;
     protected override string mainAnimation => "chr/SklRoll";
     protected override float inputMeter => 1f;
     public override AttackFrameData frameData => new AttackFrameData() {
@@ -34,6 +34,8 @@ public class State_Exusiai_SklRoll : State_Common_UtilityMove {
     protected override void OnRecovery() {
         base.OnRecovery();
         AddCancelOption("Exusiai_SklRoll_FThrow");
+        AddCancelOption("Exusiai_SklRoll_FSlide");
+        AddCancelOption("Exusiai_SklRoll_FEvade");
     }
 
     protected override void OnStateEnd(string nextState) {

@@ -13,7 +13,7 @@ public abstract class State_Exusiai_DriveAttack : State_Exusiai_FireWeaponAttack
 
     private int audioLoopHandle;
     
-    public override AttackFrameData frameData { get; } = new AttackFrameData() {
+    public override AttackFrameData frameData => new AttackFrameData() {
         startup = 16,
         active = 2,
         recovery = 29,
@@ -56,12 +56,13 @@ public abstract class State_Exusiai_DriveAttack : State_Exusiai_FireWeaponAttack
         
         if (gauge.mayFire) {
             gauge.Fire();
-            audioLoopHandle = entity.audioManager.PlaySoundLoop("chr/exusiai/battle/sfx/gun_loop", 0.5f);
+            audioLoopHandle = entity.audioManager.PlaySoundLoop("chr/exusiai/battle/sfx/gun_loop", 0.5f, true);
             do {
                 ++loopFrame;
                 if (loopFrame >= loopLength) {
                     if (gauge.mayFire) {
                         gauge.Fire();
+                        OnShotFired();
                         ++hitsRemaining;
                         ++bulletsShot;
                         loopFrame = 0;
@@ -120,9 +121,18 @@ public abstract class State_Exusiai_DriveAttack : State_Exusiai_FireWeaponAttack
     public override float GetChipDamagePercentage(Entity to) {
         return 0.01f;
     }
-
+    public override CounterHitType GetCounterHitType(Entity to) {
+        return CounterHitType.EXSMALL;
+    }
+    
+    public override void OnContact(Entity target) {
+        base.OnContact(target);
+        AddCancelOption("CmnJump");
+    }
+    
     protected override int normalInputBufferLength => 6;
     protected virtual int loopStartFrame => 16;
     protected virtual int loopEndFrame => 19;
+    protected virtual void OnShotFired() {}
 }
 }

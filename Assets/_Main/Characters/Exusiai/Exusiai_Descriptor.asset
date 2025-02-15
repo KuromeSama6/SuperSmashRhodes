@@ -16,7 +16,8 @@ MonoBehaviour:
   chineseName: "\u80FD\u5929\u4F7F"
   englishName: Exusiai
   profession: 3
-  portrait: {fileID: 21300000, guid: 7f21fe9722789f3439d57d47be921c10, type: 3}
+  portrait: {fileID: 21300000, guid: 2cfb0badeb15b4e489575f682f3ed247, type: 3}
+  superPortrait: {fileID: 21300000, guid: c25094468ab060a4f830043aa707fcd5, type: 3}
   avatar: {fileID: 833747068, guid: 41d128924f692f345b5f4704c78ea030, type: 3}
   professionIconFull: {fileID: -4353086050002372228, guid: 62188ff3c72481e48b15cc096acea6ce, type: 3}
   professionIconBlack: {fileID: 2166255255771973297, guid: a7a2394739cb9924d8fc38fe12649f8e, type: 3}

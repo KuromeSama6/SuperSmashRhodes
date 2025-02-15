@@ -13,6 +13,8 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     
     public virtual AttackType attackType => AttackType.STRIKE;
     public override bool mayEnterState => player.MatchesAirState(airOk);
+    public override Hitstate hitstate => phase == AttackPhase.RECOVERY ? Hitstate.PUNISH : Hitstate.COUNTER;
+    public bool chargable => this is IChargable;
 
     public CharacterAttackStateBase(Entity entity) : base(entity) {
         
@@ -27,16 +29,19 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         TimeManager.inst.globalFreezeFrames = 0;
         hits = 0;
         blockedHits = 0;
+        chargeLevel = 0;
     }
 
     public override IEnumerator MainRoutine() {
         entity.animation.AddUnmanagedAnimation(mainAnimation, false);
+        // Debug.Log("start");
         phase = AttackPhase.STARTUP;
         OnStartup();
         
         player.ApplyGroundedFriction(frameData.startup);
         entity.audioManager.PlaySound(GetAttackNormalSfx());
         yield return frameData.startup;
+        // Debug.Log($"active {frame} {Time.frameCount}");
 
         phase = AttackPhase.ACTIVE;
         OnActive();
@@ -44,6 +49,9 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         yield return frameData.active;
         
         player.ApplyGroundedFriction(frameData.active);
+        // Debug.Log($"recov {frame}");
+        
+        // Debug.Log($"rec {frame} {Time.frameCount}");
         phase = AttackPhase.RECOVERY;
         OnRecovery();
         // Debug.Log($"{id} {player.frameData.landingFlag} {player.airborne}");
@@ -70,7 +78,12 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         // Debug.Log("cancel added"); 
         AddCancelOption(commonCancelOptions);
     }
-    
+
+    protected override void OnTick() {
+        base.OnTick();
+        // Debug.Log($"tick {phase} {frame} {Time.frameCount} ani {player.animation.animation.AnimationState.GetCurrent(0).AnimationTime / Time.fixedDeltaTime} ");
+    }
+
     public virtual void OnHit(Entity target) {
         ++hits;
         player.audioManager.PlaySound(GetHitSfx(target), .6f);
@@ -95,7 +108,6 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
             player.burst.AddDeltaTotal((GetUnscaledDamage(target) * .18f) * player.comboCounter.finalScale, 240);   
         }
     }
-    
 
     public bool MayHit(Entity target) {
         if (!hasActiveFrames) return false;
@@ -105,11 +117,21 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public AttackFrameData GetFrameData(Entity to) {
         return frameData;
     }
-
+    
+    public AttackData CreateAttackData(Entity to) {
+        return new AttackData() {
+            interactionData = default,
+            attack = this,
+            from = player,
+            to = to,
+            result = AttackResult.HIT
+        };
+    }
+    
     public int GetCurrentFrame(Entity to) {
         return frame;
     }
-
+    
     public override bool IsInputValid(InputBuffer buffer) {
         var input = requiredInput;
         if (input == null) return false;
@@ -184,6 +206,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public abstract float GetComboProration(Entity to);
     public abstract float GetFirstHitProration(Entity to);
     public abstract AttackGuardType GetGuardType(Entity to);
+    public abstract CounterHitType GetCounterHitType(Entity to);
     public abstract int GetFreezeFrames([CanBeNull] Entity to);
     public abstract int GetAttackLevel(Entity to);
     public virtual float GetMinimumDamagePercentage(Entity to) {
@@ -191,6 +214,10 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     }
     public virtual string GetAttackNormalSfx() {
         return null;
+    }
+    public virtual int GetFrameAdvantage(Entity to, bool blocked) {
+        var data = frameData;
+        return blocked ? data.onBlock : data.onHit;
     }
 
     public string GetHitSfx(Entity to) {
@@ -202,17 +229,19 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public float GetComboDecay(Entity to) {
         return 1f;
     }
+    
     public int GetStunFrames(Entity to, bool blocked) {
-        var current = GetCurrentFrame(to);
-        if (blocked) {
-            return frameData.active + frameData.recovery + frameData.onBlock;
-        } else {
-            return frameData.active + frameData.recovery + frameData.onHit;
-        }
+        return frameData.active + frameData.recovery + GetFrameAdvantage(to, blocked);
     }
+    
     public override void OnLand(LandingRecoveryFlag flag, int recoveryFrames) {
         base.OnLand(flag, recoveryFrames);
-        player.frameData.landingRecoveryFrames = 3;
+        if (landingRecoveryFlag.HasFlag(LandingRecoveryFlag.UNTIL_LAND)) {
+            player.frameData.landingFlag |= LandingRecoveryFlag.UNTIL_LAND;
+            player.frameData.landingRecoveryFrames = frameData.recovery;
+        } else {
+            player.frameData.landingRecoveryFrames = 3;   
+        }
         CancelInto("CmnLandingRecovery");
     }
 }

@@ -36,7 +36,7 @@ public class State_Chen_SklUnsheathHeavy : State_Common_SpecialAttack {
     }
     public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
         if (blocked) return new(5f, 0f);
-        return !airborne ? new(7f, 0f) : new(5f, -3f);
+        return !airborne ? Vector2.zero : new(0, -3f);
     }
     public override AttackGuardType GetGuardType(Entity to) {
         return AttackGuardType.ALL;
@@ -73,6 +73,9 @@ public class State_Chen_SklUnsheathHeavy : State_Common_SpecialAttack {
         AssetManager.Get<GameObject>("chr/chen/battle/fx/prefab/skl_214h/hit/0", go => {
             opponent.fxManager.PlayGameObjectFX(go, CharacterFXSocketType.SELF);
         });
+    }
+    public override CounterHitType GetCounterHitType(Entity to) {
+        return CounterHitType.LARGE;
     }
 }
 }

@@ -32,12 +32,11 @@ public class EntityAnimationController : MonoBehaviour {
     }
 
     public void ApplyNeutralPose() {
-        state.ClearTrack(0);
-        state.SetAnimation(0, "std/neutral", true);
-        Tick();
+        animation.skeleton.SetBonesToSetupPose();
     }
     
     public void AddUnmanagedAnimation(string name, bool loop, float transitionTime = 0f, float timeScale = 1) {
+        ApplyNeutralPose();
         var track = state.GetCurrent(0);
         
         // transitionTime = Mathf.Max(Time.fixedDeltaTime, transitionTime);

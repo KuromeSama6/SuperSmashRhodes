@@ -27,6 +27,7 @@ public interface IAttack {
     float GetComboDecayIncreaseMultiplier(Entity to);
     float GetMinimumDamagePercentage(Entity to);
     bool ShouldCountSameMove(Entity to);
+    CounterHitType GetCounterHitType(Entity to);
     
     AttackGuardType GetGuardType(Entity to);
     int GetFreezeFrames(Entity to);

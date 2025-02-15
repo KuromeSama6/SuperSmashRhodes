@@ -12,6 +12,7 @@ public class AnnouncerHud : PerSideUIElement<AnnouncerHud> {
     [Title("References")]
     public CanvasGroup canvasGroup;
     public UDictionary<StateIndicatorFlag, Image> stateIndicators;
+    public UDictionary<StateIndicatorFlag, GameObject> stateTexts;
 
     private float timeWithoutChange = 0;
     private StateIndicatorFlag state = StateIndicatorFlag.NONE;
@@ -19,7 +20,7 @@ public class AnnouncerHud : PerSideUIElement<AnnouncerHud> {
     
     private void Start() {
         canvasGroup.alpha = 0;
-        timeWithoutChange = 5;
+        timeWithoutChange = 10;
         
         foreach (var entry in stateIndicators) {
             initialColors[entry.Key] = entry.Value.color;
@@ -28,7 +29,7 @@ public class AnnouncerHud : PerSideUIElement<AnnouncerHud> {
 
     private void Update() {
         if (!player || player.activeState == null) return;
-        var currentState = ((CharacterState)player.activeState).stateIndicator;
+        var currentState = ((CharacterState)player.activeState).stateIndicator | player.activeState.stateData.extraIndicatorFlag; 
 
         if (currentState != state) {
             timeWithoutChange = 0;
@@ -36,12 +37,16 @@ public class AnnouncerHud : PerSideUIElement<AnnouncerHud> {
                 entry.Value.color = currentState.HasFlag(entry.Key) ? initialColors[entry.Key] : Color.gray;
                 entry.Value.GetComponent<TrueShadow>().enabled = currentState.HasFlag(entry.Key);
             }
+            
+            foreach (var entry in stateTexts) {
+                entry.Value.SetActive(currentState.HasFlag(entry.Key));
+            }
 
         } else {
             timeWithoutChange += Time.deltaTime;
         }
         
-        canvasGroup.alpha = Mathf.Lerp(canvasGroup.alpha, timeWithoutChange > 3f ? 0 : 1, Time.deltaTime * 10);
+        canvasGroup.alpha = Mathf.Lerp(canvasGroup.alpha, timeWithoutChange > 1f ? 0 : 1, Time.deltaTime * 10);
     }
 
 }

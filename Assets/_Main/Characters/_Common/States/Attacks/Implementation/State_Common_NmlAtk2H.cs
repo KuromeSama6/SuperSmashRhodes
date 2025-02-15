@@ -40,5 +40,8 @@ public abstract class State_Common_NmlAtk2H : State_Common_NormalAttack {
     public override Vector2 GetCarriedMomentumPercentage(Entity to) {
         return Vector2.zero;
     }
+    public override CounterHitType GetCounterHitType(Entity to) {
+        return CounterHitType.LARGE;
+    }
 }
 }

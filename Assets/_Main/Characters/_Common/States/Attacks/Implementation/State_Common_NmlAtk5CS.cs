@@ -45,6 +45,9 @@ public abstract class State_Common_NmlAtk5CS : State_Common_NormalAttack {
     public override Vector2 GetCarriedMomentumPercentage(Entity to) {
         return new(.5f, .2f);
     }
+    public override CounterHitType GetCounterHitType(Entity to) {
+        return CounterHitType.MEDIUM;
+    }
     protected virtual float triggerRange => 0.8f;
 }
 }

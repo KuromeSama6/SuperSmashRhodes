@@ -30,11 +30,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1181d72451737b547a901ed21b686ba9
-    m_Address: chr/exusiai/battle/fx/camerashake/632146d
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 142a317b614e59e47a565b217df1cdab
     m_Address: chr/exusiai/battle/sfx/gun_loop
     m_ReadOnly: 0
@@ -42,6 +37,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 14c08d25ec14f1f469e32c9a41c9d0b0
     m_Address: cmn/battle/sfx/throw/1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 16dd89d618529294283c65f7cd34231c
+    m_Address: chr/exusiai/battle/sfx/214h/shot
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -140,6 +140,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6ad74c63d07b7b049bed1ab289a25c6a
+    m_Address: chr/exusiai/battle/sfx/originium/charge_lv2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7cca05b640721d74e876a3dddc9ee06a
     m_Address: chr/exusiai/battle/sfx/632146d/shot
     m_ReadOnly: 0
@@ -185,6 +190,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a00145d02ee9a9b42a5991bc6a5c037e
+    m_Address: chr/exusiai/battle/sfx/originium/draw
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: aae43bfc74dd26f47a025a4bf92cc0e6
     m_Address: cmn/battle/sfx/hit/1
     m_ReadOnly: 0
@@ -220,6 +230,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e4a653dbe3d535e4787ea79f55ab29d4
+    m_Address: chr/exusiai/battle/sfx/originium/charge_lv3
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e649ecaa99329dd4ba92811c870a8a4e
     m_Address: cmn/battle/sfx/attack/sword/1
     m_ReadOnly: 0
@@ -242,6 +257,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f6daaa0299e87a041bdbb1e4a2fbd034
     m_Address: chr/chen/battle/sfx/skl_214h/0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fef67382db982f042b8261b229044a07
+    m_Address: cmn/battle/sfx/counter/large
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

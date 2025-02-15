@@ -152,7 +152,7 @@ public class State_Token_Exusiai_ApplePie_Attack : TokenAttackStateBase {
     }
     public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
         if (blocked) return isLargeExplosion ? new Vector2(5f, 0) : new Vector2(3f, 0);
-        return isLargeExplosion ? new Vector2(5f, 15f) : new Vector2(1.5f, 10f);
+        return isLargeExplosion ? new Vector2(5f, 15f) : new Vector2(0.5f, 10f);
     }
     public override float GetComboProration(Entity to) {
         return .9f;

@@ -75,5 +75,8 @@ public class State_Chen_SklUnsheathLight : State_Common_SpecialAttack {
         base.OnHit(target);
         
     }
+    public override CounterHitType GetCounterHitType(Entity to) {
+        return CounterHitType.MEDIUM;
+    }
 }
 }

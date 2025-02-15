@@ -11,6 +11,7 @@ public class CharacterDescriptor : ScriptableObject {
     
     [Title("Sprites")]
     public Sprite portrait;
+    public Sprite superPortrait;
     public Sprite avatar;
     public Sprite professionIconFull, professionIconBlack, professionIconWhite, professionIconUI;
 }
