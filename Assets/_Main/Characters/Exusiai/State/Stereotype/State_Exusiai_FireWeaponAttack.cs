@@ -30,10 +30,10 @@ public abstract class State_Exusiai_FireWeaponAttack : CharacterAttackStateBase 
     public override int GetAttackLevel(Entity to) {
         return 3;
     }
-    public override bool ShouldCountSameMove(Entity to) {
-        return false;
+    public override DamageProperties GetDamageSpecialProperties(Entity to) {
+        return base.GetDamageSpecialProperties(to) | DamageProperties.MULTIHIT;
     }
-        
+
     [AnimationEventHandler("FireWeaponSfx")]
     public virtual void OnFireWeaponSfx(AnimationEventData args) {
         gauge.PlayMuzzleFlash();

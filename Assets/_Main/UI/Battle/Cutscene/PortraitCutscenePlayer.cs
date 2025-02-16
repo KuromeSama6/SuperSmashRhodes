@@ -9,7 +9,7 @@ public class PortraitCutscenePlayer : PerSideUIElement<PortraitCutscenePlayer> {
     [Title("References")]
     public Animator animator;
     public RectTransform portraitContainer;
-    public Image portrait;
+    public Image portrait, silhouette;
 
     public bool isPlaying => currentPortrait != null;
     private Sprite currentPortrait;
@@ -30,7 +30,7 @@ public class PortraitCutscenePlayer : PerSideUIElement<PortraitCutscenePlayer> {
             
         }
         
-        portraitContainer.anchoredPosition -= new Vector2(15f, 25f) * Time.deltaTime * 2;
+        portraitContainer.anchoredPosition -= new Vector2(15f, 25f) * Time.deltaTime * 0.5f;
         animator.SetBool(SHOW, currentPortrait != null);
     }
 
@@ -40,6 +40,7 @@ public class PortraitCutscenePlayer : PerSideUIElement<PortraitCutscenePlayer> {
         timeRemaining = duration;
         currentPortrait = sprite;
         portrait.sprite = sprite;
+        silhouette.sprite = sprite;
     }
     
 }

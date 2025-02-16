@@ -86,8 +86,8 @@ public class RotaryCounter : MonoBehaviour {
 
     public void ApplyImmediately() {
         current = target;
+        // Debug.Log("apply");
         SetNumber(current);
-        foreach (var digit in digits) digit.number = current;
     }
 
     private float GetRotarySpeed(int order) {

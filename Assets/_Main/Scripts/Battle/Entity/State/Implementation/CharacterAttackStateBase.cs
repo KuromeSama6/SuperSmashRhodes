@@ -171,6 +171,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     protected virtual void OnActive() {
         // Debug.Log($"onactive addcancel {commonCancelOptions}");
         AddCancelOption("CmnWhiteForceReset");
+        AddCancelOption("CmnDriveRelease");
     }
     protected virtual void OnRecovery() {
         player.frameData.landingFlag = landingRecoveryFlag;
@@ -180,9 +181,9 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public virtual AttackSpecialProperties GetSpecialProperties(Entity to) {
         return AttackSpecialProperties.NONE;
     }
-    public virtual DamageSpecialProperties GetDamageSpecialProperties(Entity to) {
-        var ret = DamageSpecialProperties.NONE;
-        if (hits > 1) ret |= DamageSpecialProperties.NO_METER_GAIN;
+    public virtual DamageProperties GetDamageSpecialProperties(Entity to) {
+        var ret = DamageProperties.NONE;
+        if (hits > 1) ret |= DamageProperties.NO_METER_GAIN;
         return ret;
     }
 
@@ -199,9 +200,6 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public abstract Vector2 GetPushback(Entity to, bool airborne, bool blocked);
     public virtual Vector2 GetCarriedMomentumPercentage(Entity to) {
         return new(0.5f, 0.5f);
-    }
-    public virtual bool ShouldCountSameMove(Entity to) {
-        return false;
     }
     public abstract float GetComboProration(Entity to);
     public abstract float GetFirstHitProration(Entity to);

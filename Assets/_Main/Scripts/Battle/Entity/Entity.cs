@@ -47,6 +47,7 @@ public abstract class Entity : MonoBehaviour {
     public bool logicStarted { get; private set; }
     // public EntityAssetLibrary assetLibrary { get; private set; }
     public PlayerCharacter owner { get; protected set; }
+    public EntityState lastState { get; protected set; }
     public bool attached => transform.parent;
     public int slowdownFrames { get; set; }
     
@@ -149,8 +150,10 @@ public abstract class Entity : MonoBehaviour {
         if (state == null)
             throw new Exception("Cannot begin null state");
 
-        if (activeState != null && activeState.active)
+        if (activeState != null && activeState.active) {
+            lastState = activeState;
             activeState.EndState(state.id);
+        }
 
         activeState = state;
         state.BeginState();

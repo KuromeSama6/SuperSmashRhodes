@@ -49,6 +49,7 @@ public class State_CmnNeutralCrouch : CharacterState {
     protected override void OnStateBegin() {
         base.OnStateBegin();
         AddCancelOption(EntityStateType.CHR_ATK_ALL);
+        AddCancelOption(EntityStateType.CHR_DRIVE_RELEASE);
         player.comboCounter.Reset();
     }
 
@@ -79,6 +80,8 @@ public class State_CmnAirNeutral : CharacterState {
         cancelOptionsAdded = false;
         TryAddCancelOptions();
         player.comboCounter.Reset();
+        
+        AddCancelOption(EntityStateType.CHR_DRIVE_RELEASE);
     }
 
     public override IEnumerator MainRoutine() {

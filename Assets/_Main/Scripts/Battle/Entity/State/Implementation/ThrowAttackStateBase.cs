@@ -233,7 +233,7 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
     
     public override void OnApplyCinematicDamage(AnimationEventData data) {
         player.opponent.fxManager.NotifyHit(CreateAttackData()); 
-        player.opponent.ApplyDamage(data.integerValue, CreateAttackData(), DamageSpecialProperties.SKIP_REGISTER);
+        player.opponent.ApplyDamage(data.integerValue, CreateAttackData(), DamageProperties.SKIP_REGISTER);
         // Debug.Log("ThrowAttackStateBase.OnApplyCinematicDamage");
     }
     

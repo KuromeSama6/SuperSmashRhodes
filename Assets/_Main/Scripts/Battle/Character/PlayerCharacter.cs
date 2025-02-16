@@ -159,6 +159,7 @@ public class PlayerCharacter : Entity {
             var decay = comboCounter.comboDecay;
             // Debug.Log(decay);
             var data = opponent.comboDecayData;
+            // Debug.Log($"{playerIndex} {decay}");
             ret *= data.opponentGravityCurve.Evaluate(decay);
         }
 
@@ -381,8 +382,11 @@ public class PlayerCharacter : Entity {
                 burst.AddDeltaTotal(inBlockstun ? -5.3f : -8.5f, 90);   
             }
 
+            var rawDamage = attack.GetUnscaledDamage(this);
             var chipDamage = attack.GetChipDamagePercentage(this);
-            if (chipDamage > 0) ApplyDamage(attack.GetUnscaledDamage(this) * chipDamage, data, DamageSpecialProperties.SKIP_REGISTER, true);
+            if (opponent.burst.driveRelease) chipDamage = Mathf.Clamp01(chipDamage + .05f);
+            
+            if (chipDamage > 0) ApplyDamage(rawDamage * chipDamage, data, DamageProperties.SKIP_REGISTER, true);
 
             foreach (var summon in summons.ToArray()) {
                 if (summon is Token token) {
@@ -419,7 +423,9 @@ public class PlayerCharacter : Entity {
             attack.OnHit(this);
             airHitstunRotation = 0f;
             
-            ApplyDamage(attack.GetUnscaledDamage(this) * hitStateDamageMultiplier, data);
+            var driveReleaseMultiplier = opponent.burst.driveRelease ? 1.2f : 1f;
+            
+            ApplyDamage(attack.GetUnscaledDamage(this) * hitStateDamageMultiplier * driveReleaseMultiplier, data, attack.GetDamageSpecialProperties(this));
             
             foreach (var summon in summons.ToArray()) {
                 if (summon is Token token) {
@@ -651,23 +657,22 @@ public class PlayerCharacter : Entity {
         });
     }
 
-    public void ApplyDamage(float rawDamage, [CanBeNull] AttackData data, DamageSpecialProperties flags = DamageSpecialProperties.NONE, bool blocked = false) {
+    public void ApplyDamage(float rawDamage, [CanBeNull] AttackData data, DamageProperties flags = DamageProperties.NONE, bool blocked = false) {
         var attack = data == null ? null : data.attack;
         var dmg = rawDamage;
 
-        var skipRegister = flags.HasFlag(DamageSpecialProperties.SKIP_REGISTER);
+        var skipRegister = flags.HasFlag(DamageProperties.SKIP_REGISTER);
         if (attack != null || skipRegister) {
             comboCounter.RegisterAttack(
                 attack,
                 this, 
-                skipRegister, 
+                flags, 
                 data != null && attack != null ? attack.GetComboDecayIncreaseMultiplier(data.to) : 1f,
-                data != null && attack != null ? attack.ShouldCountSameMove(data.to) : false,
                 blocked
             );
         }
         
-        if (!flags.HasFlag(DamageSpecialProperties.IGNORE_COMBO)) {
+        if (!flags.HasFlag(DamageProperties.IGNORE_COMBO)) {
             dmg *= comboCounter.finalScale * (attack == null ? 1 : comboCounter.GetMoveSpecificProration(attack));
         }
         

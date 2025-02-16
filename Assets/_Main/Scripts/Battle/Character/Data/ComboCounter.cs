@@ -14,11 +14,19 @@ public class ComboCounter : RuntimeCharacterDataRegister {
     private float appliedProration = 1f;
     public float comboDecay { get; set; }
     private Dictionary<string, int> movesUsed = new();
-
+    
+    private string lastMove;
+    private int multihitCount;
+    private float multihitProration = 1f;
+    
     public float finalScale {
         get {
-            if (count <= 1) return 1f;
-            return overallProration * appliedProration;
+            var ret = 1f;
+            ret *= multihitProration;
+            if (count <= 1) return ret;
+
+            ret *= overallProration * appliedProration;
+            return ret;
         }
     }
     
@@ -26,10 +34,34 @@ public class ComboCounter : RuntimeCharacterDataRegister {
 
     }
 
-    public void RegisterAttack(IAttack move, Entity victim, bool skipRegister = false, float multiplier = 1f, bool countSameMove = true, bool blocked = false) {
+    public void RegisterAttack(
+        IAttack move, 
+        Entity victim, 
+        DamageProperties flags,
+        float multiplier = 1f, 
+        bool blocked = false
+    ) 
+    {
         // Debug.Log(blocked);
         if (!blocked) ++displayedCount;
-        if (skipRegister) return;
+        if (flags.HasFlag(DamageProperties.SKIP_REGISTER)) return;
+        // Debug.Log(flags.HasFlag(DamageProperties.MULTIHIT));
+        var multihit = flags.HasFlag(DamageProperties.MULTIHIT);
+        bool partOfMultihit = multihit && lastMove != null && lastMove == move.id;
+        
+        if (partOfMultihit) {
+            multihitCount += 1;
+            multihitProration *= move.GetComboProration(victim);
+            // Debug.Log($"{move.GetComboProration(victim)} {multihitProration}");
+            
+        } else {
+            multihitCount = 0;
+            multihitProration = 1f;
+        }
+        
+        if (partOfMultihit) {
+            return;
+        }
         
         if (count == 0) {
             overallProration = move.GetFirstHitProration(victim);
@@ -39,28 +71,26 @@ public class ComboCounter : RuntimeCharacterDataRegister {
         appliedProration *= move.GetComboProration(victim);
         
         // same move penalty
+        var driveReleaseMultiplier = owner.burst.driveRelease ? .2f : 1f;
+        
+        if (movesUsed.ContainsKey(move.id)) {
+            ++movesUsed[move.id];
+            comboDecay += 0.4f * multiplier * driveReleaseMultiplier;
 
-        if (countSameMove) {
-            if (movesUsed.ContainsKey(move.id)) {
-                ++movesUsed[move.id];
-                comboDecay += 0.4f * (movesUsed[move.id] + 1) * multiplier;
+        } else {
+            movesUsed[move.id] = 1;
+        } 
 
-            } else {
-                movesUsed[move.id] = 1;
-            }    
+        // combo decay
+        // Debug.Log($"add decay, {countSameMove} {movesUsed.ContainsKey(move.id)}");
+        var amount = move.GetComboDecay(victim);
+        if (victim is PlayerCharacter player) {
+            if (!player.airborne) amount *= .5f;
+            else amount *= 0.8f;
         }
-
-        if (countSameMove || !movesUsed.ContainsKey(move.id)) {
-            // combo decay
-            // Debug.Log($"add decay, {countSameMove} {movesUsed.ContainsKey(move.id)}");
-            var amount = move.GetComboDecay(victim);
-            if (victim is PlayerCharacter player) {
-                if (!player.airborne) amount *= .5f;
-            }
-            comboDecay += amount * multiplier;
-            
-            if (!countSameMove) movesUsed[move.id] = 1;
-        }
+        comboDecay += amount * multiplier * driveReleaseMultiplier;
+        
+        lastMove = move.id;
     }
 
     public float GetMoveSpecificProration(IAttack move) {
@@ -78,6 +108,7 @@ public class ComboCounter : RuntimeCharacterDataRegister {
         appliedProration = 1f;
         comboDecay = 0;
         movesUsed.Clear();
+        lastMove = null;
         
         //TODO: Demove Debug
         owner.health = owner.config.health;

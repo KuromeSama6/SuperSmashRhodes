@@ -20,6 +20,7 @@ public class State_CmnBlockStun : State_Common_Stun {
     protected override void OnStateBegin() {
         base.OnStateBegin();
         AddCancelOption("CmnBlockStunCrouch");
+        AddCancelOption("CmnDriveRelease");
         // player.ApplyGroundedFrictionImmediate();
     }
 }
@@ -39,10 +40,12 @@ public class State_CmnBlockStunCrouch : State_Common_Stun {
     protected override void OnStateBegin() {
         base.OnStateBegin();
         AddCancelOption("CmnBlockStun");
+        AddCancelOption("CmnDriveRelease");
         // player.ApplyGroundedFrictionImmediate();
     }
 
     public override IEnumerator MainRoutine() {
+        AddCancelOption("CmnDriveRelease");
         while (frames > 0) {
             player.ApplyGroundedFriction();
             if (!RevalidateInput()) {
@@ -68,6 +71,7 @@ public class State_CmnBlockStunAir : State_Common_Stun {
     protected override void OnStateBegin() {
         base.OnStateBegin();
         AddCancelOption("CmnBlockStun");
+        AddCancelOption("CmnDriveRelease");
     }
 
     public override IEnumerator MainRoutine() {

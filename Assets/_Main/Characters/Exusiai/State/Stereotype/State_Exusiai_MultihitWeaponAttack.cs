@@ -64,7 +64,7 @@ public abstract class State_Exusiai_MultihitWeaponAttack : State_Exusiai_FireWea
             return;
         }
         
-        gauge.Fire();
+        gauge.Fire(true, false);
         --totalShots;
 
         if (!shotsFired) {

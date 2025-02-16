@@ -100,6 +100,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8f08dfa3cc983f0429979b7d9ed868ba
+    m_Address: cmn/battle/fx/prefab/common/driverelease/star
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 92060611b2f650e4db749ac55c6d7a44
     m_Address: cmn/battle/fx/prefab/common/super/star
     m_ReadOnly: 0

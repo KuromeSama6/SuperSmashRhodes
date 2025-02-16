@@ -22,7 +22,7 @@ public abstract class State_Exusiai_DriveAttack : State_Exusiai_FireWeaponAttack
     protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER;
     public override float GetUnscaledDamage(Entity to) {
         var chargePercentage = Mathf.Clamp01((bulletsShot + 1) / 7f);
-        return 25 * chargePercentage;
+        return 23 * chargePercentage;
     }
 
     public override AttackGuardType GetGuardType(Entity to) {
@@ -116,7 +116,7 @@ public abstract class State_Exusiai_DriveAttack : State_Exusiai_FireWeaponAttack
     }
 
     public override float GetMinimumDamagePercentage(Entity to) {
-        return 0.1f;
+        return 0.05f;
     }
     public override float GetChipDamagePercentage(Entity to) {
         return 0.01f;

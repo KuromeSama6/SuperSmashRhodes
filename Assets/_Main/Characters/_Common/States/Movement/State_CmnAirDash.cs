@@ -48,7 +48,7 @@ public class State_CmnAirDash : CharacterState {
         base.OnTick();
         // add cancel options
         if (frame == player.characterConfig.airDashCancellableFrameFinal) {
-            AddCancelOption(EntityStateType.CHR_ATK_AIR_NORMAL | EntityStateType.CHR_ATK_SPECIAL_SUPER);
+            AddCancelOption(EntityStateType.CHR_ATK_ALL);
             AddCancelOption(EntityStateType.CHR_ATK_THROW);
         }
     }

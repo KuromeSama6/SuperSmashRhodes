@@ -107,7 +107,7 @@ public class State_Exusiai_NmlAtk5H : State_Exusiai_MultihitWeaponAttack {
     protected override InputFrame[] requiredInput => new[] { new InputFrame(InputType.HS, InputFrameType.PRESSED)};
     protected override int normalInputBufferLength => 6;
     public override float GetUnscaledDamage(Entity to) {
-        return 31;
+        return 19;
     }
     public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
          return new Vector2(1.5f, 1f) * (blocked ? 0.7f : 1f);
@@ -149,7 +149,7 @@ public class State_Exusiai_NmlAtk2H : State_Exusiai_MultihitWeaponAttack {
     protected override InputFrame[] requiredInput => new[] { new InputFrame(InputType.DOWN, InputFrameType.HELD), new InputFrame(InputType.HS, InputFrameType.PRESSED)};
     protected override int normalInputBufferLength => 6;
     public override float GetUnscaledDamage(Entity to) {
-        return 31;
+        return 19;
     }
     public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
         return new Vector2(0.2f, 9f) * (blocked ? 0.7f : 1f);
@@ -194,7 +194,7 @@ public class State_Exusiai_NmlAtk6H : State_Exusiai_MultihitWeaponAttack {
     protected override InputFrame[] requiredInput => new[] { new InputFrame(InputType.FORWARD, InputFrameType.HELD), new InputFrame(InputType.HS, InputFrameType.PRESSED)};
     protected override int normalInputBufferLength => 6;
     public override float GetUnscaledDamage(Entity to) {
-        return 38;
+        return 19;
     }
     public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
         return new Vector2(1f, 7.5f) * (blocked ? 0.7f : 1f);

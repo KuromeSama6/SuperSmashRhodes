@@ -22,6 +22,7 @@ public class EntityStateData {
     public BackgroundUIData backgroundUIData = BackgroundUIData.DEFAULT;
     public float targetFrameRate = 60f;
     public StateIndicatorFlag extraIndicatorFlag = StateIndicatorFlag.NONE;
+    public EntityGhostFXData? ghostFXData;
 
     public EntityStateData(Entity owner) {
         this.owner = owner;

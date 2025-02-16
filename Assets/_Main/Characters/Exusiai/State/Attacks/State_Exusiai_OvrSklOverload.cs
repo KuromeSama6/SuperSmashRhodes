@@ -96,7 +96,7 @@ public class State_Exusiai_OvrSklOverload : State_Common_OverdriveAttack {
         
         if (cinematicHit) {
             opponent.fxManager.PlayGameObjectFX("chr/exusiai/fx/prefab/632146d/explosion", CharacterFXSocketType.WORLD_UNBOUND, opponent.transform.position);
-            player.opponent.ApplyDamage(38f, CreateAttackData(opponent), DamageSpecialProperties.SKIP_REGISTER);
+            player.opponent.ApplyDamage(38f, CreateAttackData(opponent), DamageProperties.SKIP_REGISTER);
         }
         
         TimeManager.inst.globalFreezeFrames = 15;

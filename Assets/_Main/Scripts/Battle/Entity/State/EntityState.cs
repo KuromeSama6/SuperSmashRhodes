@@ -6,6 +6,7 @@ using System.Reflection;
 using NUnit.Framework;
 using Spine;
 using SuperSmashRhodes.Battle.Animation;
+using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Battle.State.Implementation;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Input;
@@ -27,11 +28,12 @@ public abstract class EntityState : NamedToken {
     public int activeRoutines => routines.Count;
 
     public UnityEvent onStateEnd { get; } = new();
+    public virtual CharacterStateFlag globalFlags => CharacterStateFlag.NONE;
     
     private int interruptFrames;
     private int scheduledPauseAnimationFrames;
     private readonly Dictionary<string, List<MethodInfo>> animationEventHandlers = new();
-    private readonly Stack<SubroutineWrapper> routines = new();
+    public Stack<SubroutineWrapper> routines { get; } = new();
     private SubroutineWrapper currentRoutine => routines.Count > 0 ? routines.Peek() : null;
     
     public EntityState(Entity entity) {
@@ -55,7 +57,10 @@ public abstract class EntityState : NamedToken {
 
     private void Init() {
         OnStateBegin();
+        routines.Clear();
         routines.Push(new SubroutineWrapper(MainRoutine(), 0));
+        
+        // Debug.Log("push subroutine");
     }
 
     public void BeginState() {
@@ -226,7 +231,7 @@ public abstract class EntityState : NamedToken {
     [AnimationEventHandler("std/ApplyCinematicDamage")]
     public virtual void OnApplyCinematicDamage(AnimationEventData data) {
         if (entity is PlayerCharacter player) {
-            player.opponent.ApplyDamage(data.integerValue, null, DamageSpecialProperties.SKIP_REGISTER | DamageSpecialProperties.IGNORE_COMBO_DECAY); 
+            player.opponent.ApplyDamage(data.integerValue, null, DamageProperties.SKIP_REGISTER | DamageProperties.IGNORE_COMBO_DECAY); 
         }
     }
     
@@ -264,7 +269,7 @@ public abstract class CharacterState : EntityState {
     public virtual StateIndicatorFlag stateIndicator => StateIndicatorFlag.NONE;
     public virtual Hitstate hitstate => Hitstate.NONE;
     public bool charging { get; protected set; }
-    
+    public bool driveRelease => player.burst.driveRelease;
     
     protected bool RevalidateInput() {
         return IsInputValid(GetCurrentInputBuffer());

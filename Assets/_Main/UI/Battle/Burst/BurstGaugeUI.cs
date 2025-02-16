@@ -1,5 +1,7 @@
 ﻿using System;
 using Sirenix.OdinInspector;
+using SuperSmashRhodes.Battle.Game;
+using SuperSmashRhodes.Runtime.State;
 using SuperSmashRhodes.UI.Generic;
 using SuperSmashRhodes.Util;
 using TMPro;
@@ -15,14 +17,36 @@ public class BurstGaugeUI : PerSideUIElement<BurstGaugeUI> {
     public Image outlineImage;
     public TMP_Text burstText;
     public GameObject burstAvailableTick;
-    public Image burstAvailableIndicator, burstDisabledIndicator;
+    public Image driveReleaseAvailableIndicator, burstAvailableIndicator, burstDisabledIndicator;
     
     [Title("Config")]
     public Vector2 yRange;
 
+    private float originalX;
+
+    private RectTransform rectTransform => (RectTransform) transform;
+    private float offsetX {
+        get {
+            if (!player) return 0f;
+            if (!player.burst.driveRelease && !(player.activeState is State_CmnDriveRelease)) return 0f;
+
+            return player.playerIndex == 0 ? -150 : 150;
+        }
+    }
+    
+    private void Start() {
+        originalX = rectTransform.anchoredPosition.x;
+        rectTransform.anchoredPosition = new Vector2(originalX, rectTransform.anchoredPosition.y);
+    }
+
     private void Update() {
         var player = this.player;
         if (player == null) return;
+        
+        rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, new Vector2(originalX + offsetX, rectTransform.anchoredPosition.y), Time.deltaTime * 5f);
+        
+        if (GameManager.inst.globalStateFlags.HasFlag(CharacterStateFlag.PAUSE_GAUGE)) return;
+        
         var burst = player.burst;
         var gauge = burst.gauge;
         
@@ -50,7 +74,8 @@ public class BurstGaugeUI : PerSideUIElement<BurstGaugeUI> {
             if (burst.burstAvailable)
                 boxOutline.effectColor = Color.green;
         }
-        
+
+        driveReleaseAvailableIndicator.enabled = player.burst.canDriveRelease;
         burstAvailableTick.SetActive(!burst.burstUsed && !burst.burstAvailable);
         burstAvailableIndicator.enabled = burst.burstAvailable;
         burstDisabledIndicator.enabled = player.burstDisabled;

@@ -1,5 +1,6 @@
 ﻿using System;
 using SuperSmashRhodes.Battle;
+using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Util;
 using UnityEngine;
 
@@ -41,6 +42,7 @@ public class PlayerMeterGauge : CharacterComponent {
     }
 
     public void AddMeter(float amount) {
+        if (GameManager.inst.globalStateFlags.HasFlag(CharacterStateFlag.PAUSE_GAUGE)) return;
         gauge.value += amount * meterGainMultiplier;
     }
     
@@ -52,6 +54,8 @@ public class PlayerMeterGauge : CharacterComponent {
 
     private void FixedUpdate() {
         // tension balance update
+        if (GameManager.inst.globalStateFlags.HasFlag(CharacterStateFlag.PAUSE_GAUGE)) return;
+        
         {
             var balance = this.balance.value;
             if (balance > 0 && balance <= 75f) this.balance.value -= .01f;

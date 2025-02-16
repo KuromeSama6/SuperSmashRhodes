@@ -12,11 +12,15 @@ using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.FX {
 public class CharacterFXManager : MonoBehaviour {
+    private static readonly int SHOW_EMBLEM_FX = Animator.StringToHash("Show");
     [Title("Sockets")]
     public UDictionary<CharacterFXSocketType, Transform> sockets = new();
     [BoxGroup("Direct Managed")]
     public MMF_Player staticOnGroundedTechFlashPlayer;
     
+    [BoxGroup("Emblems")]
+    public GameObject superEmblem, driveReleaseEmblem;
+        
     private Transform particleContainer; 
     private PlayerCharacter player;
 
@@ -26,7 +30,9 @@ public class CharacterFXManager : MonoBehaviour {
         particleContainer = new GameObject("Particles").transform;
         particleContainer.transform.parent = transform;
         particleContainer.transform.localPosition = Vector3.zero;
-        
+
+        superEmblem.GetComponentInChildren<SpriteRenderer>().sprite = player.descriptor.emblem;
+        driveReleaseEmblem.GetComponentInChildren<SpriteRenderer>().sprite = player.descriptor.emblem;
     }
 
     private void Update() {
@@ -35,8 +41,9 @@ public class CharacterFXManager : MonoBehaviour {
             var play = player.activeState.invincibility.HasFlag(AttackType.FULL);
             if (play && !staticOnGroundedTechFlashPlayer.IsPlaying) {
                 staticOnGroundedTechFlashPlayer.PlayFeedbacks();
+                
             } else if (!play && staticOnGroundedTechFlashPlayer.IsPlaying) {
-                staticOnGroundedTechFlashPlayer.StopFeedbacks();
+                // staticOnGroundedTechFlashPlayer.StopFeedbacks();
             }
         }
     }
@@ -145,6 +152,16 @@ public class CharacterFXManager : MonoBehaviour {
                 break;
         }
         
+    }
+
+    public void PlayEmblemFX(float duration, bool isSuper) {
+        var go = isSuper ? superEmblem : driveReleaseEmblem;
+        var animator = go.GetComponentInChildren<Animator>();
+        animator.SetBool(SHOW_EMBLEM_FX, true);
+        
+        this.CallLaterCoroutine(duration, () => {
+            animator.SetBool(SHOW_EMBLEM_FX, false);
+        });
     }
     
 }

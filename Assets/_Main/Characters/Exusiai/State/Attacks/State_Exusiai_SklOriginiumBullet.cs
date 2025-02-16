@@ -44,9 +44,9 @@ public class State_Exusiai_SklOriginiumBullet : State_Common_SpecialAttack, ICha
         while (mayCharge) {
             progress += 1;
             // 1st charge - 10 bullets
-            if (progress == 15 && ammoCount >= 10) AddCharge(1); 
+            if (progress == (driveRelease ? 5 : 15) && ammoCount >= (driveRelease ? 5 : 10)) AddCharge(1); 
             // 2nd charge - 15 bullets
-            if (progress == 75 && ammoCount >= 15) AddCharge(1);
+            if (progress == (driveRelease ? 30 : 75) && ammoCount >= (driveRelease ? 5 : 15)) AddCharge(1);
             yield return 1;
         }
         
@@ -64,13 +64,13 @@ public class State_Exusiai_SklOriginiumBullet : State_Common_SpecialAttack, ICha
             var bullets = chargeLevel switch {
                 2 => 15,
                 1 => 10,
-                _ => 7
+                _ => 5
             };
             // Debug.Log(bullets);
             bulletsUsed = Math.Min(gauge.displayCount, bullets);
             player.audioManager.PlaySound("chr/exusiai/battle/sfx/214h/shot");
 
-            for (int i = 0; i < bullets; i++) gauge.Fire(false);
+            for (int i = 0; i < (driveRelease ? 5 : bullets); i++) gauge.Fire(false);
             gauge.PlayMuzzleFlash();
 
             if (bulletsUsed >= 15) {
@@ -82,6 +82,9 @@ public class State_Exusiai_SklOriginiumBullet : State_Common_SpecialAttack, ICha
             } else {
                 SimpleCameraShakePlayer.inst.Play("chr/exusiai/battle/fx/camerashake/214h", "lv1");   
             }
+            
+            player.ApplyForwardVelocity(new(-5, 0));
+            player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/super/smoke", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position);
             
         } else {
             hitsRemaining = 0;
@@ -140,7 +143,7 @@ public class State_Exusiai_SklOriginiumBullet : State_Common_SpecialAttack, ICha
         if (!blocked) return 10;
         
         if (bulletsUsed >= 15) return +12;
-        if (bulletsUsed >= 10) return +2;
+        if (bulletsUsed >= 10) return +1;
         return -7;
     }
 

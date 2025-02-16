@@ -8,7 +8,7 @@ public interface IAttack {
     AttackFrameData GetFrameData(Entity to);
     int GetStunFrames(Entity to, bool blocked);
     AttackSpecialProperties GetSpecialProperties(Entity to);
-    DamageSpecialProperties GetDamageSpecialProperties(Entity to);
+    DamageProperties GetDamageSpecialProperties(Entity to);
     
     float GetUnscaledDamage(Entity to);
     float GetChipDamagePercentage(Entity to);
@@ -26,7 +26,6 @@ public interface IAttack {
     float GetComboDecay(Entity to);
     float GetComboDecayIncreaseMultiplier(Entity to);
     float GetMinimumDamagePercentage(Entity to);
-    bool ShouldCountSameMove(Entity to);
     CounterHitType GetCounterHitType(Entity to);
     
     AttackGuardType GetGuardType(Entity to);

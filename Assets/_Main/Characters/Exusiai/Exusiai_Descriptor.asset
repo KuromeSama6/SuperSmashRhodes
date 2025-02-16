@@ -23,3 +23,4 @@ MonoBehaviour:
   professionIconBlack: {fileID: 2166255255771973297, guid: a7a2394739cb9924d8fc38fe12649f8e, type: 3}
   professionIconWhite: {fileID: 4097154949762752123, guid: ad19b379f3add364d9ebe18172870173, type: 3}
   professionIconUI: {fileID: -102340783, guid: b8efcc14c116ada40b9bd55d5a0ab621, type: 3}
+  emblem: {fileID: 21300000, guid: f60fdf9f9bc411c499d5c6da14334fe1, type: 3}

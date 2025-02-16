@@ -130,9 +130,9 @@ public abstract class SummonAttackStateBase : EntityState, IAttack {
     public virtual AttackSpecialProperties GetSpecialProperties(Entity to) {
         return AttackSpecialProperties.NONE;
     }
-    public virtual DamageSpecialProperties GetDamageSpecialProperties(Entity to) {
-        var ret = DamageSpecialProperties.NONE;
-        if (hits > 1) ret |= DamageSpecialProperties.NO_METER_GAIN;
+    public virtual DamageProperties GetDamageSpecialProperties(Entity to) {
+        var ret = DamageProperties.NONE;
+        if (hits > 1) ret |= DamageProperties.NO_METER_GAIN;
         return ret;
     }
     public virtual float GetComboDecayIncreaseMultiplier(Entity to) {
@@ -152,9 +152,6 @@ public abstract class SummonAttackStateBase : EntityState, IAttack {
     public abstract Vector2 GetPushback(Entity to, bool airborne, bool blocked);
     public virtual Vector2 GetCarriedMomentumPercentage(Entity to) {
         return new(0.5f, 0.5f);
-    }
-    public virtual bool ShouldCountSameMove(Entity to) {
-        return false;
     }
     public abstract float GetComboProration(Entity to);
     public virtual float GetFirstHitProration(Entity to) {

@@ -34,12 +34,22 @@ public class AnnouncerHud : PerSideUIElement<AnnouncerHud> {
         if (currentState != state) {
             timeWithoutChange = 0;
             foreach (var entry in stateIndicators) {
-                entry.Value.color = currentState.HasFlag(entry.Key) ? initialColors[entry.Key] : Color.gray;
-                entry.Value.GetComponent<TrueShadow>().enabled = currentState.HasFlag(entry.Key);
+                entry.Value.color = Color.gray;
+                entry.Value.GetComponent<TrueShadow>().enabled = false;
+            }
+            foreach (var entry in stateTexts) {
+                entry.Value.SetActive(false);
+            }
+            
+            foreach (var entry in stateIndicators) {
+                if (currentState.HasFlag(entry.Key)) {
+                    entry.Value.color = initialColors[entry.Key];
+                    entry.Value.GetComponent<TrueShadow>().enabled = true;
+                }
             }
             
             foreach (var entry in stateTexts) {
-                entry.Value.SetActive(currentState.HasFlag(entry.Key));
+                if (currentState.HasFlag(entry.Key)) entry.Value.SetActive(true);
             }
 
         } else {
@@ -60,6 +70,8 @@ public enum StateIndicatorFlag {
     THROW_TECH = 1 << 3,
     INVINCIBLE = 1 << 4,
     REVERSAL = 1 << 5,
-    SUPER = 1 << 6
+    SUPER = 1 << 6,
+    DRIVE_RELEASE = 1 << 7,
+    DRIVE_RELEASE_CANCEL = 1 << 8,
 }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using Sirenix.OdinInspector;
+using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Character.Gauge;
 using SuperSmashRhodes.UI.Generic;
 using SuperSmashRhodes.Util;
@@ -30,13 +31,16 @@ public class MeterGaugeUI : PerSideUIElement<MeterGaugeUI> {
         var gauge = player.meter;
         var meter = gauge.gauge.value;
         var percentage = meter / gauge.gauge.max;
-
+        
         _current = Mathf.Lerp(_current, percentage, Time.deltaTime * 2f);
         if (percentage > _current) {
-            barFill.fillAmount = _current;
-            changeIndicator.fillAmount = percentage;
-            changeIndicatorMask.fillAmount = 1 - _current;
-            changeIndicator.color = "00b9ff".HexToColor().ApplyAlpha(0.6f);
+            if (!GameManager.inst.globalStateFlags.HasFlag(CharacterStateFlag.PAUSE_GAUGE)) {
+                barFill.fillAmount = _current;
+                changeIndicator.fillAmount = percentage;
+                changeIndicatorMask.fillAmount = 1 - _current;
+                changeIndicator.color = "00b9ff".HexToColor().ApplyAlpha(0.6f);   
+            }
+            
         } else {
             barFill.fillAmount = percentage;
             changeIndicator.fillAmount = _current;

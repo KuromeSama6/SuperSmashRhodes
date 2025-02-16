@@ -9768,6 +9768,7 @@ MonoBehaviour:
   outlineImage: {fileID: 7997849760068161712}
   burstText: {fileID: 1957641591558224537}
   burstAvailableTick: {fileID: 1339780336724206345}
+  driveReleaseAvailableIndicator: {fileID: 2781865202895338618}
   burstAvailableIndicator: {fileID: 8282953048381839153}
   burstDisabledIndicator: {fileID: 7819095490122141547}
   yRange: {x: 0, y: -1550}

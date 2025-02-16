@@ -28,10 +28,21 @@ public class Gauge_Exusiai_AmmoGauge : CharacterComponent {
         chambered = true;
     }
 
-    public bool Fire(bool playMuzzleFlash = true) {
+    public bool Fire(bool playMuzzleFlash = true, bool consumeAmmo = true) {
         if (currentMagazine.ammo > 0) {
-            // --currentMagazine.ammo;
-            chambered = true;
+            if (consumeAmmo) {
+                if (player.burst.driveRelease) {
+                    player.burst.releaseFrames -= 8;
+                    if (player.burst.releaseFrames <= 0) {
+                        player.burst.EndDriveRelease();
+                    }
+                
+                } else {
+                    // --currentMagazine.ammo;
+                }   
+                chambered = true;
+            }
+            
             if (playMuzzleFlash) PlayMuzzleFlash();
             return true;
         }

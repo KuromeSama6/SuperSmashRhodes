@@ -45,7 +45,17 @@ public class BackgroundUIManager : SingletonBehaviour<BackgroundUIManager> {
 
     private void Update() {
         var backgroundData = data;
-        backgroundAlpha = Mathf.Lerp(backgroundAlpha, backgroundData.dimAlpha, Time.deltaTime * backgroundData.dimSpeed);
+        
+        {
+            var targetAlpha = backgroundData.dimAlpha;
+            if (Mathf.Approximately(targetAlpha, 0)) {
+                if (GameManager.inst.GetPlayer(0).burst.driveRelease || GameManager.inst.GetPlayer(1).burst.driveRelease) {
+                    targetAlpha = 0.95f;
+                }
+            }
+        
+            backgroundAlpha = Mathf.Lerp(backgroundAlpha, targetAlpha, Time.deltaTime * backgroundData.dimSpeed);   
+        }
 
         if (backgroundData.bgType != BackgroundType.NONE) {
             backgroundContainer.SetActive(true);

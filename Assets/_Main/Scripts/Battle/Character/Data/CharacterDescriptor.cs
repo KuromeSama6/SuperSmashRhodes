@@ -14,6 +14,7 @@ public class CharacterDescriptor : ScriptableObject {
     public Sprite superPortrait;
     public Sprite avatar;
     public Sprite professionIconFull, professionIconBlack, professionIconWhite, professionIconUI;
+    public Sprite emblem;
 }
 
 public enum CharacterProfession {

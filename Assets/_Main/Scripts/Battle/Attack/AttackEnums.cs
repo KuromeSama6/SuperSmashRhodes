@@ -34,13 +34,14 @@ public enum AttackSpecialProperties {
 }
 
 [Flags]
-public enum DamageSpecialProperties {
+public enum DamageProperties {
     NONE = 0,
     
     IGNORE_COMBO = 1 << 0,
     IGNORE_COMBO_DECAY = 1 << 1,
     SKIP_REGISTER = 1 << 2,
     NO_METER_GAIN = 1 << 3,
+    MULTIHIT = 1 << 3,
     
     REAL_DAMAGE = IGNORE_COMBO | IGNORE_COMBO_DECAY
 }

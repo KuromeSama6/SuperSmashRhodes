@@ -21,7 +21,8 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
     protected override int normalInputBufferLength => 20;
     protected override float inputMeter => 0;
     public override bool mayEnterState => player.meter.gauge.value >= meterCost || true;
-    public override StateIndicatorFlag stateIndicator => StateIndicatorFlag.SUPER;
+    public override CharacterStateFlag globalFlags => CharacterStateFlag.PAUSE_GAUGE | CharacterStateFlag.GLOBAL_PAUSE_TIMER;
+    public override StateIndicatorFlag stateIndicator => StateIndicatorFlag.SUPER | (player.burst.driveRelease ? StateIndicatorFlag.DRIVE_RELEASE : StateIndicatorFlag.NONE);
 
     
     protected CinematicCharacterSocket socket { get; private set; }
@@ -40,6 +41,8 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
             socket.Release();
             socket = null;   
         }
+        
+        player.fxManager.PlayEmblemFX(1f, true);
     }
     
     public override IEnumerator MainRoutine() {
@@ -86,6 +89,7 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
         if (cinematicHit) {
             // big cinematic effect!!!
             stateData.gravityScale = 0;
+            stateData.ghostFXData = new(Color.white);
             socket = new CinematicCharacterSocket(opponent, player, "throw_opponent", new(0, 0, 0));
             
             socket.Attach();
@@ -130,6 +134,8 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
             socket.Release();
             opponent.stateFlags = player.stateFlags = default;
         }
+
+        player.burst.releaseFrames = 0;
     }
 
     protected override void OnTick() {

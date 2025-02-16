@@ -67,5 +67,13 @@ public class State_CmnAirBackdash : CharacterState {
         stateData.disableSideSwap = true;
         stateData.gravityScale = 1;
     }
+
+    protected override void OnTick() {
+        base.OnTick();
+        if (frame == player.characterConfig.airDashCancellableFrameFinal) {
+            AddCancelOption(EntityStateType.CHR_ATK_ALL);
+            AddCancelOption(EntityStateType.CHR_ATK_THROW);
+        }
+    }
 }
 }

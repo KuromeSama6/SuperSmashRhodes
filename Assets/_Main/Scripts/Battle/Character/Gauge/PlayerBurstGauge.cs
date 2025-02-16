@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.Game;
+using SuperSmashRhodes.Battle.State.Implementation;
 using SuperSmashRhodes.Util;
 using UnityEngine;
 
@@ -11,8 +12,13 @@ public class PlayerBurstGauge : CharacterComponent {
     private List<BurstGaugeDelta> deltas { get; } = new();
     public bool burstAvailable { get; set; }
     public bool burstUsed { get; set; }
+    public float releaseFrames { get; set; }
 
+    public bool driveRelease { get; private set; }
+    public int maxReleaseFrames => (int)(4 * 60f * 1.5f);
+    
     public bool canBurst => burstAvailable && !burstUsed && !player.stateFlags.HasFlag(CharacterStateFlag.DISABLE_BURST);
+    public bool canDriveRelease => gauge.value >= 500f && !driveRelease || true;
     
     private void Start() {
         
@@ -26,30 +32,38 @@ public class PlayerBurstGauge : CharacterComponent {
     }
 
     private void FixedUpdate() {
-        {
-            // passive gain
-            if (gauge.value < 600f) {
-                if (gauge.value >= 500f) {
-                    AddDelta(1f / 60f, 1);
-                } else if (gauge.value >= 400f) {
-                    AddDelta(1.5f / 60f, 1);
-                } else if (gauge.value >= 200f) {
-                    AddDelta(2f / 60f, 1);
-                } else if (gauge.value >= 100f) {
-                    AddDelta(3f / 60f, 1);
-                } else {
-                    AddDelta(4f / 60f, 1);
+        if (GameManager.inst.globalStateFlags.HasFlag(CharacterStateFlag.PAUSE_GAUGE)) return;
+         
+        if (driveRelease) {
+            releaseFrames -= 1;
+            if (releaseFrames <= 0 && !(player.activeState is CharacterAttackStateBase)) {
+                EndDriveRelease();
+            }
+
+        } else {
+            {
+                // passive gain
+                if (gauge.value < 500f) {
+                    if (gauge.value >= 400f) {
+                        AddDelta(1f / 60f, 1);
+                    } else if (gauge.value >= 200f) {
+                        AddDelta(1.5f / 60f, 1);
+                    } else if (gauge.value >= 100f) {
+                        AddDelta(2f / 60f, 1);
+                    } else {
+                        AddDelta(3f / 60f, 1);
+                    }
                 }
             }
-        }
         
-        {
-            // tick deltas
-            foreach (var delta in deltas) {
-                gauge.value += delta.value;
-                delta.frames--;
-            }
-            deltas.RemoveAll(delta => delta.frames <= 0);
+            {
+                // tick deltas
+                foreach (var delta in deltas) {
+                    gauge.value += delta.value;
+                    delta.frames--;
+                }
+                deltas.RemoveAll(delta => delta.frames <= 0);
+            }   
         }
 
         if (gauge.value >= 450f && !burstUsed) {
@@ -68,6 +82,19 @@ public class PlayerBurstGauge : CharacterComponent {
     public void AddDeltaTotal(float amount, int frames) {
         if (amount == 0) return;
         deltas.Add(new(frames, amount / frames));
+    }
+
+    public void BeginDriveRelease(int frames) {
+        driveRelease = true;
+        releaseFrames = frames;
+        gauge.value = 0f; 
+        
+    }
+
+    public void EndDriveRelease() {
+        if (!driveRelease) return;
+        driveRelease = false;
+        player.audioManager.PlaySound("cmn/battle/sfx/driverelease_end");
     }
     
 }

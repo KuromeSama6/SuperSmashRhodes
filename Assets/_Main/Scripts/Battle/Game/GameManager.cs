@@ -25,7 +25,20 @@ public class GameManager : SingletonBehaviour<GameManager> {
     [Title("Debug")]
     public GameObject p1Prefab;
     public GameObject p2Prefab;
-        
+
+    public CharacterStateFlag globalStateFlags {
+        get {
+            var ret = CharacterStateFlag.NONE;
+            foreach (var player in players.Values) {
+                if (player.activeState == null) continue;
+                ret |= player.activeState.globalFlags;
+            }
+            
+            if (TimeManager.inst.globalFreezeFrames > 0) ret |= CharacterStateFlag.GLOBAL_PAUSE_TIMER | CharacterStateFlag.PAUSE_GAUGE;
+            return ret;
+        }
+    }
+    
     private PlayerInputManager inputManager;
     private Dictionary<int, PlayerCharacter> players = new();
     private bool pushboxCorrectionLock = false;

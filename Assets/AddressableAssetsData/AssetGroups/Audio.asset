@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Audio
   m_GUID: 6493b6b7930f5d543b3c51c9ab3dc9c7
   m_SerializeEntries:
+  - m_GUID: 034df00a15433494489e2481d57d70a7
+    m_Address: cmn/battle/sfx/driverelease_end
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0529162a252940d418f47f9c2b9dfc6e
     m_Address: chr/chen/battle/vo/modal/0
     m_ReadOnly: 0
@@ -215,6 +220,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cec029be369a9604b9e2623113f8cfbb
+    m_Address: cmn/battle/sfx/driverelease
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cf7dc64d7468f2041aba9b3831c99de9
     m_Address: cmn/battle/sfx/burst
     m_ReadOnly: 0
@@ -252,6 +262,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e9ff09133d5309648bcab82013b52f16
     m_Address: chr/exusiai/battle/sfx/632146d/blast
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f004cd7b5fe296542a4feea4c40104ba
+    m_Address: chr/exusiai/battle/vo/driverelease
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
