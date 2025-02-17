@@ -136,13 +136,13 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         var input = requiredInput;
         if (input == null) return false;
         
-        int frames;
-        if (entity.activeState is CharacterAttackStateBase attack) {
-            // Debug.Log(attack.frameData.startup + frameData.startup + frameData.active);
-            frames = Mathf.Max(1, attack.GetFreezeFrames(null) + frameData.startup + frameData.active);
-        } else {
-            frames = normalInputBufferLength;
-        }
+        int frames = normalInputBufferLength;
+        // if (entity.activeState is CharacterAttackStateBase attack) {
+        //     // Debug.Log(attack.frameData.startup + frameData.startup + frameData.active);
+        //     frames = Mathf.Max(1, attack.GetFreezeFrames(null) + frameData.startup + frameData.active);
+        // } else {
+        //     frames = normalInputBufferLength;
+        // }
 
         return buffer.TimeSlice(frames).ScanForInput(entity.side, input); 
     }
@@ -156,7 +156,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     protected abstract string mainAnimation { get; }
     public abstract AttackFrameData frameData { get; }
     protected abstract EntityStateType commonCancelOptions { get; }
-    protected abstract InputFrame[] requiredInput { get; }
+    protected virtual InputFrame[] requiredInput => null;
     protected abstract int normalInputBufferLength { get; }
     protected abstract float inputMeter { get; }
     

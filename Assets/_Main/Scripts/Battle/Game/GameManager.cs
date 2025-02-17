@@ -21,6 +21,7 @@ public class GameManager : SingletonBehaviour<GameManager> {
     [Title("Stage")]
     public StageData stageData;
     public GameObject ground;
+    public GameObject leftWall, rightWall;
     
     [Title("Debug")]
     public GameObject p1Prefab;
@@ -87,7 +88,7 @@ public class GameManager : SingletonBehaviour<GameManager> {
     }
 
     public Vector3 ClampPositionToStage(Vector3 position) {
-        var x = Mathf.Clamp(position.x, stageData.leftWallPosition, stageData.rightWallPosition);
+        var x = Mathf.Clamp(position.x, leftWall.transform.position.x, rightWall.transform.position.x);
         return new Vector3(x, position.y, position.z);
     }
 
@@ -103,27 +104,44 @@ public class GameManager : SingletonBehaviour<GameManager> {
         pushboxCorrectionLock = false;
     }
 
-    public void AttemptPushboxCorrection() {
+    public void AttemptPushboxCorrection(PlayerCharacter top, PlayerCharacter bottom) {
         if (pushboxCorrectionLock) return;
         pushboxCorrectionLock = true;
-        var p1 = players[0];
-        var p2 = players[1];
-        
-        // find the character that needs to move
-        PlayerCharacter target;
-        if (p1.atWall) target = p2;
-        else if (p2.atWall) target = p1;
-        else {
-            // prioritize wall distance
-            // Debug.Log($"p1 {p1.wallDistance} p2 {p2.wallDistance}");
-            if (p1.wallDistance < p2.wallDistance) target = p2;
-            else target = p1;
-        }
-        
-        float size = target.pushboxManager.pushboxSize;
-        float offset = (target.transform.position.x <= target.opponent.transform.position.x ? -1 : 1) * (size + .1f);
-        target.transform.position += new Vector3(offset, 0, 0);
 
+        float direction;
+        PlayerCharacter target;
+
+        if (top.atWall) {
+            target = bottom;
+            direction = bottom.side == EntitySide.RIGHT ? 1 : -1;
+            
+        } else if (bottom.atWall) {
+            target = top;
+            direction = top.side == EntitySide.RIGHT ? 1 : -1;
+
+        } else if (bottom.wallDistance < bottom.pushboxManager.correctionBox.size.x) {
+            target = bottom;
+            direction = top.side == EntitySide.RIGHT ? 1 : -1; 
+            
+        } else {
+            target = top;
+            if (top.side == EntitySide.LEFT) direction = top.transform.position.x > bottom.transform.position.x ? 1 : -1;
+            else direction = top.transform.position.x < bottom.transform.position.x ? -1 : 1;
+        }
+
+        var other = target.opponent;
+
+        var pos = other.transform.position;
+        pos.y = target.transform.position.y;
+
+        var offset = (other.pushboxManager.correctionBox.size.x + .05f);
+        target.transform.position = pos + new Vector3(direction * offset, 0, 0);
+        target.rb.linearVelocityX = 0;
+        other.rb.linearVelocityX = 0;
+        // Debug.Log($"target {target.playerIndex} target atwall {target.atWall} other {other.playerIndex} bottom {bottom.playerIndex} top {top.playerIndex}");
+        target.SetZPriority();
+        target.pushboxCorrectionGraceAmount = -direction * offset;
+        target.UpdateRotation();
     }
     
     public int RegisterEntity(Entity entity) {

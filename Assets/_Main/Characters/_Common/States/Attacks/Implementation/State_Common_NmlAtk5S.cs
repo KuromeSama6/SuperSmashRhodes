@@ -15,7 +15,7 @@ public abstract class State_Common_NmlAtk5S : State_Common_NormalAttack {
 
     protected override string mainAnimation => "cmn/NmlAtk5S";
 
-    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER | EntityStateType.CHR_ATK_NORMAL_H;
+    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_NORMAL | EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER;
     protected override InputFrame[] requiredInput => new InputFrame[] {new(InputType.S, InputFrameType.PRESSED)};
     public override void OnContact(Entity to) {
         base.OnContact(to);

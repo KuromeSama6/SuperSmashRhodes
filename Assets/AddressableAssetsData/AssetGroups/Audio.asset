@@ -55,6 +55,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1dcd7a075fad1624f9c7da9486a1e0bf
+    m_Address: cmn/battle/sfx/generic/generic_swoosh_a
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 225b841305205ad419b54a400764f408
     m_Address: chr/exusiai/battle/sfx/gun_bolt
     m_ReadOnly: 0
@@ -62,6 +67,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 24fb35c996e4204419ad6a6b8bcc797a
     m_Address: chr/exusiai/battle/sfx/apple_pie_explode2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a61ff9139e0d444581dd87ac0e227f1
+    m_Address: chr/chen/battle/sfx/drive/parry
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -160,6 +170,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c78df5ee440d024c9833da29c5bf925
+    m_Address: chr/chen/battle/vo/driverelease
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 91846e7b73d7ac44595da362d34a30a2
     m_Address: cmn/battle/sfx/force_reset/0
     m_ReadOnly: 0
@@ -220,6 +235,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ca88864bd59d8364d9fb193e0213486a
+    m_Address: cmn/battle/sfx/generic/generic_parry_success
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cec029be369a9604b9e2623113f8cfbb
     m_Address: cmn/battle/sfx/driverelease
     m_ReadOnly: 0
@@ -232,6 +252,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cfeab6e9ca48ae34c906f2669dfe5f34
     m_Address: cmn/battle/sfx/burst_alert/0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dfe061460a9217445b7592ef9439ee77
+    m_Address: chr/chen/battle/sfx/drive/p1
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

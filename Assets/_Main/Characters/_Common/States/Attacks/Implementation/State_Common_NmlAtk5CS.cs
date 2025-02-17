@@ -15,9 +15,8 @@ public abstract class State_Common_NmlAtk5CS : State_Common_NormalAttack {
 
     protected override string mainAnimation => "cmn/NmlAtk5CS";
 
-    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER |
-                                                              EntityStateType.CHR_ATK_5S | EntityStateType.CHR_ATK_2S | EntityStateType.CHR_ATK_NORMAL_H;
-    public override bool mayEnterState => player.opponentDistance <= triggerRange && !GetCurrentInputBuffer().thisFrame.HasInput(entity.side, InputType.DOWN, InputFrameType.HELD);
+    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_NORMAL | EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER;
+    public override bool mayEnterState => player.opponentDistance <= triggerRange && !GetCurrentInputBuffer().thisFrame.HasInput(entity.side, InputType.DOWN, InputFrameType.HELD) && !player.gatlingMovesUsed.Contains(this);
 
     protected override InputFrame[] requiredInput => new InputFrame[] {new(InputType.S, InputFrameType.PRESSED)};
     public override void OnContact(Entity to) {
@@ -36,9 +35,6 @@ public abstract class State_Common_NmlAtk5CS : State_Common_NormalAttack {
     public override AttackGuardType GetGuardType(Entity to) {
         return AttackGuardType.ALL;
     }
-    public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
-        return airborne ? new Vector2(1.5f, 5f) : new Vector2(3f, 0);
-    }
     public override int GetAttackLevel(Entity to) {
         return 3;
     }
@@ -49,5 +45,9 @@ public abstract class State_Common_NmlAtk5CS : State_Common_NormalAttack {
         return CounterHitType.MEDIUM;
     }
     protected virtual float triggerRange => 0.8f;
+    public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
+        if (airborne) return new Vector2(1.5f, 5f);
+        return new(blocked ? 3f : 2f, 0f);
+    }
 }
 }

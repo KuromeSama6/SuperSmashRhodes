@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using SuperSmashRhodes.UI.Battle;
 using SuperSmashRhodes.UI.Battle.AnnouncerHud;
 using UnityEngine;
@@ -23,6 +24,14 @@ public class EntityStateData {
     public float targetFrameRate = 60f;
     public StateIndicatorFlag extraIndicatorFlag = StateIndicatorFlag.NONE;
     public EntityGhostFXData? ghostFXData;
+    public CharacterRenderColorData renderColorData = new();
+    public bool physicsPushboxDisabled = false;
+    public bool maySwitchSides = false;
+
+    public bool shouldApplySlotNeutralPose {
+        get => TryGetCarriedVariable("_applySlotNeutralPose", out bool value) && value;
+        set => owner.SetCarriedStateVariable("_applySlotNeutralPose", null, value);
+    }
 
     public EntityStateData(Entity owner) {
         this.owner = owner;
@@ -60,6 +69,28 @@ public class EntityStateData {
         }
         value = default;
         return false;
+    }
+}
+
+public struct CharacterRenderColorData {
+    public float lerpSpeed;
+    public Color white;
+    public Color black;
+    public Flag flags;
+    
+    public CharacterRenderColorData(float lerpSpeed = 100f, Color? white = null, Color? black = null, Flag flags = Flag.NONE) {
+        this.lerpSpeed = lerpSpeed;
+        this.white = white ?? Color.white;
+        this.black = black ?? Color.black;
+        this.flags = flags;
+    }
+    
+    public static CharacterRenderColorData PAUSE => new(default, default, default, Flag.PAUSE);
+    
+    [Flags]
+    public enum Flag {
+        NONE = 0,
+        PAUSE = 1 << 0
     }
 }
 }

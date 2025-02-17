@@ -15,8 +15,11 @@ public abstract class State_Common_NmlAtk2H : State_Common_NormalAttack {
 
     protected override string mainAnimation => "cmn/NmlAtk2H";
 
-    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER;
-    protected override InputFrame[] requiredInput => new InputFrame[] {new(InputType.DOWN, InputFrameType.HELD), new(InputType.HS, InputFrameType.PRESSED)};
+    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_NORMAL | EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER;
+    public override bool IsInputValid(InputBuffer buffer) {
+        return buffer.thisFrame.HasInput(player.side, InputType.DOWN, InputFrameType.HELD) && 
+               buffer.TimeSlice(normalInputBufferLength).ScanForInput(player.side, new InputFrame(InputType.HS, InputFrameType.PRESSED));
+    }
 
     public override int GetFreezeFrames(Entity to) {
         return 8;
@@ -29,10 +32,6 @@ public abstract class State_Common_NmlAtk2H : State_Common_NormalAttack {
     }
     public override AttackGuardType GetGuardType(Entity to) {
         return AttackGuardType.ALL;
-    }
-    public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
-        if (airborne) return new Vector2(2.5f, 5f);
-        return blocked ? new(4f, 0f) : new Vector2(.5f, 9f);
     }
     public override int GetAttackLevel(Entity to) {
         return 4;

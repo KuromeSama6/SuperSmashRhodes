@@ -30,7 +30,7 @@ public class PortraitCutscenePlayer : PerSideUIElement<PortraitCutscenePlayer> {
             
         }
         
-        portraitContainer.anchoredPosition -= new Vector2(15f, 25f) * Time.deltaTime * 0.5f;
+        portraitContainer.anchoredPosition -= new Vector2(playerIndex == 0 ? 15f : -15f, 25f) * Time.deltaTime * 0.5f;
         animator.SetBool(SHOW, currentPortrait != null);
     }
 

@@ -26,6 +26,9 @@ public class TimeManager : SingletonBehaviour<TimeManager> {
                 globalFreezeFrames += scheduledFreezeFrames;
                 scheduledFreezeFrames = 0;
             }
+        } else {
+            globalFreezeFrames += scheduledFreezeFrames;
+            scheduledFreezeFrames = 0;
         }
         
         if (globalFreezeFrames > 0) {

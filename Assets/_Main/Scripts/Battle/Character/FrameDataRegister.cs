@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
@@ -8,7 +9,10 @@ public class FrameDataRegister : RuntimeCharacterDataRegister {
     public int throwInvulnFrames { get; set; }
     public int landingRecoveryFrames { get; set; }
     public LandingRecoveryFlag landingFlag { get; set; }
+    public List<Vector2> groundBounces { get; } = new();
 
+    public bool shouldGroundBounce => groundBounces.Count > 0;
+    
     private int _hitstunFrames;
     private int carriedHitstunFrames;
 
@@ -48,6 +52,19 @@ public class FrameDataRegister : RuntimeCharacterDataRegister {
         }
     }
     
+    public void AddGroundBounce(Vector2 bounce) {
+        groundBounces.Add(bounce);
+    }
+
+    public Vector2 ConsumeContactBounce() {
+        if (groundBounces.Count == 0) {
+            return Vector2.zero;
+        }
+        Vector2 bounce = groundBounces[0];
+        groundBounces.RemoveAt(0);
+        return bounce;
+    }
+
 }
 
 }

@@ -6,6 +6,7 @@ using System.Reflection;
 using NUnit.Framework;
 using Spine;
 using SuperSmashRhodes.Battle.Animation;
+using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Battle.State.Implementation;
 using SuperSmashRhodes.Framework;
@@ -258,6 +259,21 @@ public abstract class EntityState : NamedToken {
     public virtual void OnStopSoundLoop(AnimationEventData data) {
         entity.audioManager.StopSoundLoop(data.args[0]);
     }
+    
+    [AnimationEventHandler("std/ApplyForce")]
+    public virtual void OnApplyVelocity(AnimationEventData data) {
+        var x = float.Parse(data.GetArg(0));
+        var y = float.Parse(data.GetArg(1));
+        var xCarried = float.Parse(data.GetArg(2, "0"));
+        var yCarried = float.Parse(data.GetArg(3, "0"));
+        
+
+        var vel = new Vector2(x, y);
+        var carried = new Vector2(xCarried, yCarried);
+
+        entity.rb.linearVelocity *= carried;
+        entity.rb.AddForce(vel * new Vector2(entity.side == EntitySide.LEFT ? 1 : -1, 1));
+    }
 }
 
 public abstract class CharacterState : EntityState {
@@ -315,6 +331,9 @@ public abstract class CharacterState : EntityState {
         charging = true;
     }
     protected virtual void OnCharge(int newLevel) {}
+    public virtual InboundHitModifier OnHitByOther(AttackData attackData) {
+        return InboundHitModifier.NONE;
+    }
     
     public abstract bool IsInputValid(InputBuffer buffer);
 }

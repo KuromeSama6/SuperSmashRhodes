@@ -49,7 +49,7 @@ public class State_Exusiai_NmlAtk5S : State_Common_NmlAtk5S {
 }
 
 [NamedToken("Exusiai_NmlAtk2S")]
-public class State_Exusiai_NmlAtk2S : State_Exusiai_MultihitWeaponAttack {
+public class State_Exusiai_NmlAtk2S : State_Exusiai_MultihitWeaponNormalAttack {
     public State_Exusiai_NmlAtk2S(Entity entity) : base(entity) { }
     protected override string mainAnimation => "cmn/NmlAtk2S";
 
@@ -60,8 +60,6 @@ public class State_Exusiai_NmlAtk2S : State_Exusiai_MultihitWeaponAttack {
         onHit = 0,
         onBlock = -7,
     };
-
-    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER | EntityStateType.CHR_ATK_NORMAL_H;
     protected override InputFrame[] requiredInput => new[] { new InputFrame(InputType.DOWN, InputFrameType.HELD), new InputFrame(InputType.S, InputFrameType.PRESSED)};
     protected override int normalInputBufferLength => 6;
     public override float GetUnscaledDamage(Entity to) {
@@ -91,7 +89,7 @@ public class State_Exusiai_NmlAtk2S : State_Exusiai_MultihitWeaponAttack {
 }
 
 [NamedToken("Exusiai_NmlAtk5H")]
-public class State_Exusiai_NmlAtk5H : State_Exusiai_MultihitWeaponAttack {
+public class State_Exusiai_NmlAtk5H : State_Exusiai_MultihitWeaponNormalAttack {
     public State_Exusiai_NmlAtk5H(Entity entity) : base(entity) { }
     protected override string mainAnimation => "cmn/NmlAtk5H";
 
@@ -102,8 +100,6 @@ public class State_Exusiai_NmlAtk5H : State_Exusiai_MultihitWeaponAttack {
         onHit = +5,
         onBlock = -6,
     };
-
-    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER;
     protected override InputFrame[] requiredInput => new[] { new InputFrame(InputType.HS, InputFrameType.PRESSED)};
     protected override int normalInputBufferLength => 6;
     public override float GetUnscaledDamage(Entity to) {
@@ -133,7 +129,7 @@ public class State_Exusiai_NmlAtk5H : State_Exusiai_MultihitWeaponAttack {
 }
 
 [NamedToken("Exusiai_NmlAtk2H")]
-public class State_Exusiai_NmlAtk2H : State_Exusiai_MultihitWeaponAttack {
+public class State_Exusiai_NmlAtk2H : State_Exusiai_MultihitWeaponNormalAttack {
     public State_Exusiai_NmlAtk2H(Entity entity) : base(entity) { }
     protected override string mainAnimation => "cmn/NmlAtk2H";
 
@@ -144,8 +140,6 @@ public class State_Exusiai_NmlAtk2H : State_Exusiai_MultihitWeaponAttack {
         onHit = +10,
         onBlock = -18,
     };
-
-    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER;
     protected override InputFrame[] requiredInput => new[] { new InputFrame(InputType.DOWN, InputFrameType.HELD), new InputFrame(InputType.HS, InputFrameType.PRESSED)};
     protected override int normalInputBufferLength => 6;
     public override float GetUnscaledDamage(Entity to) {
@@ -174,7 +168,7 @@ public class State_Exusiai_NmlAtk2H : State_Exusiai_MultihitWeaponAttack {
 }
 
 [NamedToken("Exusiai_NmlAtk6H")]
-public class State_Exusiai_NmlAtk6H : State_Exusiai_MultihitWeaponAttack {
+public class State_Exusiai_NmlAtk6H : State_Exusiai_MultihitWeaponNormalAttack {
     private int audioHandle;
     public State_Exusiai_NmlAtk6H(Entity entity) : base(entity) {
         onFireStart.AddListener(() => audioHandle = entity.audioManager.PlaySoundLoop("chr/exusiai/battle/sfx/gun_loop", 0.5f, true));
@@ -189,8 +183,6 @@ public class State_Exusiai_NmlAtk6H : State_Exusiai_MultihitWeaponAttack {
         onHit = +22,
         onBlock = -16,
     };
-
-    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER;
     protected override InputFrame[] requiredInput => new[] { new InputFrame(InputType.FORWARD, InputFrameType.HELD), new InputFrame(InputType.HS, InputFrameType.PRESSED)};
     protected override int normalInputBufferLength => 6;
     public override float GetUnscaledDamage(Entity to) {

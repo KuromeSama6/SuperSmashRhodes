@@ -20,11 +20,14 @@ public class State_CmnMoveForward : CharacterState {
     }
 
     protected override void OnStateBegin() {
+        base.OnStateBegin();
         AddCancelOption("CmnDash");
         AddCancelOption("CmnJump");
         AddCancelOption(EntityStateType.CHR_ATK_ALL);
         AddCancelOption("CmnNeutralCrouch");
         AddCancelOption("CmnBackdash");
+        
+        stateData.maySwitchSides = true;
     }
 
     public override IEnumerator MainRoutine() {
@@ -62,6 +65,8 @@ public class State_CmnMoveBackward : CharacterState {
         AddCancelOption(EntityStateType.CHR_ATK_ALL);
         AddCancelOption("CmnNeutralCrouch");
         AddCancelOption("CmnBackdash");
+        
+        stateData.maySwitchSides = true;
     }
 
     public override IEnumerator MainRoutine() {

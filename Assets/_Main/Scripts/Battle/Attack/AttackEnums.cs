@@ -57,7 +57,10 @@ public enum AttackAirOkType {
 public enum Hitstate {
     NONE,
     COUNTER,
-    PUNISH
+    PUNISH,
+    PARRY,
+    // Guardpoint or armor
+    PASSTHROUGH
 }
 
 [Flags]
@@ -65,7 +68,6 @@ public enum LandingRecoveryFlag {
     NONE = 0,
     UNTIL_LAND = 1 << 0,
     HARD_KNOCKDOWN_LAND = 1 << 2,
-    
     HARD_LAND_COSMETIC = 1 << 3,
 }
 
@@ -86,4 +88,12 @@ public enum CounterHitType {
     MEDIUM,
     LARGE
 }
+
+[Flags]
+public enum InboundHitModifier {
+    NONE = 0,
+    STOP_ATTACK = 1 << 0,
+    NO_STUN = 1 << 1
+}
+
 }

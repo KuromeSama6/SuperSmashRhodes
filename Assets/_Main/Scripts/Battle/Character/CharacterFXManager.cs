@@ -15,12 +15,14 @@ public class CharacterFXManager : MonoBehaviour {
     private static readonly int SHOW_EMBLEM_FX = Animator.StringToHash("Show");
     [Title("Sockets")]
     public UDictionary<CharacterFXSocketType, Transform> sockets = new();
-    [BoxGroup("Direct Managed")]
-    public MMF_Player staticOnGroundedTechFlashPlayer;
+    // [BoxGroup("Direct Managed")]
+    // public MMF_Player staticOnGroundedTechFlashPlayer;
     
     [BoxGroup("Emblems")]
     public GameObject superEmblem, driveReleaseEmblem;
-        
+    
+    public bool playFlash => player && player.activeState != null && (player.activeState.invincibility & AttackType.FULL).HasFlag(AttackType.FULL);
+    
     private Transform particleContainer; 
     private PlayerCharacter player;
 
@@ -36,16 +38,7 @@ public class CharacterFXManager : MonoBehaviour {
     }
 
     private void Update() {
-        if (player.activeState != null) {
-            // invincible flash
-            var play = player.activeState.invincibility.HasFlag(AttackType.FULL);
-            if (play && !staticOnGroundedTechFlashPlayer.IsPlaying) {
-                staticOnGroundedTechFlashPlayer.PlayFeedbacks();
-                
-            } else if (!play && staticOnGroundedTechFlashPlayer.IsPlaying) {
-                // staticOnGroundedTechFlashPlayer.StopFeedbacks();
-            }
-        }
+
     }
 
     public void PlayGameObjectFX(string key, CharacterFXSocketType type, Vector3 offset = default, Vector3 direction = default, Vector3? scale = null) {
@@ -86,7 +79,7 @@ public class CharacterFXManager : MonoBehaviour {
     }
     
     public void PlayGameObjectFX(GameObject prefab, CharacterFXSocketType type, Vector3 offset = default, Vector3 direction = default, Vector3? scale = null, bool isPrefab = true) {
-        var socket = type == CharacterFXSocketType.WORLD || type == CharacterFXSocketType.WORLD_UNBOUND ? null : sockets[type];
+        var socket = type == CharacterFXSocketType.WORLD || type == CharacterFXSocketType.WORLD_UNBOUND || type == CharacterFXSocketType.WORLD_UNBOUND_RELATIVE ? null : sockets[type];
         var go = isPrefab ? Instantiate(prefab, socket) : prefab;
         
         if (type == CharacterFXSocketType.WORLD_UNBOUND) {
@@ -94,7 +87,15 @@ public class CharacterFXManager : MonoBehaviour {
             go.transform.position = GameManager.inst.ClampPositionToStage(go.transform.position);
             go.transform.localEulerAngles = direction;
 
-        } if (type == CharacterFXSocketType.WORLD) {
+        }
+
+        if (type == CharacterFXSocketType.WORLD_UNBOUND_RELATIVE) {
+            go.transform.position = player.transform.position + offset;
+            go.transform.position = GameManager.inst.ClampPositionToStage(go.transform.position);
+            go.transform.localEulerAngles = direction;
+        }
+        
+        if (type == CharacterFXSocketType.WORLD) {
             go.transform.position = player.transform.position + new Vector3(0, 1, 0) + PhysicsUtil.NormalizeSide(offset, player.side);
             go.transform.position = GameManager.inst.ClampPositionToStage(go.transform.position);
             
@@ -171,6 +172,7 @@ public enum CharacterFXSocketType {
     DIRECTIONAL_SELF,
     DIRECTIONAL_SELF_TAIL,
     WORLD,
-    WORLD_UNBOUND
+    WORLD_UNBOUND,
+    WORLD_UNBOUND_RELATIVE
 }
 }

@@ -16,8 +16,8 @@ TagManager:
   - NonInteractableTokens
   - BoundingBox
   - Environment
-  - 
-  - 
+  - InteractableTokens
+  - TerrainInteraction
   - 
   - 
   - 

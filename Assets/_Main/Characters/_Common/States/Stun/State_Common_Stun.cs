@@ -20,6 +20,7 @@ public abstract class State_Common_Stun : CharacterState {
         entity.animation.AddUnmanagedAnimation(animationName, true, 0);
         
         AddCancelOption("CmnBurst");
+        stateData.maySwitchSides = true;
     }
 
     public override IEnumerator MainRoutine() {

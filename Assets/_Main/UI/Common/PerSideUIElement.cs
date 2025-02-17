@@ -18,6 +18,7 @@ public abstract class PerSideUIElement<T> : MonoBehaviour where T: MonoBehaviour
             throw new Exception("PerSideUIElement already has an instance for player index " + playerIndex);
         
         instances[playerIndex] = GetComponent<T>();
+        // Debug.Log($"{this} {string.Join(", ", instances.Keys)}");
     }
 
     public static T Get(int index) {

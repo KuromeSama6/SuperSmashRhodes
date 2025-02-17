@@ -20,8 +20,10 @@ public class State_CmnNeutral : CharacterState {
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
+        player.ResetGatlings();
         AddCancelOption(EntityStateType.ALL & ~EntityStateType.CHR_ATK_SPECIAL_TRIGGER);
         player.comboCounter.Reset();
+        stateData.maySwitchSides = true;
     }
 
     public override IEnumerator MainRoutine() {
@@ -48,9 +50,11 @@ public class State_CmnNeutralCrouch : CharacterState {
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
+        player.ResetGatlings();
         AddCancelOption(EntityStateType.CHR_ATK_ALL);
         AddCancelOption(EntityStateType.CHR_DRIVE_RELEASE);
         player.comboCounter.Reset();
+        stateData.maySwitchSides = true;
     }
 
     public override IEnumerator MainRoutine() {
@@ -77,11 +81,13 @@ public class State_CmnAirNeutral : CharacterState {
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
+        player.ResetGatlings();
         cancelOptionsAdded = false;
         TryAddCancelOptions();
         player.comboCounter.Reset();
         
         AddCancelOption(EntityStateType.CHR_DRIVE_RELEASE);
+        stateData.maySwitchSides = true;
     }
 
     public override IEnumerator MainRoutine() {

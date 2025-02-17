@@ -60,6 +60,7 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
         
         player.ApplyGroundedFriction(frameData.startup);
         // Superfreeze effects
+        stateData.backgroundUIData.priority = 20;
         stateData.backgroundUIData.dimAlpha = 0.98f;
         stateData.backgroundUIData.dimSpeed = 10;
         yield return framesBeforeSuperfreeze;

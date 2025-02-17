@@ -21,7 +21,9 @@ public class DebugStateDisplay : PerSideUIElement<DebugStateDisplay> {
 
         StringBuilder sb = new();
         sb.AppendLine($"State Debug P{player.playerIndex} eid {player.entityId}");
-        sb.AppendLine($"-- Combo Counter ---");
+        sb.AppendLine("--- Position ---");
+        sb.AppendLine($"X {player.transform.position.x:F2} Y {player.transform.position.y:F3} WallDist {player.wallDistance:F3} LW {player.pushboxManager.atLeftWall} RW {player.pushboxManager.atRightWall}");
+        sb.AppendLine($"--- Combo Counter ---");
         var comboCounter = player.opponent.comboCounter;
         sb.AppendLine($"Decay {comboCounter.comboDecay}");
         sb.AppendLine($"--- Active State {player.activeState.id} @ {player.activeState} ---");

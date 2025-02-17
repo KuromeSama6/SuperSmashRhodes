@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace SuperSmashRhodes.Framework {
 public abstract class NamedTokenRegistry<TRegistry, TTarget> : GlobalSingleton<TRegistry> where TRegistry: new() {
-    public static Dictionary<string, Type> registry { get; private set; } = new();
+    public static Dictionary<string, RegisteredTokenType> registry { get; private set; } = new();
 
     public NamedTokenRegistry() {
         Scan();
@@ -20,11 +20,23 @@ public abstract class NamedTokenRegistry<TRegistry, TTarget> : GlobalSingleton<T
             NamedTokenAttribute attr = type.GetCustomAttribute<NamedTokenAttribute>();
             if (attr == null) continue;
             if (targetType.IsAssignableFrom(type)) {
-                if (registry.ContainsKey(attr.name))
-                    throw new Exception($"TokenRegistry {GetType()}: duplicate token {attr.name}");
-                
-                registry[attr.name] = type;
-                
+                if (registry.TryGetValue(attr.name, out var token)) {
+                    if (token.priority == attr.priority) {
+                        throw new Exception($"TokenRegistry {GetType()}: duplicate token {attr.name} with same priority {attr.priority}");
+                    }
+                    
+                    if (attr.priority > token.priority) {
+                        registry[attr.name] = new() {
+                            type = type,
+                            priority = attr.priority
+                        };
+                    }
+                } else {
+                    registry[attr.name] = new() {
+                        type = type,
+                        priority = attr.priority
+                    };
+                }
                 // Debug.Log($"TokenRegistry {GetType()}: scanned {attr.name}");
             }
         }
@@ -32,7 +44,7 @@ public abstract class NamedTokenRegistry<TRegistry, TTarget> : GlobalSingleton<T
     
     public bool CreateInstance(string name, out TTarget ret, params object[] args) {
         if (registry.TryGetValue(name, out var type)) {
-            ret = CreateTargetInstance(type, args);
+            ret = CreateTargetInstance(type.type, args);
             return true;
         }
         ret = default;
@@ -54,6 +66,11 @@ public abstract class NamedToken {
         
         id = attr.name;
     }
+}
+
+public class RegisteredTokenType {
+    public Type type;
+    public int priority;
 }
 
 }

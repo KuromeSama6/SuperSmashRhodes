@@ -1,22 +1,53 @@
 ﻿using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Battle.Game;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace SuperSmashRhodes.Battle {
 public class PushboxManager : MonoBehaviour {
     [Title("References")]
-    public BoxCollider2D pushbox;
-    public BoxCollider2D forcedRepositonBox;
+    [Tooltip("The physics collider that collides with the ground and other players only.")]
+    public BoxCollider2D physicsBox;
+    [Tooltip("The trigger collider used for position correction and width measurement.")]
+    public BoxCollider2D correctionBox;
+    [Tooltip("The trigger collider used for wall detection.")]
+    public BoxCollider2D wallDetectionBox;
+    [Tooltip("The physics collider used for non-player interactions only.")]
+    public BoxCollider2D interactionPhysicsBox;
+    
+    private readonly List<Collider2D> contactBuffer = new();
     
     public UnityEvent onGroundContact { get; } = new();
-    public bool atWall => atLeftWall || atRightWall;
-    public bool atLeftWall => player.side == EntitySide.LEFT && Mathf.Abs(player.transform.position.x - GameManager.inst.stageData.leftWallPosition) <= .8f;
-    public bool atRightWall => player.side == EntitySide.RIGHT && Mathf.Abs(player.transform.position.x - GameManager.inst.stageData.rightWallPosition) <= .8f;
+    public bool grounded { get; private set; } = true;
     
-    public float pushboxSize => pushbox.size.x;
+    public bool atWall => atLeftWall || atRightWall; 
+    public bool atLeftWall {
+        get {
+            if (player.wallDistance <= .02f) return true;
+            if (player.side == EntitySide.LEFT) {
+                wallDetectionBox.GetContacts(contactBuffer);
+                return contactBuffer.Contains(GameManager.inst.leftWall.GetComponent<Collider2D>());
+            } else {
+                return false;
+            }
+        }
+    }
+    public bool atRightWall {
+        get {
+            if (player.wallDistance <= .02f) return true;
+            if (player.side == EntitySide.RIGHT) {
+                wallDetectionBox.GetContacts(contactBuffer);
+                return contactBuffer.Contains(GameManager.inst.rightWall.GetComponent<Collider2D>());
+            } else {
+                return false;
+            }
+        }
+    }
+    
     private PlayerCharacter player;
     private bool pushboxCorrectionLock;
     
@@ -30,54 +61,41 @@ public class PushboxManager : MonoBehaviour {
 
     private void FixedUpdate() {
         pushboxCorrectionLock = false;
-    }
-
-    private void OnCollisionEnter2D(Collision2D other) {
-        if (other.gameObject == GameManager.inst.ground) onGroundContact.Invoke();
         
-    }
-
-    public void OnTriggerEnter2D(Collider2D other) {
-        if (player == null || !player.logicStarted) return;
         
 
-        
-    }
-    public void OnTriggerStay2D(Collider2D other) {
-        bool isOpponent = player.opponent == other.GetComponentInParent<PlayerCharacter>();
-        // Debug.Log($"trigger enter: {other.transform.parent.name}/{other.name}, isOpponent: {isOpponent}");
-        bool isPushbox = other.GetComponent<PushboxManager>();
-        if (isOpponent && isPushbox) {
-            // correction
-            GameManager.inst.AttemptPushboxCorrection();
+        {
+            // pushboxes
+            if (player.activeState != null) {
+                physicsBox.enabled = !player.activeState.stateData.physicsPushboxDisabled;
+            }
+        }
+
+        {
+            // ground check
+            // Debug.Log($"{player.playerIndex} {player.transform.position.y}");
+            var isGrounded = player.transform.position.y <= .03f;
+            // if (player.playerIndex == 1) Debug.Log($"oldstate {grounded} gnd {isGrounded} pos {player.transform.position.y}");
+            if (isGrounded != grounded) {
+                grounded = isGrounded;
+                if (grounded) {
+                    onGroundContact.Invoke();
+                    // Debug.Log("grounded");
+                }
+            }
+        }
+
+        {
+            // pushbox correction
+            var buf = new List<Collider2D>();
+            correctionBox.GetContacts(buf);
+            var opponent = player.opponent;
+            // if (player.playerIndex == 0) Debug.Log(opponent.rb.linearVelocityY < .000001f);
+            if (opponent.airborne && buf.Contains(opponent.pushboxManager.physicsBox) && opponent.rb.linearVelocityY <= .000001f) {
+                // Debug.Log($"correct vel={opponent.rb.linearVelocity}");
+                GameManager.inst.AttemptPushboxCorrection(opponent, player);
+            }
         }
     }
-
-    private void AttemptPushboxCorrection() {
-        if (pushboxCorrectionLock) return;
-        // Debug.Log(player.transform.position.y);
-        if (player.transform.position.y <= .05f) return;
-        float size = pushbox.size.x;
-        pushboxCorrectionLock = true;
-        // Debug.Log($"pushbox cor {player.playerIndex}");
-
-        var stageData = GameManager.inst.stageData;
-        var nearestWall = player.opponent.side == EntitySide.LEFT ? stageData.leftWallPosition : stageData.rightWallPosition;
-        float gap = Mathf.Abs(nearestWall - player.opponent.transform.position.x);
-        // Debug.Log($"{player.name}: gap {gap}, req={size}");
-        
-        float direction;
-        if (player.opponent.pushboxManager.atWall || gap < 1f) {
-            // Debug.Log($"at wall, left={player.opponent.pushboxManager.atLeftWall}, right={player.opponent.pushboxManager.atRightWall}");
-            direction = player.opponent.side == EntitySide.LEFT ? 1 : -1;
-
-        } else {
-            direction = player.side == EntitySide.LEFT ? 1 : -1;
-        }
-        
-        float x = player.opponent.transform.position.x + ((size + 0.1f) * direction);
-        player.transform.position = new Vector3(x, player.transform.position.y, player.transform.position.z);
-    }
-
 }
 }

@@ -16,6 +16,7 @@ public class State_CmnHitStun : State_Common_Stun {
     protected override void OnStateBegin() {
         base.OnStateBegin();
         // player.ApplyGroundedFrictionImmediate();
+        AddCancelOption("CmnHitStunAir");
     }
 
 }
@@ -53,8 +54,23 @@ public class State_CmnHitStunAir : State_Common_Stun {
     }
 
     public override IEnumerator MainRoutine() {
-        while (!landed) {
-            yield return 1;
+        while (true) {
+            while (!landed) {
+                yield return 1;
+            }
+
+            if (player.frameData.shouldGroundBounce) {
+                var force = player.frameData.ConsumeContactBounce();
+                player.rb.AddForce(force, ForceMode2D.Impulse);
+                // while (player.transform.position.y < 1f) {
+                //     yield return 1;
+                // }
+                landed = false;
+                player.airborne = true;
+                continue;
+            }
+            
+            break;
         }
         CancelInto(landingRecoveryFlag.HasFlag(LandingRecoveryFlag.HARD_KNOCKDOWN_LAND) ? "CmnHardKnockdown" : "CmnSoftKnockdown");
     }

@@ -38,7 +38,7 @@ public class State_CmnDriveRelease : CharacterState {
         
         opponent.rb.linearVelocity = new(0, Mathf.Max(0, opponent.rb.linearVelocity.y));
         
-        if (opponent.activeState.type.HasFlag(EntityStateType.CHR_HITSTUN)) {
+        if (opponent.activeState is State_CmnHitStunAir) {
             opponent.rb.AddForceY(3f, ForceMode2D.Impulse);
         }
         
@@ -58,11 +58,11 @@ public class State_CmnDriveRelease : CharacterState {
         player.audioManager.PlaySound($"chr/{player.config.id}/battle/vo/driverelease");
         player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/super/smoke", CharacterFXSocketType.WORLD_UNBOUND, pos);
         player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/driverelease/star", CharacterFXSocketType.WORLD_UNBOUND, pos);
-
+        
         PortraitCutscenePlayer.Get(player.playerIndex).Play(player.descriptor.portrait, 1f);
         
         float frames;
-
+        
         if (player.lastState != null) {
             if (player.lastState is CharacterAttackStateBase) isReleaseCancel = true;
             if (player.lastState is State_Common_Stun) isReleaseCancel = true;
@@ -85,6 +85,7 @@ public class State_CmnDriveRelease : CharacterState {
         counter.ApplyImmediately();
         
         // Superfreeze effects
+        stateData.backgroundUIData.priority = 10;
         stateData.backgroundUIData.dimAlpha = 0.995f;
         stateData.backgroundUIData.dimSpeed = 10;
         TimeManager.inst.globalFreezeFrames = 60;

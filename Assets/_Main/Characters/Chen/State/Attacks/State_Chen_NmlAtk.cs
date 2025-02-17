@@ -1,9 +1,13 @@
 ﻿using SuperSmashRhodes.Battle;
+using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Battle.State.Implementation;
 using SuperSmashRhodes.Framework;
+using SuperSmashRhodes.Input;
+using SuperSmashRhodes.UI.Battle.AnnouncerHud;
 using SuperSmashRhodes.Util;
+using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -28,18 +32,18 @@ public class State_Chen_NmlAtk5CS : State_Common_NmlAtk5CS {
     }
 }
 
-[NamedToken("Chen_NmlAtk5S")]
-public class State_Chen_NmlAtk5S : State_Common_NmlAtk5S {
-    public State_Chen_NmlAtk5S(Entity entity) : base(entity) { }
+[NamedToken("Chen_NmlAtk5H")]
+public class State_Chen_NmlAtk5H : State_Common_NmlAtk5H {
+    public State_Chen_NmlAtk5H(Entity entity) : base(entity) { }
     public override AttackFrameData frameData => new() {
-        startup = 10,
-        active = 3,
-        recovery = 16,
-        onHit = -2,
-        onBlock = -5,
+        startup = 12,
+        active = 6,
+        recovery = 21,
+        onHit = -5,
+        onBlock = -8,
     };
     public override float GetUnscaledDamage(Entity to) {
-        return 34;
+        return 48;
     }
     public override string GetAttackNormalSfx() {
         return "cmn/battle/sfx/attack/sword/2";
@@ -55,6 +59,10 @@ public class State_Chen_NmlAtk5S : State_Common_NmlAtk5S {
             //     c.fxManager.PlayGameObjectFX(go, CharacterFXSocketType.SELF);
             // });
         }
+    }
+    public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
+        if (airborne) new Vector2(4f, 4f);
+        return new(blocked ? 3.5f : 2f, 0f);
     }
 }
 
@@ -82,21 +90,99 @@ public class State_Chen_NmlAtk2S : State_Common_NmlAtk2S {
             c.PlayFx("chr/chen/battle/fx/prefab/nml/slash/1", CharacterFXSocketType.SELF, offset, angle);
         }
     }
+    public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
+        if (airborne) return new Vector2(2f, 2.5f);
+        return new(blocked ? 2.5f : .5f, 0);
+    }
+}
+
+[NamedToken("Chen_NmlAtk5S")]
+public class State_Chen_NmlAtk5S : State_Common_NmlAtk5S {
+    public State_Chen_NmlAtk5S(Entity entity) : base(entity) { }
+    public override AttackFrameData frameData => new() {
+        startup = 10,
+        active = 5,
+        recovery = 13,
+        onHit = +5,
+        onBlock = +2,
+    };
+
+    protected override void OnStartup() {
+        base.OnStartup();
+    }
+
+    protected override void OnActive() {
+        player.ApplyForwardVelocity(new(3.5f, 0f));
+        base.OnActive();
+        player.audioManager.PlaySoundClip("cmn/battle/sfx/generic/generic_swoosh_a");
+        player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/dash_dust", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position, Vector3.zero, new Vector3(player.side == EntitySide.LEFT ? 1 : -1, 1, 1));
+    }
+
+    public override float GetUnscaledDamage(Entity to) {
+        return 32;
+    }
+
+    public override Vector2 GetCarriedMomentumPercentage(Entity to) {
+        return Vector2.one;
+    }
+}
+
+[NamedToken("Chen_NmlAtk6S")]
+public class State_Chen_NmlAtk6S : State_Common_NmlAtk6S {
+    public State_Chen_NmlAtk6S(Entity entity) : base(entity) { }
+    public override AttackFrameData frameData => new() {
+        startup = 12,
+        active = 3,
+        recovery = 21,
+        onHit = +6,
+        onBlock = -7,
+    };
+
+    protected override void OnStartup() {
+        base.OnStartup();
+        player.audioManager.PlaySoundClip("cmn/battle/sfx/generic/generic_swoosh_a");
+    }
+
+    protected override void OnActive() {
+        player.ApplyForwardVelocity(new(3f, 5f));
+        base.OnActive();
+    }
+
+    public override float GetUnscaledDamage(Entity to) {
+        return 26;
+    }
+
+    public override Vector2 GetCarriedMomentumPercentage(Entity to) {
+        return Vector2.one;
+    }
 }
 
 
-[NamedToken("Chen_NmlAtk5H")]
-public class State_Chen_NmlAtk5H : State_Common_NmlAtk5H {
-    public State_Chen_NmlAtk5H(Entity entity) : base(entity) { }
+[NamedToken("Chen_NmlAtk6H")]
+public class State_Chen_NmlAtk6H : State_Common_NmlAtk6H {
+    public State_Chen_NmlAtk6H(Entity entity) : base(entity) { }
     public override AttackFrameData frameData => new() {
-        startup = 12,
+        startup = 15,
         active = 6,
-        recovery = 21,
-        onHit = +5,
-        onBlock = -8,
+        recovery = 26,
+        onHit = +10,
+        onBlock = -13,
     };
+
+    protected override void OnStartup() {
+        base.OnStartup();
+        player.ApplyForwardVelocity(new(4.5f, 0f));
+    }
+
+    protected override void OnActive() {
+        base.OnActive();
+    }
     public override float GetUnscaledDamage(Entity to) {
-        return 48;
+        return 52;
+    }
+    public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
+        if (airborne) return new Vector2(blocked ? 6f : .5f, 4f);
+        return blocked ? new Vector2(3f, 0f) : new(0, -5);
     }
     public override string GetAttackNormalSfx() {
         return "cmn/battle/sfx/attack/sword/3";
@@ -108,7 +194,16 @@ public class State_Chen_NmlAtk5H : State_Common_NmlAtk5H {
             Vector3 angle = new(0f, 0f, Random.Range(20, 80));
             Vector3 offset = new(Random.Range(-.1f, .1f), Random.Range(-.1f, .1f), 0);
             c.PlayFx("chr/chen/battle/fx/prefab/nml/slash/1", CharacterFXSocketType.SELF, offset, angle);
+
+            if (target is PlayerCharacter p && !p.airborne) {
+                p.frameData.AddGroundBounce(new Vector2(.2f, 12f));
+                p.ForceSetAirborne();
+            }
         }
+    }
+
+    public override Vector2 GetCarriedMomentumPercentage(Entity to) {
+        return Vector2.one;
     }
 }
 
@@ -127,6 +222,10 @@ public class State_Chen_NmlAtk2H : State_Common_NmlAtk2H {
     }
     public override string GetAttackNormalSfx() {
         return "cmn/battle/sfx/attack/sword/9";
+    }
+    public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
+        if (airborne) return new Vector2(2.5f, 5f);
+        return blocked ? new(4f, 0f) : new Vector2(.5f, 12f);
     }
 }
 
@@ -179,5 +278,7 @@ public class State_Chen_NmlAtk2P : State_Common_NmlAtk2P {
         return "cmn/battle/sfx/attack/fist/1";
     }
 }
+
+
 
 }

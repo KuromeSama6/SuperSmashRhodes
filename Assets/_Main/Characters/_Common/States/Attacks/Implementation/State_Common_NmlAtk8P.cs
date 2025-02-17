@@ -14,7 +14,7 @@ public abstract class State_Common_NmlAtk8P : State_Common_AirNormalAttack {
     public override float inputPriority => 3;
     protected override string mainAnimation => "cmn/NmlAtk8P";
 
-    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER | EntityStateType.CHR_ATK_8P | EntityStateType.CHR_ATK_8S | EntityStateType.CHR_ATK_8H;
+    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_NORMAL | EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER;
     protected override InputFrame[] requiredInput => new InputFrame[] {new(InputType.P, InputFrameType.PRESSED)};
     public override bool isSelfCancellable => true;
 

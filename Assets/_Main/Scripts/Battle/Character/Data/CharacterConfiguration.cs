@@ -43,7 +43,7 @@ public class CharacterConfiguration : ScriptableObject {
     public float backwalkSpeedFinal => 0.8f + backwalkSpeed;
     public int prejumpFinal => 4 + prejump;
     public float jumpDurationFinal => 41 + jumpDuration;
-    public float jumpVelocityFinal => 9 + jumpVelocity;
+    public float jumpVelocityFinal => 10 + jumpVelocity;
     public float jumpGravityFinal => 0f + jumpGravity;
     public int backdashInvulnFinal => 5 + backdashInvuln;
     public float dashSpeedFinal => 3 + dashSpeed;
@@ -54,6 +54,6 @@ public class CharacterConfiguration : ScriptableObject {
     public float airBackdashSpeedFinal => 5.5f + airBackdashSpeed;
     public int airBackdashDurationFinal => 14 + airBackdashDuration;
     public int airOptionsFinal => 1 + airOptions;
-    public Vector2 backdashVelocityFinal => new Vector2(-3, 3) + backdashVelocity;
+    public Vector2 backdashVelocityFinal => new Vector2(-3.15f, 4) + backdashVelocity;
 }
 }

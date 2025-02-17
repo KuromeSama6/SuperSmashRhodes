@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 namespace SuperSmashRhodes.Runtime.State {
-public abstract class State_Exusiai_MultihitWeaponAttack : State_Exusiai_FireWeaponAttack {
+public abstract class State_Exusiai_MultihitWeaponNormalAttack : State_Exusiai_FireWeaponAttack {
     protected int totalShots;
     private bool weaponDry;
     private bool shotsFired;
@@ -17,13 +17,15 @@ public abstract class State_Exusiai_MultihitWeaponAttack : State_Exusiai_FireWea
     protected UnityEvent onFireStart { get; } = new();
     
     public override bool hasActiveFrames => base.hasActiveFrames && gauge.mayFire && totalShots > 0;
-
-    public State_Exusiai_MultihitWeaponAttack(Entity entity) : base(entity) {
+    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER | EntityStateType.CHR_ATK_NORMAL;
+    public override bool mayEnterState => !player.gatlingMovesUsed.Contains(this);
+    public State_Exusiai_MultihitWeaponNormalAttack(Entity entity) : base(entity) {
         
     }
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
+        player.gatlingMovesUsed.Add(this);
         totalShots = maxHits;
         weaponDry = false;
         shotsFired = false;

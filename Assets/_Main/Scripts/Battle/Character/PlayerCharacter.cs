@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using Sirenix.OdinInspector;
@@ -50,15 +51,24 @@ public class PlayerCharacter : Entity {
     public PlayerMeterGauge meter { get; private set; }
     public PlayerBurstGauge burst { get; private set; }
     public CharacterStateFlag stateFlags { get; set; }
+    public float pushboxCorrectionGraceAmount { get; set; }
     public int airOptions { get; set; }
     public IInputProvider inputProvider { get; private set; } = new NOPInputProvider(); // InputProvider assigned on round start
+    public List<CharacterAttackStateBase> gatlingMovesUsed { get; } = new();
 
     public bool atWall => pushboxManager.atWall;
     public float wallDistance {
         get {
-            var stageData = GameManager.inst.stageData;
-            // var nearestWall = side == EntitySide.LEFT ? stageData.leftWallPosition : stageData.rightWallPosition;
-            return Mathf.Min(Mathf.Abs(stageData.leftWallPosition - transform.position.x), Mathf.Abs(stageData.rightWallPosition - transform.position.x));
+            if (side == EntitySide.RIGHT) {
+                // right wall
+                var wallWidth = GameManager.inst.rightWall.GetComponent<BoxCollider2D>().size.x;
+                return GameManager.inst.rightWall.transform.position.x - transform.position.x - wallWidth + pushboxManager.physicsBox.size.x / 2f;
+                
+            } else {
+                // left wall
+                var wallWidth = GameManager.inst.leftWall.GetComponent<BoxCollider2D>().size.x;
+                return transform.position.x - GameManager.inst.leftWall.transform.position.x - wallWidth + pushboxManager.physicsBox.size.x / 2f;
+            }
         }
     }
     public bool burstDisabled => stateFlags.HasFlag(CharacterStateFlag.DISABLE_BURST);
@@ -74,6 +84,7 @@ public class PlayerCharacter : Entity {
     private float airHitstunRotation = 0f;
     private float yRotationTarget = 0f;
     public int backdashCooldown { get; set; }
+    private EntityState facingCheckCurrentState;
 
     public float gutsDamageModifier {
         get {
@@ -111,6 +122,11 @@ public class PlayerCharacter : Entity {
     
     public void ResetAirOptions() {
         airOptions = characterConfig.airOptionsFinal;
+        if (burst.driveRelease) ++airOptions;
+    }
+
+    public void ResetGatlings() {
+        gatlingMovesUsed.Clear();
     }
     
     protected override void Start() {
@@ -193,6 +209,13 @@ public class PlayerCharacter : Entity {
         ea.y = yRotationTarget;
         ea.z = airHitstunRotation;
         rotationContainer.transform.localEulerAngles = ea;
+
+        {
+            // pushbox correction grace
+            rotationContainer.transform.localPosition = new Vector3(pushboxCorrectionGraceAmount, 0, 0);
+            pushboxCorrectionGraceAmount = Mathf.Lerp(pushboxCorrectionGraceAmount, 0, Time.fixedDeltaTime * 20f);
+        }
+        
     }
     
     private void UpdateInput() { 
@@ -208,9 +231,8 @@ public class PlayerCharacter : Entity {
             
             if (activeState.stateData.cancelOptions.Contains(state) || BitUtil.CheckFlag((ulong)activeState.stateData.cancelFlag, (ulong)state.type)) {
                 // state is valid
-                if (state.IsInputValid(inputProvider.inputBuffer) && state.mayEnterState) {
+                if (state.mayEnterState && state.IsInputValid(inputProvider.inputBuffer)) {
                     // check cancel state
-                
                     BeginState(state);
                     break;
                 }
@@ -222,8 +244,7 @@ public class PlayerCharacter : Entity {
 
     private void UpdatePosition() {
         var x = transform.position.x;
-        var stageData = GameManager.inst.stageData;
-        if (x <= stageData.leftWallPosition || x >= stageData.rightWallPosition) {
+        if (x <= GameManager.inst.leftWall.transform.position.x || x >= GameManager.inst.rightWall.transform.position.x) {
             rb.linearVelocityX = 0;
             Vector3 offset = new((side == EntitySide.LEFT ? 1 : -1) * .4f, 0, 0);
             
@@ -245,8 +266,19 @@ public class PlayerCharacter : Entity {
 
         if (side != this.side) {
             if (activeState != null && activeState.stateData.disableSideSwap) return;
-            if (Mathf.Abs(pos - opponentPos) < pushboxManager.pushbox.size.x) return;
-            if ((airborne && activeState is State_CmnHitStunAir) || (opponent.airborne && opponent.activeState is State_CmnHitStunAir)) return;
+            if (Mathf.Abs(pos - opponentPos) < pushboxManager.correctionBox.size.x) return;
+            
+            // Debug.Log($"{playerIndex} {opponent.transform.position.y} {transform.position.y + pushboxManager.correctionBox.size.y}");
+            
+            if (opponent.transform.position.y >= transform.position.y + pushboxManager.correctionBox.size.y) return;
+            if ((airborne && activeState is State_CmnHitStunAir)) return;
+
+            if (facingCheckCurrentState != activeState || facingCheckCurrentState == null) {
+                facingCheckCurrentState = activeState;
+            } else if (activeState != null && !activeState.stateData.maySwitchSides) {
+                return;
+            }
+            
             if (airborne) return;
             
             this.side = side;
@@ -290,12 +322,18 @@ public class PlayerCharacter : Entity {
         // input provider
         inputProvider = LocalInputManager.inst.GetInputProvider(this);
         
-        airOptions = characterConfig.airOptionsFinal;
+        ResetAirOptions();
     }
 
     public void SetZPriority() {
         animation.animation.GetComponent<MeshRenderer>().sortingOrder = 3;
         opponent.animation.animation.GetComponent<MeshRenderer>().sortingOrder = 2;
+    }
+
+    public void ForceSetAirborne() {
+        // Debug.Log($"force set, a={airborne}");
+        if (airborne) return;
+        transform.position += new Vector3(0, .5f, 0);
     }
     
     public override void BeginLogic() {
@@ -355,17 +393,25 @@ public class PlayerCharacter : Entity {
 
         // neutral check
         bool crouching = activeState is State_CmnNeutralCrouch || activeState is State_CmnBlockStunCrouch || activeState is State_CmnHitStunCrouch;
+        var hitstate = ((CharacterState)activeState).hitstate;
         
         // register hit
         var frameData = attack.GetFrameData(this);
         bool addFreezeFrames = true;
         bool knockedDown = activeState.type.HasFlag(EntityStateType.CHR_HARD_KNOCKDOWN);
-        var hitstate = ((CharacterState)activeState).hitstate;
         
         opponent.SetZPriority();
         
         // Debug.Log($"inbound hit 1, neutral: {neutral}, blockheld: {blockHeld}, blockType: {blockType} blocked: {blocked}, framesRemaining: {framesRemaining}, blockstun {framesRemaining + move.frameData.onBlock}");
         ApplyGroundedFriction();
+        
+        var modifierFlag = ((CharacterState)activeState).OnHitByOther(data);
+        if (modifierFlag.HasFlag(InboundHitModifier.STOP_ATTACK)) {
+            return;
+        }
+
+        var armor = modifierFlag.HasFlag(InboundHitModifier.NO_STUN);
+        
         if (blocked) {
             this.frameData.blockstunFrames = attack.GetStunFrames(this, true);
             bool inBlockstun = activeState.type.HasFlag(EntityStateType.CHR_BLOCKSTUN);
@@ -400,10 +446,13 @@ public class PlayerCharacter : Entity {
             // this.frameData.SetHitstunFrames(framesRemaining + frameData.onHit, Mathf.Max(frameData.total - attack.GetCurrentFrame(this), 0));
             
             // counterhit hit state
-            this.frameData.SetHitstunFrames(attack.GetStunFrames(this, false), 0);
+            if (!armor) {
+                this.frameData.SetHitstunFrames(attack.GetStunFrames(this, false), 0);
             
-            // hit state select
-            HandleOnHitStateTransition(attack, crouching, out addFreezeFrames);
+                // hit state select
+                HandleOnHitStateTransition(attack, crouching, out addFreezeFrames);   
+            }
+            
             float hitStateDamageMultiplier = 1f;
             if (hitstate == Hitstate.COUNTER) {
                 opponent.activeState.stateData.extraIndicatorFlag |= StateIndicatorFlag.COUNTER;
@@ -424,7 +473,6 @@ public class PlayerCharacter : Entity {
             airHitstunRotation = 0f;
             
             var driveReleaseMultiplier = opponent.burst.driveRelease ? 1.2f : 1f;
-            
             ApplyDamage(attack.GetUnscaledDamage(this) * hitStateDamageMultiplier * driveReleaseMultiplier, data, attack.GetDamageSpecialProperties(this));
             
             foreach (var summon in summons.ToArray()) {
@@ -440,7 +488,7 @@ public class PlayerCharacter : Entity {
         fxManager.NotifyHit(data);
         
         // counter hit effects
-        if (hitstate == Hitstate.COUNTER && !blocked) {
+        if (hitstate == Hitstate.COUNTER && !blocked && !armor) {
             var level = attack.GetCounterHitType(this);
             // Debug.Log(level);
             if (level == CounterHitType.LARGE) {
@@ -480,7 +528,7 @@ public class PlayerCharacter : Entity {
         }
         
         // pushback
-        {
+        if (!armor) {
             var amount = attack.GetPushback(this, airborne, blocked);
             if (blocked) {
                 amount.y = 0f;
@@ -512,7 +560,7 @@ public class PlayerCharacter : Entity {
         // apply freeze frames
 
         var freezeFrames = attack.GetFreezeFrames(this);
-        if (addFreezeFrames) {
+        if (addFreezeFrames && !armor) {
             var delay = 4;
             if (hitstate == Hitstate.COUNTER) {
                 var level = attack.GetCounterHitType(this);
@@ -619,7 +667,7 @@ public class PlayerCharacter : Entity {
             frameData.landingFlag = LandingRecoveryFlag.NONE;
         }
 
-        airOptions = characterConfig.airOptionsFinal;
+        ResetAirOptions();
     }
 
     public void ApplyCarriedPushback(Vector2 vec, Vector2 carriedMomentum, float atWallMultiplier = 1f) {

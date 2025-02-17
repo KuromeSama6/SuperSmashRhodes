@@ -17,3 +17,4 @@ MonoBehaviour:
   states:
   - Chen_SklUnsheathHeavy
   - Chen_SklUnsheathLight
+  - Chen_SklParry

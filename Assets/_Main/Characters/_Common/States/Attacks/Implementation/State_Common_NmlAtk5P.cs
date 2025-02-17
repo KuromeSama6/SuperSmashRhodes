@@ -15,7 +15,7 @@ public abstract class State_Common_NmlAtk5P : State_Common_NormalAttack {
 
     protected override string mainAnimation => "cmn/NmlAtk5P";
 
-    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER | EntityStateType.CHR_ATK_5P | EntityStateType.CHR_ATK_2P | EntityStateType.CHR_ATK_NORMAL_S | EntityStateType.CHR_ATK_NORMAL_H;
+    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_NORMAL | EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER;
     protected override InputFrame[] requiredInput => new InputFrame[] {new(InputType.P, InputFrameType.PRESSED)};
     public override bool isSelfCancellable => true;
     public override void OnContact(Entity to) {

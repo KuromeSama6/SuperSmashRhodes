@@ -260,7 +260,7 @@ public abstract class Entity : MonoBehaviour {
         transform.localEulerAngles = Vector3.zero;
     }
 
-    public void AttachToBone(string boneName) {
+    public Transform GetHopBoneFollower(string boneName) {
         var objectName = $"Bone_Hop_{boneName}";
         var go = owner.socketsContainer.Find(objectName);
         if (!go) {
@@ -277,9 +277,15 @@ public abstract class Entity : MonoBehaviour {
             if (!res) {
                 Debug.LogError($"Could not find Spine bone [{boneName}] on entity [{name}]");
                 Destroy(go.gameObject);
-                return;
+                return null;
             }
         }
+        
+        return go;
+    }
+    
+    public void AttachToBone(string boneName) {
+        var go = GetHopBoneFollower(boneName);
         
         transform.parent = go;
         rb.simulated = false;

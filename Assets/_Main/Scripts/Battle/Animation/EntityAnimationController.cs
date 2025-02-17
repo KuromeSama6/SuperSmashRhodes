@@ -31,12 +31,13 @@ public class EntityAnimationController : MonoBehaviour {
         // blend updates
     }
 
-    public void ApplyNeutralPose() {
+    public void ApplyNeutralPose(bool applySlots = false) {
         animation.skeleton.SetBonesToSetupPose();
+        if (applySlots) animation.skeleton.SetSlotsToSetupPose();
     }
     
     public void AddUnmanagedAnimation(string name, bool loop, float transitionTime = 0f, float timeScale = 1) {
-        ApplyNeutralPose();
+        ApplyNeutralPose(player.activeState.stateData.shouldApplySlotNeutralPose);
         var track = state.GetCurrent(0);
         
         // transitionTime = Mathf.Max(Time.fixedDeltaTime, transitionTime);

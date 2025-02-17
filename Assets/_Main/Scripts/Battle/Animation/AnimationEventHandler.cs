@@ -21,5 +21,10 @@ public struct AnimationEventData {
         this.floatValue = floatValue;
         this.audioPath = audioPath;
     }
+    
+    public string GetArg(int index, string def = "") {
+        if (index < args.Length) return args[index];
+        return def;
+    }
 }
 }

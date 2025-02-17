@@ -73,5 +73,8 @@ public enum StateIndicatorFlag {
     SUPER = 1 << 6,
     DRIVE_RELEASE = 1 << 7,
     DRIVE_RELEASE_CANCEL = 1 << 8,
+    PARRY = 1 << 9,
+    ARMOR = 1 << 10,
+    GUARDPOINT = 1 << 11, 
 }
 }

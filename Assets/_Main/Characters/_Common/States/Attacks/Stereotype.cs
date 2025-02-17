@@ -4,15 +4,25 @@ using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Battle.State.Implementation;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Input;
+using SuperSmashRhodes.UI.Battle.AnnouncerHud;
 using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Runtime.State {
 public abstract class State_Common_NormalAttack : CharacterAttackStateBase {
     protected State_Common_NormalAttack(Entity entity) : base(entity) { }
-    protected override int normalInputBufferLength => 6;
+    protected override int normalInputBufferLength => 4;
     protected override float inputMeter => 0;
-    
+
+    public override bool mayEnterState => base.mayEnterState && !player.gatlingMovesUsed.Contains(this);
+
+    protected override void OnStateBegin() {
+        base.OnStateBegin();
+        if (!isSelfCancellable) {
+            player.gatlingMovesUsed.Add(this);   
+        }
+    }
+
     public override float GetChipDamagePercentage(Entity to) {
         return 0;
     }
@@ -24,6 +34,7 @@ public abstract class State_Common_NormalAttack : CharacterAttackStateBase {
 public abstract class State_Common_AirNormalAttack : State_Common_NormalAttack {
     protected State_Common_AirNormalAttack(Entity entity) : base(entity) { }
     protected override AttackAirOkType airOk => AttackAirOkType.AIR;
+    public override bool mayEnterState => !player.gatlingMovesUsed.Contains(this);
     
     public override void OnContact(Entity to) {
         base.OnContact(to);
@@ -146,5 +157,74 @@ public abstract class State_Common_CommandThrow : ThrowAttackStateBase {
     protected override bool MayHit(PlayerCharacter other) {
         return base.MayHit(other) && !other.airborne;
     }
+}
+
+public abstract class State_Common_Parry : CharacterAttackStateBase {
+    public State_Common_Parry(Entity entity) : base(entity) { }
+    public override StateIndicatorFlag stateIndicator => parried ? StateIndicatorFlag.PARRY : StateIndicatorFlag.NONE;
+    public override Hitstate hitstate => Hitstate.COUNTER;
+    protected bool parried { get; private set; }
+
+    protected override void OnStateBegin() {
+        base.OnStateBegin();
+        parried = false;
+    }
+
+    protected override void OnStartup() {
+        base.OnStartup();
+    }
+
+    protected override void OnActive() {
+        base.OnActive();
+        stateData.renderColorData = new(100f, Color.white, Color.Lerp(Color.black, Color.white, .9f));
+    }
+
+    protected override void OnRecovery() {
+        base.OnRecovery();
+        stateData.renderColorData = new(5f);
+    }
+
+    public override float GetUnscaledDamage(Entity to) {
+        return 0;
+    }
+    public override float GetChipDamagePercentage(Entity to) {
+        return 0;
+    }
+    public override float GetOtgDamagePercentage(Entity to) {
+        return 0;
+    }
+    public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
+        return Vector2.zero;
+    }
+    public override float GetComboProration(Entity to) {
+        return 0;
+    }
+    public override float GetFirstHitProration(Entity to) {
+        return 0;
+    }
+    public override AttackGuardType GetGuardType(Entity to) {
+        return AttackGuardType.ALL;
+    }
+    public override int GetFreezeFrames(Entity to) {
+        return 0;
+    }
+    public override int GetAttackLevel(Entity to) {
+        return 0;
+    }
+    public override CounterHitType GetCounterHitType(Entity to) {
+        return CounterHitType.EXSMALL;
+    }
+
+    public override InboundHitModifier OnHitByOther(AttackData attackData) {
+        if (attackData.from is PlayerCharacter && phase == AttackPhase.ACTIVE) {
+            parried = true;
+            OnParry(attackData);
+            return InboundHitModifier.STOP_ATTACK;
+        }
+        
+        return base.OnHitByOther(attackData);
+    }
+
+    protected abstract void OnParry(AttackData attack);
 }
 }

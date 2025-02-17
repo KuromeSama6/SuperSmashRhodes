@@ -15,8 +15,12 @@ public abstract class State_Common_NmlAtk2P : State_Common_NormalAttack {
 
     protected override string mainAnimation => "cmn/NmlAtk2P";
 
-    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER | EntityStateType.CHR_ATK_5P | EntityStateType.CHR_ATK_2P | EntityStateType.CHR_ATK_NORMAL_S | EntityStateType.CHR_ATK_NORMAL_H;
-    protected override InputFrame[] requiredInput => new InputFrame[] {new(InputType.DOWN, InputFrameType.HELD), new(InputType.P, InputFrameType.PRESSED)};
+    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_NORMAL | EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER;
+    public override bool IsInputValid(InputBuffer buffer) {
+        return buffer.thisFrame.HasInput(player.side, InputType.DOWN, InputFrameType.HELD) && 
+               buffer.TimeSlice(normalInputBufferLength).ScanForInput(player.side, new InputFrame(InputType.P, InputFrameType.PRESSED));
+    }
+
     public override bool isSelfCancellable => true;
 
     public override void OnContact(Entity to) {
