@@ -36,10 +36,10 @@ public class State_CmnDriveRelease : CharacterState {
         isReleaseCancel = false;
         opponent.comboCounter.comboDecay = 0f;
         
-        opponent.rb.linearVelocity = new(0, Mathf.Max(0, opponent.rb.linearVelocity.y));
+        opponent.rb.linearVelocity = new(0, 0);
         
         if (opponent.activeState is State_CmnHitStunAir) {
-            opponent.rb.AddForceY(3f, ForceMode2D.Impulse);
+            opponent.rb.AddForceY(10f, ForceMode2D.Impulse);
         }
         
         player.ResetAirOptions();
@@ -64,8 +64,10 @@ public class State_CmnDriveRelease : CharacterState {
         float frames;
         
         if (player.lastState != null) {
+            // Debug.Log(player.lastState);
             if (player.lastState is CharacterAttackStateBase) isReleaseCancel = true;
             if (player.lastState is State_Common_Stun) isReleaseCancel = true;
+            if (player.lastState.type.HasFlag(EntityStateType.CHR_COMMON_RECOVERY)) isReleaseCancel = true;
         }
         
         if (!isReleaseCancel) {

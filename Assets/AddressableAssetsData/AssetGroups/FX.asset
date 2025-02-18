@@ -95,6 +95,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 740fc67af9778ca419c8b95fa667bf77
+    m_Address: cmn/battle/fx/prefab/common/wall_bounce_smoke
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 76692ae2634e2b94f81ddd3e610c6778
     m_Address: cmn/battle/fx/prefab/common/counter/flash
     m_ReadOnly: 0
@@ -200,8 +205,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea042badc3c296a429b2e8908fcd563a
+    m_Address: cmn/battle/fx/prefab/common/wall_bounce
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ee09c108c95d7cd48a322c5d0612ea1c
     m_Address: chr/exusiai/fx/prefab/214h/shot/lv3
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fb519bdd1593086469505180ce99528f
+    m_Address: cmn/battle/sfx/wall_bounce
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

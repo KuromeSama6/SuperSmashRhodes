@@ -29,6 +29,8 @@ public class State_CmnLandingRecovery : CharacterState {
         }
         
         player.animation.AddUnmanagedAnimation(animationName, false);
+        
+        AddCancelOption(EntityStateType.CHR_ATK_SYSTEMSPECIAL | EntityStateType.CHR_DRIVE_RELEASE);
     }
     
     public override IEnumerator MainRoutine() {

@@ -11,12 +11,12 @@ namespace SuperSmashRhodes.Runtime.State {
 public abstract class State_Common_NmlAtk5CS : State_Common_NormalAttack {
     public State_Common_NmlAtk5CS(Entity entity) : base(entity) { }
     public override EntityStateType type => EntityStateType.CHR_ATK_5CS;
-    public override float inputPriority => 3.1f;
+    public override float inputPriority => 3.2f;
 
     protected override string mainAnimation => "cmn/NmlAtk5CS";
 
     protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_NORMAL | EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER;
-    public override bool mayEnterState => player.opponentDistance <= triggerRange && !GetCurrentInputBuffer().thisFrame.HasInput(entity.side, InputType.DOWN, InputFrameType.HELD) && !player.gatlingMovesUsed.Contains(this);
+    public override bool mayEnterState => player.opponentDistance <= triggerRange && !GetCurrentInputBuffer().thisFrame.HasInput(entity.side, InputType.DOWN, InputFrameType.HELD) && !player.gatlingMovesUsed.Contains(this) && base.mayEnterState;
 
     protected override InputFrame[] requiredInput => new InputFrame[] {new(InputType.S, InputFrameType.PRESSED)};
     public override void OnContact(Entity to) {
@@ -46,7 +46,7 @@ public abstract class State_Common_NmlAtk5CS : State_Common_NormalAttack {
     }
     protected virtual float triggerRange => 0.8f;
     public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
-        if (airborne) return new Vector2(1.5f, 5f);
+        if (airborne) return new Vector2(1.5f, blocked ? 5f : 7f);
         return new(blocked ? 3f : 2f, 0f);
     }
 }

@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91706ecba9a1429ab7a7cbe20b6a6e48, type: 3}
   m_Name: DebugScene_StageData
   m_EditorClassIdentifier: 
-  leftWallPosition: -7.3
-  rightWallPosition: 7.3
+  midscreenWallDistanceMax: 12
+  cornerWallX: 10

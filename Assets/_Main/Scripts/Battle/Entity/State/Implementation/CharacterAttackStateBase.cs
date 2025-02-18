@@ -234,9 +234,16 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     
     public override void OnLand(LandingRecoveryFlag flag, int recoveryFrames) {
         base.OnLand(flag, recoveryFrames);
+        // Debug.Log($"land, flag {flag}, recov {recoveryFrames}, this flag {landingRecoveryFlag}, fd recov {player.frameData.landingRecoveryFrames}");
+        if (flag.HasFlag(LandingRecoveryFlag.NO_LANDING_RECOVERY)) {
+            // Debug.Log("no recov");
+            return;
+        }
+
         if (landingRecoveryFlag.HasFlag(LandingRecoveryFlag.UNTIL_LAND)) {
             player.frameData.landingFlag |= LandingRecoveryFlag.UNTIL_LAND;
             player.frameData.landingRecoveryFrames = frameData.recovery;
+            // Debug.Log("until land");
         } else {
             player.frameData.landingRecoveryFrames = 3;   
         }

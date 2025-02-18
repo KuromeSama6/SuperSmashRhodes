@@ -171,7 +171,7 @@ public class State_Chen_NmlAtk6H : State_Common_NmlAtk6H {
 
     protected override void OnStartup() {
         base.OnStartup();
-        player.ApplyForwardVelocity(new(4.5f, 0f));
+        // player.ApplyForwardVelocity(new(4.5f, 0f));
     }
 
     protected override void OnActive() {
@@ -181,7 +181,7 @@ public class State_Chen_NmlAtk6H : State_Common_NmlAtk6H {
         return 52;
     }
     public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
-        if (airborne) return new Vector2(blocked ? 6f : .5f, 4f);
+        if (airborne) return new Vector2(blocked ? 6f : .5f, blocked ? 4f : -5f);
         return blocked ? new Vector2(3f, 0f) : new(0, -5);
     }
     public override string GetAttackNormalSfx() {
@@ -195,7 +195,7 @@ public class State_Chen_NmlAtk6H : State_Common_NmlAtk6H {
             Vector3 offset = new(Random.Range(-.1f, .1f), Random.Range(-.1f, .1f), 0);
             c.PlayFx("chr/chen/battle/fx/prefab/nml/slash/1", CharacterFXSocketType.SELF, offset, angle);
 
-            if (target is PlayerCharacter p && !p.airborne) {
+            if (target is PlayerCharacter p) {
                 p.frameData.AddGroundBounce(new Vector2(.2f, 12f));
                 p.ForceSetAirborne();
             }
@@ -276,6 +276,43 @@ public class State_Chen_NmlAtk2P : State_Common_NmlAtk2P {
 
     public override string GetAttackNormalSfx() {
         return "cmn/battle/sfx/attack/fist/1";
+    }
+}
+
+[NamedToken("Chen_NmlAtk8P")]
+public class State_Chen_NmlAtk8P : State_Common_NmlAtk8P {
+    public State_Chen_NmlAtk8P(Entity entity) : base(entity) { }
+
+    public override AttackFrameData frameData => new() {
+        startup = 5,
+        active = 3,
+        recovery = 8,
+
+    };
+    public override float GetUnscaledDamage(Entity to) {
+        return 24;
+    }
+    public override string GetAttackNormalSfx() {
+        return "cmn/battle/sfx/attack/fist/1";
+    }
+}
+
+[NamedToken("Chen_NmlAtk8S")]
+public class State_Chen_NmlAtk8S : State_Common_NmlAtk8S {
+    public State_Chen_NmlAtk8S(Entity entity) : base(entity) { }
+
+    public override AttackFrameData frameData => new() {
+        startup = 10,
+        active = 3,
+        recovery = 23,
+
+    };
+    public override float GetUnscaledDamage(Entity to) {
+        return 36;
+    }
+    
+    public override string GetAttackNormalSfx() {
+        return "cmn/battle/sfx/attack/sword/2";
     }
 }
 

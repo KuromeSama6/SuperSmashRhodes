@@ -411,6 +411,10 @@ public class PlayerCharacter : Entity {
         }
 
         var armor = modifierFlag.HasFlag(InboundHitModifier.NO_STUN);
+        if (armor) {
+            audioManager.PlaySound("cmn/battle/sfx/generic/generic_armor_success");
+            activeState.stateData.extraIndicatorFlag |= StateIndicatorFlag.ARMOR;
+        }
         
         if (blocked) {
             this.frameData.blockstunFrames = attack.GetStunFrames(this, true);
@@ -560,8 +564,8 @@ public class PlayerCharacter : Entity {
         // apply freeze frames
 
         var freezeFrames = attack.GetFreezeFrames(this);
-        if (addFreezeFrames && !armor) {
-            var delay = 4;
+        if (addFreezeFrames) {
+            var delay = armor ? 0 : 4;
             if (hitstate == Hitstate.COUNTER) {
                 var level = attack.GetCounterHitType(this);
                 // Debug.Log(level);
@@ -634,6 +638,7 @@ public class PlayerCharacter : Entity {
 
         // neutral
         if (blockHeld && (BitUtil.CheckFlag((ulong)activeState.type, (ulong)EntityStateType.CHR_NEUTRAL) || activeState is State_CmnMoveBackward)) {
+            // Debug.Log($"neutral, {activeState.id}");
             return false;
         }
 

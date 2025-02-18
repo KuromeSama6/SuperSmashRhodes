@@ -61,7 +61,12 @@ public class State_CmnHitStunAir : State_Common_Stun {
 
             if (player.frameData.shouldGroundBounce) {
                 var force = player.frameData.ConsumeContactBounce();
-                player.rb.AddForce(force, ForceMode2D.Impulse);
+                var decayData = opponent.comboDecayData;
+                var comboCounter = player.comboCounter;
+                player.rb.AddForce(force * new Vector2(
+                                       decayData.opponentBlowbackCurve.Evaluate(comboCounter.comboDecay), 
+                                       decayData.opponentLaunchCurve.Evaluate(comboCounter.comboDecay)
+                                   ), ForceMode2D.Impulse); 
                 // while (player.transform.position.y < 1f) {
                 //     yield return 1;
                 // }

@@ -91,7 +91,7 @@ public class PushboxManager : MonoBehaviour {
             correctionBox.GetContacts(buf);
             var opponent = player.opponent;
             // if (player.playerIndex == 0) Debug.Log(opponent.rb.linearVelocityY < .000001f);
-            if (opponent.airborne && buf.Contains(opponent.pushboxManager.physicsBox) && opponent.rb.linearVelocityY <= .000001f) {
+            if (opponent.transform.position.y >= .1f && buf.Contains(opponent.pushboxManager.physicsBox) && opponent.rb.linearVelocityY <= .000001f) {
                 // Debug.Log($"correct vel={opponent.rb.linearVelocity}");
                 GameManager.inst.AttemptPushboxCorrection(opponent, player);
             }

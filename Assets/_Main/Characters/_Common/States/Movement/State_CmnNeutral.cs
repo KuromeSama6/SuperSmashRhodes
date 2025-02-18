@@ -24,6 +24,9 @@ public class State_CmnNeutral : CharacterState {
         AddCancelOption(EntityStateType.ALL & ~EntityStateType.CHR_ATK_SPECIAL_TRIGGER);
         player.comboCounter.Reset();
         stateData.maySwitchSides = true;
+        
+        player.frameData.wallBounces.Clear();
+        player.frameData.groundBounces.Clear();
     }
 
     public override IEnumerator MainRoutine() {

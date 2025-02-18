@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using SuperSmashRhodes.Adressable;
 using SuperSmashRhodes.Battle.Enums;
+using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.Stage;
 using SuperSmashRhodes.Framework;
+using SuperSmashRhodes.Runtime.State;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -142,6 +144,26 @@ public class GameManager : SingletonBehaviour<GameManager> {
         target.SetZPriority();
         target.pushboxCorrectionGraceAmount = -direction * offset;
         target.UpdateRotation();
+    }
+
+    public void HandleWallCollision(Wall wall, PlayerCharacter player) {
+        // wall bounce
+        if (player.activeState is State_CmnHitStunAir && player.frameData.shouldWallBounce) {
+            var force = player.frameData.ConsumeWallBounce();
+            player.rb.linearVelocity = Vector2.zero;
+            player.ApplyForwardVelocity(force);
+            
+            AssetManager.Get<GameObject>("cmn/battle/fx/prefab/common/wall_bounce", res => {
+                var fx = Instantiate(res);
+                fx.transform.position = wall.transform.position - new Vector3(wall.GetComponent<BoxCollider2D>().size.x * (wall.side == EntitySide.RIGHT ? 1f : -1f), 0, 0);
+            });
+            
+            player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/wall_bounce_smoke", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position, new Vector3(0, 0, wall.side == EntitySide.RIGHT ? 0 : 180));
+            player.audioManager.PlaySound("cmn/battle/sfx/wall_bounce");
+
+            SimpleCameraShakePlayer.inst.PlayCommon("wallbounce");
+            TimeManager.inst.Schedule(4, 10);
+        }
     }
     
     public int RegisterEntity(Entity entity) {

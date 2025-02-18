@@ -130,6 +130,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 501e9983b59493c42bb355aa6e40ff27
+    m_Address: cmn/battle/sfx/generic/generic_armor_success
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 53cd1f5a311062544943ae37dda76107
     m_Address: chr/exusiai/battle/sfx/gun_shell_1
     m_ReadOnly: 0
@@ -232,6 +237,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c07f178f04a5a7e48b312baa56eaa83c
     m_Address: cmn/battle/sfx/movement/airdash
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c247e74d5927387409a6983728323f85
+    m_Address: chr/chen/battle/vo/41236d
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

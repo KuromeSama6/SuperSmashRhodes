@@ -54,6 +54,6 @@ public class CharacterConfiguration : ScriptableObject {
     public float airBackdashSpeedFinal => 5.5f + airBackdashSpeed;
     public int airBackdashDurationFinal => 14 + airBackdashDuration;
     public int airOptionsFinal => 1 + airOptions;
-    public Vector2 backdashVelocityFinal => new Vector2(-3.15f, 4) + backdashVelocity;
+    public Vector2 backdashVelocityFinal => new Vector2(-4.5f, 4) + backdashVelocity;
 }
 }

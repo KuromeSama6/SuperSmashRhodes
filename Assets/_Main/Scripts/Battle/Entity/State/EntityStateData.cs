@@ -27,6 +27,7 @@ public class EntityStateData {
     public CharacterRenderColorData renderColorData = new();
     public bool physicsPushboxDisabled = false;
     public bool maySwitchSides = false;
+    public float midscreenWallDistanceModifier = 0;
 
     public bool shouldApplySlotNeutralPose {
         get => TryGetCarriedVariable("_applySlotNeutralPose", out bool value) && value;
@@ -90,7 +91,8 @@ public struct CharacterRenderColorData {
     [Flags]
     public enum Flag {
         NONE = 0,
-        PAUSE = 1 << 0
+        PAUSE = 1 << 0,
+        FLICKER = 1 << 1,
     }
 }
 }

@@ -51,6 +51,9 @@ TagManager:
   - name: Character
     uniqueID: 2768431379
     locked: 0
+  - name: AbovePlayerEffects
+    uniqueID: 1637083341
+    locked: 0
   - name: AboveCharacter
     uniqueID: 688229265
     locked: 0

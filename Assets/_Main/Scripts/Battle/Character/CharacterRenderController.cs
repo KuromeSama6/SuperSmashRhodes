@@ -28,10 +28,16 @@ public class CharacterRenderController : MonoBehaviour {
             if (owner.activeState == null) return;
             var data = owner.activeState.stateData.renderColorData;
             if (!data.flags.HasFlag(CharacterRenderColorData.Flag.PAUSE)) {
-                mat.SetColor(RENDER_COLOR_WHITE, Color.Lerp(mat.GetColor(RENDER_COLOR_WHITE), data.white, data.lerpSpeed * Time.fixedDeltaTime));
-
-                if (mat.HasColor(RENDER_COLOR_BLACK)) {
-                    mat.SetColor(RENDER_COLOR_BLACK, Color.Lerp(mat.GetColor(RENDER_COLOR_BLACK), data.black, data.lerpSpeed * Time.fixedDeltaTime));      
+                if (data.flags.HasFlag(CharacterRenderColorData.Flag.FLICKER)) {
+                    var flash = Time.frameCount % 8 < 4;
+                    mat.SetColor(RENDER_COLOR_WHITE, flash ? data.white : Color.white);
+                    mat.SetColor(RENDER_COLOR_BLACK, flash ? data.black : Color.black);
+                    
+                } else {
+                    mat.SetColor(RENDER_COLOR_WHITE, Color.Lerp(mat.GetColor(RENDER_COLOR_WHITE), data.white, data.lerpSpeed * Time.fixedDeltaTime));
+                    if (mat.HasColor(RENDER_COLOR_BLACK)) {
+                        mat.SetColor(RENDER_COLOR_BLACK, Color.Lerp(mat.GetColor(RENDER_COLOR_BLACK), data.black, data.lerpSpeed * Time.fixedDeltaTime));      
+                    }   
                 }
             }
             

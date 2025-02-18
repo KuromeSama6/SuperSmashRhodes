@@ -24,7 +24,7 @@ public class State_Exusiai_OvrSklOverload : State_Common_OverdriveAttack {
         new(InputType.FORWARD, InputFrameType.HELD),
         new(InputType.DOWN, InputFrameType.PRESSED),
         new(InputType.BACKWARD, InputFrameType.PRESSED),
-        new(InputType.FORWARD, InputFrameType.HELD),
+        new(InputType.FORWARD, InputFrameType.PRESSED),
         new(InputType.D, InputFrameType.PRESSED),
     };
     protected override int framesBeforeSuperfreeze => 13;

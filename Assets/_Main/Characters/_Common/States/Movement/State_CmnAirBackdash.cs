@@ -36,6 +36,7 @@ public class State_CmnAirBackdash : CharacterState {
         player.airborne = true;
         player.rb.linearVelocity = Vector2.zero;
         stateData.gravityScale = 0;
+        player.airOptions--;
 
         var velocity = player.characterConfig.backdashVelocityFinal;
         if (player.atWall) {
