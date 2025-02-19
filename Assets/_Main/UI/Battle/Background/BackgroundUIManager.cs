@@ -39,6 +39,8 @@ public class BackgroundUIManager : SingletonBehaviour<BackgroundUIManager> {
         }
     }
     
+    public bool fullyDimmed => backgroundAlpha >= 0.999f;
+    
     private void Start() {
         Clear();
     }

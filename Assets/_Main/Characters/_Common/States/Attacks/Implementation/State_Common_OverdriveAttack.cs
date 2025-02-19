@@ -22,13 +22,17 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
     protected override float inputMeter => 0;
     public override bool mayEnterState => player.meter.gauge.value >= meterCost || true;
     public override CharacterStateFlag globalFlags => CharacterStateFlag.PAUSE_GAUGE | CharacterStateFlag.GLOBAL_PAUSE_TIMER;
-    public override StateIndicatorFlag stateIndicator => StateIndicatorFlag.SUPER | (player.burst.driveRelease ? StateIndicatorFlag.DRIVE_RELEASE : StateIndicatorFlag.NONE);
+    public override StateIndicatorFlag stateIndicator => StateIndicatorFlag.SUPER | (player.burst.driveRelease ? StateIndicatorFlag.DRIVE_RELEASE : StateIndicatorFlag.NONE) | (cinematicHit ? StateIndicatorFlag.INVINCIBLE : StateIndicatorFlag.NONE);
 
     
     protected CinematicCharacterSocket socket { get; private set; }
     protected bool cinematicHit { get; private set; }
     protected bool hasHit { get; private set; }
     protected bool cinematicHitWindow { get; private set; }
+    protected bool isDriveReleaseCancel { get; private set; }
+    protected virtual bool useCinematicSocket => true;
+    protected virtual EntityGhostFXData ghostFXData => new(Color.white);
+    protected virtual Color cinematicBackgroundColor => "2B395C".HexToColor();
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
@@ -36,6 +40,7 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
         cinematicHit = false;
         hasHit = false;
         cinematicHitWindow = true;
+        isDriveReleaseCancel = player.burst.driveRelease;
         
         if (socket != null) {
             socket.Release();
@@ -90,15 +95,17 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
         if (cinematicHit) {
             // big cinematic effect!!!
             stateData.gravityScale = 0;
-            stateData.ghostFXData = new(Color.white);
-            socket = new CinematicCharacterSocket(opponent, player, "throw_opponent", new(0, 0, 0));
-            
-            socket.Attach();
+            stateData.ghostFXData = ghostFXData;
+
+            if (useCinematicSocket) {
+                socket = new CinematicCharacterSocket(opponent, player, "throw_opponent", new(0, 0, 0));
+                socket.Attach();   
+            }
             
             // superfreeze part 2
             stateData.backgroundUIData.dimAlpha = 1f;
             stateData.backgroundUIData.bgType = BackgroundType.SUPER;
-            stateData.backgroundUIData.bgColor = "2B395C".HexToColor();
+            stateData.backgroundUIData.bgColor = cinematicBackgroundColor;
             stateData.backgroundUIData.transitionFrame = 0;
             stateData.backgroundUIData.transition = TransitionType.SUPER_FADE_IN;
 
@@ -115,15 +122,15 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
 
         } else {
             if (hitsRemaining > 0) OnWhiff();
-            FastForward(farHitSkipFrame - frame);
-            // Debug.Log("nocin");
+            player.animation.Tick(farHitSkipFrame - frame);
             opponent.stateFlags = player.stateFlags = default;
+            stateData.backgroundUIData = new();
             yield return farHitActiveFrames;
             
-            // Debug.Log("1");
             player.ApplyGroundedFriction(frameData.active);
             phase = AttackPhase.RECOVERY;
             OnRecovery();
+            
             yield return frameData.recovery;
             // Debug.Log("recovery");
         }
@@ -137,16 +144,14 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
         }
 
         player.burst.releaseFrames = 0;
+        opponent.stateFlags = player.stateFlags = default;
     }
 
     protected override void OnTick() {
         base.OnTick();
         if (socket != null && socket.attached) socket.Tick();
     }
-
-    public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
-        return new Vector2(10, 5);
-    }
+    
     public override AttackGuardType GetGuardType(Entity to) {
         return AttackGuardType.ALL;
     }
@@ -170,7 +175,7 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
         return 5;
     }
     public override float GetMinimumDamagePercentage(Entity to) {
-        return .25f;
+        return isDriveReleaseCancel ? .5f : .25f;
     }
     public override float GetAtWallPushbackMultiplier(Entity to) {
         return cinematicHit ? 0f : 1f;
@@ -181,7 +186,6 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
 
     public override void OnHit(Entity target) {
         base.OnHit(target);
-        // Debug.Log($"hit {cinematicHitWindow} {player.opponentDistance < cinematicHitDistance}");
         hasHit = true;
         if (cinematicHitWindow && player.opponentDistance < cinematicHitDistance) {
             cinematicHit = true;
@@ -222,14 +226,23 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
     }
 
     protected virtual void OnWhiff() { }
+    protected virtual void OnRelease() { }
+
+    public override void OnApplyCinematicDamage(AnimationEventData data) {
+        if (!cinematicHit) return;
+        base.OnApplyCinematicDamage(data);
+    }
 
     [AnimationEventHandler("std/ReleaseCinematicSocket")]
     public virtual void OnSocketRelease(AnimationEventData data) {
-        socket.Release();
+        if (socket != null && socket.attached) {
+            OnRelease();
+        }
+        if (socket != null) socket.Release();
         player.stateFlags = default;
         if (hasHit) {
             opponent.BeginState("CmnHitStunAir");
-            // Debug.Log("hit");
+            opponent.ApplyForwardVelocity(new(0, 3));
             opponent.frameData.landingFlag = LandingRecoveryFlag.HARD_KNOCKDOWN_LAND | LandingRecoveryFlag.HARD_LAND_COSMETIC;
         }
     }

@@ -8,6 +8,7 @@ using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.Stage;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Runtime.State;
+using SuperSmashRhodes.UI.Battle;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -24,6 +25,7 @@ public class GameManager : SingletonBehaviour<GameManager> {
     public StageData stageData;
     public GameObject ground;
     public GameObject leftWall, rightWall;
+    public Transform environmentContainer;
     
     [Title("Debug")]
     public GameObject p1Prefab;
@@ -47,8 +49,10 @@ public class GameManager : SingletonBehaviour<GameManager> {
     private bool pushboxCorrectionLock = false;
     private readonly Dictionary<int, Entity> entityTable = new();
     private int entityIdCounter;
+    private readonly List<Renderer> environmentRenderers = new();
     
     private IEnumerator Start() {
+        environmentRenderers.AddRange(environmentContainer.gameObject.GetComponentsInChildren<Renderer>());
         inputManager = GetComponent<PlayerInputManager>();
         
         targetGroup.Targets.Clear();
@@ -99,6 +103,13 @@ public class GameManager : SingletonBehaviour<GameManager> {
             var player = GetPlayer(targetGroup.Targets.IndexOf(target));
             target.Object = player.stateFlags.HasFlag(CharacterStateFlag.CAMERA_FOLLOW_BONE) ? player.cameraFollowSocket : player.transform;
             target.Weight = player.cameraGroupWeight;
+        }
+
+        {
+            var hideTerrain = BackgroundUIManager.inst && BackgroundUIManager.inst.fullyDimmed;
+            foreach (var renderer in environmentRenderers) {
+                renderer.enabled = !hideTerrain;
+            }   
         }
     }
 

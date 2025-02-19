@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Audio
   m_GUID: 6493b6b7930f5d543b3c51c9ab3dc9c7
   m_SerializeEntries:
+  - m_GUID: 0169ccdb1704e7e4aa227867b764928c
+    m_Address: chr/chen/battle/sfx/chixiao/1_imp
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 034df00a15433494489e2481d57d70a7
     m_Address: cmn/battle/sfx/driverelease_end
     m_ReadOnly: 0
@@ -47,6 +52,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 16dd89d618529294283c65f7cd34231c
     m_Address: chr/exusiai/battle/sfx/214h/shot
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1ad7d694abf99d747b2395f01ab73533
+    m_Address: chr/chen/battle/vo/chixiao_start
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -187,6 +197,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8c78df5ee440d024c9833da29c5bf925
     m_Address: chr/chen/battle/vo/driverelease
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 90692c417ddc53545bd5a029740f4b74
+    m_Address: chr/chen/battle/vo/632146h
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

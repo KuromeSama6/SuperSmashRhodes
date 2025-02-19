@@ -147,7 +147,7 @@ public class State_Chen_NmlAtk6D : State_Chen_DriveAttack {
             return ret;
         }
     }
-    public override LandingRecoveryFlag landingRecoveryFlag => driveRelease ? LandingRecoveryFlag.UNTIL_LAND : LandingRecoveryFlag.NONE;
+    public override LandingRecoveryFlag landingRecoveryFlag => (!driveRelease ? LandingRecoveryFlag.UNTIL_LAND : LandingRecoveryFlag.NONE) | LandingRecoveryFlag.CARRY_CANCEL_OPTIONS;
 
     public override StateIndicatorFlag stateIndicator => driveRelease && phase == AttackPhase.ACTIVE ? StateIndicatorFlag.INVINCIBLE : StateIndicatorFlag.NONE;
 

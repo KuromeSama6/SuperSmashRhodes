@@ -65,9 +65,7 @@ public class State_Chen_SklDPB : State_Common_DP {
         return 40;
     }
     public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
-        if (blocked) return new(1, 0);
-        if (attackStage == 1) {
-        }
+        if (blocked) return new(3, 0);
         
         return attackStage switch {
             0 => new(0.5f, 0f),
@@ -79,7 +77,7 @@ public class State_Chen_SklDPB : State_Common_DP {
         base.OnNotifyStage(stage);
         stateData.ghostFXData = new("cb0000".HexToColor(), 0.01333334f, 40, 10f);
         if (stage == 1) {
-            player.ApplyForwardVelocity(new(1.5f, opponent.atWall ? 20f : 10f));
+            player.ApplyForwardVelocity(new(.5f, opponent.atWall && hitsRemaining < 2 ? 20f : 10f));
             player.airborne = true;
             entity.audioManager.PlaySound("chr/chen/battle/sfx/skl_214h/0", .4f);   
             

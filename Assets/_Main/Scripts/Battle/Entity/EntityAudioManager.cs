@@ -22,9 +22,14 @@ public class EntityAudioManager : MonoBehaviour {
         container.parent = transform;
     }
 
-    public void PlaySound(string soundName, float volume = 1f) {
+    public void PlaySound(string soundName, float volume = 1f, float pitch = 1f) {
         if (soundName == null) return;
-        AssetManager.Get<AudioClip>(soundName, clip => audioSource.PlayOneShot(clip, volume)); 
+        AssetManager.Get<AudioClip>(soundName, clip => {
+            var go = new GameObject($"Player: {soundName}");
+            go.transform.parent = container;
+            var comp = go.AddComponent<AudioClipDataPlayer>();
+            comp.Play(clip, volume, pitch);
+        }); 
     }
 
     public void PlaySoundClip(string soundName) {

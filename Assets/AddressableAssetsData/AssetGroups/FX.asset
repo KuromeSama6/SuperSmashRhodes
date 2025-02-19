@@ -40,6 +40,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1ee33f0fab62e274ea0dd9a2b1bdcc23
+    m_Address: chr/chen/battle/fx/prefab/skl_632146h/final
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 200b4a47f1c44e74d89dcb757b480353
     m_Address: cmn/battle/fx/prefab/common/block/0
     m_ReadOnly: 0
@@ -125,6 +130,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 91b1ede3e131c2c42b852b8f8211b3e7
+    m_Address: chr/chen/battle/sfx/chixiao/1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 92060611b2f650e4db749ac55c6d7a44
     m_Address: cmn/battle/fx/prefab/common/super/star
     m_ReadOnly: 0
@@ -195,6 +205,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b93a5c34ba1d8d447908c4cc7743fa94
+    m_Address: chr/chen/battle/fx/prefab/skl_632146h/hit
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c6106ac41dfdc484298bfb6d1296c4e1
     m_Address: cmn/battle/fx/prefab/common/super/smoke
     m_ReadOnly: 0
@@ -222,6 +237,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ee09c108c95d7cd48a322c5d0612ea1c
     m_Address: chr/exusiai/fx/prefab/214h/shot/lv3
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f02ee5d977815044c8b2f421c6a48a82
+    m_Address: chr/chen/battle/fx/prefab/skl_632146h/hit_slanted
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

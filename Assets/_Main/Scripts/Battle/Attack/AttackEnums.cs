@@ -66,7 +66,8 @@ public enum LandingRecoveryFlag {
     UNTIL_LAND = 1 << 0,
     HARD_KNOCKDOWN_LAND = 1 << 2,
     HARD_LAND_COSMETIC = 1 << 3,
-    NO_LANDING_RECOVERY = 1 << 4
+    NO_LANDING_RECOVERY = 1 << 4,
+    CARRY_CANCEL_OPTIONS = 1 << 5,
 }
 
 [Flags]

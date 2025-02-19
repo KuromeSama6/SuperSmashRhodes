@@ -229,12 +229,6 @@ public abstract class EntityState : NamedToken {
     public abstract IEnumerator MainRoutine();
     
     // Handlers
-    [AnimationEventHandler("std/ApplyCinematicDamage")]
-    public virtual void OnApplyCinematicDamage(AnimationEventData data) {
-        if (entity is PlayerCharacter player) {
-            player.opponent.ApplyDamage(data.integerValue, null, DamageProperties.SKIP_REGISTER | DamageProperties.IGNORE_COMBO_DECAY); 
-        }
-    }
     
     [AnimationEventHandler("std/PlaySound")]
     public virtual void OnPlaySound(AnimationEventData data) {

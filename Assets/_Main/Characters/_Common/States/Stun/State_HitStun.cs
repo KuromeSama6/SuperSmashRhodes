@@ -60,7 +60,7 @@ public class State_CmnHitStunAir : State_Common_Stun {
             while (!landed) {
                 yield return 1;
             }
-
+            
             if (player.frameData.shouldGroundBounce) {
                 var force = player.frameData.ConsumeContactBounce();
                 var decayData = opponent.comboDecayData;
@@ -90,13 +90,14 @@ public class State_CmnHitStunAir : State_Common_Stun {
             
             break;
         }
+        
         CancelInto(landingRecoveryFlag.HasFlag(LandingRecoveryFlag.HARD_KNOCKDOWN_LAND) ? "CmnHardKnockdown" : "CmnSoftKnockdown");
     }
 
     public override void OnLand(LandingRecoveryFlag flag, int recoveryFrames) {
         base.OnLand(flag, recoveryFrames);
         landed = true;
-        landingRecoveryFlag = flag;
+        landingRecoveryFlag |= flag;
     }
 }
 

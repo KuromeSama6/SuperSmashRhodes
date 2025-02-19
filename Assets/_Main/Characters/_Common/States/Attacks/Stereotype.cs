@@ -50,7 +50,7 @@ public abstract class State_Common_SpecialAttack : CharacterAttackStateBase {
     protected State_Common_SpecialAttack(Entity entity) : base(entity) { }
     public override EntityStateType type => EntityStateType.CHR_ATK_SPECIAL;
     public override float inputPriority => 5f;
-    protected override EntityStateType commonCancelOptions => 0;
+    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_SUPER;
     protected override int normalInputBufferLength => 10;
     protected override float inputMeter => 1f;
 

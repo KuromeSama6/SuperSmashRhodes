@@ -33,8 +33,6 @@ public class State_CmnLandingRecovery : CharacterState {
         }
         
         player.animation.AddUnmanagedAnimation(animationName, false);
-        
-        AddCancelOption(EntityStateType.CHR_ATK_SYSTEMSPECIAL | EntityStateType.CHR_DRIVE_RELEASE);
     }
     
     public override IEnumerator MainRoutine() {
@@ -43,5 +41,18 @@ public class State_CmnLandingRecovery : CharacterState {
             yield return 1;
         }
     }
+
+    protected override void OnTick() {
+        base.OnTick();
+        if (frame == 2) {
+            AddCancelOption(EntityStateType.CHR_ATK_SYSTEMSPECIAL | EntityStateType.CHR_DRIVE_RELEASE);
+
+            if (stateData.TryGetCarriedVariable<EntityStateType>("_carriedCancelFlags", out var flag)) {
+                // Debug.Log(flag);
+                AddCancelOption(flag);
+            } 
+        }
+    }
+
 }
 }

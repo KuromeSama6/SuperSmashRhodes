@@ -28,7 +28,7 @@ public class State_Chen_SklDPC : State_Common_SpecialAttack {
 
     public override float inputPriority => 5.5f;
     protected override int normalInputBufferLength => 15;
-    public override LandingRecoveryFlag landingRecoveryFlag => LandingRecoveryFlag.UNTIL_LAND;
+    public override LandingRecoveryFlag landingRecoveryFlag => LandingRecoveryFlag.UNTIL_LAND | LandingRecoveryFlag.CARRY_CANCEL_OPTIONS;
 
     protected override int totalHits => 3;
 
@@ -59,7 +59,7 @@ public class State_Chen_SklDPC : State_Common_SpecialAttack {
             SimpleCameraShakePlayer.inst.Play("chr/chen/battle/fx/camerashake", attackStage == 2 ? "dp_2" : "dp_1");
             if (attackStage == 2) BackgroundUIManager.inst.Flash(0.03f);   
         }
-        
+
         player.audioManager.PlaySound("chr/chen/battle/sfx/dp/1");
         if (attackStage == 2) {
             opponent.fxManager.PlayGameObjectFX("chr/chen/battle/fx/prefab/skl_214s/hit/0", CharacterFXSocketType.SELF);
@@ -79,7 +79,7 @@ public class State_Chen_SklDPC : State_Common_SpecialAttack {
         return attackStage switch {
             0 => new(0.5f, 0f),
             1 => new(0.5f, 13f),
-            2 => new (2f, -30f)
+            2 => new (5f, -30f)
         };
     }
     public override AttackGuardType GetGuardType(Entity to) {
@@ -99,13 +99,13 @@ public class State_Chen_SklDPC : State_Common_SpecialAttack {
         base.OnNotifyStage(stage);
         stateData.ghostFXData = new("cb0000".HexToColor(), 0.01333334f, 40, 10f);
         if (stage == 1) {
-            player.ApplyForwardVelocity(new(0f, opponent.atWall ? 27.5f : 15f));
+            player.ApplyForwardVelocity(new(0f, opponent.atWall && hitsRemaining < 3 ? 27.5f : 15f));
             player.airborne = true;
             
         } else if (stage == 2) {
             player.rb.linearVelocity = Vector2.zero;
             player.ApplyForwardVelocity(new(hits > 0 ? 10f : 0f, -30f));
-            player.opponent.frameData.AddGroundBounce(new(0, driveRelease ? 12 : 5), BounceFlags.HEAVY);
+            player.opponent.frameData.AddGroundBounce(new(0, driveRelease ? 12 : 7), BounceFlags.HEAVY);
             entity.audioManager.PlaySound("chr/chen/battle/sfx/skl_214h/0", .4f);
             entity.audioManager.PlaySound($"chr/chen/battle/vo/modal/{Random.Range(0, 2)}");
         }

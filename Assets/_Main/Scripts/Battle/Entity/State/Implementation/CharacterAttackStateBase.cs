@@ -241,7 +241,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     
     public override void OnLand(LandingRecoveryFlag flag, int recoveryFrames) {
         base.OnLand(flag, recoveryFrames);
-        // Debug.Log($"land, flag {flag}, recov {recoveryFrames}, this flag {landingRecoveryFlag}, fd recov {player.frameData.landingRecoveryFrames}");
+        // Debug.Log($"land, this {id}, flag {flag}, recov {recoveryFrames}, this flag {landingRecoveryFlag.HasFlag(LandingRecoveryFlag.CARRY_CANCEL_OPTIONS)}, fd recov {player.frameData.landingRecoveryFrames}");
         if (flag.HasFlag(LandingRecoveryFlag.NO_LANDING_RECOVERY)) {
             // Debug.Log("no recov");
             return;
@@ -254,18 +254,31 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         } else {
             player.frameData.landingRecoveryFrames = 3;   
         }
+
+        if (landingRecoveryFlag.HasFlag(LandingRecoveryFlag.CARRY_CANCEL_OPTIONS)) {
+            player.SetCarriedStateVariable("_carriedCancelFlags", "CmnLandingRecovery", stateData.cancelFlag);
+        }
+        
         CancelInto("CmnLandingRecovery");
     }
 
     [AnimationEventHandler("std/ClearHitLock")]
     public virtual void OnClearHitLock(AnimationEventData data) {
         hitLock = false;
+        ++attackStage;
+        OnNotifyStage(attackStage);
     }
 
     [AnimationEventHandler("std/NotifyStage")]
     public virtual void OnNotifyStage(AnimationEventData data) {
         ++attackStage;
         OnNotifyStage(attackStage);
+    }
+    
+    
+    [AnimationEventHandler("std/ApplyCinematicDamage")]
+    public virtual void OnApplyCinematicDamage(AnimationEventData data) {
+        player.opponent.ApplyDamage(data.integerValue, CreateAttackData(player.opponent), DamageProperties.SKIP_REGISTER | DamageProperties.IGNORE_COMBO_DECAY); 
     }
 }
 }

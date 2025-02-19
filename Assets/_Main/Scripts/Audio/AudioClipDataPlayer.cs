@@ -23,6 +23,15 @@ public class AudioClipDataPlayer : MonoBehaviour {
         audioSource.time = 0;
         audioSource.Play();
     }
+    
+    public void Play(AudioClip clip, float volume = 1f, float pitch = 1f) {
+        audioSource.clip = clip;
+        audioSource.volume = volume;
+        audioSource.pitch = pitch;
+        audioSource.time = 0;
+        audioSource.Play();
+        // Debug.Log(audioSource.pitch);
+    }
 
     private void Update() {
         if (data != null && audioSource) {

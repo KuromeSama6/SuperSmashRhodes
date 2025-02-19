@@ -63,6 +63,10 @@ public class State_Exusiai_OvrSklOverload : State_Common_OverdriveAttack {
         }
     }
 
+    public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
+        return new Vector2(blocked ? 1.5f : 10, 5);
+    }
+    
     protected override void OnWhiff() {
         base.OnWhiff();
         player.audioManager.PlaySound($"chr/exusiai/battle/vo/modal/{Random.Range(0, 4)}");
