@@ -38,7 +38,7 @@ public class State_Exusiai_SklRoll : State_Common_UtilityMove {
         AddCancelOption("Exusiai_SklRoll_FEvade");
     }
 
-    protected override void OnStateEnd(string nextState) {
+    protected override void OnStateEnd(EntityState nextState) {
         base.OnStateEnd(nextState);
         player.ApplyGroundedFrictionImmediate();
     }

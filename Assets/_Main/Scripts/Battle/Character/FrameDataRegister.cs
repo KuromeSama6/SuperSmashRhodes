@@ -9,8 +9,8 @@ public class FrameDataRegister : RuntimeCharacterDataRegister {
     public int throwInvulnFrames { get; set; }
     public int landingRecoveryFrames { get; set; }
     public LandingRecoveryFlag landingFlag { get; set; }
-    public List<Vector2> groundBounces { get; } = new();
-    public List<Vector2> wallBounces { get; } = new();
+    public List<BounceData> groundBounces { get; } = new();
+    public List<BounceData> wallBounces { get; } = new();
 
     public bool shouldGroundBounce => groundBounces.Count > 0;
     public bool shouldWallBounce => wallBounces.Count > 0;
@@ -54,31 +54,54 @@ public class FrameDataRegister : RuntimeCharacterDataRegister {
         }
     }
     
-    public void AddGroundBounce(Vector2 bounce) {
+    public void AddGroundBounce(Vector2 bounce, BounceFlags flags = BounceFlags.NONE) {
+        groundBounces.Add(new(bounce, flags));
+    }
+    public void AddGroundBounce(BounceData bounce) {
         groundBounces.Add(bounce);
     }
 
-    public Vector2 ConsumeContactBounce() {
+    public BounceData ConsumeContactBounce() {
         if (groundBounces.Count == 0) {
-            return Vector2.zero;
+            return null;
         }
-        Vector2 bounce = groundBounces[0];
+        var bounce = groundBounces[0];
         groundBounces.RemoveAt(0);
         return bounce;
     }
     
-    public void AddWallBounce(Vector2 bounce) {
+    public void AddWallBounce(BounceData bounce) {
         wallBounces.Add(bounce);
     }
+    
+    public void AddWallBounce(Vector2 bounce, BounceFlags flags = BounceFlags.NONE) {
+        wallBounces.Add(new(bounce, flags));
+    }
 
-    public Vector2 ConsumeWallBounce() {
+    public BounceData ConsumeWallBounce() {
         if (wallBounces.Count == 0) {
-            return Vector2.zero;
+            return null;
         }
-        Vector2 bounce = wallBounces[0];
+        var bounce = wallBounces[0];
         wallBounces.RemoveAt(0);
         return bounce;
     }
+}
+
+public class BounceData {
+    public Vector2 bounceForce;
+    public BounceFlags flags;
+    
+    public BounceData(Vector2 force, BounceFlags flags = BounceFlags.NONE) {
+        bounceForce = force;
+        this.flags = flags;
+    }
+}
+
+[Flags]
+public enum BounceFlags {
+    NONE = 0,
+    HEAVY = 1 << 0,
 }
 
 }

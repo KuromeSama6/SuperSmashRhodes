@@ -181,7 +181,7 @@ public class State_Chen_NmlAtk6H : State_Common_NmlAtk6H {
         return 52;
     }
     public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
-        if (airborne) return new Vector2(blocked ? 6f : .5f, blocked ? 4f : -5f);
+        if (airborne) return new Vector2(blocked ? 6f : .5f, 4f);
         return blocked ? new Vector2(3f, 0f) : new(0, -5);
     }
     public override string GetAttackNormalSfx() {
@@ -195,7 +195,7 @@ public class State_Chen_NmlAtk6H : State_Common_NmlAtk6H {
             Vector3 offset = new(Random.Range(-.1f, .1f), Random.Range(-.1f, .1f), 0);
             c.PlayFx("chr/chen/battle/fx/prefab/nml/slash/1", CharacterFXSocketType.SELF, offset, angle);
 
-            if (target is PlayerCharacter p) {
+            if (target is PlayerCharacter p && !p.airborne) {
                 p.frameData.AddGroundBounce(new Vector2(.2f, 12f));
                 p.ForceSetAirborne();
             }

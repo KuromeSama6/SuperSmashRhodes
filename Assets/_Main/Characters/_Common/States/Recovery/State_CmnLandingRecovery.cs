@@ -12,14 +12,18 @@ public class State_CmnLandingRecovery : CharacterState {
     public State_CmnLandingRecovery(Entity entity) : base(entity) { }
     public override EntityStateType type => EntityStateType.CHR_COMMON_RECOVERY;
     public override float inputPriority { get; }
-    public override Hitstate hitstate => Hitstate.PUNISH;
+    public override Hitstate hitstate => recoverInCounterhitState ? Hitstate.COUNTER : Hitstate.PUNISH;
 
+    private bool recoverInCounterhitState;
+    
     public override bool IsInputValid(InputBuffer buffer) {
         return false;
     }
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
+        
+        recoverInCounterhitState = stateData.TryGetCarriedVariable("_landingRecoveryCounterHitState", out bool value) && value;
         
         var animationName = stateData.carriedLandingAnimation ?? "std/land";
         // Debug.Log(player.frameData.landingRecoveryFrames);

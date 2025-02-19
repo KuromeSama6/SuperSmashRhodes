@@ -44,7 +44,7 @@ public abstract class State_Chen_DriveAttack : CharacterAttackStateBase {
         base.OnContact(to);
         BackgroundUIManager.inst.Flash(0.03f);
         opponent.fxManager.PlayGameObjectFX("chr/chen/battle/fx/prefab/skl_214s/hit/0", CharacterFXSocketType.SELF);
-        SimpleCameraShakePlayer.inst.Play("chr/chen/battle/fx/camerashake/drive", "5d");
+        SimpleCameraShakePlayer.inst.Play("chr/chen/battle/fx/camerashake", "5d");
     }
 
     public override float GetChipDamagePercentage(Entity to) {
@@ -71,7 +71,7 @@ public abstract class State_Chen_DriveAttack : CharacterAttackStateBase {
 
     public override Vector2 GetCarriedMomentumPercentage(Entity to) {
         // return new(1f, 0.2f);
-        return Vector2.one;
+        return Vector2.zero;
     }
 
     [AnimationEventHandler("BeginTeleportSlashSubroutine")]

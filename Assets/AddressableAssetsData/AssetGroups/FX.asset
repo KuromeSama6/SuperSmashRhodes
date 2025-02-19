@@ -46,7 +46,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 218cb68a3f6ef2249bace29f4cb0be40
-    m_Address: chr/chen/battle/fx/camerashake/drive
+    m_Address: chr/chen/battle/fx/camerashake
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -130,6 +130,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 93e16430ae9570b48bed65a7fe74862c
+    m_Address: cmn/battle/fx/prefab/common/land/hard
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 967641b1abebc01458f015bbbfe94614
     m_Address: cmn/battle/fx/prefab/common/hit/light
     m_ReadOnly: 0
@@ -177,6 +182,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: aee60d165d740fa4d840af5a73f6c995
     m_Address: cmn/battle/fx/prefab/common/dash_dust
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b467012369a12e143bf8e49b11c7ba5d
+    m_Address: cmn/battle/fx/prefab/common/ground_bounce_smoke
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

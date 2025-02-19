@@ -151,7 +151,7 @@ public class GameManager : SingletonBehaviour<GameManager> {
         if (player.activeState is State_CmnHitStunAir && player.frameData.shouldWallBounce) {
             var force = player.frameData.ConsumeWallBounce();
             player.rb.linearVelocity = Vector2.zero;
-            player.ApplyForwardVelocity(force);
+            player.ApplyForwardVelocity(force.bounceForce);
             
             AssetManager.Get<GameObject>("cmn/battle/fx/prefab/common/wall_bounce", res => {
                 var fx = Instantiate(res);
@@ -160,6 +160,7 @@ public class GameManager : SingletonBehaviour<GameManager> {
             
             player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/wall_bounce_smoke", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position, new Vector3(0, 0, wall.side == EntitySide.RIGHT ? 0 : 180));
             player.audioManager.PlaySound("cmn/battle/sfx/wall_bounce");
+            player.airHitstunRotation = -90f;
 
             SimpleCameraShakePlayer.inst.PlayCommon("wallbounce");
             TimeManager.inst.Schedule(4, 10);

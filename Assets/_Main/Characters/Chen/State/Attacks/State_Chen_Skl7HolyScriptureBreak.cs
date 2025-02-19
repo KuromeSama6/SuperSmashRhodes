@@ -47,7 +47,7 @@ public class State_Chen_Skl7HolyScriptureBreak : State_Common_SpecialAttack {
         }
         
         stateData.ghostFXData = new("cb0000".HexToColor(), 0.02333334f, driveRelease ? 40 : 20, 2.5f);
-        stateData.physicsPushboxDisabled = true;
+        // stateData.physicsPushboxDisabled = true;
         player.audioManager.PlaySound("chr/chen/battle/sfx/drive/p1");
         entity.audioManager.PlaySound("chr/chen/battle/sfx/skl_214h/0", .4f);  
         
@@ -69,7 +69,7 @@ public class State_Chen_Skl7HolyScriptureBreak : State_Common_SpecialAttack {
         base.OnContact(to);
         BackgroundUIManager.inst.Flash(0.05f);
         opponent.fxManager.PlayGameObjectFX("chr/chen/battle/fx/prefab/skl_214s/hit/0", CharacterFXSocketType.SELF);
-        SimpleCameraShakePlayer.inst.Play("chr/chen/battle/fx/camerashake/drive", "5d");
+        SimpleCameraShakePlayer.inst.Play("chr/chen/battle/fx/camerashake", "5d");
         player.rb.linearVelocity = Vector2.zero;
     }
 
@@ -77,7 +77,7 @@ public class State_Chen_Skl7HolyScriptureBreak : State_Common_SpecialAttack {
         base.OnHit(target);
         stateData.midscreenWallDistanceModifier -= 5;
         
-        opponent.frameData.AddWallBounce(new Vector2(4.5f, 10));
+        opponent.frameData.AddWallBounce(new Vector2(4f, 10));
     }
 
     public override float GetUnscaledDamage(Entity to) {

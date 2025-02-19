@@ -81,7 +81,7 @@ public class PlayerCharacter : Entity {
         }
     }
     
-    private float airHitstunRotation = 0f;
+    public float airHitstunRotation { get; set; } = 0f;
     private float yRotationTarget = 0f;
     public int backdashCooldown { get; set; }
     private EntityState facingCheckCurrentState;
@@ -195,7 +195,7 @@ public class PlayerCharacter : Entity {
 
     public void UpdateRotation() {
         if (airborne && activeState is State_CmnHitStunAir) {
-            airHitstunRotation = Mathf.Clamp(airHitstunRotation + 0.5f, -55f, 55f);
+            airHitstunRotation = Math.Min(airHitstunRotation + (airHitstunRotation >= 0 ? .5f : -1f), 55f);
 
         } else {
             airHitstunRotation = Mathf.Lerp(airHitstunRotation, 0, Time.fixedDeltaTime * 10f);
@@ -682,11 +682,11 @@ public class PlayerCharacter : Entity {
             opponent.rb.linearVelocity *= carriedMomentum;
             opponent.rb.AddForceX(vec.x * -direction * atWallMultiplier, ForceMode2D.Impulse);
             opponent.groundedFrictionAlpha = 0;
-            // Debug.Log("at wall");
             // Debug.Log("add opponent force");
             
         } else {
             rb.linearVelocity *= carriedMomentum;
+            // Debug.Log(vec.x * direction * atWallMultiplier);
             rb.AddForceX(vec.x * direction, ForceMode2D.Impulse);
             groundedFrictionAlpha = 0;
             // Debug.Log("not at wall");

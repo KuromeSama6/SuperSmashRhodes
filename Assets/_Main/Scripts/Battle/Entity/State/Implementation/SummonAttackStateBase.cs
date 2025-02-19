@@ -52,7 +52,7 @@ public abstract class SummonAttackStateBase : EntityState, IAttack {
         }
     }
 
-    protected override void OnStateEnd(string nextState) {
+    protected override void OnStateEnd(EntityState nextState) {
         base.OnStateEnd(nextState);
         entity.boundingBoxManager.SetAll(false);
         player.DestroySummon(entity);

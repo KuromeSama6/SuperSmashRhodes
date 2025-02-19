@@ -30,6 +30,10 @@ public class AnnouncerHud : PerSideUIElement<AnnouncerHud> {
     private void Update() {
         if (!player || player.activeState == null) return;
         var currentState = ((CharacterState)player.activeState).stateIndicator | player.activeState.stateData.extraIndicatorFlag; 
+        
+        if (player.activeState.stateData.TryGetCarriedVariable("_isReversalMove", out bool value) && value) {
+            currentState |= StateIndicatorFlag.REVERSAL;
+        }
 
         if (currentState != state) {
             timeWithoutChange = 0;

@@ -129,7 +129,7 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
         }
     }
 
-    protected override void OnStateEnd(string nextState) {
+    protected override void OnStateEnd(EntityState nextState) {
         base.OnStateEnd(nextState);
         if (socket != null && socket.attached) {
             socket.Release();

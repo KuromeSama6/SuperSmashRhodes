@@ -1,15 +1,18 @@
 ﻿using System.Collections;
 using JetBrains.Annotations;
+using SuperSmashRhodes.Battle.Animation;
 using SuperSmashRhodes.Input;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.State.Implementation {
 public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public AttackPhase phase { get; protected set; }
-    public virtual bool hasActiveFrames => hitsRemaining > 0; 
+    public virtual bool hasActiveFrames => hitsRemaining > 0 && !hitLock; 
     public int hitsRemaining { get; protected set; }  = 1;
     public int hits { get; protected set; }
     public int blockedHits { get; protected set; }
+    public bool hitLock { get; protected set; }
+    public int attackStage { get; private set; }
     
     public virtual AttackType attackType => AttackType.STRIKE;
     public override bool mayEnterState => player.MatchesAirState(airOk);
@@ -30,6 +33,8 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         hits = 0;
         blockedHits = 0;
         chargeLevel = 0;
+        hitLock = false;
+        attackStage = 0;
     }
 
     public override IEnumerator MainRoutine() {
@@ -68,13 +73,14 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         }
     }
 
-    protected override void OnStateEnd(string nextState) {
+    protected override void OnStateEnd(EntityState nextState) {
         base.OnStateEnd(nextState);
         player.boundingBoxManager.SetAll(false);
     }
 
     public virtual void OnContact(Entity to) {
         if (hitsRemaining > 0) --hitsRemaining;
+        hitLock = true;
         // Debug.Log("cancel added"); 
         AddCancelOption(commonCancelOptions);
     }
@@ -213,6 +219,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public virtual string GetAttackNormalSfx() {
         return null;
     }
+    protected virtual void OnNotifyStage(int stage) {}
     public virtual int GetFrameAdvantage(Entity to, bool blocked) {
         var data = frameData;
         return blocked ? data.onBlock : data.onHit;
@@ -228,8 +235,8 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         return 1f;
     }
     
-    public int GetStunFrames(Entity to, bool blocked) {
-        return frameData.active + frameData.recovery + GetFrameAdvantage(to, blocked);
+    public virtual int GetStunFrames(Entity to, bool blocked) {
+        return Mathf.Max(0, frameData.active + frameData.recovery + GetFrameAdvantage(to, blocked) - (frame - frameData.startup));
     }
     
     public override void OnLand(LandingRecoveryFlag flag, int recoveryFrames) {
@@ -248,6 +255,17 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
             player.frameData.landingRecoveryFrames = 3;   
         }
         CancelInto("CmnLandingRecovery");
+    }
+
+    [AnimationEventHandler("std/ClearHitLock")]
+    public virtual void OnClearHitLock(AnimationEventData data) {
+        hitLock = false;
+    }
+
+    [AnimationEventHandler("std/NotifyStage")]
+    public virtual void OnNotifyStage(AnimationEventData data) {
+        ++attackStage;
+        OnNotifyStage(attackStage);
     }
 }
 }

@@ -118,12 +118,12 @@ public abstract class EntityState : NamedToken {
                 // Debug.Log($"routine end, rem={routines.Count}");
 
             } else {
-                EndState(entity.GetDefaultState().id);
+                EndState(entity.GetDefaultState());
             }
         }
     }
 
-    public void EndState(string nextState) {
+    public void EndState(EntityState nextState) {
         active = false;
         OnStateEnd(nextState);
         onStateEnd.Invoke();
@@ -210,7 +210,7 @@ public abstract class EntityState : NamedToken {
         if (!entity.states.TryGetValue(name, out var state))
             throw new KeyNotFoundException($"State {name} not found");
         
-        EndState(name);
+        EndState(state);
         entity.BeginState(state);
     }
     
@@ -223,7 +223,7 @@ public abstract class EntityState : NamedToken {
     }
     
     protected virtual void OnStateBegin() { }
-    protected virtual void OnStateEnd(string nextState) {}
+    protected virtual void OnStateEnd(EntityState nextState) {}
     public virtual void OnLand(LandingRecoveryFlag flag, int recoveryFrames) {}
     // Abstract methods
     public abstract IEnumerator MainRoutine();
@@ -262,6 +262,7 @@ public abstract class EntityState : NamedToken {
     
     [AnimationEventHandler("std/ApplyForce")]
     public virtual void OnApplyVelocity(AnimationEventData data) {
+        // Debug.Log("apply force");
         var x = float.Parse(data.GetArg(0));
         var y = float.Parse(data.GetArg(1));
         var xCarried = float.Parse(data.GetArg(2, "0"));
@@ -272,7 +273,8 @@ public abstract class EntityState : NamedToken {
         var carried = new Vector2(xCarried, yCarried);
 
         entity.rb.linearVelocity *= carried;
-        entity.rb.AddForce(vel * new Vector2(entity.side == EntitySide.LEFT ? 1 : -1, 1));
+        // Debug.Log(vel * new Vector2(entity.side == EntitySide.LEFT ? 1 : -1, 1));
+        entity.rb.AddForce(vel * new Vector2(entity.side == EntitySide.LEFT ? 1 : -1, 1), ForceMode2D.Impulse);
     }
 }
 
@@ -336,6 +338,11 @@ public abstract class CharacterState : EntityState {
     }
     
     public abstract bool IsInputValid(InputBuffer buffer);
+    
+    [AnimationEventHandler("std/ApplyNeutralPose")]
+    public virtual void ApplyNeutralPose(AnimationEventData data) {
+        player.animation.ApplyNeutralPose();
+    }
 }
 
 }

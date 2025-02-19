@@ -152,7 +152,7 @@ public abstract class Entity : MonoBehaviour {
 
         if (activeState != null && activeState.active) {
             lastState = activeState;
-            activeState.EndState(state.id);
+            activeState.EndState(state);
         }
 
         activeState = state;

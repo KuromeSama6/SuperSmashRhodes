@@ -160,6 +160,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 640e690c8a0410f44a900879bb28bce0
+    m_Address: chr/chen/battle/vo/dp
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6ad74c63d07b7b049bed1ab289a25c6a
     m_Address: chr/exusiai/battle/sfx/originium/charge_lv2
     m_ReadOnly: 0
@@ -167,6 +172,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7cca05b640721d74e876a3dddc9ee06a
     m_Address: chr/exusiai/battle/sfx/632146d/shot
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 845006491e425e345b09a73cc2050ef4
+    m_Address: chr/chen/battle/fx/prefab/dp/heavyhit
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -242,6 +252,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c247e74d5927387409a6983728323f85
     m_Address: chr/chen/battle/vo/41236d
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c6910349f6929d941874af3f6e198fdd
+    m_Address: chr/chen/battle/sfx/dp/1
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

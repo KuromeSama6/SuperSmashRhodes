@@ -44,9 +44,11 @@ public class State_CmnDriveRelease : CharacterState {
         
         player.ResetAirOptions();
         player.fxManager.PlayEmblemFX(1f, false);
+        player.frameData.landingRecoveryFrames = 0;
+        player.frameData.landingFlag = LandingRecoveryFlag.NONE;
     }
 
-    protected override void OnStateEnd(string nextState) {
+    protected override void OnStateEnd(EntityState nextState) {
         base.OnStateEnd(nextState);
     }
 

@@ -38,7 +38,7 @@ public abstract class State_Common_Stun : CharacterState {
         }
     }
 
-    protected override void OnStateEnd(string nextState) {
+    protected override void OnStateEnd(EntityState nextState) {
         base.OnStateEnd(nextState);
         player.frameData.throwInvulnFrames = 5;
     }

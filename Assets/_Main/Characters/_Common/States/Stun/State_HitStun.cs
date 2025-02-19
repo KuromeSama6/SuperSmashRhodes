@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using SuperSmashRhodes.Battle;
+using SuperSmashRhodes.Battle.Enums;
+using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Framework;
@@ -63,7 +65,7 @@ public class State_CmnHitStunAir : State_Common_Stun {
                 var force = player.frameData.ConsumeContactBounce();
                 var decayData = opponent.comboDecayData;
                 var comboCounter = player.comboCounter;
-                player.rb.AddForce(force * new Vector2(
+                player.rb.AddForce(force.bounceForce * new Vector2(
                                        decayData.opponentBlowbackCurve.Evaluate(comboCounter.comboDecay), 
                                        decayData.opponentLaunchCurve.Evaluate(comboCounter.comboDecay)
                                    ), ForceMode2D.Impulse); 
@@ -72,6 +74,17 @@ public class State_CmnHitStunAir : State_Common_Stun {
                 // }
                 landed = false;
                 player.airborne = true;
+
+                player.airHitstunRotation = 0f;  
+                if (force.flags.HasFlag(BounceFlags.HEAVY)) {
+                    player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/land/hard", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position);
+                    player.audioManager.PlaySound("cmn/battle/sfx/wall_bounce");
+                    SimpleCameraShakePlayer.inst.PlayCommon("groundbounce_heavy");
+                    
+                } else {
+                    SimpleCameraShakePlayer.inst.PlayCommon("groundbounce");
+                }
+                
                 continue;
             }
             

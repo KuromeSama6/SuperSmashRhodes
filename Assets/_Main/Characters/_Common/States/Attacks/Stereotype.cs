@@ -227,4 +227,34 @@ public abstract class State_Common_Parry : CharacterAttackStateBase {
 
     protected abstract void OnParry(AttackData attack);
 }
+
+public abstract class State_Common_DP : State_Common_SpecialAttack {
+    public State_Common_DP(Entity entity) : base(entity) { }
+
+    public override AttackType invincibility => phase == AttackPhase.STARTUP ? AttackType.FULL : AttackType.NONE;
+    public override LandingRecoveryFlag landingRecoveryFlag => LandingRecoveryFlag.UNTIL_LAND;
+    public override StateIndicatorFlag stateIndicator => phase == AttackPhase.STARTUP || hits > 0 ? StateIndicatorFlag.INVINCIBLE : StateIndicatorFlag.NONE;
+    protected override int normalInputBufferLength => 15;
+    public override Hitstate hitstate => Hitstate.COUNTER;
+    public override float inputPriority => 5.5f;
+
+    public override AttackGuardType GetGuardType(Entity to) {
+        return AttackGuardType.ALL;
+    }
+    public override int GetFreezeFrames(Entity to) {
+        return 5;
+    }
+    public override int GetAttackLevel(Entity to) {
+        return 2;
+    }
+    public override CounterHitType GetCounterHitType(Entity to) {
+        return CounterHitType.MEDIUM;
+    }
+    public override float GetFirstHitProration(Entity to) {
+        return .8f;
+    }
+    public override float GetComboProration(Entity to) {
+        return .6f;
+    }
+}
 }

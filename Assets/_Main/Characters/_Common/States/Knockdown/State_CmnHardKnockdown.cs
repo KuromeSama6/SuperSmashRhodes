@@ -22,10 +22,11 @@ public class State_CmnHardKnockdown : CharacterState {
     }
     public override IEnumerator MainRoutine() {
         yield return 55;
+        player.SetCarriedStateVariable("_hardKnockdown", "CmnSoftKnockdown", true);
         CancelInto("CmnSoftKnockdown");
     }
 
-    protected override void OnStateEnd(string nextState) {
+    protected override void OnStateEnd(EntityState nextState) {
         base.OnStateEnd(nextState);
         player.frameData.throwInvulnFrames = 5;
     }
