@@ -1,9 +1,10 @@
 ﻿using System;
 using Spine.Unity;
+using SuperSmashRhodes.Battle.Game;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
-public class EntityBoundingBox : MonoBehaviour, IEntityBoundingBox {
+public class EntityBoundingBox : MonoBehaviour, IEntityBoundingBox, IManualUpdate {
     public BoundingBoxType type { get; set; }
     public Entity entity { get; set; }
     public PlayerCharacter owningPlayer { get; set; }
@@ -17,7 +18,7 @@ public class EntityBoundingBox : MonoBehaviour, IEntityBoundingBox {
         owningPlayer = entity.owner;
     }
 
-    private void FixedUpdate() {
+    public void ManualFixedUpdate() {
         if (!collider) {
             collider = GetComponent<PolygonCollider2D>();
             if (!collider) return;
@@ -54,8 +55,10 @@ public class EntityBoundingBox : MonoBehaviour, IEntityBoundingBox {
             point = other.ClosestPoint(transform.position)
         });
     }
-    
 
+
+    public void ManualUpdate() {
+    }
 }
 
 public struct EntityBBInteractionData {

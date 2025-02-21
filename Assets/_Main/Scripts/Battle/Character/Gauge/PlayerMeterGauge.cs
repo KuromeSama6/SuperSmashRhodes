@@ -5,7 +5,7 @@ using SuperSmashRhodes.Util;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Character.Gauge {
-public class PlayerMeterGauge : CharacterComponent {
+public class PlayerMeterGauge : CharacterComponent, IManualUpdate {
     public ClampedFloat gauge { get; } = new(0, 100f);
     public ClampedFloat balance { get; } = new(-250f, 250f);
 
@@ -52,7 +52,10 @@ public class PlayerMeterGauge : CharacterComponent {
         balance.value = 0f;
     }
 
-    private void FixedUpdate() {
+    public void ManualUpdate() {
+        
+    }
+    public void ManualFixedUpdate() {
         // tension balance update
         if (GameManager.inst.globalStateFlags.HasFlag(CharacterStateFlag.PAUSE_GAUGE)) return;
         

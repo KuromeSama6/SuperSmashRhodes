@@ -1,6 +1,7 @@
 ﻿using System;
 using Sirenix.OdinInspector;
 using SuperSmashRhodes.Battle.Game;
+using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.FX;
 using SuperSmashRhodes.Util;
@@ -122,7 +123,7 @@ public enum TransitionType {
     SUPER_FADE_IN
 }
 
-public class BackgroundUIData {
+public class BackgroundUIData : IReflectionSerializable {
     public int priority;
     public float dimAlpha;
     public float dimSpeed;
@@ -130,7 +131,9 @@ public class BackgroundUIData {
     public Color bgColor;
     public TransitionType transition;
     public int transitionFrame;
-    
+
+    public ReflectionSerializer reflectionSerializer { get; }
+
     public BackgroundUIData(
         int priority = 0, 
         float dimAlpha = 0, 
@@ -140,6 +143,7 @@ public class BackgroundUIData {
         TransitionType transition = TransitionType.NONE,
         int transitionFrame = 0
         ) {
+        reflectionSerializer = new(this);
         
         this.priority = priority;
         this.dimAlpha = dimAlpha;

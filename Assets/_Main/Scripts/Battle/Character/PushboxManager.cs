@@ -8,7 +8,7 @@ using UnityEngine.Events;
 using UnityEngine.Serialization;
 
 namespace SuperSmashRhodes.Battle {
-public class PushboxManager : MonoBehaviour {
+public class PushboxManager : MonoBehaviour, IManualUpdate {
     [Title("References")]
     [Tooltip("The physics collider that collides with the ground and other players only.")]
     public BoxCollider2D physicsBox;
@@ -59,7 +59,7 @@ public class PushboxManager : MonoBehaviour {
         // Debug.Log($"{player.name}: wall={atWall}, left={atLeftWall}, right={atRightWall}");
     }
 
-    private void FixedUpdate() {
+    public void ManualFixedUpdate() {
         pushboxCorrectionLock = false;
         
         
@@ -96,6 +96,8 @@ public class PushboxManager : MonoBehaviour {
                 GameManager.inst.AttemptPushboxCorrection(opponent, player);
             }
         }
+    }
+    public void ManualUpdate() {
     }
 }
 }

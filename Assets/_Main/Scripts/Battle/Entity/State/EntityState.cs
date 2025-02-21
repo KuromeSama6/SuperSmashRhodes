@@ -8,6 +8,7 @@ using Spine;
 using SuperSmashRhodes.Battle.Animation;
 using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Battle.Game;
+using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Battle.State.Implementation;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Input;
@@ -16,7 +17,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 namespace SuperSmashRhodes.Battle.State {
-public abstract class EntityState : NamedToken {
+public abstract class EntityState : NamedToken, IStateSerializable, IHandleSerializable {
     public Entity entity { get; private set; }
     public EntityStateData stateData { get; private set; }
     public bool active { get; private set; }
@@ -34,11 +35,14 @@ public abstract class EntityState : NamedToken {
     private int interruptFrames;
     private int scheduledPauseAnimationFrames;
     private readonly Dictionary<string, List<MethodInfo>> animationEventHandlers = new();
-    public Stack<SubroutineWrapper> routines { get; } = new();
-    private SubroutineWrapper currentRoutine => routines.Count > 0 ? routines.Peek() : null;
+    public Stack<StateSubroutine> routines { get; } = new();
+    private StateSubroutine currentRoutine => routines.Count > 0 ? routines.Peek() : null;
+    [SerializationOptions(SerializationOption.EXCLUDE)]
+    private ReflectionSerializer reflectionSerializer;
     
     public EntityState(Entity entity) {
         this.entity = entity;
+        reflectionSerializer = new(this);
         
         // Animation event handlers
         {
@@ -59,7 +63,9 @@ public abstract class EntityState : NamedToken {
     private void Init() {
         OnStateBegin();
         routines.Clear();
-        routines.Push(new SubroutineWrapper(MainRoutine(), 0));
+        var routine = new StateSubroutine(() => MainRoutine(), 0);
+        routines.Push(routine);
+        routine.Hydrate();
         
         // Debug.Log("push subroutine");
     }
@@ -104,6 +110,7 @@ public abstract class EntityState : NamedToken {
         
         if (currentRoutine.enumerator.MoveNext()) {
             var current = currentRoutine.enumerator.Current;
+            ++currentRoutine.timesTicked;
             HandleRoutineReturn(current);
             // if (entity.entityId == 0) Debug.Log($"routine tick, state={id} routine={currentRoutine}, rem={routines.Count}, current={current}");
             
@@ -168,11 +175,11 @@ public abstract class EntityState : NamedToken {
         }
 
         if (obj is IEnumerator enumerator) {
-            routines.Push(new SubroutineWrapper(enumerator, frame));
+            routines.Push(new StateSubroutine(() => enumerator, frame));
             return;
         }
         
-        if (obj is SubroutineWrapper wrapper) {
+        if (obj is StateSubroutine wrapper) {
             routines.Push(wrapper);
             return;
         }
@@ -180,7 +187,9 @@ public abstract class EntityState : NamedToken {
     }
     
     public void BeginSubroutine(IEnumerator routine, SubroutineFlags flags = SubroutineFlags.PAUSE_ANIMATION) {
-        routines.Push(new SubroutineWrapper(routine, frame, flags));
+        var wrapper = new StateSubroutine(() => routine, frame, flags);
+        routines.Push(wrapper);
+        wrapper.Hydrate();
     }
     
     // Member methods
@@ -269,6 +278,17 @@ public abstract class EntityState : NamedToken {
         entity.rb.linearVelocity *= carried;
         // Debug.Log(vel * new Vector2(entity.side == EntitySide.LEFT ? 1 : -1, 1));
         entity.rb.AddForce(vel * new Vector2(entity.side == EntitySide.LEFT ? 1 : -1, 1), ForceMode2D.Impulse);
+    }
+    
+    public void Serialize(StateSerializer serializer) {
+        reflectionSerializer.Serialize(serializer);
+    }
+    
+    public void Deserialize(StateSerializer serializer) {
+        reflectionSerializer.Deserialize(serializer);
+    }
+    public virtual IHandle GetHandle() {
+        return new EntityStateHandle(entity, id);
     }
 }
 

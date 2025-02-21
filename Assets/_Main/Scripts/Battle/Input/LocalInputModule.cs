@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using SuperSmashRhodes.Battle;
+using SuperSmashRhodes.Battle.Game;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace SuperSmashRhodes.Input {
 [RequireComponent(typeof(PlayerInput))]
-public class LocalInputModule : MonoBehaviour, IInputProvider {
+public class LocalInputModule : MonoBehaviour, IInputProvider, IManualUpdate {
     public InputBuffer inputBuffer => localBuffer;
 
     private PlayerInput input;
@@ -15,15 +16,17 @@ public class LocalInputModule : MonoBehaviour, IInputProvider {
     private InputBuffer localBuffer;
     
     private void Start() {
+        GameStateManager.inst.RefreshManualUpdate();
+        
         input = GetComponent<PlayerInput>();
         localBuffer = new(120);
     }
 
-    private void Update() {
+    public void ManualUpdate() {
         
     } 
 
-    private void FixedUpdate() {
+    public void ManualFixedUpdate() {
         {
             List<InputFrame> toPush = new();
             toPush.AddRange(thisFrameInputs);

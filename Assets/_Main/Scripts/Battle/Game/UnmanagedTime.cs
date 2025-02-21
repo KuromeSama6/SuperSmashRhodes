@@ -10,7 +10,7 @@ public enum CharacterStateFlag {
     DISABLE_BURST = 1 << 2,
     PAUSE_STATE = 1 << 3,
     NO_CAMERA_WEIGHT = 1 << 4,
-    CAMERA_FOLLOW_BONE = 1 << 5,
+    CAMERA_FOLLOWS_BONE = 1 << 5,
     GLOBAL_PAUSE_TIMER = 1 << 6,
     PAUSE_GAUGE = 1 << 7,
     

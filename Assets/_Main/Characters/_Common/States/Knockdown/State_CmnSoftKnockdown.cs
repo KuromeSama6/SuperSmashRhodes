@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.State;
+using SuperSmashRhodes.Battle.State.Implementation;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Input;
 using SuperSmashRhodes.UI.Battle.AnnouncerHud;
@@ -51,7 +52,7 @@ public class State_CmnSoftKnockdown : CharacterState {
         base.OnStateEnd(nextState);
         player.frameData.throwInvulnFrames = 5;
         // Debug.Log("state end");
-        if (!nextState.type.HasFlag(EntityStateType.CHR_NEUTRAL)) {
+        if (nextState is CharacterAttackStateBase) {
             // Debug.Log("rev");
             player.SetCarriedStateVariable("_isReversalMove", null, true);
         }

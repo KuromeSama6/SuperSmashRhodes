@@ -1,11 +1,12 @@
 ﻿using System;
 using Sirenix.OdinInspector;
 using Spine.Unity;
+using SuperSmashRhodes.Battle.Game;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
 [Obsolete]
-public class CharacterAnimationController : MonoBehaviour {
+public class CharacterAnimationController : MonoBehaviour, IManualUpdate {
     private static readonly int ANI_WALK_DIRECTION = Animator.StringToHash("WalkDirection");
     private static readonly int ANI_IS_WALKING = Animator.StringToHash("IsWalking");
     private static readonly int ANI_IS_DASHING = Animator.StringToHash("IsDashing");
@@ -61,8 +62,12 @@ public class CharacterAnimationController : MonoBehaviour {
             
         }
     }
+    
 
-    private void FixedUpdate() {
+    public void ManualUpdate() {
+        
+    }
+    public void ManualFixedUpdate() {
         if (managedAnimationFrames > 0) {
             --managedAnimationFrames;
             if (managedAnimationFrames == 0) {

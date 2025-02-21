@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Framework;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
-public class TimeManager : SingletonBehaviour<TimeManager> {
+public class TimeManager : SingletonBehaviour<TimeManager>, IManualUpdate {
     public int globalFreezeFrames { get; set; }
 
     private int scheduledDelay;
@@ -15,11 +16,11 @@ public class TimeManager : SingletonBehaviour<TimeManager> {
         Physics2D.simulationMode = SimulationMode2D.Script;
     }
 
-    private void Update() {
+    public void ManualUpdate() {
         
     }
 
-    private void FixedUpdate() { 
+    public void ManualFixedUpdate() { 
         if (scheduledDelay > 0) {
             --scheduledDelay;
             if (scheduledDelay == 0) {

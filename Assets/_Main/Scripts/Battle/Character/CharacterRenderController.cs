@@ -1,12 +1,13 @@
 ﻿using System;
 using Sirenix.OdinInspector;
 using SuperSmashRhodes.Battle.FX;
+using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Util;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
-public class CharacterRenderController : MonoBehaviour {
+public class CharacterRenderController : MonoBehaviour, IManualUpdate {
     private static readonly int RENDER_COLOR_WHITE = Shader.PropertyToID("_Color");
     private static readonly int RENDER_COLOR_BLACK = Shader.PropertyToID("_Black");
     
@@ -14,17 +15,16 @@ public class CharacterRenderController : MonoBehaviour {
     public Renderer renderer;
 
     private PlayerCharacter owner;
-    private CharacterFXManager fxManager;
+    private CharacterFXManager fxManager => owner.fxManager;
 
     private void Start() {
         owner = GetComponent<PlayerCharacter>();
-        fxManager = owner.fxManager;
     }
 
-    private void FixedUpdate() {
+    public void ManualFixedUpdate() {
         var mat = renderer.material;
 
-        if (!fxManager.playFlash) {
+        if (fxManager && !fxManager.playFlash) {
             if (owner.activeState == null) return;
             var data = owner.activeState.stateData.renderColorData;
             if (!data.flags.HasFlag(CharacterRenderColorData.Flag.PAUSE)) {
@@ -51,5 +51,7 @@ public class CharacterRenderController : MonoBehaviour {
         renderer.material = mat; 
     }
 
+    public void ManualUpdate() {
+    }
 }
 }

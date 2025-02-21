@@ -7,7 +7,7 @@ using SuperSmashRhodes.Framework;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Scripts {
-public class StageManager : SingletonBehaviour<StageManager> {
+public class StageManager : SingletonBehaviour<StageManager>, IManualUpdate {
     [Title("References")]
     public GameObject leftWall;
     public GameObject rightWall;
@@ -21,11 +21,11 @@ public class StageManager : SingletonBehaviour<StageManager> {
         
     }
 
-    private void Update() {
+    public void ManualUpdate() {
         
     }
 
-    private void FixedUpdate() {
+    public void ManualFixedUpdate() {
         var centerPoint = (p1.transform.position.x + p2.transform.position.x) / 2f;
         if (p1.activeState == null || p2.activeState == null) return;
         

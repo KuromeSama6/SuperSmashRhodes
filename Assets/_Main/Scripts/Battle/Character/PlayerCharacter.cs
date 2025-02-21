@@ -9,6 +9,7 @@ using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Battle.Postprocess;
+using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Battle.State.Implementation;
 using SuperSmashRhodes.Character.Gauge;
@@ -77,7 +78,8 @@ public class PlayerCharacter : Entity {
             if (stateFlags.HasFlag(CharacterStateFlag.NO_CAMERA_WEIGHT)) {
                 return 0;
             }
-            return 1f;
+            if (activeState == null) return 1f;
+            return 1f + activeState.stateData.cameraData.cameraWeightModifier;
         }
     }
     
@@ -145,8 +147,8 @@ public class PlayerCharacter : Entity {
         AssetManager.inst.PreloadAll($"chr/{config.id}/battle/**");
     }
 
-    protected override void Update() {
-        base.Update();
+    public override void ManualUpdate() {
+        base.ManualUpdate();
     }
 
     protected override void OnTick() {
@@ -753,13 +755,34 @@ public class PlayerCharacter : Entity {
         if (!flag.HasFlag(AttackAirOkType.AIR) && airborne) return false;
         return true;
     }
-    
+
+    public override IHandle GetHandle() {
+        return new PlayerHandle(this);
+    }
+
 }
 
 public abstract class RuntimeCharacterDataRegister {
     public PlayerCharacter owner { get; private set; }
     public RuntimeCharacterDataRegister(PlayerCharacter owner) {
         this.owner = owner;
+    }
+}
+
+public class PlayerHandle : IHandle {
+    private int id;
+    public PlayerHandle(PlayerCharacter player) {
+        id = player.playerIndex;
+    }
+    
+    public void Serialize(StateSerializer serializer) {
+        serializer.Serialize("playerIndex", id);
+    }
+    public void Deserialize(StateSerializer serializer) {
+        id = serializer.Deserialize<int>("playerIndex");
+    }
+    public object GetObject() {
+        return GameManager.inst.GetPlayer(id);
     }
 }
 }

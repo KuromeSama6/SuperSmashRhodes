@@ -13,6 +13,7 @@ using SuperSmashRhodes.Adressable;
 using SuperSmashRhodes.Battle.Animation;
 using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Battle.Game;
+using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Util;
 using UnityEngine;
@@ -24,7 +25,7 @@ namespace SuperSmashRhodes.Battle {
 /// An entity is the most basic form of something that lives and moves, and runs a Spine animation.
 /// Entities include player characters, projectiles, summons, etc. Particles are not entities.
 /// </summary>
-public abstract class Entity : MonoBehaviour {
+public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable, IHandleSerializable {
     [Title("References")]
     public Transform rotationContainer;
     public Transform socketsContainer;
@@ -35,8 +36,10 @@ public abstract class Entity : MonoBehaviour {
     public EntitySide side { get; set; } = EntitySide.LEFT;
     public EntityAnimationController animation { get; private set; }
     public Rigidbody2D rb { get; private set; }
+    [SerializationOptions(SerializationOption.EXPAND)]
     public EntityState activeState { get; private set; }
     public EntityBoundingBoxManager boundingBoxManager { get; private set; }
+    [SerializationOptions(SerializationOption.EXCLUDE)]
     public Dictionary<string, EntityState> states { get; } = new();
 
     public EntityAudioManager audioManager { get; private set; }
@@ -52,10 +55,19 @@ public abstract class Entity : MonoBehaviour {
     public int slowdownFrames { get; set; }
     
     public List<Entity> summons { get; } = new();
+    
     private readonly List<AttackData> queuedInboundAttacks = new();
+    
     private readonly Dictionary<string, CarriedStateVariable> carriedStateVariables = new();
+    
+    [NonSerialized]
+    private ReflectionSerializer reflectionSerializer;
 
     protected virtual void Start() {
+        reflectionSerializer = new(this);
+        
+        GameStateManager.inst.RefreshManualUpdate();
+        
         animation = GetComponent<EntityAnimationController>();
         rb = GetComponent<Rigidbody2D>();
         boundingBoxManager = GetComponentInChildren<EntityBoundingBoxManager>();
@@ -86,9 +98,11 @@ public abstract class Entity : MonoBehaviour {
         entityId = GameManager.inst.RegisterEntity(this);
     }
 
-    protected virtual void Update() { }
+    public virtual void ManualUpdate() {
+        
+    }
 
-    protected virtual void FixedUpdate() {
+    public virtual void ManualFixedUpdate() {
         if (!logicStarted) return;
 
         rb.simulated = shouldSimulatePhysics;
@@ -339,6 +353,16 @@ public abstract class Entity : MonoBehaviour {
     // Abstract Methods
     public abstract EntityState GetDefaultState();
 
+    public void Serialize(StateSerializer serializer) {
+        reflectionSerializer.Serialize(serializer);
+    }
+    public void Deserialize(StateSerializer serializer) {
+        reflectionSerializer.Deserialize(serializer);
+    }
+    
+    public virtual IHandle GetHandle() {
+        return new EntityHandle(this);
+    }
 }
 
 class CarriedStateVariable {

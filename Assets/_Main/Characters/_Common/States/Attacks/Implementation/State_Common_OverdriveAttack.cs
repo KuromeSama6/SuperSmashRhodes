@@ -10,6 +10,7 @@ using SuperSmashRhodes.Input;
 using SuperSmashRhodes.UI.Battle;
 using SuperSmashRhodes.UI.Battle.AnnouncerHud;
 using SuperSmashRhodes.Util;
+using UnityEditor.Localization.Plugins.XLIFF.V20;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Runtime.State {
@@ -41,6 +42,9 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
         hasHit = false;
         cinematicHitWindow = true;
         isDriveReleaseCancel = player.burst.driveRelease;
+
+        stateData.cameraData.cameraWeightModifier = 2f;
+        stateData.cameraData.cameraFovModifier = -5f;
         
         if (socket != null) {
             socket.Release();
@@ -76,6 +80,8 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
         yield return frameData.startup - framesBeforeSuperfreeze;
 
         phase = AttackPhase.ACTIVE;
+        stateData.cameraData.cameraFovModifier = 0f; 
+        stateData.cameraData.cameraWeightModifier = 0f;
         OnActive();
         player.ApplyGroundedFriction(frameData.active);
         entity.audioManager.PlaySound(GetAttackNormalSfx());
@@ -119,6 +125,7 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
             // Debug.Log("end");
             
             opponent.stateFlags = player.stateFlags = default;
+            
 
         } else {
             if (hitsRemaining > 0) OnWhiff();
@@ -216,7 +223,9 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
 
     protected virtual void OnSuperHit(bool blocked, bool cinematic) {
         if (!blocked) {
-            if (cinematic) opponent.BeginState("CmnHitStunGround");
+            if (cinematic) {
+                opponent.BeginState("CmnHitStunGround");
+            }
             opponent.stateFlags = cinematic ? CharacterStateFlag.TIME_SUPER_CINEMATIC : CharacterStateFlag.TIME_SUPER;
             opponent.frameData.landingFlag |= LandingRecoveryFlag.HARD_LAND_COSMETIC | LandingRecoveryFlag.HARD_KNOCKDOWN_LAND;
 
@@ -238,8 +247,13 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
         if (socket != null && socket.attached) {
             OnRelease();
         }
+        
         if (socket != null) socket.Release();
+        
         player.stateFlags = default;
+        opponent.stateFlags = player.stateFlags = default;
+        stateData.backgroundUIData = new();
+        
         if (hasHit) {
             opponent.BeginState("CmnHitStunAir");
             opponent.ApplyForwardVelocity(new(0, 3));

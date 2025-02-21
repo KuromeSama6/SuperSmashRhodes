@@ -1,16 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.UI.Battle;
 using SuperSmashRhodes.UI.Battle.AnnouncerHud;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.State {
-public class EntityStateData {
+public class EntityStateData : IReflectionSerializable {
     private readonly Entity owner;
+    public ReflectionSerializer reflectionSerializer { get; }
+
     // Cancel options
     /// <summary>
     /// States that can be canceled into from this state.
     /// </summary>
+    [SerializationOptions(SerializationOption.EXCLUDE)]
     public List<EntityState> cancelOptions { get; } = new List<EntityState>();
 
     /// <summary>
@@ -28,6 +34,7 @@ public class EntityStateData {
     public bool physicsPushboxDisabled = false;
     public bool maySwitchSides = false;
     public float midscreenWallDistanceModifier = 0;
+    public CameraData cameraData = new();
 
     public bool shouldApplySlotNeutralPose {
         get => TryGetCarriedVariable("_applySlotNeutralPose", out bool value) && value;
@@ -36,6 +43,7 @@ public class EntityStateData {
 
     public EntityStateData(Entity owner) {
         this.owner = owner;
+        reflectionSerializer = new(this);
     }
     
     public string carriedLandingAnimation {
@@ -71,6 +79,26 @@ public class EntityStateData {
         value = default;
         return false;
     }
+    
+    public void Serialize(StateSerializer serializer) {
+        reflectionSerializer.Serialize(serializer);
+        serializer.Serialize("cancelOptions", cancelOptions.Select(c => c.id).ToList());
+
+        var carriedVariables = new Dictionary<string, object>(this.carriedVariables);
+        serializer.Serialize("carriedVariable", new DirectReferenceHandle(carriedVariables));
+
+    }
+    
+    public void Deserialize(StateSerializer serializer) {
+        reflectionSerializer.Deserialize(serializer);
+        
+        cancelOptions.Clear();
+        cancelOptions.AddRange(serializer.Deserialize<List<string>>("cancelOptions").Select(c => owner.states[c]).ToList());
+        
+        carriedVariables.Clear();
+        var carriedVariable = serializer.Deserialize<DirectReferenceHandle>("carriedVariable");
+        carriedVariables.AddRange((Dictionary<string, object>)carriedVariable.GetObject());
+    }
 }
 
 public struct CharacterRenderColorData {
@@ -93,6 +121,18 @@ public struct CharacterRenderColorData {
         NONE = 0,
         PAUSE = 1 << 0,
         FLICKER = 1 << 1,
+    }
+}
+
+public struct CameraData {
+    public string focusBone;
+    public float cameraFovModifier;
+    public float cameraWeightModifier;
+    
+    public CameraData(string focusBone = "root", float cameraFovModifier = 0, float cameraWeightModifier = 1) {
+        this.focusBone = focusBone;
+        this.cameraFovModifier = cameraFovModifier;
+        this.cameraWeightModifier = cameraWeightModifier;
     }
 }
 }

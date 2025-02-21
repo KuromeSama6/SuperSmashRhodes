@@ -5,6 +5,7 @@ using Sirenix.OdinInspector;
 using SuperSmashRhodes.Adressable;
 using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Battle.FX;
+using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Battle.Stage;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Runtime.State;
@@ -15,7 +16,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
 namespace SuperSmashRhodes.Battle.Game {
-public class GameManager : SingletonBehaviour<GameManager> {
+public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate {
     [Title("References")]
     [Title("Camera")]
     public CinemachineCamera mainCamera;
@@ -50,10 +51,13 @@ public class GameManager : SingletonBehaviour<GameManager> {
     private readonly Dictionary<int, Entity> entityTable = new();
     private int entityIdCounter;
     private readonly List<Renderer> environmentRenderers = new();
+    private CinemachineGroupFraming cameraFraming;
     
     private IEnumerator Start() {
         environmentRenderers.AddRange(environmentContainer.gameObject.GetComponentsInChildren<Renderer>());
+        
         inputManager = GetComponent<PlayerInputManager>();
+        cameraFraming = mainCamera.GetComponent<CinemachineGroupFraming>();
         
         targetGroup.Targets.Clear();
         
@@ -98,13 +102,30 @@ public class GameManager : SingletonBehaviour<GameManager> {
         return new Vector3(x, position.y, position.z);
     }
 
-    private void Update() {
+    public void ManualUpdate() {
         foreach (var target in targetGroup.Targets) {
             var player = GetPlayer(targetGroup.Targets.IndexOf(target));
-            target.Object = player.stateFlags.HasFlag(CharacterStateFlag.CAMERA_FOLLOW_BONE) ? player.cameraFollowSocket : player.transform;
+            if (player.stateFlags.HasFlag(CharacterStateFlag.CAMERA_FOLLOWS_BONE)) {
+                var socket = player.activeState.stateData.cameraData.focusBone == null ? player.cameraFollowSocket : player.GetHopBoneFollower(player.activeState.stateData.cameraData.focusBone);
+                target.Object = socket.transform;
+
+            } else {
+                target.Object = player.transform;   
+            }
+            
             target.Weight = player.cameraGroupWeight;
         }
 
+        {
+            var fov = 110f;
+            foreach (var player in players.Values) {
+                if (player.activeState == null) continue;
+                fov += player.activeState.stateData.cameraData.cameraFovModifier;
+            }
+
+            cameraFraming.FovRange = new(fov, fov);
+        }
+        
         {
             var hideTerrain = BackgroundUIManager.inst && BackgroundUIManager.inst.fullyDimmed;
             foreach (var renderer in environmentRenderers) {
@@ -113,7 +134,7 @@ public class GameManager : SingletonBehaviour<GameManager> {
         }
     }
 
-    private void FixedUpdate() {
+    public void ManualFixedUpdate() {
         pushboxCorrectionLock = false;
     }
 
@@ -182,6 +203,14 @@ public class GameManager : SingletonBehaviour<GameManager> {
         var id = entityIdCounter++;
         entityTable[id] = entity;
         return id;
+    }
+
+    public Entity GetEntity(int id) {
+        return entityTable[id];
+    }
+    
+    public SerializedGameState SerializeGameState() {
+        return null;
     }
 }
 

@@ -51,7 +51,7 @@ public class State_Exusiai_OvrSklOverload : State_Common_OverdriveAttack {
         player.audioManager.PlaySound($"chr/exusiai/battle/vo/modal/{Random.Range(0, 4)}");
         if (cinematic) {
             opponent.stateFlags |= CharacterStateFlag.NO_CAMERA_WEIGHT;
-            player.stateFlags |= CharacterStateFlag.CAMERA_FOLLOW_BONE;
+            player.stateFlags |= CharacterStateFlag.CAMERA_FOLLOWS_BONE;
 
             var gauge = player.GetComponent<Gauge_Exusiai_AmmoGauge>();
             if (gauge.chambered) gauge.currentMagazine.ammo = 30;

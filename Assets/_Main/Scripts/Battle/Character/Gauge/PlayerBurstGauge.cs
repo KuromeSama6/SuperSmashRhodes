@@ -7,7 +7,7 @@ using SuperSmashRhodes.Util;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Character.Gauge {
-public class PlayerBurstGauge : CharacterComponent {
+public class PlayerBurstGauge : CharacterComponent, IManualUpdate {
     public ClampedFloat gauge { get; } = new(0f, 620f, 300f);
     private List<BurstGaugeDelta> deltas { get; } = new();
     public bool burstAvailable { get; set; }
@@ -31,7 +31,11 @@ public class PlayerBurstGauge : CharacterComponent {
         burstAvailable = burstUsed = false;
     }
 
-    private void FixedUpdate() {
+    public void ManualUpdate() {
+        
+    }
+
+    public void ManualFixedUpdate() {
         if (GameManager.inst.globalStateFlags.HasFlag(CharacterStateFlag.PAUSE_GAUGE)) return;
          
         if (driveRelease) {

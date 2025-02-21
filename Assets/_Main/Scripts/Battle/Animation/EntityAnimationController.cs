@@ -3,24 +3,32 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using Spine;
 using Spine.Unity;
+using SuperSmashRhodes.Battle.Serialization;
 using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEngine;
 using UnityEngine.Events;
 using AnimationState = Spine.AnimationState;
 
 namespace SuperSmashRhodes.Battle.Animation {
-public class EntityAnimationController : MonoBehaviour {
+public class EntityAnimationController : MonoBehaviour, IStateSerializable {
+    [SerializationOptions(SerializationOption.EXCLUDE)]
     public SkeletonAnimation animation { get; private set; }
     private AnimationState state => animation.state;
     private float currentBlendProgress = 0f;
-    private List<TrackBlend> blends = new();
+    [SerializationOptions(SerializationOption.EXCLUDE)]
     private PlayerCharacter player;
     private float currentTimeScale = 1f;
-
     private float extractedFrameTime = 0f;
     
     public float targetFrameRate => player.activeState.stateData.targetFrameRate;
-    
+
+    [SerializationOptions(SerializationOption.EXCLUDE)]
+    private ReflectionSerializer reflectionSerializer;
+
+    private void Awake() {
+        reflectionSerializer = new(this);
+    }
+
     private void Start() {
         animation = GetComponentInChildren<SkeletonAnimation>();
         state.Event += OnUserDefinedEvent;
@@ -96,7 +104,22 @@ public class EntityAnimationController : MonoBehaviour {
         var data = new AnimationEventData(e.String, e.Int, e.Float, e.Data.AudioPath);
         player.activeState.HandleAnimationEvent(name, data);
     }
-    
+
+    public void Serialize(StateSerializer serializer) {
+        reflectionSerializer.Serialize(serializer);
+        serializer.Serialize("animation/id", state.GetCurrent(0).Animation.Name);
+        serializer.Serialize("animation/time", state.GetCurrent(0).AnimationTime);
+        serializer.Serialize("animation/loop", state.GetCurrent(0).Loop);
+    }
+    public void Deserialize(StateSerializer serializer) {
+        reflectionSerializer.Deserialize(serializer);
+        
+        var animationId = serializer.Deserialize<string>("animation/id");
+        var time = serializer.Deserialize<float>("animation/time");
+        var loop = serializer.Deserialize<bool>("animation/loop");
+        AddUnmanagedAnimation(animationId, loop);
+        Tick((int)(time / Time.fixedDeltaTime));
+    }
 }
 
 public class TrackBlend {

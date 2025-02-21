@@ -17,7 +17,7 @@ MonoBehaviour:
   englishName: Ch'en
   profession: 4
   portrait: {fileID: 3757218774091775294, guid: 3ef04dc7ca8fe4e4ea149af7b2f8a721, type: 3}
-  superPortrait: {fileID: 0}
+  superPortrait: {fileID: 21300000, guid: ce063351432515b408a77460ff5640b5, type: 3}
   avatar: {fileID: 2518722248592080792, guid: b2d790360038ec04a834627640a5ac19, type: 3}
   professionIconFull: {fileID: 2119572679851325784, guid: 74c09db931bd94f4ea62698d74292730, type: 3}
   professionIconBlack: {fileID: -7976829744534510976, guid: a01e8121291d7f143948c320e25a2947, type: 3}
