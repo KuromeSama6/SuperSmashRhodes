@@ -5,18 +5,19 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using NUnit.Framework;
 using SuperSmashRhodes.Battle.State;
+using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Scripts.Util;
 using Unity.VisualScripting;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.Serialization {
 public class ReflectionSerializer : IStateSerializable {
-    private static readonly Dictionary<Type, Dictionary<string, IField>> fieldsCache = new();
+    private static readonly Dictionary<Type, List<FieldData>> fieldsCache = new();
     private static readonly Dictionary<Type, Dictionary<string, IField>> allFieldsCache = new();
     private static readonly Dictionary<string, Type> typeCache = new();
     
     private readonly object targetObject;
-    private readonly Dictionary<string, IField> fields = new();
+    private readonly List<FieldData> fields = new();
     private readonly Dictionary<string, IField> allFields = new();
 
     public ReflectionSerializer(object target) {
@@ -37,19 +38,23 @@ public class ReflectionSerializer : IStateSerializable {
                 // Debug.Log($"checking field {field} on {type}, field is property: {field is PropertyWrapper}");
                 if (field.type == GetType()) continue;
                 if (field.GetAttribute<CompilerGeneratedAttribute>() != null) continue;
-                fields[field.name] = field;
+                fields.Add(new(field, field.GetAttribute<SerializationOptions>()));
                 typeCache[type.FullName] = field.type;
             }   
             
             fieldsCache[type] = fields;
         }
         
+        // sort fields on descending priority, highest priority first
+        fields.Sort((a, b) => b.priority.CompareTo(a.priority));
+        
         // print all property names in one line
         // Debug.Log($"Fields ({obj.GetType()}) ({fields.Count}): {string.Join(", ", fields)}");
     }
 
     public void Serialize(StateSerializer serializer) {
-        foreach (var (fieldName, field) in fields) {
+        foreach (var fieldData in fields) {
+            var field = fieldData.field;
             IField backingField = field is PropertyWrapper prop ? ReflectionHelper.GetBackingField(prop, allFields) : field;
             if (backingField == null) continue;
             
@@ -94,12 +99,13 @@ public class ReflectionSerializer : IStateSerializable {
     }
 
     public void Deserialize(StateSerializer serializer) {
-        foreach (var (fieldName, field) in fields) {
+        foreach (var field in fields) {
             DeserializeField(serializer, field);
         }
     }
 
-    private void DeserializeField(StateSerializer serializer, IField field) {
+    private void DeserializeField(StateSerializer serializer, FieldData fieldData) {
+        var field = fieldData.field;
         var objectType = field.type;
         IField backingField = field is PropertyWrapper prop ? ReflectionHelper.GetBackingField(prop, allFields) : field;
         if (backingField == null) return;
@@ -134,7 +140,11 @@ public class ReflectionSerializer : IStateSerializable {
         {
          
             if (value is IHandle handle) {
-                backingField.SetValue(targetObject, handle.Resolve());
+                if (backingField.type == handle.GetType()) {
+                    backingField.SetValue(targetObject, handle);
+                } else {
+                    backingField.SetValue(targetObject, handle.Resolve());
+                }
                 return;
             }   
         }
@@ -149,8 +159,8 @@ public class ReflectionSerializer : IStateSerializable {
                     var objectHandle = ser.Get<IHandle>("_handle");
                     var handleValue = objectHandle.Resolve();
 
-                    // Debug.Log("has handle");
-                    if (fieldValue.GetType() != handleValue.GetType()) {
+                    // Debug.Log($"[{fieldValue}]{backingField} {handleValue}");
+                    if (handleValue != null && (fieldValue == null || fieldValue.GetType() != handleValue.GetType())) {
                         // Debug.Log($"type mismatch, setting. Field type {fieldValue.GetType()}, handle {handleValue.GetType()}");
                         backingField.SetValue(targetObject, handleValue);
                         fieldValue = handleValue;
@@ -197,8 +207,12 @@ public class ReflectionSerializer : IStateSerializable {
                 return;
             }   
         }
+
         
         backingField.SetValue(targetObject, value);
+        if (path == "$$fuse") {
+            Debug.Log($"fuse {value} {targetObject} {backingField.GetValue(targetObject)} {targetObject} {targetObject.GetHashCode()}");
+        }
     }
     
 }
@@ -219,8 +233,11 @@ public interface IReflectionSerializable : IStateSerializable {
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Delegate | AttributeTargets.Interface | AttributeTargets.Field | AttributeTargets.Property, Inherited = true)]
 public class SerializationOptions : Attribute {
     public readonly SerializationOption options;
-    public SerializationOptions(SerializationOption options = SerializationOption.NONE) {
+    public readonly int priority;
+    
+    public SerializationOptions(SerializationOption options = SerializationOption.NONE, int priority = 0) {
         this.options = options;
+        this.priority = priority;
     }
 }
 
@@ -241,6 +258,23 @@ public enum SerializationOption {
     /// The field must implement IStateSerializable.
     /// </summary>
     EXPAND = 1 << 2
+}
+
+class FieldData {
+    public IField field;
+    public SerializationOption flags;
+    public int priority;
+
+    public FieldData(IField field, SerializationOptions attributes) {
+        this.field = field;
+        if (attributes != null) {
+            flags = attributes.options;
+            priority = attributes.priority;
+        } else {
+            flags = SerializationOption.NONE;
+            priority = 0;
+        }
+    }
 }
 
 public static class SerializationFlagExtensions {

@@ -52,10 +52,12 @@ public struct StateSubroutineHandle : IHandle {
         ret.Hydrate();
         
         // restore enumerator state
-        // Debug.Log($"reconstruct enumerator, time ticked = {timesTicked}");
-        for (int i = 0; i < timesTicked; i++) {
-            ret.enumerator.MoveNext();
-            ++ret.timesTicked;
+        // Debug.Log($"reconstruct enumerator, time ticked = {timesTicked}, {ret.enumerator}, {ret.flags}");
+        if (!ret.flags.HasFlag(SubroutineFlags.NO_PRETICK_SUBROUTINES)) {
+            for (int i = 0; i < timesTicked; i++) {
+                ret.enumerator.MoveNext();
+                ++ret.timesTicked;
+            }   
         }
         
         return ret;
@@ -73,5 +75,10 @@ public delegate IEnumerator RoutineSource();
 public enum SubroutineFlags {
     NONE = 0,
     PAUSE_ANIMATION = 1 << 0,
+    
+    /// <summary>
+    /// Do not pre-tick subroutines when reconstructing them. Useful for subroutines which state is deterministic at any given time when the subroutine is created (i.e. the subroutine only consists of a while loop) and does not incur interrupt frames.
+    /// </summary>
+    NO_PRETICK_SUBROUTINES = 1 << 1,
 }
 }

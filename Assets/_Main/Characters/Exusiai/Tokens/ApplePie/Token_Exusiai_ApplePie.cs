@@ -2,6 +2,7 @@
 using Sirenix.OdinInspector;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.FX;
+using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Battle.State.Implementation;
 using SuperSmashRhodes.Framework;
@@ -15,16 +16,16 @@ public class Token_Exusiai_ApplePie : Token {
     
     public override TokenFlag flags => TokenFlag.DESTROY_ON_OWNER_DAMAGE;
     public SpriteRenderer spriteRenderer { get; private set; }
-    
-    protected override void Start() {
-        base.Start();
+
+    public override void Init() {
+        base.Init();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        AttachToBone("F_L_Hand");
+        if (_serializedAttached) AttachToBone("F_L_Hand");
         boundingBox.boxEnabled = false;
     }
 
     public override EntityState GetDefaultState() {
-        return new State_Token_Exusiai_ApplePie_Main(this);
+        return states["Token_Exusiai_ApplePie_Main"];
     }
 
     protected override IAttack OnOutboundHit(Entity victim, EntityBBInteractionData data) {
@@ -33,18 +34,19 @@ public class Token_Exusiai_ApplePie : Token {
 }
 
 [NamedToken("Token_Exusiai_ApplePie_Main")]
-public class State_Token_Exusiai_ApplePie_Main : EntityState {
+public class State_Token_Exusiai_ApplePie_Main : TokenState {
     private Token_Exusiai_ApplePie applePie;
     private float flashCounter;
-    private int fuse;
+    public int fuse => fuseLength - frame;
     private int fuseLength => 180;
 
     private float flashInterval => Mathf.Lerp(0.05f, 0.7f, fuse / (float)fuseLength);
     public override EntityStateType type => EntityStateType.ENT_TOKEN;
     private Vector3 baseScale;
     public bool isLargeExplosion { get; set; }
-    
+
     public State_Token_Exusiai_ApplePie_Main(Entity entity) : base(entity) {
+        // Debug.Log($"new piestate {GetHashCode()} {entity.states.ContainsValue(this)}");
         applePie = (Token_Exusiai_ApplePie)entity;
         baseScale = entity.transform.localScale;
     }
@@ -52,31 +54,32 @@ public class State_Token_Exusiai_ApplePie_Main : EntityState {
     protected override void OnTick() {
         base.OnTick();
         entity.transform.localScale = Vector3.Lerp(entity.transform.localScale, baseScale, Time.fixedDeltaTime * 10f);
+        flashCounter += Time.fixedDeltaTime;
+        if (flashCounter >= flashInterval && entity) {
+            flashCounter = 0;
+            entity.StartCoroutine(Flash());
+            entity.transform.localScale = baseScale * 1.5f;
+            // entity.rb.AddForce(new Vector2(Random.Range(-0.5f, 0.5f), Random.Range(0f, 3f)), ForceMode2D.Impulse);
+        }
     }
     
     protected override void OnStateBegin() {
         base.OnStateBegin();
         flashCounter = 0;
-        fuse = fuseLength;
         isLargeExplosion = true;
+        entity.rb.simulated = false;
+        // Debug.Log("state begin");
     }
     
     public override IEnumerator MainRoutine() {
-        while (fuse > 0) {
-            --fuse;
-            flashCounter += Time.fixedDeltaTime;
-            if (flashCounter >= flashInterval) {
-                flashCounter = 0;
-                entity.StartCoroutine(Flash());
-                entity.transform.localScale = baseScale * 1.5f;
-                // entity.rb.AddForce(new Vector2(Random.Range(-0.5f, 0.5f), Random.Range(0f, 3f)), ForceMode2D.Impulse);
-            }
-            yield return 1;
-        }
+        // Debug.Log($"tick {GameStateManager.inst.frame} {fuse} {GetHashCode()}, contains {entity.states.ContainsValue(this)}");
+        EnsureEntity();
+        yield return fuseLength;
         
+        // Debug.Log($"done, {entity}");
         Detonate();
     }
-
+    
     private IEnumerator Flash() {
         applePie.spriteRenderer.color = Color.red;
         yield return new WaitForSeconds(0.1f);
@@ -85,7 +88,6 @@ public class State_Token_Exusiai_ApplePie_Main : EntityState {
     
     public void DetonateImmediate() {
         isLargeExplosion = false;
-        fuse = 0;
         Detonate();
     }
 
@@ -110,7 +112,7 @@ public class State_Token_Exusiai_ApplePie_Attack : TokenAttackStateBase {
         onBlock = isLargeExplosion ? 20 : 10, onHit = 10
     };
 
-    protected override bool mayDestroy => !fxPlayer || fxPlayer.allDone;
+    protected override bool mayDestroy => true;
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
@@ -124,14 +126,13 @@ public class State_Token_Exusiai_ApplePie_Attack : TokenAttackStateBase {
         var fx = isLargeExplosion ? applePie.explosionFxLarge : applePie.explosionFxSmall;
         var sfx = $"chr/exusiai/battle/sfx/apple_pie_explode{Random.Range(1, 3)}";
         var shake = isLargeExplosion ? applePie.shakeLarge : applePie.shakeSmall;
-        entity.rb.mass = 0;
-        entity.rb.gravityScale = 0;
-        entity.rb.linearVelocity = Vector2.zero;
+        entity.rb.simulated = false;
 
         ((BoxCollider2D)applePie.boundingBox.box).size *= isLargeExplosion ? 1f : 0.5f;
-        
-        var explosion = Object.Instantiate(fx, entity.transform);
-        explosion.transform.localScale *= 5f;
+
+        var explosion = Object.Instantiate(fx);
+        explosion.transform.position = entity.transform.position;
+        explosion.transform.localScale *= 1f;
         explosion.transform.localPosition += new Vector3(0, 1f, 0);
         explosion.transform.localEulerAngles += new Vector3(0, 90f, 0);
         fxPlayer = explosion.GetComponent<ParticleFXPlayer>() ?? explosion.AddComponent<ParticleFXPlayer>(); 

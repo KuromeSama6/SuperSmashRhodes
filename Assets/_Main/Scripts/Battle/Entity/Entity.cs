@@ -15,8 +15,11 @@ using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Battle.State;
+using SuperSmashRhodes.Runtime.Tokens;
 using SuperSmashRhodes.Util;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 
@@ -40,7 +43,7 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
     [SerializationOptions(SerializationOption.EXCLUDE)]
     public EntityAnimationController animation { get; private set; }
     public Rigidbody2D rb { get; private set; }
-    [SerializationOptions(SerializationOption.EXPAND)]
+    [SerializationOptions(SerializationOption.EXPAND, -1)]
     public EntityState activeState { get; private set; }
     public EntityBoundingBoxManager boundingBoxManager { get; private set; }
     [SerializationOptions(SerializationOption.EXCLUDE)]
@@ -57,7 +60,9 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
     public EntityState lastState { get; protected set; }
     public bool attached => transform.parent;
     public int slowdownFrames { get; set; }
+    public UnityEvent<EntityState> onStateEnd { get; } = new();
     
+    [SerializationOptions(SerializationOption.EXCLUDE)]
     public List<Entity> summons { get; } = new();
     
     private readonly List<AttackData> queuedInboundAttacks = new();
@@ -66,18 +71,21 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
     
     [NonSerialized]
     private ReflectionSerializer reflectionSerializer;
+    [SerializationOptions(SerializationOption.EXCLUDE)]
+    public bool initialized { get; private set; }
 
-    protected virtual void Start() {
-        reflectionSerializer = new(this);
-        
-        GameStateManager.inst.RefreshComponentReferences();
-        
+    [SerializationOptions(SerializationOption.EXCLUDE)]
+    protected bool _serializedAttached { get; private set; } = true;
+
+    private void Awake() {
+        // Debug.Log($"awake {this}");
         animation = GetComponent<EntityAnimationController>();
         rb = GetComponent<Rigidbody2D>();
         boundingBoxManager = GetComponentInChildren<EntityBoundingBoxManager>();
         audioManager = GetComponent<EntityAudioManager>();
-
-        // load states
+        reflectionSerializer = new(this);
+        entityId = GameManager.inst.RegisterEntity(this).entityId;
+        
         foreach (var stateLibrary in config.stateLibraries) {
             foreach (var name in stateLibrary.states) {
                 string prefix = stateLibrary.useTokenNameAsPrefix ? (config.tokenName + "_") : stateLibrary.prefix;
@@ -90,18 +98,23 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
                 states[tokenName] = state;
             }
         }
-
-        // merge asset libs
-        // assetLibrary = ScriptableObject.CreateInstance<EntityAssetLibrary>();
-        // foreach (var lib in assetLibraries) {
-        //     assetLibrary.MergeFrom(lib);
-        // }
-
-        // Debug.Log($"Loaded states {string.Join(", ", states.Keys)}");
-
-        entityId = GameManager.inst.RegisterEntity(this);
+        
+        // Debug.Log($"tokens, {string.Join(", ", states.Keys)}");
     }
 
+    protected virtual void Start() {
+        if (!initialized) Init();
+    }
+
+    public virtual void Init() {
+        if (initialized)
+            throw new Exception($"Entity(id {entityId}) already initialized!");
+        initialized = true;
+        // Debug.Log($"init {this}");
+        
+        GameStateManager.inst.RefreshComponentReferences();
+    }
+    
     public virtual void ManualUpdate() {
         
     }
@@ -172,7 +185,6 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
             lastState = activeState;
             activeState.EndState(state);
         }
-
         activeState = state;
         state.BeginState();
     }
@@ -249,16 +261,15 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
         entity.owner = owner;
         entity.side = side;
         summons.Add(entity);
-        
         entity.BeginLogic();
         
         return entity;
     }
     
     public void DestroySummon(Entity entity) {
-        if (!summons.Contains(entity)) return;
-        summons.Remove(entity);
         GameManager.inst.UnregisterEntity(entity);
+        summons.Remove(entity);
+        // Debug.Log("dest");
         Destroy(entity.gameObject);
     }
 
@@ -376,6 +387,11 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
             serializer.Put("rb/totalForce", rb.totalForce);
             serializer.Put("rb/totalTorque", rb.totalTorque);
         }
+
+        {
+            // etc fields
+            serializer.Put("etc/_serializedAttached", attached);
+        }
         
         {
             // components
@@ -391,8 +407,27 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
             
             serializer.Put("components", components.objects);
         }
+
+        {
+            // summons
+            var summonsSerializer = new StateSerializer();
+            foreach (var summon in summons) {
+                var pth = new StateSerializer();
+                pth.Put("handle", summon.GetHandle());
+                if (summon) {
+                    var data = new StateSerializer();
+                    summon.Serialize(data);
+                    pth.Put("data", data.objects);   
+                }
+                
+                summonsSerializer.Put(summon.entityId.ToString(), pth.objects);
+            }
+            serializer.Put("summons", summonsSerializer.objects);
+        }
     }
     public virtual void Deserialize(StateSerializer serializer) {
+        // Debug.Log("deser");
+        // Debug.Log(boundingBoxManager);
 
         {
             // position and velocity
@@ -414,8 +449,31 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
             //     Debug.Log($"eid {entityId} vel2: {rb.linearVelocity}");
             // });
         }
-        
+
+        {
+            // explicit fields
+            _serializedAttached = serializer.Get<bool>("etc/_serializedAttached");
+        }
+
+        // if (activeState == null) EnsureState();
         reflectionSerializer.Deserialize(serializer);
+        
+        {
+            // summons
+            var summonsSerialized = serializer.GetObject("summons");
+            summons.Clear();
+            foreach (var (k, v) in summonsSerialized.objects) {
+                var serialized = new StateSerializer((SerializedDictionary)v);
+                var entity = (Entity)serialized.Get<IHandle>("handle").Resolve();
+                // Debug.Log(entity.GetHandle());
+                if (entity) {
+                    entity.Deserialize(serialized.GetObject("data"));
+                    if (!entity.initialized) entity.Init();
+                    summons.Add(entity);
+                }
+            }
+            
+        }
         
         {
             // components
@@ -424,7 +482,7 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
             
             foreach (var (typeName, data) in serialized) {
                 if (!components.ContainsKey(typeName)) {
-                    Debug.LogWarning($"Component {typeName} not found");
+                    // Debug.LogWarning($"Component {typeName} not found");
                     continue;
                 }
 
@@ -433,6 +491,7 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
             }
         }
         
+        // Debug.Log($"finish deser {GetHandle()}, {activeState}");
     }
     
     public virtual IHandle GetHandle() {

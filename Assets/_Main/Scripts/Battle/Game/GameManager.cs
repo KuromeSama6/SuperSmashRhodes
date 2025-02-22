@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using SuperSmashRhodes.Adressable;
 using SuperSmashRhodes.Battle.Enums;
@@ -48,7 +49,10 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
     private PlayerInputManager inputManager;
     private Dictionary<int, PlayerCharacter> players = new();
     private bool pushboxCorrectionLock = false;
-    private readonly Dictionary<int, Entity> entityTable = new();
+    
+    private readonly Dictionary<int, EntityReference> entityTable = new();
+    private readonly Dictionary<Entity, int> entityIdReassignTable = new();
+    
     private int entityIdCounter;
     private readonly List<Renderer> environmentRenderers = new();
     private CinemachineGroupFraming cameraFraming;
@@ -132,6 +136,8 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
                 renderer.enabled = !hideTerrain;
             }   
         }
+        
+        PruneEntities();
     }
 
     public void ManualFixedUpdate() {
@@ -180,6 +186,8 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
 
     public void HandleWallCollision(Wall wall, PlayerCharacter player) {
         // wall bounce
+        if (!player) return;
+        
         if (player.activeState is State_CmnHitStunAir && player.frameData.shouldWallBounce) {
             var force = player.frameData.ConsumeWallBounce();
             player.rb.linearVelocity = Vector2.zero;
@@ -199,23 +207,57 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
         }
     }
     
-    public int RegisterEntity(Entity entity) {
+    public EntityReference RegisterEntity(Entity entity) {
+        if (entityIdReassignTable.ContainsKey(entity)) {
+            var reference = entityTable[entityIdReassignTable[entity]];
+            entityIdReassignTable.Remove(entity);
+            return reference;
+        }
+        
         var id = entityIdCounter++;
-        entityTable[id] = entity;
-        return id;
+        var ret = new EntityReference(entity, id);
+        entityTable[id] = ret;
+        return ret;
     }
     
     public void UnregisterEntity(Entity entity) {
-        // entityTable.Remove(entity.entityId);
+        entityTable[entity.entityId].alive = false;
+        Destroy(entity.gameObject);
     }
 
     public Entity ResolveEntity(EntityHandle handle) {
-        //TODO Entity restoration
-        return entityTable[handle.entityId];
+        // Debug.Log($"resolve handle, {handle}");
+        if (!entityTable.ContainsKey(handle.entityId)) {
+            return null;
+        }
+        
+        var reference = entityTable[handle.entityId];
+        // Debug.Log(reference);
+        
+        if (handle.alive && !reference.entity) {
+            var prefab = AssetManager.Get<GameObject>(reference.assetPath);
+            var entity = Instantiate(prefab).GetComponent<Entity>();
+            reference.entity = entity;
+            entityIdReassignTable[entity] = handle.entityId;
+
+        } else if (!handle.alive && reference.entity) {
+            Destroy(reference.entity);
+            return null;
+        }
+        
+        return reference.entity;
     }
-    
-    public SerializedGameState SerializeGameState() {
-        return null;
+
+    private void PruneEntities() {
+        foreach (var entity in entityTable.Values.ToList()) {
+            if (!entity.alive) continue;
+            if (entity.entity is PlayerCharacter) continue;
+            
+            if (!entity.entity.owner.summons.Contains(entity.entity)) {
+                entityTable.Remove(entity.entityId);
+                if (entity.entity) Destroy(entity.entity.gameObject);
+            }
+        }
     }
     
     public void Serialize(StateSerializer serializer) {

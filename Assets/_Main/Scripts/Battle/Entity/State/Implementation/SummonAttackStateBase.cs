@@ -4,7 +4,7 @@ using SuperSmashRhodes.Input;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.State.Implementation {
-public abstract class SummonAttackStateBase : EntityState, IAttack {
+public abstract class SummonAttackStateBase : TokenState, IAttack {
     public AttackPhase phase { get; protected set; }
     public virtual bool hasActiveFrames => hitsRemaining > 0;
     public int hitsRemaining { get; protected set; }  = 1;
@@ -21,7 +21,6 @@ public abstract class SummonAttackStateBase : EntityState, IAttack {
         base.OnStateBegin();
         phase = AttackPhase.STARTUP;
         hitsRemaining = totalHits;
-        player.SetZPriority();
         hits = 0;
         blockedHits = 0;
         entity.boundingBoxManager.SetAll(false);

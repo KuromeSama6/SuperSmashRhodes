@@ -12,13 +12,14 @@ using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Battle.State.Implementation;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Input;
+using SuperSmashRhodes.Runtime.Tokens;
 using SuperSmashRhodes.UI.Battle.AnnouncerHud;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace SuperSmashRhodes.Battle.State {
 public abstract class EntityState : NamedToken, IStateSerializable, IHandleSerializable {
-    public Entity entity { get; private set; }
+    public Entity entity { get; protected set; }
     public EntityStateData stateData { get; private set; }
     public bool active { get; private set; }
     public int frame { get; private set; }
@@ -31,6 +32,8 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
 
     public UnityEvent onStateEnd { get; } = new();
     public virtual CharacterStateFlag globalFlags => CharacterStateFlag.NONE;
+    protected virtual EntityStateSerializationFlags serializationFlags => EntityStateSerializationFlags.NONE;
+    protected virtual SubroutineFlags mainRoutineFlags => SubroutineFlags.NONE;
     
     public int interruptFrames { get; private set; }
     private int scheduledPauseAnimationFrames;
@@ -67,11 +70,11 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
     private void Init() {
         OnStateBegin();
         routines.Clear();
-        var routine = new StateSubroutine(() => MainRoutine(), 0);
+        var routine = new StateSubroutine(() => MainRoutine(), 0, mainRoutineFlags);
         routines.Insert(0, routine);
         routine.Hydrate();
-        
-        // Debug.Log("push subroutine");
+
+    // Debug.Log("push subroutine");
     }
 
     public void BeginState() {
@@ -238,7 +241,9 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
     }
     
     protected virtual void OnStateBegin() { }
-    protected virtual void OnStateEnd(EntityState nextState) {}
+    protected virtual void OnStateEnd(EntityState nextState) {
+        entity.onStateEnd.Invoke(this);
+    }
     public virtual void OnLand(LandingRecoveryFlag flag, int recoveryFrames) {}
     // Abstract methods
     public abstract IEnumerator MainRoutine();
@@ -266,7 +271,7 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
     
     [AnimationEventHandler("std/StopSoundLoop")]
     public virtual void OnStopSoundLoop(AnimationEventData data) {
-        entity.audioManager.StopSoundLoop(data.args[0]);
+        entity.audioManager.StopSound(data.args[0]);
     }
     
     [AnimationEventHandler("std/ApplyForce")]
@@ -286,7 +291,7 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
         entity.rb.AddForce(vel * new Vector2(entity.side == EntitySide.LEFT ? 1 : -1, 1), ForceMode2D.Impulse);
     }
     
-    public void Serialize(StateSerializer serializer) {
+    public virtual void Serialize(StateSerializer serializer) {
         reflectionSerializer.Serialize(serializer);
         
         // routines
@@ -295,8 +300,9 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
         serializer.PutList("routines", handles);
     }
     
-    public void Deserialize(StateSerializer serializer) {
-        // Debug.Log($"begin deserialize {entity.entityId}");
+    public virtual void Deserialize(StateSerializer serializer) {
+        // Debug.Log($"begin deserialize {entity.entityId} {this} {frame} {entity.GetHashCode()}");
+        // Debug.Log($"start, {routines.Count}, {currentRoutine}, int={interruptFrames}, vel={entity.rb.linearVelocity}");
         OnStateBegin();
         {
             // routines first
@@ -311,6 +317,7 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
         }
         // Debug.Log($"reflections {entity.entityId}");
         reflectionSerializer.Deserialize(serializer);
+        
         // Debug.Log($"after, {routines.Count}, {currentRoutine}, int={interruptFrames}, vel={entity.rb.linearVelocity}");
     }
     public virtual IHandle GetHandle() {

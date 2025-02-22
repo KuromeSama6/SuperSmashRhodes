@@ -172,7 +172,7 @@ public class State_Exusiai_NmlAtk6H : State_Exusiai_MultihitWeaponNormalAttack {
     private int audioHandle;
     public State_Exusiai_NmlAtk6H(Entity entity) : base(entity) {
         onFireStart.AddListener(() => audioHandle = entity.audioManager.PlaySoundLoop("chr/exusiai/battle/sfx/gun_loop", 0.5f, true));
-        onFireEnd.AddListener(() => entity.audioManager.StopSoundLoop(audioHandle, "chr/exusiai/battle/sfx/gun_loop_tail", 0.5f));
+        onFireEnd.AddListener(() => entity.audioManager.StopSound(audioHandle, "chr/exusiai/battle/sfx/gun_loop_tail", 0.5f));
     }
     protected override string mainAnimation => "cmn/NmlAtk6H";
 

@@ -100,7 +100,7 @@ public abstract class State_Exusiai_DriveAttack : State_Exusiai_FireWeaponAttack
         }
         yield return frameData.active; 
         
-        entity.audioManager.StopSoundLoop(audioLoopHandle, "chr/exusiai/battle/sfx/gun_loop_tail", 0.5f);
+        entity.audioManager.StopSound(audioLoopHandle, "chr/exusiai/battle/sfx/gun_loop_tail", 0.5f);
         player.ApplyGroundedFriction(frameData.active);
         phase = AttackPhase.RECOVERY;
         OnRecovery();

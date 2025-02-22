@@ -29,6 +29,8 @@ public class EntityBoundingBoxManager : MonoBehaviour {
             for (int i = 0; i < hitboxCount; i++) CreateBoundingBox($"hb_{i}", BoundingBoxType.HITBOX);
             for (int i = 0; i < hurtboxCount; i++) CreateBoundingBox($"ub_{i}", BoundingBoxType.HURTBOX);   
         }
+        
+        // Debug.Log($"{boxes.Count} {explicitBoundingBoxes.Count}");
         boxes.AddRange(explicitBoundingBoxes);
     }
 
@@ -57,6 +59,8 @@ public class EntityBoundingBoxManager : MonoBehaviour {
     }
 
     public void SetAll(bool enabled) {
+        boxes.RemoveAll(c => c is Component component && !component);
+        
         foreach (var box in boxes) {
             if (box != pushbox) box.box.enabled = enabled;
         }

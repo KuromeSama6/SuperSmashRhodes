@@ -42,6 +42,8 @@ public class ExplicitBoundingBox : MonoBehaviour, IEntityBoundingBox {
         if (bb == null || bb.entity == entity) return;
 
         // Debug.Log($"{owningPlayer.name}: {name} hit {bb}");
+        if (!entity) return;
+        
         entity.HandleEntityInteraction(this, bb, new() {
             point = other.ClosestPoint(transform.position)
         });

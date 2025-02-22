@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SuperSmashRhodes.Scripts.Audio {
 public class AudioClipDataPlayer : MonoBehaviour {
-    private AudioSource audioSource;
+    public AudioSource audioSource { get; private set; }
     public AudioClipData data { get; private set; }
     public bool loop { get; set; }
     public bool isPlaying => audioSource.isPlaying;

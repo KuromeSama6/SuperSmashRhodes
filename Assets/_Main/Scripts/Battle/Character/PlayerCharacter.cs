@@ -130,9 +130,9 @@ public class PlayerCharacter : Entity {
     public void ResetGatlings() {
         gatlingMovesUsed.Clear();
     }
-    
-    protected override void Start() {
-        base.Start();
+
+    public override void Init() {
+        base.Init();
         owner = this;
         comboCounter = new(this);
         frameData = new(this);
@@ -306,10 +306,11 @@ public class PlayerCharacter : Entity {
             name = inputProvider.inputBuffer.thisFrame.HasInput(side, InputType.DOWN, InputFrameType.HELD) ? "CmnNeutralCrouch" : "CmnNeutral";
         } 
         
-        if (!EntityStateRegistry.inst.CreateInstance(name, out var ret, this))
-            throw new Exception("Default state [CmnNeutral] not assigned");
-        
-        return ret;
+        // if (!EntityStateRegistry.inst.CreateInstance(name, out var ret, this))
+        //     throw new Exception("Default state [CmnNeutral] not assigned");
+        //
+        // return ret;
+        return states[name];
     }
 
     public override void OnRoundInit() {
