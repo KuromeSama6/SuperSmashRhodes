@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Battle.State.Implementation;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace SuperSmashRhodes.Battle {
-public class ComboCounter : RuntimeCharacterDataRegister {
+public class ComboCounter : RuntimeCharacterDataRegister, IReflectionSerializable {
     public int displayedCount { get; private set; }
     public int count { get; private set; }
     public bool inCombo => count >= 1;
@@ -19,6 +20,8 @@ public class ComboCounter : RuntimeCharacterDataRegister {
     private int multihitCount;
     private float multihitProration = 1f;
     
+    public ReflectionSerializer reflectionSerializer { get; }
+    
     public float finalScale {
         get {
             var ret = 1f;
@@ -30,8 +33,8 @@ public class ComboCounter : RuntimeCharacterDataRegister {
         }
     }
     
-    public ComboCounter(PlayerCharacter owner) : base(owner){
-
+    public ComboCounter(PlayerCharacter owner) : base(owner) {
+        reflectionSerializer = new(this);
     }
 
     public void RegisterAttack(

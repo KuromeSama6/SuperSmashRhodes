@@ -1,11 +1,12 @@
 ﻿using System;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.Game;
+using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Util;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Character.Gauge {
-public class PlayerMeterGauge : CharacterComponent, IManualUpdate {
+public class PlayerMeterGauge : CharacterComponent, IManualUpdate, IReflectionSerializable {
     public ClampedFloat gauge { get; } = new(0, 100f);
     public ClampedFloat balance { get; } = new(-250f, 250f);
 
@@ -39,6 +40,13 @@ public class PlayerMeterGauge : CharacterComponent, IManualUpdate {
             if (balance >= -200f) return .7f;
             return .5f;
         }
+    }
+
+    public ReflectionSerializer reflectionSerializer { get; private set; }
+    
+
+    private void Start() {
+        reflectionSerializer = new(this);
     }
 
     public void AddMeter(float amount) {

@@ -141,6 +141,15 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
 
     }
 
+    protected override void OnStateEnd(EntityState nextState) {
+        base.OnStateEnd(nextState);
+        if (socket != null) {
+            socket.Release();
+            socket = null;
+            opponent.stateFlags = default;
+        }
+    }
+
     protected override void OnTick() {
         base.OnTick();
         if (socket != null && socket.attached) {

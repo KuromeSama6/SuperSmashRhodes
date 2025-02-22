@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Framework;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -548,7 +549,7 @@ public static class RectTransformExtensions {
     }
 }
 
-public class ClampedFloat {
+public class ClampedFloat : IHandleSerializable {
     public float value {
         get {
             return _value;
@@ -565,9 +566,27 @@ public class ClampedFloat {
     public ClampedFloat(float min, float max, float value = 0) {
         this.min = min;
         this.max = max;
-        this._value = value;
+        _value = value;
     }
     
+    public IHandle GetHandle() {
+        return new Handle(this);    
+    }
+
+    private struct Handle : IHandle {
+        private float _value;
+        private float min, max;
+        
+        public Handle(ClampedFloat clampedFloat) {
+            _value = clampedFloat.value;
+            min = clampedFloat.min;
+            max = clampedFloat.max;
+        }
+        
+        public object Resolve() {
+            return new ClampedFloat(min, max, _value);
+        }
+    }
 }
 
 }

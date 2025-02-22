@@ -760,6 +760,18 @@ public class PlayerCharacter : Entity {
         return new PlayerHandle(this);
     }
 
+    public override void Serialize(StateSerializer serializer) {
+        base.Serialize(serializer);
+        
+        serializer.Put("inputs", inputProvider.inputBuffer);
+    }
+
+    public override void Deserialize(StateSerializer serializer) {
+        base.Deserialize(serializer);
+        
+        
+    }
+
 }
 
 public abstract class RuntimeCharacterDataRegister {
@@ -769,20 +781,25 @@ public abstract class RuntimeCharacterDataRegister {
     }
 }
 
-public class PlayerHandle : IHandle {
+public struct PlayerHandle : IHandle {
     private int id;
+    
     public PlayerHandle(PlayerCharacter player) {
         id = player.playerIndex;
     }
     
     public void Serialize(StateSerializer serializer) {
-        serializer.Serialize("playerIndex", id);
+        serializer.Put("playerIndex", id);
     }
     public void Deserialize(StateSerializer serializer) {
-        id = serializer.Deserialize<int>("playerIndex");
+        id = serializer.Get<int>("playerIndex");
     }
-    public object GetObject() {
+    public object Resolve() {
         return GameManager.inst.GetPlayer(id);
+    }
+
+    public override string ToString() {
+        return $"PlayerHandle({id})";;
     }
 }
 }

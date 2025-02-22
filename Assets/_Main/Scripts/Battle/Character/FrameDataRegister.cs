@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using SuperSmashRhodes.Battle.Serialization;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
-public class FrameDataRegister : RuntimeCharacterDataRegister {
+public class FrameDataRegister : RuntimeCharacterDataRegister, IReflectionSerializable {
     public int hitstunFrames { get => _hitstunFrames + carriedHitstunFrames; }
     public int blockstunFrames { get; set; }
     public int throwInvulnFrames { get; set; }
@@ -18,8 +19,10 @@ public class FrameDataRegister : RuntimeCharacterDataRegister {
     private int _hitstunFrames;
     private int carriedHitstunFrames;
 
+    public ReflectionSerializer reflectionSerializer { get; }
+    
     public FrameDataRegister(PlayerCharacter owner) : base(owner) {
-
+        reflectionSerializer = new(this);
     }
 
     public void Tick() {
@@ -63,7 +66,7 @@ public class FrameDataRegister : RuntimeCharacterDataRegister {
 
     public BounceData ConsumeContactBounce() {
         if (groundBounces.Count == 0) {
-            return null;
+            return default;
         }
         var bounce = groundBounces[0];
         groundBounces.RemoveAt(0);
@@ -80,7 +83,7 @@ public class FrameDataRegister : RuntimeCharacterDataRegister {
 
     public BounceData ConsumeWallBounce() {
         if (wallBounces.Count == 0) {
-            return null;
+            return default;
         }
         var bounce = wallBounces[0];
         wallBounces.RemoveAt(0);
@@ -88,9 +91,9 @@ public class FrameDataRegister : RuntimeCharacterDataRegister {
     }
 }
 
-public class BounceData {
-    public Vector2 bounceForce;
-    public BounceFlags flags;
+public struct BounceData {
+    public readonly Vector2 bounceForce;
+    public readonly BounceFlags flags;
     
     public BounceData(Vector2 force, BounceFlags flags = BounceFlags.NONE) {
         bounceForce = force;

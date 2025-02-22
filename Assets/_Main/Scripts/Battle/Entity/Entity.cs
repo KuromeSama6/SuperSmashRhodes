@@ -34,6 +34,7 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
 
     public int entityId { get; private set; }
     public EntitySide side { get; set; } = EntitySide.LEFT;
+    [SerializationOptions(SerializationOption.EXCLUDE)]
     public EntityAnimationController animation { get; private set; }
     public Rigidbody2D rb { get; private set; }
     [SerializationOptions(SerializationOption.EXPAND)]
@@ -41,7 +42,7 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
     public EntityBoundingBoxManager boundingBoxManager { get; private set; }
     [SerializationOptions(SerializationOption.EXCLUDE)]
     public Dictionary<string, EntityState> states { get; } = new();
-
+    [SerializationOptions(SerializationOption.EXCLUDE)]
     public EntityAudioManager audioManager { get; private set; }
 
     // Entity Stats
@@ -66,7 +67,7 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
     protected virtual void Start() {
         reflectionSerializer = new(this);
         
-        GameStateManager.inst.RefreshManualUpdate();
+        GameStateManager.inst.RefreshComponentReferences();
         
         animation = GetComponent<EntityAnimationController>();
         rb = GetComponent<Rigidbody2D>();
@@ -353,11 +354,80 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
     // Abstract Methods
     public abstract EntityState GetDefaultState();
 
-    public void Serialize(StateSerializer serializer) {
+    public virtual void Serialize(StateSerializer serializer) {
         reflectionSerializer.Serialize(serializer);
+
+        {
+            // position and velocity
+            serializer.Put("transform/position", transform.position);
+            serializer.Put("transform/rotation", transform.eulerAngles);
+            serializer.Put("transform/scale", transform.localScale);
+            
+            serializer.Put("rb/velocity", rb.linearVelocity);
+            serializer.Put("rb/angularVelocity", rb.angularVelocity);
+            serializer.Put("rb/inertia", rb.inertia);
+            serializer.Put("rb/drag", rb.linearDamping);
+            serializer.Put("rb/angularDrag", rb.angularDamping);
+            serializer.Put("rb/simulated", rb.simulated);
+            serializer.Put("rb/totalForce", rb.totalForce);
+            serializer.Put("rb/totalTorque", rb.totalTorque);
+        }
+        
+        {
+            // components
+            var components = new StateSerializer();
+            foreach (var serializable in GetComponentsInChildren<IStateSerializable>()) {
+                if (serializable == this) continue;
+                
+                var pth = new StateSerializer();
+                serializable.Serialize(pth);
+                
+                components.Put(serializable.GetType().FullName, pth.objects);
+            }
+            
+            serializer.Put("components", components.objects);
+        }
     }
-    public void Deserialize(StateSerializer serializer) {
+    public virtual void Deserialize(StateSerializer serializer) {
         reflectionSerializer.Deserialize(serializer);
+
+        {
+            // position and velocity
+            transform.position = serializer.Get<Vector3>("transform/position");
+            transform.eulerAngles = serializer.Get<Vector3>("transform/rotation");
+            transform.localScale = serializer.Get<Vector3>("transform/scale");
+            
+            rb.linearVelocity = serializer.Get<Vector2>("rb/velocity");
+            rb.angularVelocity = serializer.Get<float>("rb/angularVelocity");
+            rb.inertia = serializer.Get<float>("rb/inertia");
+            rb.linearDamping = serializer.Get<float>("rb/drag");
+            rb.angularDamping = serializer.Get<float>("rb/angularDrag");
+            rb.simulated = serializer.Get<bool>("rb/simulated");
+            rb.totalForce = serializer.Get<Vector2>("rb/totalForce");
+            rb.totalTorque = serializer.Get<float>("rb/totalTorque");
+            
+            Debug.Log($"eid {entityId} vel: {rb.linearVelocity}");
+            this.CallLaterCoroutine(0.01f, () => {
+                Debug.Log($"eid {entityId} vel2: {rb.linearVelocity}");
+            });
+        }
+        
+        {
+            // components
+            var serialized = serializer.Get<SerializedDictionary>("components");
+            var components = GetComponentsInChildren<IStateSerializable>().ToDictionary(c => c.GetType().FullName, c => c);
+            
+            foreach (var (typeName, data) in serialized) {
+                if (!components.ContainsKey(typeName)) {
+                    Debug.LogWarning($"Component {typeName} not found");
+                    continue;
+                }
+
+                var ser = new StateSerializer((SerializedDictionary)data);
+                components[typeName].Deserialize(ser);
+            }
+        }
+        
     }
     
     public virtual IHandle GetHandle() {

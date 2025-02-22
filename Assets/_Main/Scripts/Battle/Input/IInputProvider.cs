@@ -1,6 +1,7 @@
 ﻿namespace SuperSmashRhodes.Input {
 public interface IInputProvider {
-    public InputBuffer inputBuffer { get; }
+    InputBuffer inputBuffer { get; }
+    
 }
 
 public class NOPInputProvider : IInputProvider {

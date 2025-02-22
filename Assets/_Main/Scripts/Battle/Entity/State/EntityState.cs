@@ -32,11 +32,13 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
     public UnityEvent onStateEnd { get; } = new();
     public virtual CharacterStateFlag globalFlags => CharacterStateFlag.NONE;
     
-    private int interruptFrames;
+    public int interruptFrames { get; private set; }
     private int scheduledPauseAnimationFrames;
+    [SerializationOptions(SerializationOption.EXCLUDE)]
     private readonly Dictionary<string, List<MethodInfo>> animationEventHandlers = new();
-    public Stack<StateSubroutine> routines { get; } = new();
-    private StateSubroutine currentRoutine => routines.Count > 0 ? routines.Peek() : null;
+    [SerializationOptions(SerializationOption.EXCLUDE)]
+    public List<StateSubroutine> routines { get; } = new();
+    private StateSubroutine currentRoutine => routines.Count > 0 ? routines[0] : null;
     [SerializationOptions(SerializationOption.EXCLUDE)]
     private ReflectionSerializer reflectionSerializer;
     
@@ -64,7 +66,7 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
         OnStateBegin();
         routines.Clear();
         var routine = new StateSubroutine(() => MainRoutine(), 0);
-        routines.Push(routine);
+        routines.Insert(0, routine);
         routine.Hydrate();
         
         // Debug.Log("push subroutine");
@@ -116,7 +118,8 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
             
         } else {
             if (routines.Count > 1) {
-                var popped = routines.Pop();
+                var popped = routines[0];
+                routines.RemoveAt(0);
                 HandleRoutineReturn(null);
                 frame = popped.parentFrame;
                 if (entity.shouldTickAnimation) {
@@ -175,12 +178,12 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
         }
 
         if (obj is IEnumerator enumerator) {
-            routines.Push(new StateSubroutine(() => enumerator, frame));
+            routines.Insert(0, new StateSubroutine(() => enumerator, frame));
             return;
         }
         
         if (obj is StateSubroutine wrapper) {
-            routines.Push(wrapper);
+            routines.Insert(0, wrapper);
             return;
         }
         
@@ -188,7 +191,7 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
     
     public void BeginSubroutine(IEnumerator routine, SubroutineFlags flags = SubroutineFlags.PAUSE_ANIMATION) {
         var wrapper = new StateSubroutine(() => routine, frame, flags);
-        routines.Push(wrapper);
+        routines.Insert(0, wrapper);
         wrapper.Hydrate();
     }
     
@@ -197,6 +200,7 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
         if (!entity.states.TryGetValue(stateName, out var state))
             throw new KeyNotFoundException($"State {stateName} not found");
             
+        if (stateData.cancelOptions.Contains(state)) return;
         stateData.cancelOptions.Add(state);
     }
     
@@ -282,10 +286,27 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
     
     public void Serialize(StateSerializer serializer) {
         reflectionSerializer.Serialize(serializer);
+        
+        // routines
+        var handles = routines.Select(c => c.GetHandle()).ToList();
+        // Debug.Log($"routine handles {string.Join(", ", handles)}");
+        serializer.PutList("routines", handles);
     }
     
     public void Deserialize(StateSerializer serializer) {
+        {
+            // routines first
+            var list = new List<IHandle>();
+            serializer.GetList("routines", list);
+            
+            routines.Clear();
+            foreach (var handle in list) {
+                routines.Add((StateSubroutine)handle.Resolve());
+            }
+            
+        }
         reflectionSerializer.Deserialize(serializer);
+        // Debug.Log($"after, {routines.Count}, {currentRoutine}, int={interruptFrames}, vel={entity.rb.linearVelocity}");
     }
     public virtual IHandle GetHandle() {
         return new EntityStateHandle(entity, id);

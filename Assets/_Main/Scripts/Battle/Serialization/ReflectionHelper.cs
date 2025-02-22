@@ -6,18 +6,18 @@ using Object = UnityEngine.Object;
 
 namespace SuperSmashRhodes.Scripts.Util {
 public static class ReflectionHelper {
-    public static List<IField> GetAllFieldsAndPropertyBackingFields(Type type, Type stopAt = null) {
-        var ret = new List<IField>();
+    public static Dictionary<string, IField> GetAllFieldsAndPropertyBackingFields(Type type, Type stopAt = null) {
+        var ret = new Dictionary<string, IField>();
         stopAt ??= typeof(MonoBehaviour);
 
         var searchType = type;
         while (searchType.BaseType != null && searchType != stopAt) {
             foreach (var field in searchType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly)) {
-                ret.Add(new FieldWrapper(field));
+                ret[field.Name] = new FieldWrapper(field);
             }
 
             foreach (var prop in searchType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly)) {
-                ret.Add(new PropertyWrapper(prop));
+                ret[prop.Name] = new PropertyWrapper(prop);
             }
 
             searchType = searchType.BaseType;
@@ -26,9 +26,9 @@ public static class ReflectionHelper {
         return ret;
     }
 
-    public static FieldWrapper GetBackingField(PropertyWrapper field, List<IField> fields = null) {
+    public static FieldWrapper GetBackingField(PropertyWrapper field, Dictionary<string, IField> fields = null) {
         if (fields == null) fields = GetAllFieldsAndPropertyBackingFields(field.prop.DeclaringType);
-        return (FieldWrapper)fields.Find(c => c.name == $"<{field.prop.Name}>k__BackingField");
+        return fields.TryGetValue($"<{field.prop.Name}>k__BackingField", out var backingField) ? (FieldWrapper)backingField : null;
     }
 }
 

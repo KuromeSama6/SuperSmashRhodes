@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.Game;
+using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Battle.State.Implementation;
 using SuperSmashRhodes.Util;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Character.Gauge {
-public class PlayerBurstGauge : CharacterComponent, IManualUpdate {
+public class PlayerBurstGauge : CharacterComponent, IManualUpdate, IReflectionSerializable {
     public ClampedFloat gauge { get; } = new(0f, 620f, 300f);
     private List<BurstGaugeDelta> deltas { get; } = new();
     public bool burstAvailable { get; set; }
@@ -20,8 +21,10 @@ public class PlayerBurstGauge : CharacterComponent, IManualUpdate {
     public bool canBurst => burstAvailable && !burstUsed && !player.stateFlags.HasFlag(CharacterStateFlag.DISABLE_BURST);
     public bool canDriveRelease => gauge.value >= 500f && !driveRelease || true;
     
+    public ReflectionSerializer reflectionSerializer { get; private set; }
+    
     private void Start() {
-        
+        reflectionSerializer = new(this);
     }
 
     public override void OnRoundInit() {
@@ -100,16 +103,33 @@ public class PlayerBurstGauge : CharacterComponent, IManualUpdate {
         driveRelease = false;
         player.audioManager.PlaySound("cmn/battle/sfx/driverelease_end");
     }
-    
 }
 
-public class BurstGaugeDelta {
+public class BurstGaugeDelta : IHandleSerializable {
     public int frames;
     public float value;
     
     public BurstGaugeDelta(int frames, float value) {
         this.frames = frames;
         this.value = value;
+    }
+
+    public IHandle GetHandle() {
+        return new Handle(this);
+    }
+    
+    private struct Handle : IHandle {
+        private int frames;
+        private float value;
+        
+        public Handle(BurstGaugeDelta delta) {
+            frames = delta.frames;
+            value = delta.value;
+        }
+        
+        public object Resolve() {
+            return new BurstGaugeDelta(frames, value);
+        }
     }
 }
 }

@@ -16,7 +16,7 @@ public class LocalInputModule : MonoBehaviour, IInputProvider, IManualUpdate {
     private InputBuffer localBuffer;
     
     private void Start() {
-        GameStateManager.inst.RefreshManualUpdate();
+        GameStateManager.inst.RefreshComponentReferences();
         
         input = GetComponent<PlayerInput>();
         localBuffer = new(120);

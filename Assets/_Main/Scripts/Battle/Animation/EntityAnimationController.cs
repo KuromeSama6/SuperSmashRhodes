@@ -45,7 +45,9 @@ public class EntityAnimationController : MonoBehaviour, IStateSerializable {
     }
     
     public void AddUnmanagedAnimation(string name, bool loop, float transitionTime = 0f, float timeScale = 1) {
-        ApplyNeutralPose(player.activeState.stateData.shouldApplySlotNeutralPose);
+        if (player.activeState != null && player.activeState.stateData != null) {
+            ApplyNeutralPose(player.activeState.stateData.shouldApplySlotNeutralPose);
+        }
         var track = state.GetCurrent(0);
         
         // transitionTime = Mathf.Max(Time.fixedDeltaTime, transitionTime);
@@ -107,16 +109,16 @@ public class EntityAnimationController : MonoBehaviour, IStateSerializable {
 
     public void Serialize(StateSerializer serializer) {
         reflectionSerializer.Serialize(serializer);
-        serializer.Serialize("animation/id", state.GetCurrent(0).Animation.Name);
-        serializer.Serialize("animation/time", state.GetCurrent(0).AnimationTime);
-        serializer.Serialize("animation/loop", state.GetCurrent(0).Loop);
+        serializer.Put("animation/id", state.GetCurrent(0).Animation.Name);
+        serializer.Put("animation/time", state.GetCurrent(0).AnimationTime);
+        serializer.Put("animation/loop", state.GetCurrent(0).Loop);
     }
     public void Deserialize(StateSerializer serializer) {
         reflectionSerializer.Deserialize(serializer);
         
-        var animationId = serializer.Deserialize<string>("animation/id");
-        var time = serializer.Deserialize<float>("animation/time");
-        var loop = serializer.Deserialize<bool>("animation/loop");
+        var animationId = serializer.Get<string>("animation/id");
+        var time = serializer.Get<float>("animation/time");
+        var loop = serializer.Get<bool>("animation/loop");
         AddUnmanagedAnimation(animationId, loop);
         Tick((int)(time / Time.fixedDeltaTime));
     }

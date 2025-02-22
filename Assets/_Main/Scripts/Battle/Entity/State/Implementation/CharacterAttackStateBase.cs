@@ -45,15 +45,18 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         
         player.ApplyGroundedFriction(frameData.startup);
         entity.audioManager.PlaySound(GetAttackNormalSfx());
+        Debug.Log("1");
         yield return frameData.startup;
         // Debug.Log($"active {frame} {Time.frameCount}");
 
         phase = AttackPhase.ACTIVE;
         OnActive();
         player.ApplyGroundedFriction(frameData.active);
+        Debug.Log("2");
         yield return frameData.active;
         
         player.ApplyGroundedFriction(frameData.active);
+        Debug.Log("3 start");
         // Debug.Log($"recov {frame}");
         
         // Debug.Log($"rec {frame} {Time.frameCount}");

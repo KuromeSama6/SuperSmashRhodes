@@ -1,7 +1,7 @@
 ﻿using SuperSmashRhodes.Battle.Serialization;
 
 namespace SuperSmashRhodes.Battle.State {
-public class EntityStateHandle : IHandle {
+public struct EntityStateHandle : IHandle {
     private string id;
     private IHandle entity;
     
@@ -11,17 +11,21 @@ public class EntityStateHandle : IHandle {
     }
     
     public void Serialize(StateSerializer serializer) {
-        serializer.Serialize("id", id);
-        serializer.Serialize("entity", entity);
+        serializer.Put("id", id);
+        serializer.Put("entity", entity);
     }
     public void Deserialize(StateSerializer serializer) {
-        id = serializer.Deserialize<string>("id");
-        entity = serializer.Deserialize<IHandle>("entity");
+        id = serializer.Get<string>("id");
+        entity = serializer.Get<IHandle>("entity");
     }
     
-    public object GetObject() {
-        var entity = (Entity)this.entity.GetObject();
+    public object Resolve() {
+        var entity = (Entity)this.entity.Resolve();
         return entity.states[id];
+    }
+
+    public override string ToString() {
+        return $"EntityStateHandle({id})";
     }
 }
 }

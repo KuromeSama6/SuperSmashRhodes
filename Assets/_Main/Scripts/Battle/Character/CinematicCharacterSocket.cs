@@ -1,10 +1,11 @@
 ﻿using Spine.Unity;
 using SuperSmashRhodes.Battle.Enums;
+using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Util;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
-public class CinematicCharacterSocket {
+public class CinematicCharacterSocket : IHandleSerializable {
     private PlayerCharacter target;
     private PlayerCharacter owner;
     private string boneName;
@@ -13,6 +14,8 @@ public class CinematicCharacterSocket {
     private GameObject parentGameObject;
     private GameObject containerGameObject;
     public bool attached { get; private set; }
+    private string parentName => $"Cinematic[{target.playerIndex} -> {boneName}@{owner.playerIndex}]";
+    private string containerName => $"{parentName}$container";
     
     public CinematicCharacterSocket(PlayerCharacter target, PlayerCharacter owner, string boneName, Vector3 offset = default) {
         this.target = target;
@@ -24,7 +27,7 @@ public class CinematicCharacterSocket {
     public void Attach() {
         if (attached) return;
 
-        parentGameObject = new GameObject($"Cinematic[{target.playerIndex} -> {boneName}@{owner.playerIndex}]");
+        parentGameObject = new GameObject(parentName);
         var follower = parentGameObject.AddComponent<BoneFollower>();
 
         follower.SkeletonRenderer = owner.animation.animation;
@@ -38,7 +41,7 @@ public class CinematicCharacterSocket {
             return;
         }
 
-        containerGameObject = new GameObject("container");
+        containerGameObject = new GameObject(containerName);
         containerGameObject.transform.SetParent(parentGameObject.transform);
         containerGameObject.transform.localPosition = offset;
         
@@ -75,5 +78,41 @@ public class CinematicCharacterSocket {
         GameObject.Destroy(parentGameObject);
     }
     
+    public IHandle GetHandle() {
+        return new Handle(this);
+    }
+    
+    private struct Handle : IHandle {
+        private PlayerHandle target;
+        private PlayerHandle owner;
+        private string boneName;
+        private Vector3 offset;
+        private bool attached;
+        private GameObjectHandle parentGameObject;
+        private GameObjectHandle containerGameObject;
+        
+        public Handle(CinematicCharacterSocket socket) {
+            target = new PlayerHandle(socket.target);
+            owner = new PlayerHandle(socket.owner);
+            boneName = socket.boneName;
+            offset = socket.offset;
+            attached = socket.attached;
+            parentGameObject = new GameObjectHandle(socket.parentGameObject);
+            containerGameObject = new GameObjectHandle(socket.containerGameObject);
+        }
+        
+        public object Resolve() {
+            var ret = new CinematicCharacterSocket((PlayerCharacter)target.Resolve(), (PlayerCharacter)owner.Resolve(), boneName, offset);
+            if (attached) {
+                ret.Attach();
+            }
+            return ret;
+        }
+
+        public override string ToString() {
+            return $"CinematicCharacterSocket$Handle(target={target}, owner={owner}, boneName={boneName}, offset={offset}, attached={attached}, parentGameObject={parentGameObject}, containerGameObject={containerGameObject})";
+        }
+    }
+
 }
 }

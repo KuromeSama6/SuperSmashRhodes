@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SuperSmashRhodes.Adressable;
+using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Scripts.Audio; 
 using UnityEngine;
@@ -9,15 +10,12 @@ using UnityEngine;
 namespace SuperSmashRhodes.Battle {
 public class EntityAudioManager : MonoBehaviour {
     private Entity entity;
-    private AudioSource audioSource;
-
-    private Dictionary<int, AudioHandle> loopSources { get; } = new();
+    private Dictionary<int, AudioHandle> handles { get; } = new();
     private int idCounter = 1;
     private Transform container;
 
     private void Start() {
         entity = GetComponent<Entity>();
-        audioSource = GetComponent<AudioSource>();
         container = new GameObject("AudioContainer").transform;
         container.parent = transform;
     }
@@ -53,15 +51,15 @@ public class EntityAudioManager : MonoBehaviour {
             source.loop = true;
             source.volume = volume;
             source.Play();
-            loopSources[id] = new AudioHandle(soundName, source, releaseOnStateEnd ? entity.activeState : null);
+            handles[id] = new AudioHandle(soundName, source, releaseOnStateEnd ? entity.activeState : null);
         });
         return id;
     }
 
     public void StopSoundLoop(int id, string tailSound = null, float tailVolume = 1f) {
-        if (loopSources.ContainsKey(id)) {
-            loopSources[id].Release();
-            loopSources.Remove(id);
+        if (handles.ContainsKey(id)) {
+            handles[id].Release();
+            handles.Remove(id);
             
             if (tailSound != null) {
                 PlaySound(tailSound, tailVolume);
@@ -71,8 +69,8 @@ public class EntityAudioManager : MonoBehaviour {
 
     
     public void StopSoundLoop(string soundName) {
-        foreach (var id in loopSources.Keys.ToList()) {
-            if (loopSources[id].audioId == soundName) {
+        foreach (var id in handles.Keys.ToList()) {
+            if (handles[id].audioId == soundName) {
                 StopSoundLoop(id);
             }
         }
@@ -101,6 +99,13 @@ public class EntityAudioManager : MonoBehaviour {
         private void OnStateEnd() {
             Release();
         }
+    }
+
+    public void Serialize(StateSerializer serializer) {
+        throw new NotImplementedException();
+    }
+    public void Deserialize(StateSerializer serializer) {
+        throw new NotImplementedException();
     }
 }
 }

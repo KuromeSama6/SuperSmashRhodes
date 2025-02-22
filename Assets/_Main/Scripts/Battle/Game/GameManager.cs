@@ -16,7 +16,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
 namespace SuperSmashRhodes.Battle.Game {
-public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate {
+public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAutoSerialize {
     [Title("References")]
     [Title("Camera")]
     public CinemachineCamera mainCamera;
@@ -205,12 +205,45 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate {
         return id;
     }
 
-    public Entity GetEntity(int id) {
+    public Entity ResolveEntity(int id) {
         return entityTable[id];
     }
     
     public SerializedGameState SerializeGameState() {
         return null;
+    }
+    
+    public void Serialize(StateSerializer serializer) {
+        serializer.Put("pushboxCorrectionLock", pushboxCorrectionLock);
+        serializer.Put("entityIdCounter", entityIdCounter);
+        
+        
+        {
+            // players
+            var playersSerializer = new StateSerializer();
+            foreach (var (k, v) in players) {
+                var pth = new StateSerializer();
+                pth.Put("_id", k);
+                v.Serialize(pth);
+                
+                playersSerializer.Put(k.ToString(), pth.objects);
+            }
+            serializer.Put("players", playersSerializer.objects);
+        }
+    }
+    
+    public void Deserialize(StateSerializer serializer) {
+        pushboxCorrectionLock = serializer.Get<bool>("pushboxCorrectionLock");
+        entityIdCounter = serializer.Get<int>("entityIdCounter");
+
+        {
+            // players
+            var playersSerializer = serializer.GetObject("players");
+            foreach (var (k, pth) in playersSerializer.objects) {
+                var player = players[int.Parse(k)];
+                player.Deserialize(playersSerializer.GetObject(k));
+            }
+        }
     }
 }
 

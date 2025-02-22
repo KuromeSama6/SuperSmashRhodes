@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using SuperSmashRhodes.Battle.Game;
+using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Framework;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
-public class TimeManager : SingletonBehaviour<TimeManager>, IManualUpdate {
+public class TimeManager : SingletonBehaviour<TimeManager>, IManualUpdate, IAutoSerialize {
     public int globalFreezeFrames { get; set; }
 
     private int scheduledDelay;
@@ -45,6 +46,7 @@ public class TimeManager : SingletonBehaviour<TimeManager>, IManualUpdate {
             queuedActions.Clear();   
         }
         
+        // Debug.Log("simulate");
         Physics2D.Simulate(Time.fixedDeltaTime);
     }
     
@@ -56,6 +58,19 @@ public class TimeManager : SingletonBehaviour<TimeManager>, IManualUpdate {
     
     public void Queue(Action action) {
         queuedActions.Add(action);
+    }
+    public void Serialize(StateSerializer serializer) {
+        serializer.Put("globalFreezeFrames", globalFreezeFrames);
+        serializer.Put("scheduledDelay", scheduledDelay);
+        serializer.Put("scheduledFreezeFrames", scheduledFreezeFrames);
+        serializer.PutList("queuedActions", queuedActions);
+    }
+    
+    public void Deserialize(StateSerializer serializer) {
+        globalFreezeFrames = serializer.Get<int>("globalFreezeFrames");
+        scheduledDelay = serializer.Get<int>("scheduledDelay");
+        scheduledFreezeFrames = serializer.Get<int>("scheduledFreezeFrames");
+        serializer.GetList("queuedActions", queuedActions);
     }
 }
 

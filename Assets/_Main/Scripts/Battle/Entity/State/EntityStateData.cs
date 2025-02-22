@@ -16,7 +16,6 @@ public class EntityStateData : IReflectionSerializable {
     /// <summary>
     /// States that can be canceled into from this state.
     /// </summary>
-    [SerializationOptions(SerializationOption.EXCLUDE)]
     public List<EntityState> cancelOptions { get; } = new List<EntityState>();
 
     /// <summary>
@@ -82,22 +81,15 @@ public class EntityStateData : IReflectionSerializable {
     
     public void Serialize(StateSerializer serializer) {
         reflectionSerializer.Serialize(serializer);
-        serializer.Serialize("cancelOptions", cancelOptions.Select(c => c.id).ToList());
-
-        var carriedVariables = new Dictionary<string, object>(this.carriedVariables);
-        serializer.Serialize("carriedVariable", new DirectReferenceHandle(carriedVariables));
+        
+        // serializer.SerializeDict("carriedVariables", carriedVariables);
 
     }
     
     public void Deserialize(StateSerializer serializer) {
         reflectionSerializer.Deserialize(serializer);
         
-        cancelOptions.Clear();
-        cancelOptions.AddRange(serializer.Deserialize<List<string>>("cancelOptions").Select(c => owner.states[c]).ToList());
-        
-        carriedVariables.Clear();
-        var carriedVariable = serializer.Deserialize<DirectReferenceHandle>("carriedVariable");
-        carriedVariables.AddRange((Dictionary<string, object>)carriedVariable.GetObject());
+        // serializer.DeserializeIntoDict("carriedVariables", carriedVariables);
     }
 }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SuperSmashRhodes.Battle.Enums;
+using SuperSmashRhodes.Battle.Serialization;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Input {
@@ -9,11 +10,11 @@ namespace SuperSmashRhodes.Input {
 /// An InputBuffer is a queue of inputs that stores abstractions of player inputs.
 /// This is the only source of input data that FScript will read from.
 /// </summary>
-public class InputBuffer {
+public class InputBuffer : IStateSerializable {
     public int maxSize { get; set; }
     public List<InputChord> buffer { get; } = new();
     public InputChord thisFrame => buffer[0];
-    
+
     public InputBuffer(int maxSize) {
         this.maxSize = maxSize;
         for (int i = 0; i < maxSize; i++) buffer.Add(new InputChord());
@@ -111,6 +112,11 @@ public class InputBuffer {
         }
         
         return input;
+    }
+    public void Serialize(StateSerializer serializer) {
+        
+    }
+    public void Deserialize(StateSerializer serializer) {
     }
 }
 

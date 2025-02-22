@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections;
 using SuperSmashRhodes.Battle.Serialization;
+using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.State {
-public class StateSubroutine : IReflectionSerializable {
+public class StateSubroutine : IHandleSerializable {
     public RoutineSource source { get; private set; }
     public IEnumerator enumerator { get; private set; }
     public int parentFrame { get; private set; }
     public SubroutineFlags flags { get; private set; }
-    public ReflectionSerializer reflectionSerializer { get; }
     public int timesTicked { get; set; }
 
     public bool hydrated => enumerator != null;
@@ -17,8 +17,6 @@ public class StateSubroutine : IReflectionSerializable {
         this.source = source;
         this.parentFrame = parentFrame;
         this.flags = flags;
-
-        reflectionSerializer = new(this);
     }
 
     public void Hydrate() {
@@ -26,6 +24,46 @@ public class StateSubroutine : IReflectionSerializable {
         timesTicked = 0;
     }
 
+    public IHandle GetHandle() {
+        return new StateSubroutineHandle(this);
+    }
+
+    public override string ToString() {
+        return $"StateSubroutine(source={source}, parentFrame={parentFrame}, flags={flags}, timesTicked={timesTicked})";
+    }
+
+}
+
+public struct StateSubroutineHandle : IHandle {
+    private RoutineSource source;
+    public int parentFrame;
+    public SubroutineFlags flags;
+    public int timesTicked;
+    
+    public StateSubroutineHandle(StateSubroutine routine) {
+        source = routine.source;
+        parentFrame = routine.parentFrame;
+        flags = routine.flags;
+        timesTicked = routine.timesTicked;
+    }
+    
+    public object Resolve() {
+        var ret = new StateSubroutine(source, parentFrame, flags);
+        ret.Hydrate();
+        
+        // restore enumerator state
+        // Debug.Log($"reconstruct enumerator, time ticked = {timesTicked}");
+        for (int i = 0; i < timesTicked; i++) {
+            ret.enumerator.MoveNext();
+            ++ret.timesTicked;
+        }
+        
+        return ret;
+    }
+
+    public override string ToString() {
+        return $"StateSubroutineHandle(source={source}, parentFrame={parentFrame}, flags={flags}, timesTicked={timesTicked})";
+    }
 }
 
 [SerializationOptions(SerializationOption.DIRECT_REFERENCE)] 

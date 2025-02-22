@@ -3,24 +3,24 @@
 /// A handle represents a reference to an object that can be serialized and deserialized.
 /// The fields within a handle should be
 /// </summary>
-public interface IHandle : IStateSerializable {
-    object GetObject();
+public interface IHandle {
+    object Resolve();
 }
 
-public class DirectReferenceHandle : IHandle {
+public struct DirectReferenceHandle : IHandle {
     private object obj;
     public DirectReferenceHandle(object obj) {
         this.obj = obj;
     }
 
-    public object GetObject() {
+    public object Resolve() {
         return obj;
     }
     public void Serialize(StateSerializer serializer) {
-        serializer.Serialize("_obj", obj);
+        serializer.Put("_obj", obj);
     }
     public void Deserialize(StateSerializer serializer) {
-        this.obj = serializer.Deserialize<object>("_obj");
+        this.obj = serializer.Get<object>("_obj");
     }
 }
 }
