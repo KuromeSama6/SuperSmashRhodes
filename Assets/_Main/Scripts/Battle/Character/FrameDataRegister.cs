@@ -10,7 +10,9 @@ public class FrameDataRegister : RuntimeCharacterDataRegister, IReflectionSerial
     public int throwInvulnFrames { get; set; }
     public int landingRecoveryFrames { get; set; }
     public LandingRecoveryFlag landingFlag { get; set; }
+    [SerializationOptions(SerializationOption.EXCLUDE)]
     public List<BounceData> groundBounces { get; } = new();
+    [SerializationOptions(SerializationOption.EXCLUDE)]
     public List<BounceData> wallBounces { get; } = new();
 
     public bool shouldGroundBounce => groundBounces.Count > 0;
@@ -88,6 +90,20 @@ public class FrameDataRegister : RuntimeCharacterDataRegister, IReflectionSerial
         var bounce = wallBounces[0];
         wallBounces.RemoveAt(0);
         return bounce;
+    }
+
+    public void Serialize(StateSerializer serializer) {
+        reflectionSerializer.Serialize(serializer);
+        
+        serializer.PutList("groundBounces", groundBounces);
+        serializer.PutList("wallBounces", wallBounces);
+    }
+
+    public void Deserialize(StateSerializer serializer) {
+        reflectionSerializer.Deserialize(serializer);
+        
+        serializer.GetList("groundBounces", groundBounces);
+        serializer.GetList("wallBounces", wallBounces);
     }
 }
 

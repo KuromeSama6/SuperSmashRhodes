@@ -60,6 +60,8 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
             }
             // Debug.Log($"State {id} has {animationEventHandlers.Count} animation event handlers");
         }
+
+        stateData = entity.CreateStateData(this);
     }
 
     private void Init() {
@@ -294,6 +296,8 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
     }
     
     public void Deserialize(StateSerializer serializer) {
+        // Debug.Log($"begin deserialize {entity.entityId}");
+        OnStateBegin();
         {
             // routines first
             var list = new List<IHandle>();
@@ -305,6 +309,7 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
             }
             
         }
+        // Debug.Log($"reflections {entity.entityId}");
         reflectionSerializer.Deserialize(serializer);
         // Debug.Log($"after, {routines.Count}, {currentRoutine}, int={interruptFrames}, vel={entity.rb.linearVelocity}");
     }

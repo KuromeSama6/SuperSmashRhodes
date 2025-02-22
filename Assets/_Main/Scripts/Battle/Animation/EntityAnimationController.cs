@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using Spine;
 using Spine.Unity;
+using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Battle.Serialization;
 using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEngine;
@@ -24,6 +25,8 @@ public class EntityAnimationController : MonoBehaviour, IStateSerializable {
 
     [SerializationOptions(SerializationOption.EXCLUDE)]
     private ReflectionSerializer reflectionSerializer;
+    [SerializationOptions(SerializationOption.EXCLUDE)]
+    public bool disableEvents { get; set; }
 
     private void Awake() {
         reflectionSerializer = new(this);
@@ -101,8 +104,9 @@ public class EntityAnimationController : MonoBehaviour, IStateSerializable {
     
     private void OnUserDefinedEvent(TrackEntry trackEntry, Spine.Event e) {
         var name = e.Data.Name;
+        // Debug.Log($"Animation event: {name} {e.String} ({state.GetCurrent(0).AnimationTime}) (F{GameStateManager.inst.frame}) (disabled: {disableEvents})");
+        if (disableEvents) return;
         var args = (e.String ?? "").Split();
-        
         var data = new AnimationEventData(e.String, e.Int, e.Float, e.Data.AudioPath);
         player.activeState.HandleAnimationEvent(name, data);
     }
@@ -115,12 +119,19 @@ public class EntityAnimationController : MonoBehaviour, IStateSerializable {
     }
     public void Deserialize(StateSerializer serializer) {
         reflectionSerializer.Deserialize(serializer);
-        
+
+        disableEvents = true;
         var animationId = serializer.Get<string>("animation/id");
         var time = serializer.Get<float>("animation/time");
         var loop = serializer.Get<bool>("animation/loop");
         AddUnmanagedAnimation(animationId, loop);
-        Tick((int)(time / Time.fixedDeltaTime));
+        // Tick((int)(time / Time.fixedDeltaTime));
+        // state.GetCurrent(0).TrackTime = 0;
+        
+        state.GetCurrent(0).TrackTime = time;
+        animation.Update(0);
+        disableEvents = false;
+        // Debug.Log($"Deserialized animation {player.playerIndex} t={state.GetCurrent(0).AnimationTime} {GameStateManager.inst.frame}");
     }
 }
 

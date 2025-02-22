@@ -43,6 +43,7 @@ public class GameStateManager : SingletonBehaviour<GameStateManager> {
     }
     
     private void Update() {
+        manualUpdates.RemoveAll(c => c is MonoBehaviour beh && !beh);
         manualUpdates.ForEach(m => {
             if (m is MonoBehaviour beh && beh.isActiveAndEnabled) {
                 m.ManualUpdate();

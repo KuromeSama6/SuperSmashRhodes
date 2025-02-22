@@ -5330,7 +5330,7 @@ MonoBehaviour:
   leftWall: {fileID: 1480734631}
   rightWall: {fileID: 2097328481}
   environmentContainer: {fileID: 215202021}
-  p1Prefab: {fileID: 4269655692707438170, guid: c96b2ba4e7d1ae049991835b7c9ca750, type: 3}
+  p1Prefab: {fileID: 8636980713804553639, guid: aa8bf85153144104aa2c8477b1edfcc7, type: 3}
   p2Prefab: {fileID: 4269655692707438170, guid: c96b2ba4e7d1ae049991835b7c9ca750, type: 3}
 --- !u!4 &1118464139
 Transform:

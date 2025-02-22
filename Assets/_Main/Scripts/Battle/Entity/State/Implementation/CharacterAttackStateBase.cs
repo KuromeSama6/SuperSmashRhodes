@@ -45,18 +45,15 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         
         player.ApplyGroundedFriction(frameData.startup);
         entity.audioManager.PlaySound(GetAttackNormalSfx());
-        Debug.Log("1");
         yield return frameData.startup;
         // Debug.Log($"active {frame} {Time.frameCount}");
 
         phase = AttackPhase.ACTIVE;
         OnActive();
         player.ApplyGroundedFriction(frameData.active);
-        Debug.Log("2");
         yield return frameData.active;
         
         player.ApplyGroundedFriction(frameData.active);
-        Debug.Log("3 start");
         // Debug.Log($"recov {frame}");
         
         // Debug.Log($"rec {frame} {Time.frameCount}");
@@ -83,7 +80,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
 
     public virtual void OnContact(Entity to) {
         if (hitsRemaining > 0) --hitsRemaining;
-        hitLock = true;
+        if (shouldSetHitLock) hitLock = true;
         // Debug.Log("cancel added"); 
         AddCancelOption(commonCancelOptions);
     }
@@ -172,6 +169,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     protected virtual int totalHits => 1;
     protected virtual AttackAirOkType airOk => AttackAirOkType.GROUND;
     public virtual LandingRecoveryFlag landingRecoveryFlag => LandingRecoveryFlag.NONE;
+    protected virtual bool shouldSetHitLock => true;
     
     // Events
     protected virtual void OnStartup() {
@@ -270,6 +268,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         hitLock = false;
         ++attackStage;
         OnNotifyStage(attackStage);
+        // Debug.Log($"clear hit lock {attackStage}");
     }
 
     [AnimationEventHandler("std/NotifyStage")]

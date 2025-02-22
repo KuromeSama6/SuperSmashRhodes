@@ -99,10 +99,12 @@ public class State_Chen_SklDPC : State_Common_SpecialAttack {
         base.OnNotifyStage(stage);
         stateData.ghostFXData = new("cb0000".HexToColor(), 0.01333334f, 40, 10f);
         if (stage == 1) {
+            // Debug.Log($"notify stage 1, {frame}, {routines[0].timesTicked}");
             player.ApplyForwardVelocity(new(0f, opponent.atWall && hitsRemaining < 3 ? 27.5f : 15f));
             player.airborne = true;
             
         } else if (stage == 2) {
+            // Debug.Log($"notify stage 2, {frame}, {routines[0].timesTicked}");
             player.rb.linearVelocity = Vector2.zero;
             player.ApplyForwardVelocity(new(hits > 0 ? 10f : 0f, -30f));
             player.opponent.frameData.AddGroundBounce(new(0, driveRelease ? 12 : 7), BounceFlags.HEAVY);

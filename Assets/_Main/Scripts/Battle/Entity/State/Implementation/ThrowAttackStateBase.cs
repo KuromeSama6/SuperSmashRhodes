@@ -24,6 +24,7 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
     public override Hitstate hitstate => Hitstate.COUNTER;
     private int hitAnimationStartFrame;
     private CinematicCharacterSocket socket;
+    private bool mayHit, clash;
     
     protected override void OnStateBegin() {
         base.OnStateBegin();
@@ -35,6 +36,8 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
             socket.Release();
             socket = null;
         }
+        mayHit = false;
+        clash = false;
     }
 
     public override IEnumerator MainRoutine() {
@@ -64,9 +67,9 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
         }
         
         // process hit
-        bool mayHit = MayHit(player.opponent);
+        mayHit = MayHit(player.opponent);
 
-        bool clash = false;
+        clash = false;
         // clash
         if (connected) {
             var otherState = opponent.activeState;
@@ -75,7 +78,6 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
             }
         }
         
-
         if (connected && mayHit) {
             if (clash) {
                 // Debug.Log(player.transform.position.y);
@@ -93,6 +95,7 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
             }
 
             // successful hit
+            Debug.Log("hit");
             hasHit = true;
             bool switchSides = ShouldSwitchSides(opponent);
             player.audioManager.PlaySound("cmn/battle/sfx/throw/1");
@@ -237,6 +240,7 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
     }
     protected virtual void OnFinalHit() {
         // OnHit(player.opponent);
+        Debug.Log("hitstun hard");
         opponent.BeginState("CmnHardKnockdown");
     }
     

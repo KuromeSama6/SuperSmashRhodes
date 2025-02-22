@@ -204,9 +204,14 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
         entityTable[id] = entity;
         return id;
     }
+    
+    public void UnregisterEntity(Entity entity) {
+        // entityTable.Remove(entity.entityId);
+    }
 
-    public Entity ResolveEntity(int id) {
-        return entityTable[id];
+    public Entity ResolveEntity(EntityHandle handle) {
+        //TODO Entity restoration
+        return entityTable[handle.entityId];
     }
     
     public SerializedGameState SerializeGameState() {

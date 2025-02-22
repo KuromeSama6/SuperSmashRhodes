@@ -10,6 +10,7 @@ namespace SuperSmashRhodes.Runtime.State {
 public abstract class State_Exusiai_FireWeaponAttack : CharacterAttackStateBase {
     protected Gauge_Exusiai_AmmoGauge gauge { get; }
     protected override float inputMeter => 0f;
+    protected override bool shouldSetHitLock => false;
 
     protected State_Exusiai_FireWeaponAttack(Entity entity) : base(entity) {
         gauge = entity.GetComponent<Gauge_Exusiai_AmmoGauge>();

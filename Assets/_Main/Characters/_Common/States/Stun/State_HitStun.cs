@@ -57,6 +57,7 @@ public class State_CmnHitStunAir : State_Common_Stun {
 
     public override IEnumerator MainRoutine() {
         while (true) {
+            // Debug.Log($"state begin, {landed}");
             while (!landed) {
                 yield return 1;
             }

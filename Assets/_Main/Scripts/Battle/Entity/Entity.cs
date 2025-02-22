@@ -26,6 +26,9 @@ namespace SuperSmashRhodes.Battle {
 /// Entities include player characters, projectiles, summons, etc. Particles are not entities.
 /// </summary>
 public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable, IHandleSerializable {
+    [Title("Configuration")]
+    public string assetPath;
+    
     [Title("References")]
     public Transform rotationContainer;
     public Transform socketsContainer;
@@ -255,6 +258,7 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
     public void DestroySummon(Entity entity) {
         if (!summons.Contains(entity)) return;
         summons.Remove(entity);
+        GameManager.inst.UnregisterEntity(entity);
         Destroy(entity.gameObject);
     }
 
@@ -389,7 +393,6 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
         }
     }
     public virtual void Deserialize(StateSerializer serializer) {
-        reflectionSerializer.Deserialize(serializer);
 
         {
             // position and velocity
@@ -406,11 +409,13 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
             rb.totalForce = serializer.Get<Vector2>("rb/totalForce");
             rb.totalTorque = serializer.Get<float>("rb/totalTorque");
             
-            Debug.Log($"eid {entityId} vel: {rb.linearVelocity}");
-            this.CallLaterCoroutine(0.01f, () => {
-                Debug.Log($"eid {entityId} vel2: {rb.linearVelocity}");
-            });
+            // Debug.Log($"eid {entityId} vel: {rb.linearVelocity}");
+            // this.CallLaterCoroutine(0.01f, () => {
+            //     Debug.Log($"eid {entityId} vel2: {rb.linearVelocity}");
+            // });
         }
+        
+        reflectionSerializer.Deserialize(serializer);
         
         {
             // components
