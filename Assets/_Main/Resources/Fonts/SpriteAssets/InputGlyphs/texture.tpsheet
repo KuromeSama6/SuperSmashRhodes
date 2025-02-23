@@ -1,0 +1,25 @@
+#
+# Sprite sheet data for Unity.
+#
+# To import these sprites into your Unity project, download "TexturePackerImporter":
+# https://assetstore.unity.com/packages/tools/sprite-management/texturepacker-importer-16641
+#
+# created with Free texture packer v0.6.7
+# http://free-tex-packer.com
+#
+:format=40300
+:texture=texture.png
+:size=1616x136
+:pivotpoints=enabled
+:borders=disabled
+
+Exported-keyboard_right_enter.png;4;4;256;128; 0.5;0.5; 0;0;0;0
+Exported-stripes.png;268;4;256;128; 0.5;0.5; 0;0;0;0
+Exported-ps_circle.png;532;4;128;128; 0.5;0.5; 0;0;0;0
+Exported-ps_cross.png;668;4;128;128; 0.5;0.5; 0;0;0;0
+Exported-ps_square.png;804;4;128;128; 0.5;0.5; 0;0;0;0
+Exported-ps_triangle.png;940;4;128;128; 0.5;0.5; 0;0;0;0
+Exported-xbox_a.png;1076;4;128;128; 0.5;0.5; 0;0;0;0
+Exported-xbox_b.png;1212;4;128;128; 0.5;0.5; 0;0;0;0
+Exported-xbox_x.png;1348;4;128;128; 0.5;0.5; 0;0;0;0
+Exported-xbox_y.png;1484;4;128;128; 0.5;0.5; 0;0;0;0

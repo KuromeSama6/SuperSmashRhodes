@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 510c61cdec524e86b647525bb5947f82, type: 3}
   m_Name: CharacterSelectBlur
   m_EditorClassIdentifier: 
-  radius: 2.5
+  radius: 1.2425
   iteration: 2
-  strength: 10
+  strength: 4.97

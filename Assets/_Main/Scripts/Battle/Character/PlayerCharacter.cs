@@ -323,7 +323,7 @@ public class PlayerCharacter : Entity {
         airActionPerformed = false;
         
         // input provider
-        inputProvider = LocalInputManager.inst.GetInputProvider(this);
+        inputProvider = InputDevicePool.inst.GetInputProvider(this);
         
         ResetAirOptions();
     }

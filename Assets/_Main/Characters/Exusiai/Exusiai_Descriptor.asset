@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 589170e0e507452e8d9a751a77995ab6, type: 3}
   m_Name: Exusiai_Descriptor
   m_EditorClassIdentifier: 
+  gameObject: {fileID: 8636980713804553639, guid: aa8bf85153144104aa2c8477b1edfcc7, type: 3}
   id: exusiai
   chineseName: "\u80FD\u5929\u4F7F"
   englishName: Exusiai

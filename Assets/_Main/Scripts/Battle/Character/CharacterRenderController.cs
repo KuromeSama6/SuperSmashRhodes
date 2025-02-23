@@ -24,7 +24,7 @@ public class CharacterRenderController : MonoBehaviour, IManualUpdate {
     public void ManualFixedUpdate() {
         var mat = renderer.material;
 
-        if (fxManager && !fxManager.playFlash) {
+        if (fxManager != null && !fxManager.playFlash) {
             if (owner.activeState == null) return;
             var data = owner.activeState.stateData.renderColorData;
             if (!data.flags.HasFlag(CharacterRenderColorData.Flag.PAUSE)) {

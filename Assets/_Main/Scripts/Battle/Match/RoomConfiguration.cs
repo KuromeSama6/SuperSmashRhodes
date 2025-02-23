@@ -1,7 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace SuperSmashRhodes.Network.Room {
+namespace SuperSmashRhodes.Match {
 [CreateAssetMenu(fileName = "NewRoomConfiguration", menuName = "SSR/Room/RoomConfiguration", order = 0)]
 public class RoomConfiguration : ScriptableObject {
     [Title("General Config")]

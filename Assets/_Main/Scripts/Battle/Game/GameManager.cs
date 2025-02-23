@@ -46,7 +46,6 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
         }
     }
     
-    private PlayerInputManager inputManager;
     private Dictionary<int, PlayerCharacter> players = new();
     private bool pushboxCorrectionLock = false;
     
@@ -60,7 +59,6 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
     private IEnumerator Start() {
         environmentRenderers.AddRange(environmentContainer.gameObject.GetComponentsInChildren<Renderer>());
         
-        inputManager = GetComponent<PlayerInputManager>();
         cameraFraming = mainCamera.GetComponent<CinemachineGroupFraming>();
         
         targetGroup.Targets.Clear();

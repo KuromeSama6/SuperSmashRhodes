@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "version": "0.6.7"
+  },
+  "savePath": "D:\\dev\\SuperSmashRhodes\\SuperSmashRhodes\\Assets\\_Main\\Resources\\Fonts\\SpriteAssets\\InputGlyphs",
+  "images": [],
+  "folders": [
+    "D:/dev/SuperSmashRhodes/SuperSmashRhodes/Assets/_Main/Resources/Fonts/SpriteAssets/InputGlyphs/Exported"
+  ],
+  "packOptions": {
+    "textureName": "texture",
+    "textureFormat": "png",
+    "removeFileExtension": false,
+    "prependFolderName": true,
+    "base64Export": false,
+    "tinify": false,
+    "tinifyKey": "",
+    "scale": 1,
+    "filter": "none",
+    "exporter": "Unity3D",
+    "fileName": "pack-result",
+    "savePath": "D:\\dev\\SuperSmashRhodes\\SuperSmashRhodes\\Assets\\_Main\\Resources\\Fonts\\SpriteAssets\\InputGlyphs",
+    "width": 2048,
+    "height": 2048,
+    "fixedSize": false,
+    "powerOfTwo": false,
+    "padding": 4,
+    "extrude": 0,
+    "allowRotation": false,
+    "allowTrim": true,
+    "trimMode": "trim",
+    "alphaThreshold": "0",
+    "detectIdentical": true,
+    "packer": "MaxRectsBin",
+    "packerMethod": "BestShortSideFit"
+  }
+}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 using SuperSmashRhodes.Framework;
+using SuperSmashRhodes.Match;
 using SuperSmashRhodes.Network.Rollbit;
 using SuperSmashRhodes.Network.Room;
 using UnityEngine;

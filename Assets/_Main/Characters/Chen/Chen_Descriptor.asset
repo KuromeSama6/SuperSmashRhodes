@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 589170e0e507452e8d9a751a77995ab6, type: 3}
   m_Name: Chen_Descriptor
   m_EditorClassIdentifier: 
+  gameObject: {fileID: 4269655692707438170, guid: c96b2ba4e7d1ae049991835b7c9ca750, type: 3}
   id: chen
   chineseName: "\u9648"
   englishName: Ch'en
