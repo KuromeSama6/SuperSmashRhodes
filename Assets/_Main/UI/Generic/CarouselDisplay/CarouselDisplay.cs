@@ -1,15 +1,18 @@
 ﻿using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace SuperSmashRhodes.UI.Generic {
 public class CarouselDisplay : MonoBehaviour {
     [Title("Config")]
     public float fadeSpeed = 1;
     public float fadeInterval = 3;
+    public bool random = false;
 
     private float counter;
     private int currentIndex;
+    private int previousIndex;
     
     private void Start() {
         var index = 0;
@@ -26,12 +29,18 @@ public class CarouselDisplay : MonoBehaviour {
         
         if (counter >= fadeInterval) {
             counter = 0;
-            ++currentIndex;
-            if (currentIndex >= transform.childCount) {
-                currentIndex = 0;
+
+            if (random) {
+                currentIndex = Random.Range(0, transform.childCount);
+            } else {
+                ++currentIndex;
+                if (currentIndex >= transform.childCount) {
+                    currentIndex = 0;
+                }   
             }
             
-            Fade(transform.GetChild(currentIndex == 0 ? transform.childCount - 1 : currentIndex - 1).GetComponent<CanvasGroup>(), transform.GetChild(currentIndex).GetComponent<CanvasGroup>());
+            Fade(transform.GetChild(previousIndex).GetComponent<CanvasGroup>(), transform.GetChild(currentIndex).GetComponent<CanvasGroup>());
+            previousIndex = currentIndex;
         }
     }
 

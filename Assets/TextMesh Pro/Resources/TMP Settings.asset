@@ -34,6 +34,10 @@ MonoBehaviour:
   m_autoSizeTextContainer: 0
   m_IsTextObjectScaleStatic: 0
   m_fallbackFontAssets:
+  - {fileID: 11400000, guid: 069beae4ad76d8544bd90e45439ffc9a, type: 2}
+  - {fileID: 11400000, guid: aaaeec6321ea7cd46b5706f6b88b3ad6, type: 2}
+  - {fileID: 11400000, guid: 349687e48ae29244482c5c683703b42a, type: 2}
+  - {fileID: 11400000, guid: 70d2f2d65ea22b2418a3a3b8d8b2e568, type: 2}
   - {fileID: 11400000, guid: d1f36c4b357bd664d96f7343152a3ac0, type: 2}
   m_matchMaterialPreset: 1
   m_HideSubTextObjects: 0

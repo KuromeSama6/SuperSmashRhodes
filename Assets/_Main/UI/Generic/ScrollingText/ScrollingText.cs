@@ -17,23 +17,33 @@ public class ScrollingText : MonoBehaviour {
 
     private readonly List<TMP_Text> texts = new();
     private float textWidth => mainText.rectTransform.rect.width;
+    private bool dirty;
 
     public string text {
         get => mainText.text;
         set {
+            if (value == mainText.text) return;
             mainText.text = value;
             EnsureTexts();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(container);
         }
     }
     
     private void Start() {
         texts.Add(mainText);
+        dirty = true;
         displayText = "";
-        
-        EnsureTexts();
     }
 
     private void Update() {
+        var minimumWidth = container.rect.width * 2f;
+        if (minimumWidth == 0 || textWidth == 0) return;
+        if (dirty) {
+            EnsureTexts();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(container);
+            dirty = false;
+        }
+        
         if (displayText.Length > 0) {
             text = displayText;
             displayText = "";
@@ -53,6 +63,7 @@ public class ScrollingText : MonoBehaviour {
 
     public void EnsureTexts() {
         var minimumWidth = container.rect.width * 2f;
+        if (minimumWidth == 0 || textWidth == 0) return;
         var required = Mathf.CeilToInt(minimumWidth / textWidth);
         // Debug.Log($"minw {minimumWidth} req {required} cont {container.rect.width}");
 

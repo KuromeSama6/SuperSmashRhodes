@@ -15,7 +15,20 @@ public class InputDevicePool : PersistentSingletonBehaviour<InputDevicePool> {
 
     private PlayerInputManager inputManager;
     private GameObject container;
-    private Dictionary<String, LocalInputModule> localInputModules { get; } = new();
+    public Dictionary<String, LocalInputModule> inputs { get; } = new();
+
+    public string currentActionMap {
+        get => _currentActionMap;
+        set {
+            if (_currentActionMap == value) {
+                return;
+            }
+            
+            _currentActionMap = value;
+            ReloadLocalInput();
+        }
+    }
+    private string _currentActionMap;
 
     protected override void Awake() {
         base.Awake();
@@ -33,6 +46,7 @@ public class InputDevicePool : PersistentSingletonBehaviour<InputDevicePool> {
 
     public void ReloadLocalInput() {
         container.ClearChildren();
+        inputs.Clear();
         
         // create local input modules
         var devices = InputSystem.devices;
@@ -46,8 +60,9 @@ public class InputDevicePool : PersistentSingletonBehaviour<InputDevicePool> {
                 var module = PlayerInput.Instantiate(inputModulePrefab, controlScheme: scheme.name, pairWithDevice: candidates.devices[0]);
                 module.transform.parent = container.transform;
                 module.name = $"InputModule_{scheme.name}";
+                module.SwitchCurrentActionMap(_currentActionMap ?? "Player");
                 
-                localInputModules[scheme.name] = module.GetComponent<LocalInputModule>();   
+                inputs[scheme.name] = module.GetComponent<LocalInputModule>();   
             }
         }
     }
@@ -59,9 +74,9 @@ public class InputDevicePool : PersistentSingletonBehaviour<InputDevicePool> {
     public IInputProvider GetInputProvider(PlayerCharacter player) {
         //TODO: Change debug
         if (player.playerIndex == 0) {
-            return localInputModules["keyboard1"];
+            return inputs["keyboard1"];
         } else {
-            return localInputModules["keyboard2"];
+            return inputs["keyboard2"];
         }
         return new NOPInputProvider();
     }

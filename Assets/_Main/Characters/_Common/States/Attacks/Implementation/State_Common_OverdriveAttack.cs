@@ -10,7 +10,6 @@ using SuperSmashRhodes.Input;
 using SuperSmashRhodes.UI.Battle;
 using SuperSmashRhodes.UI.Battle.AnnouncerHud;
 using SuperSmashRhodes.Util;
-using UnityEditor.Localization.Plugins.XLIFF.V20;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Runtime.State {

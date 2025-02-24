@@ -159,6 +159,7 @@ public class PlayerCharacter : Entity {
         UpdatePosition();
         UpdateGravity();
         UpdateRotation();
+        inputProvider = InputDevicePool.inst.GetInputProvider(this);
         if (backdashCooldown > 0) {
             --backdashCooldown;
         }

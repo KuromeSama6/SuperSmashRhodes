@@ -5,7 +5,7 @@ using Spine;
 using Spine.Unity;
 using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Battle.Serialization;
-using UnityEditor.Localization.Plugins.XLIFF.V12;
+
 using UnityEngine;
 using UnityEngine.Events;
 using AnimationState = Spine.AnimationState;

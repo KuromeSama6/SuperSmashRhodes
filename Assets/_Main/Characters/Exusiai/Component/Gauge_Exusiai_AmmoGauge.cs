@@ -38,7 +38,7 @@ public class Gauge_Exusiai_AmmoGauge : CharacterComponent {
                     }
                 
                 } else {
-                    // --currentMagazine.ammo;
+                    --currentMagazine.ammo;
                 }   
                 chambered = true;
             }

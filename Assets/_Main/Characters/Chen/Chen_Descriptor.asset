@@ -17,6 +17,9 @@ MonoBehaviour:
   chineseName: "\u9648"
   englishName: Ch'en
   profession: 4
+  organizationChinese: "\u9F99\u95E8\u8FD1\u536B\u5C40"
+  organizationEnglish: Lungmen Guard Department
+  realName: "\u9648\u6656\u6D01"
   portrait: {fileID: 3757218774091775294, guid: 3ef04dc7ca8fe4e4ea149af7b2f8a721, type: 3}
   superPortrait: {fileID: 21300000, guid: ce063351432515b408a77460ff5640b5, type: 3}
   avatar: {fileID: 2518722248592080792, guid: b2d790360038ec04a834627640a5ac19, type: 3}
@@ -25,3 +28,4 @@ MonoBehaviour:
   professionIconWhite: {fileID: 2321974901445414416, guid: 6c0564eea95760146b9135e1b9f6a3ea, type: 3}
   professionIconUI: {fileID: 4044282750168869791, guid: b8efcc14c116ada40b9bd55d5a0ab621, type: 3}
   emblem: {fileID: 21300000, guid: 2dda2f748f31f4148b0533bc7ac7972c, type: 3}
+  skeletonData: {fileID: 11400000, guid: 3597bda701f95c44b830cd23fb4124c9, type: 2}

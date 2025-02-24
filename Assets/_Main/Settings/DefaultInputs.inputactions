@@ -1059,7 +1059,7 @@
                     "path": "<Keyboard>/numpadEnter",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";keyboard2",
                     "action": "Submit",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -1070,7 +1070,7 @@
                     "path": "<Keyboard>/leftShift",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Gamepad;Touch;XR;ps4_test;keyboard1",
+                    "groups": "Gamepad;Touch;XR;keyboard1",
                     "action": "Cancel",
                     "isComposite": false,
                     "isPartOfComposite": false

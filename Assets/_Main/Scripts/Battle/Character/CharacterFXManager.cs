@@ -7,7 +7,7 @@ using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.FX;
 using SuperSmashRhodes.Runtime.State;
 using SuperSmashRhodes.Util;
-using UnityEditor.Localization.Plugins.XLIFF.V12;
+
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.FX {

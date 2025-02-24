@@ -11,7 +11,7 @@ namespace SuperSmashRhodes.Input {
 public class LocalInputModule : MonoBehaviour, IInputProvider, IManualUpdate {
     public InputBuffer inputBuffer => localBuffer;
 
-    private PlayerInput input;
+    public PlayerInput input { get; private set; }
     private List<InputFrame> thisFrameInputs = new();
     private InputBuffer localBuffer;
     
@@ -25,6 +25,8 @@ public class LocalInputModule : MonoBehaviour, IInputProvider, IManualUpdate {
     public void ManualUpdate() {
         
     } 
+    
+    public InputAction this[string action] => input.actions[action];
 
     public void ManualFixedUpdate() {
         {
@@ -106,7 +108,6 @@ public class LocalInputModule : MonoBehaviour, IInputProvider, IManualUpdate {
     }
 
     public void OnBurst(InputValue input) {
-        // Debug.Log("burst");
         thisFrameInputs.Add(new InputFrame(InputType.P, InputFrameType.PRESSED));
         thisFrameInputs.Add(new InputFrame(InputType.D, InputFrameType.PRESSED));
         thisFrameInputs.Add(new InputFrame(InputType.S, InputFrameType.PRESSED));

@@ -17,6 +17,9 @@ MonoBehaviour:
   chineseName: "\u80FD\u5929\u4F7F"
   englishName: Exusiai
   profession: 3
+  organizationChinese: "\u4F01\u9E45\u7269\u6D41"
+  organizationEnglish: Penguin Logistics
+  realName: "\u857E\u7F2A\u4E50"
   portrait: {fileID: 21300000, guid: 2cfb0badeb15b4e489575f682f3ed247, type: 3}
   superPortrait: {fileID: 21300000, guid: c25094468ab060a4f830043aa707fcd5, type: 3}
   avatar: {fileID: 833747068, guid: 41d128924f692f345b5f4704c78ea030, type: 3}
@@ -25,3 +28,4 @@ MonoBehaviour:
   professionIconWhite: {fileID: 4097154949762752123, guid: ad19b379f3add364d9ebe18172870173, type: 3}
   professionIconUI: {fileID: -102340783, guid: b8efcc14c116ada40b9bd55d5a0ab621, type: 3}
   emblem: {fileID: 21300000, guid: f60fdf9f9bc411c499d5c6da14334fe1, type: 3}
+  skeletonData: {fileID: 11400000, guid: 18692362a6df2a84daf2dacb1099e857, type: 2}

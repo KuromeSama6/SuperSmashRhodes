@@ -7,7 +7,7 @@ using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Input;
 using SuperSmashRhodes.UI.Battle.AnnouncerHud;
 using SuperSmashRhodes.Util;
-using UnityEditor.Localization.Plugins.XLIFF.V12;
+
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 

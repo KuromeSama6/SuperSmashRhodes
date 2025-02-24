@@ -5,7 +5,7 @@ using SuperSmashRhodes.Battle.State.Implementation;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Input;
 using SuperSmashRhodes.UI.Battle.AnnouncerHud;
-using UnityEditor.Localization.Plugins.XLIFF.V12;
+
 using UnityEngine;
 
 namespace SuperSmashRhodes.Runtime.State {

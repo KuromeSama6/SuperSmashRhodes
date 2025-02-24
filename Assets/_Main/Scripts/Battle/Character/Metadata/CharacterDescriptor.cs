@@ -1,4 +1,5 @@
 ﻿using Sirenix.OdinInspector;
+using Spine.Unity;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
@@ -9,6 +10,8 @@ public class CharacterDescriptor : ScriptableObject {
     public string id;
     public string chineseName, englishName;
     public CharacterProfession profession;
+    public string organizationChinese, organizationEnglish;
+    public string realName;
     
     [Title("Sprites")]
     public Sprite portrait;
@@ -16,6 +19,9 @@ public class CharacterDescriptor : ScriptableObject {
     public Sprite avatar;
     public Sprite professionIconFull, professionIconBlack, professionIconWhite, professionIconUI;
     public Sprite emblem;
+    
+    [Title("Spine")]
+    public SkeletonDataAsset skeletonData;
 }
 
 public enum CharacterProfession {
