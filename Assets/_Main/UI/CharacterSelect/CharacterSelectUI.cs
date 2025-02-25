@@ -7,7 +7,9 @@ using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Input;
 using SuperSmashRhodes.Player;
 using SuperSmashRhodes.Room;
+using SuperSmashRhodes.Scripts.Audio;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem.UI;
 
 namespace SuperSmashRhodes.UI.CharacterSelect {
@@ -32,6 +34,8 @@ public class CharacterSelectUI : SingletonBehaviour<CharacterSelectUI> {
             if (!portrait || !portrait.character) continue;
             portraits[portrait.character] = portrait;
         }
+
+        AudioManager.inst.PlayBGM("bgm/characterselect", gameObject, .3f);
     }
 
     private void Update() {
@@ -41,8 +45,21 @@ public class CharacterSelectUI : SingletonBehaviour<CharacterSelectUI> {
                 if (playerData.Values.Any(c => c.input == input)) {
                     if (input["Cancel"].triggered) {
                         var playerId = playerData.First(c => c.Value.input == input).Key;
-                        playerData.Remove(playerId);
+                        var data = playerData[playerId];
+                        
+                        if (data.confirmed) {
+                            data.confirmed = false;
+                        } else {
+                            playerData.Remove(playerId);
+                        }
+                        AudioManager.inst.PlayAudioClip("cmn/sfx/ui/button/back", gameObject);
                     }
+                    
+                    if (input["Submit"].triggered) {
+                        var playerId = playerData.First(c => c.Value.input == input).Key;
+                        playerData[playerId].confirmed = true;
+                    }
+                    
                     continue;
                 }
                 
@@ -53,6 +70,7 @@ public class CharacterSelectUI : SingletonBehaviour<CharacterSelectUI> {
                     data.selectedCharacter = portraits.Keys.ToList()[playerId];
                     
                     playerData[playerId] = data;
+                    AudioManager.inst.PlayAudioClip("cmn/sfx/ui/button/normal", gameObject);
                 }
             }
         }
@@ -61,7 +79,7 @@ public class CharacterSelectUI : SingletonBehaviour<CharacterSelectUI> {
         var keylist = portraits.Keys.ToList();
         foreach (var (k, player) in playerData) {
             var input = player.input;
-            if (input["Navigate"].triggered) {
+            if (input["Navigate"].triggered && player.selectedCharacter && !player.confirmed) {
                 var value = input["Navigate"].ReadValue<Vector2>().x;
                 if (value == 0) continue;
                 var currentIndex = keylist.IndexOf(player.selectedCharacter);
@@ -72,7 +90,8 @@ public class CharacterSelectUI : SingletonBehaviour<CharacterSelectUI> {
                     currentIndex--;
                     if (currentIndex < 0) currentIndex = portraits.Keys.Count - 1;
                 }
-                
+
+                AudioManager.inst.PlayAudioClip("cmn/ui/navigate/normal", gameObject);
                 player.selectedCharacter = keylist[currentIndex];
             }
         }

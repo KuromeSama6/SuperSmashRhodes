@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: 79572c92e8a62eb41be6c7be2c66e55f
   m_SerializeEntries:
+  - m_GUID: 0044c4041115316439658e768e499cbb
+    m_Address: cmn/sfx/ui/button/heavy
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4b2b334589ffef64284225cedd96c4eb
     m_Address: chr/chen/battle/sfx/chixiao/2
     m_ReadOnly: 0
@@ -22,6 +27,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4c72c147dd766f941a335a6a1a5823fb
     m_Address: chr/exusiai/battle/fx/prefab/632146d/hit_sparks
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9166c0e692ddf6540942f239b8e49119
+    m_Address: cmn/sfx/ui/button/back
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

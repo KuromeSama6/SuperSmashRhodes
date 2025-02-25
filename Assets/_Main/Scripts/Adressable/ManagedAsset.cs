@@ -12,7 +12,8 @@ public class ManagedAsset {
     
     public ManagedAsset(string key) {
         this.key = key;
-        status = AssetStatus.NOT_LOADED;   
+        status = AssetStatus.NOT_LOADED;
+
     }
 
     public void Load(Action callback = null) {

@@ -73,6 +73,11 @@ public class AssetManager : AutoInitSingletonBehaviour<AssetManager> {
     }
     
     public static void Get<T>(string key, Action<T> callback) {
+        if (!inst.ready) {
+            inst.queue.Add(() => Get(key, callback));
+            return;
+        }
+        
         if (inst.assets.ContainsKey(key)) {
             inst.assets[key].Get(callback);
             

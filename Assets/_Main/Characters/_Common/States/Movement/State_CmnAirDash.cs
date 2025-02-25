@@ -54,7 +54,9 @@ public class State_CmnAirDash : CharacterState {
     }
 
     public override bool IsInputValid(InputBuffer buffer) {
-        return buffer.TimeSlice(player.characterConfig.airDashAvailableFrameFinal + 1).ScanForInput(player.side, new InputFrame(InputType.DASH, InputFrameType.PRESSED));
+        if (buffer.TimeSlice(3).ScanForInput(entity.side, new InputFrame(InputType.DASH, InputFrameType.PRESSED))) return true;
+        var ret = buffer.TimeSlice(15).ScanForInput(entity.side, InputType.BACKWARD, InputFrameType.PRESSED, 2);
+        return ret;
     }
 }
 }

@@ -27,7 +27,7 @@ public class State_CmnDash : CharacterState {
     public override bool IsInputValid(InputBuffer buffer) {
         if (buffer.thisFrame.HasInput(entity.side, InputType.BACKWARD, InputFrameType.HELD)) return false;
         if (buffer.thisFrame.HasInput(entity.side, InputType.DASH, InputFrameType.HELD)) return true;
-        var ret = buffer.TimeSlice(10).ScanForInput(entity.side, InputType.FORWARD, InputFrameType.PRESSED, 2);
+        var ret = buffer.TimeSlice(15).ScanForInput(entity.side, InputType.FORWARD, InputFrameType.PRESSED, 2);
         return ret;
     }
 

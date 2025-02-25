@@ -52,6 +52,8 @@ public class CharacterSelectCursor : MonoBehaviour {
         pos.x = Mathf.Lerp(pos.x, ((RectTransform)portrait.transform).anchoredPosition.x, Time.deltaTime * 15);
         rect.anchoredPosition = pos;
 
+        cursorOutline.transform.localScale = Vector3.Lerp(cursorOutline.transform.localScale, Vector3.one * (data.confirmed ? .95f : 1f), Time.deltaTime * 30f);
+
     }
 }
 }

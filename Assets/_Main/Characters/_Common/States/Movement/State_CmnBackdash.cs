@@ -16,7 +16,7 @@ public class State_CmnBackdash : CharacterState {
     public override float inputPriority => 1.5f;
     public override bool IsInputValid(InputBuffer buffer) {
         if (buffer.thisFrame.HasInput(entity.side, InputType.BACKWARD, InputFrameType.HELD) && buffer.TimeSlice(3).ScanForInput(entity.side, new InputFrame(InputType.DASH, InputFrameType.PRESSED))) return true;
-        var ret = buffer.TimeSlice(10).ScanForInput(entity.side, InputType.BACKWARD, InputFrameType.PRESSED, 2);
+        var ret = buffer.TimeSlice(15).ScanForInput(entity.side, InputType.BACKWARD, InputFrameType.PRESSED, 2);
         return ret;
     }
     public override AttackType invincibility => invincible ? AttackType.STRIKE | AttackType.THROW : AttackType.NONE;

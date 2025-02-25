@@ -80,6 +80,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a4811b30c644c542a9a835e7c4d08a4
+    m_Address: cmn/battle/sfx/deploy
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2a61ff9139e0d444581dd87ac0e227f1
     m_Address: chr/chen/battle/sfx/drive/parry
     m_ReadOnly: 0
@@ -180,6 +185,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76d422a1c14bce9418daaff9873086d9
+    m_Address: chr/chen/general/vo/entry
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b3200dab03125b40b1694a32cd7772c
+    m_Address: cmn/ui/navigate/normal
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7cca05b640721d74e876a3dddc9ee06a
     m_Address: chr/exusiai/battle/sfx/632146d/shot
     m_ReadOnly: 0
@@ -260,6 +275,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bfd72f8cbf58f1141af4e856214cb3a3
+    m_Address: cmn/announcer/ui/selectcharacter
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c07f178f04a5a7e48b312baa56eaa83c
     m_Address: cmn/battle/sfx/movement/airdash
     m_ReadOnly: 0
@@ -277,6 +297,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ca88864bd59d8364d9fb193e0213486a
     m_Address: cmn/battle/sfx/generic/generic_parry_success
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cc8b8e2f44fbddb48bbe542ed1d4affc
+    m_Address: cmn/sfx/ui/button/normal
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -332,6 +357,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f004cd7b5fe296542a4feea4c40104ba
     m_Address: chr/exusiai/battle/vo/driverelease
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f1d693e9b3c6cdd4e97342f33e3facd4
+    m_Address: chr/exusiai/general/vo/entry
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f56ffac3a7b586c4a9d457cf5db3e9f5
+    m_Address: bgm/characterselect
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
