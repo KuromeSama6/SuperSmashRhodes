@@ -29,6 +29,8 @@ public class LocalInputModule : MonoBehaviour, IInputProvider, IManualUpdate {
     public InputAction this[string action] => input.actions[action];
 
     public void ManualFixedUpdate() {
+        if (!input) return;
+        
         {
             List<InputFrame> toPush = new();
             toPush.AddRange(thisFrameInputs);

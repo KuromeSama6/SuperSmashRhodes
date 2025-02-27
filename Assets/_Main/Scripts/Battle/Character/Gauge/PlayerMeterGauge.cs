@@ -9,6 +9,7 @@ namespace SuperSmashRhodes.Character.Gauge {
 public class PlayerMeterGauge : CharacterComponent, IManualUpdate, IReflectionSerializable {
     public ClampedFloat gauge { get; } = new(0, 100f);
     public ClampedFloat balance { get; } = new(-250f, 250f);
+    public int penaltyFrames { get; set; } = 0;
 
     public float meterGainMultiplier {
         get {
@@ -22,6 +23,8 @@ public class PlayerMeterGauge : CharacterComponent, IManualUpdate, IReflectionSe
             var distance = player.opponentDistance;
             if (distance >= 2f) ret *= 0.8f;
             else if (distance >= 4f) ret *= 0.6f;
+
+            if (penaltyFrames > 0) ret *= .1f;
             
             return ret;
         }
@@ -66,6 +69,10 @@ public class PlayerMeterGauge : CharacterComponent, IManualUpdate, IReflectionSe
     public void ManualFixedUpdate() {
         // tension balance update
         if (GameManager.inst.globalStateFlags.HasFlag(CharacterStateFlag.PAUSE_GAUGE)) return;
+        
+        if (penaltyFrames > 0) {
+            penaltyFrames--;
+        }
         
         {
             var balance = this.balance.value;

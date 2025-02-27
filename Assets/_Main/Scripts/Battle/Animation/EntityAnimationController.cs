@@ -21,7 +21,7 @@ public class EntityAnimationController : MonoBehaviour, IStateSerializable {
     private float currentTimeScale = 1f;
     private float extractedFrameTime = 0f;
     
-    public float targetFrameRate => player.activeState.stateData.targetFrameRate;
+    public float targetFrameRate => player.logicStarted ? player.activeState.stateData.targetFrameRate : 60f;
 
     [SerializationOptions(SerializationOption.EXCLUDE)]
     private ReflectionSerializer reflectionSerializer;

@@ -29,7 +29,7 @@ public class PlayerInfoPanel : MonoBehaviour {
     public CanvasGroup namesPanel;
     public CanvasGroup readyBadge;
     
-    public CharacterSelectData data => CharacterSelectUI.inst.playerData.TryGetValue(playerId, out var ret) ? ret : null;
+    public PlayerMatchData data => CharacterSelectUI.inst.playerData.TryGetValue(playerId, out var ret) ? ret : null;
 
     private CharacterDescriptor lastCharacter;
     private bool lastConfirmState;

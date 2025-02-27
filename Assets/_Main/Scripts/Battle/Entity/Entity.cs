@@ -53,6 +53,7 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
 
     // Entity Stats
     public float health { get; set; }
+    public float healthPercent => health / config.health;
 
     public bool logicStarted { get; private set; }
     // public EntityAssetLibrary assetLibrary { get; private set; }
@@ -147,10 +148,12 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
                 }
             }
 
-            activeState.TickState();
-            if (!activeState.active) {
-                activeState = null;
-                EnsureState();
+            if (activeState != null) {
+                activeState.TickState();
+                if (!activeState.active) {
+                    activeState = null;
+                    EnsureState();
+                }   
             }
         }
 
@@ -181,6 +184,8 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
         if (state == null)
             throw new Exception("Cannot begin null state");
 
+        if (GameManager.inst.globalStateFlags.HasFlag(CharacterStateFlag.NO_NEW_STATE)) return;
+        
         if (activeState != null && activeState.active) {
             lastState = activeState;
             activeState.EndState(state);
@@ -203,7 +208,7 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
 
     public virtual void BeginLogic() {
         logicStarted = true;
-
+        animation.animation.timeScale = 1f;
     }
 
     public virtual void HandleEntityInteraction(IEntityBoundingBox from, IEntityBoundingBox to, EntityBBInteractionData data) {

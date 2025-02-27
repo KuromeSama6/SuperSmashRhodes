@@ -9,8 +9,13 @@ using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Battle.Stage;
 using SuperSmashRhodes.Framework;
+using SuperSmashRhodes.Match;
+using SuperSmashRhodes.Network.Room;
+using SuperSmashRhodes.Room;
 using SuperSmashRhodes.Runtime.State;
+using SuperSmashRhodes.Scripts.Audio;
 using SuperSmashRhodes.UI.Battle;
+using SuperSmashRhodes.Util;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -28,10 +33,12 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
     public GameObject ground;
     public GameObject leftWall, rightWall;
     public Transform environmentContainer;
-    
+
     [Title("Debug")]
-    public GameObject p1Prefab;
-    public GameObject p2Prefab;
+    public RoomConfiguration debugRoomConfig;
+    public StageData debugStageData;
+    public StageBGMData debugBgmData;
+    public CharacterDescriptor debugCharacterP1, debugCharacterP2;
 
     public CharacterStateFlag globalStateFlags {
         get {
@@ -42,61 +49,91 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
             }
             
             if (TimeManager.inst.globalFreezeFrames > 0) ret |= CharacterStateFlag.GLOBAL_PAUSE_TIMER | CharacterStateFlag.PAUSE_GAUGE;
-            return ret;
+            
+            return ret | extraGlobalStateFlags;
         }
     }
     
-    private Dictionary<int, PlayerCharacter> players = new();
+    public Dictionary<int, PlayerCharacter> players { get; } = new();
     private bool pushboxCorrectionLock = false;
+    public bool inGame { get; set; } = false;
     
     private readonly Dictionary<int, EntityReference> entityTable = new();
     private readonly Dictionary<Entity, int> entityIdReassignTable = new();
     
     private int entityIdCounter;
     private readonly List<Renderer> environmentRenderers = new();
-    private CinemachineGroupFraming cameraFraming;
+    public CinemachineGroupFraming cameraFraming { get; private set; }
     
-    private IEnumerator Start() {
+    public CharacterStateFlag extraGlobalStateFlags { get; set; }
+    
+    private void Start() {
         environmentRenderers.AddRange(environmentContainer.gameObject.GetComponentsInChildren<Renderer>());
-        
         cameraFraming = mainCamera.GetComponent<CinemachineGroupFraming>();
+        targetGroup.Targets = new();
+    }
+
+    public void PreloadResources() {
+        AssetManager.inst.PreloadAll("cmn/battle/sfx/**");
+        AssetManager.inst.PreloadAll("cmn/battle/fx/**");
+        AssetManager.inst.PreloadAll("cmn/announcer/battle/**");
+        
+        foreach (var player in RoomManager.inst.current.players.Values) {
+            AssetManager.inst.PreloadAll($"chr/{player.selectedCharacter.id}/**");
+        }
+    }
+    
+    public void RoundInit() {
+        StartCoroutine(InitRoundCoroutine());
+    }
+
+    public void ResetRound() {
+        foreach (var player in players.Values) {
+            Destroy(player.gameObject);
+        }
+
+        foreach (var entity in entityTable.Values) {
+            Destroy(entity.entity.gameObject);
+        }
+        
+        players.Clear();
+        entityTable.Clear();
+        entityIdReassignTable.Clear();
         
         targetGroup.Targets.Clear();
+    }
+    
+    private IEnumerator InitRoundCoroutine() {
+        var room = RoomManager.inst.current;
         
-        CreatePlayer(0, p1Prefab);
-        CreatePlayer(1, p2Prefab);
-
+        CreatePlayer(0, room.players[0].selectedCharacter.gameObject);
+        CreatePlayer(1, room.players[1].selectedCharacter.gameObject);
+        
         yield return new WaitForFixedUpdate();
-        foreach (var player in players.Values) {
-            player.OnRoundInit();
-        }
+        
         foreach (var player in players.Values) {
             player.BeginLogic();
         }
-        
-        AssetManager.inst.PreloadAll("cmn/battle/sfx/**");
-        AssetManager.inst.PreloadAll("cmn/battle/fx/**");
     }
-
-    private void CreatePlayer(int index, GameObject prefab) {
+    
+    public PlayerCharacter CreatePlayer(int index, GameObject prefab) {
         var input = Instantiate(prefab);
         var player = input.GetComponent<PlayerCharacter>();
-        AssetManager.inst.PreloadAll($"chr/{player.config.id}/**");
         player.Init(index);
         player.name = "Player" + index;
         
         players[index] = player;
         targetGroup.AddMember(player.transform, 1, 0.5f);
         
-        
+        return player;
     }
     
     public PlayerCharacter GetOpponent(PlayerCharacter player) {
-        return players[player.playerIndex == 0 ? 1 : 0];
+        return players.GetValueOrDefault(player.playerIndex == 0 ? 1 : 0);
     }
 
     public PlayerCharacter GetPlayer(int index) {
-        return players[index];
+        return players.GetValueOrDefault(index);
     }
 
     public Vector3 ClampPositionToStage(Vector3 position) {
@@ -105,6 +142,13 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
     }
 
     public void ManualUpdate() {
+        if (RoomManager.inst.current == null && UnityEngine.Input.GetKeyDown(KeyCode.F6) && debugRoomConfig) {
+            print("begin debug match");
+            BeginDebugMatch();
+        }
+        
+        if (!inGame) return;
+        
         foreach (var target in targetGroup.Targets) {
             var player = GetPlayer(targetGroup.Targets.IndexOf(target));
             if (player.stateFlags.HasFlag(CharacterStateFlag.CAMERA_FOLLOWS_BONE)) {
@@ -140,6 +184,9 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
 
     public void ManualFixedUpdate() {
         pushboxCorrectionLock = false;
+        if (RoomManager.inst.current != null) {
+            RoomManager.inst.current.Tick();
+        }
     }
 
     public void AttemptPushboxCorrection(PlayerCharacter top, PlayerCharacter bottom) {
@@ -256,6 +303,26 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
                 if (entity.entity) Destroy(entity.entity.gameObject);
             }
         }
+    }
+
+    public void HandlePlayerDeath(PlayerCharacter player) {
+        extraGlobalStateFlags |= CharacterStateFlag.GLOBAL_PAUSE_TIMER | CharacterStateFlag.PAUSE_INPUT | CharacterStateFlag.PAUSE_GAUGE;
+        AudioManager.inst.PlayAudioClip("cmn/announcer/battle/ko", gameObject, "active_announcer");
+
+    }
+    
+    private void BeginDebugMatch() {
+        var room = new LocalRoom(debugRoomConfig);
+        room.players[0] = PlayerMatchData.CreateDebugPlayerData(0, "keyboard1", debugCharacterP1);
+        room.players[1] = PlayerMatchData.CreateDebugPlayerData(1, "keyboard2", debugCharacterP2);
+        room.stageData = debugStageData;
+        room.bgmData = debugBgmData;
+        RoomManager.inst.CreateRoom(room);
+        
+        PreloadResources();
+        AudioManager.inst.PlayBGM(debugBgmData, gameObject, 1f, .2f);
+        
+        room.BeginMatch();
     }
     
     public void Serialize(StateSerializer serializer) {

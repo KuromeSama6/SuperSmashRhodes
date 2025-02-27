@@ -20,7 +20,7 @@ public class DriveReleaseGaugeUI : PerSideUIElement<DriveReleaseGaugeUI> {
     private RectTransform rectTransform => (RectTransform) transform;
     private float offsetX {
         get {
-            if (!player) return player.playerIndex == 0 ? -150 : 150;
+            if (!player || !player.logicStarted) return player.playerIndex == 0 ? -150 : 150;
             if (!player.burst.driveRelease) return player.playerIndex == 0 ? -150 : 150;
             if (player.activeState.type.HasFlag(EntityStateType.CHR_ATK_SUPER)) return player.playerIndex == 0 ? -150 : 150;
 

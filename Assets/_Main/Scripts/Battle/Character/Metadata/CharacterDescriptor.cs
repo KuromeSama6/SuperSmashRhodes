@@ -12,6 +12,12 @@ public class CharacterDescriptor : ScriptableObject {
     public CharacterProfession profession;
     public string organizationChinese, organizationEnglish;
     public string realName;
+
+    [Title("Ratings and Descriptions")]
+    public Sprite easyOfUseRatingIcon;
+    public string mainDescription;
+    public string subDescription1;
+    public string subDescription2;
     
     [Title("Sprites")]
     public Sprite portrait;
@@ -22,6 +28,9 @@ public class CharacterDescriptor : ScriptableObject {
     
     [Title("Spine")]
     public SkeletonDataAsset skeletonData;
+
+    [Title("Misc")]
+    public float entryCinematicDuration = 7f;
 }
 
 public enum CharacterProfession {

@@ -57,7 +57,6 @@ public enum EntityStateType : ulong {
     
     ENT_TOKEN = 1L << 62,
     
-    
     CHR_ATK_NORMAL = CHR_ATK_5P | CHR_ATK_5S | CHR_ATK_5CS | CHR_ATK_5H | CHR_ATK_5D | CHR_ATK_6P | CHR_ATK_6H | CHR_ATK_6D | CHR_ATK_2P | CHR_ATK_2S | CHR_ATK_2H | CHR_ATK_2D | CHR_ATK_4D | CHR_ATK_6S,
     
     CHR_ATK_NORMAL_P = CHR_ATK_5P | CHR_ATK_6P | CHR_ATK_2P | CHR_ATK_8P,

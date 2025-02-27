@@ -11,6 +11,7 @@ public class ComponentSpecificUIElement<T> : PerSideUIElement<ComponentSpecificU
     public T playerComponent {
         get {
             if (_playerComponent) return _playerComponent;
+            if (!player) return null;
             _playerComponent = player.GetComponent<T>();
             return _playerComponent;
         }

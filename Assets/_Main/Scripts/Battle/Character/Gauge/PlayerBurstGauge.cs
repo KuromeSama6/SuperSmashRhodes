@@ -19,7 +19,7 @@ public class PlayerBurstGauge : CharacterComponent, IManualUpdate, IReflectionSe
     public int maxReleaseFrames => (int)(4 * 60f * 1.5f);
     
     public bool canBurst => burstAvailable && !burstUsed && !player.stateFlags.HasFlag(CharacterStateFlag.DISABLE_BURST);
-    public bool canDriveRelease => gauge.value >= 500f && !driveRelease || true;
+    public bool canDriveRelease => gauge.value >= 500f && !driveRelease;
     
     public ReflectionSerializer reflectionSerializer { get; private set; }
     
@@ -50,15 +50,22 @@ public class PlayerBurstGauge : CharacterComponent, IManualUpdate, IReflectionSe
         } else {
             {
                 // passive gain
+                var multiplier = 1f;
+                if (player.healthPercent <= .25f) {
+                    multiplier = 2.2f;
+                } else if (player.healthPercent <= .5f) {
+                    multiplier = 1.2f;
+                }
+                
                 if (gauge.value < 500f) {
                     if (gauge.value >= 400f) {
-                        AddDelta(1f / 60f, 1);
+                        AddDelta(1f / 60f * multiplier, 1);
                     } else if (gauge.value >= 200f) {
-                        AddDelta(1.5f / 60f, 1);
+                        AddDelta(1.5f / 60f * multiplier, 1);
                     } else if (gauge.value >= 100f) {
-                        AddDelta(2f / 60f, 1);
+                        AddDelta(2f / 60f * multiplier, 1);
                     } else {
-                        AddDelta(3f / 60f, 1);
+                        AddDelta(3f / 60f * multiplier, 1);
                     }
                 }
             }

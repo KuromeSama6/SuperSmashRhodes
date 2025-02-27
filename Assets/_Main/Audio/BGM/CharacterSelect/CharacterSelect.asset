@@ -12,5 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f492d2c1176f465cb97145f010e6151f, type: 3}
   m_Name: CharacterSelect
   m_EditorClassIdentifier: 
-  intro: {fileID: 8300000, guid: 50b86d1fe424e2a4bad5aef799735292, type: 3}
-  loop: {fileID: 8300000, guid: c1963a9377edad54387d0531dac56325, type: 3}
+  <intro>k__BackingField:
+    m_AssetGUID: 50b86d1fe424e2a4bad5aef799735292
+    m_SubObjectName: 
+    m_SubObjectGUID: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 1
+  <loop>k__BackingField:
+    m_AssetGUID: c1963a9377edad54387d0531dac56325
+    m_SubObjectName: 
+    m_SubObjectGUID: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 1

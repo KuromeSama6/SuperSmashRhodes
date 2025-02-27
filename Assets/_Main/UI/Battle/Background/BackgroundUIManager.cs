@@ -31,7 +31,7 @@ public class BackgroundUIManager : SingletonBehaviour<BackgroundUIManager> {
         get {
             var p1 = GameManager.inst.GetPlayer(0);
             var p2 = GameManager.inst.GetPlayer(1);
-            if (!p1 || !p2) return BackgroundUIData.DEFAULT;
+            if (!p1 || !p2) return null;
             try {
                 return p2.activeState.stateData.backgroundUIData.priority > p1.activeState.stateData.backgroundUIData.priority ? p2.activeState.stateData.backgroundUIData : p1.activeState.stateData.backgroundUIData;
             } catch {
@@ -48,6 +48,7 @@ public class BackgroundUIManager : SingletonBehaviour<BackgroundUIManager> {
 
     private void Update() {
         var backgroundData = data;
+        if (backgroundData == null) return;
         
         {
             var targetAlpha = backgroundData.dimAlpha;

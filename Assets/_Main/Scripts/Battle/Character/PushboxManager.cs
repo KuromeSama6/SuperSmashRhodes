@@ -61,7 +61,7 @@ public class PushboxManager : MonoBehaviour, IManualUpdate {
 
     public void ManualFixedUpdate() {
         pushboxCorrectionLock = false;
-        if (!player) return;
+        if (!player || !player.opponent) return;
 
         {
             // pushboxes

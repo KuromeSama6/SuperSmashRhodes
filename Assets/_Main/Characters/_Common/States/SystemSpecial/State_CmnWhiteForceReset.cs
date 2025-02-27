@@ -33,6 +33,8 @@ public class State_CmnWhiteForceReset : CharacterState {
         player.ResetAirOptions();
         player.frameData.landingRecoveryFrames = 0;
         player.frameData.landingFlag = LandingRecoveryFlag.NONE;
+
+        player.meter.penaltyFrames += 360;
     }
 
     public override IEnumerator MainRoutine() {

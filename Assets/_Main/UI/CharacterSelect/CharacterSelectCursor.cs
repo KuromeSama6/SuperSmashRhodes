@@ -15,7 +15,7 @@ public class CharacterSelectCursor : MonoBehaviour {
     public Image cursorOutline, cursorFill;
     public CanvasGroup p1Pointer, p2Pointer;
 
-    private CharacterSelectData data => CharacterSelectUI.inst.playerData.TryGetValue(playerId, out var ret) ? ret : null;
+    private PlayerMatchData data => CharacterSelectUI.inst.playerData.TryGetValue(playerId, out var ret) ? ret : null;
     
     private void Start() {
         canvasGroup.alpha = 0;

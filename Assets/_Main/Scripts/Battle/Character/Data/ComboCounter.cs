@@ -2,6 +2,7 @@
 using System.Linq;
 using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Battle.State.Implementation;
+using SuperSmashRhodes.Network.Room;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -38,6 +39,7 @@ public class ComboCounter : RuntimeCharacterDataRegister, IReflectionSerializabl
     }
 
     public void RegisterAttack(
+        float damage,
         IAttack move, 
         Entity victim, 
         DamageProperties flags,
@@ -46,6 +48,7 @@ public class ComboCounter : RuntimeCharacterDataRegister, IReflectionSerializabl
     ) 
     {
         // Debug.Log(blocked);
+        
         if (!blocked) ++displayedCount;
         if (flags.HasFlag(DamageProperties.SKIP_REGISTER)) return;
         // Debug.Log(flags.HasFlag(DamageProperties.MULTIHIT));
@@ -60,6 +63,9 @@ public class ComboCounter : RuntimeCharacterDataRegister, IReflectionSerializabl
         } else {
             multihitCount = 0;
             multihitProration = 1f;
+            
+            owner.burst.AddDeltaTotal(damage * .05f, 120);
+            owner.meter.AddMeter(1.5f);
         }
         
         if (partOfMultihit) {
@@ -112,9 +118,10 @@ public class ComboCounter : RuntimeCharacterDataRegister, IReflectionSerializabl
         comboDecay = 0;
         movesUsed.Clear();
         lastMove = null;
-        
-        //TODO: Demove Debug
-        owner.health = owner.config.health;
+
+        if (RoomManager.inst.current.config.isTraining) {
+            owner.health = owner.config.health;
+        }
 
         // Debug.Log($"{owner} combo end");
     }

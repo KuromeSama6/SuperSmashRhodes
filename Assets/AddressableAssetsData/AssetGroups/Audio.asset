@@ -30,8 +30,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 06d46f89926d4ea429f01566830b095e
+    m_Address: bgm/battle/00_longmenbat/intro
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 07d4c7978273e3843b7547b155d74303
     m_Address: cmn/battle/sfx/super
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 09be7515c7b0d45439377c0637c78fa0
+    m_Address: cmn/announcer/battle/round/2
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -80,6 +90,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 257f59a382fc18f49b343f028a9c8890
+    m_Address: cmn/announcer/battle/fight
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2a4811b30c644c542a9a835e7c4d08a4
     m_Address: cmn/battle/sfx/deploy
     m_ReadOnly: 0
@@ -110,8 +125,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 336d54b5970858e4b89aa89d25d8d3b7
+    m_Address: chr/chen/general/vo/deploy
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 362628f81f7684743befcb15ec19e340
     m_Address: chr/exusiai/battle/sfx/gun_2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 376d7a7a8fcae294bb09f2786eff3e09
+    m_Address: bgm/battle/00_longmenbat/loop
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -122,6 +147,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3ca18596f4ac1794f90cce427b664e33
     m_Address: cmn/battle/sfx/throw_break/1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3d17d351e1b7bc943ad8bf954a7843ba
+    m_Address: cmn/battle/sfx/dead
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -147,6 +177,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 501e9983b59493c42bb355aa6e40ff27
     m_Address: cmn/battle/sfx/generic/generic_armor_success
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 50b86d1fe424e2a4bad5aef799735292
+    m_Address: bgm/characterselect/intro
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -180,6 +215,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6500cc002c1a35844ba8468292b883cd
+    m_Address: cmn/announcer/battle/ko
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 682c9c09e52109c48adfd212614e00fb
+    m_Address: cmn/announcer/battle/round/1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6ad74c63d07b7b049bed1ab289a25c6a
     m_Address: chr/exusiai/battle/sfx/originium/charge_lv2
     m_ReadOnly: 0
@@ -187,6 +232,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 76d422a1c14bce9418daaff9873086d9
     m_Address: chr/chen/general/vo/entry
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 782da8e1e0072584696155ccc4fd6f46
+    m_Address: cmn/announcer/battle/round/3
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -245,6 +295,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9876da0837709e444a02a72b25f31092
+    m_Address: chr/exusiai/general/vo/deploy
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9b605ea729776ca4186b833136d9ab06
     m_Address: chr/exusiai/battle/sfx/gun_magout
     m_ReadOnly: 0
@@ -282,6 +337,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c07f178f04a5a7e48b312baa56eaa83c
     m_Address: cmn/battle/sfx/movement/airdash
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1963a9377edad54387d0531dac56325
+    m_Address: bgm/characterselect/loop
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

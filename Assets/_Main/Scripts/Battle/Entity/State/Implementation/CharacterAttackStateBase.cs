@@ -18,6 +18,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public override bool mayEnterState => player.MatchesAirState(airOk);
     public override Hitstate hitstate => phase == AttackPhase.RECOVERY ? Hitstate.PUNISH : Hitstate.COUNTER;
     public bool chargable => this is IChargable;
+    public virtual bool landCancellable => true;
 
     public CharacterAttackStateBase(Entity entity) : base(entity) {
         
@@ -155,7 +156,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     
     public virtual float GetMeterGain(Entity to, bool blocked) {
         var attackLevel = GetAttackLevel(to);
-        return (attackLevel + 1) * 1.5f * (blocked ? 1f : 2f) * player.comboCounter.finalScale;
+        return (attackLevel + 1) * 1f * (blocked ? 1f : 2f) * player.comboCounter.finalScale;
     }
 
     // Abstract Properties
@@ -243,7 +244,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public override void OnLand(LandingRecoveryFlag flag, int recoveryFrames) {
         base.OnLand(flag, recoveryFrames);
         // Debug.Log($"land, this {id}, flag {flag}, recov {recoveryFrames}, this flag {landingRecoveryFlag.HasFlag(LandingRecoveryFlag.CARRY_CANCEL_OPTIONS)}, fd recov {player.frameData.landingRecoveryFrames}");
-        if (flag.HasFlag(LandingRecoveryFlag.NO_LANDING_RECOVERY)) {
+        if (flag.HasFlag(LandingRecoveryFlag.NO_LANDING_RECOVERY) || !landCancellable) {
             // Debug.Log("no recov");
             return;
         }

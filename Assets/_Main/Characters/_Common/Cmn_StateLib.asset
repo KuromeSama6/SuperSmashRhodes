@@ -15,6 +15,7 @@ MonoBehaviour:
   prefix: 
   useTokenNameAsPrefix: 0
   states:
+  - SysDeath
   - CmnNeutral
   - CmnMoveForward
   - CmnMoveBackward

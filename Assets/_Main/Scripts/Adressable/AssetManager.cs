@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DotNet.Globbing;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Util;
@@ -31,9 +32,16 @@ public class AssetManager : AutoInitSingletonBehaviour<AssetManager> {
         queue.ForEach(c => c.Invoke());
 
         SceneManager.sceneUnloaded += OnSceneUnloaded;
+        
+        InstantiateAutoPrefabs();
     }
 
-    public void PreloadAll(string pattern, AssetReleaseMethod releaseMethod = AssetReleaseMethod.ON_SCENE_UNLOAD) {
+    public List<string> GetAssets(string pattern) {
+        var glob = Glob.Parse(pattern);
+        return assets.Keys.Where(c => glob.IsMatch(c)).ToList();
+    }
+    
+    public void PreloadAll(string pattern, AssetReleaseMethod releaseMethod = AssetReleaseMethod.MANUAL) {
         if (!ready) {
             queue.Add(() => PreloadAll(pattern, releaseMethod));
             return;
@@ -62,6 +70,21 @@ public class AssetManager : AutoInitSingletonBehaviour<AssetManager> {
         }
     }
     
+    
+    private void InstantiateAutoPrefabs() {
+        foreach (var path in GetAssets("__auto/**")) {
+            Get<GameObject>(path, res => {
+                var go = Instantiate(res);
+                go.name = $"{res.name}$Auto";
+                DontDestroyOnLoad(go);
+            });
+        }
+    }
+    
+    public static T Get<T>(AssetReferenceT<T> reference) where T: Object {
+        return Get<T>(reference.RuntimeKey.ToString());
+    }
+    
     public static T Get<T>(string key) where T: Object {
         if (inst.assets.ContainsKey(key)) {
             return inst.assets[key].GetNow<T>();
@@ -70,6 +93,10 @@ public class AssetManager : AutoInitSingletonBehaviour<AssetManager> {
             Debug.LogError($"Asset {key} not found");
             return null;
         }
+    }
+    
+    public static void Get<T>(AssetReferenceT<T> reference, Action<T> callback) where T: Object {
+        Get(reference.RuntimeKey.ToString(), callback);
     }
     
     public static void Get<T>(string key, Action<T> callback) {

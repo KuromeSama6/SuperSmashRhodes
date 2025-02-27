@@ -19,6 +19,8 @@ public class EntityBoundingBox : MonoBehaviour, IEntityBoundingBox, IManualUpdat
     }
 
     public void ManualFixedUpdate() {
+        if (!entity.logicStarted) return;
+        
         if (!collider) {
             collider = GetComponent<PolygonCollider2D>();
             if (!collider) return;

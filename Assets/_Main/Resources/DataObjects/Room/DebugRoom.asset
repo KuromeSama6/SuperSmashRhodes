@@ -16,6 +16,7 @@ MonoBehaviour:
   isTraining: 0
   winRounds: 2
   roundTime: 99
+  infiniteTime: 0
   singleSided: 0
   infiniteCharacterSelect: 0
   characterSelectTime: 30

@@ -120,6 +120,8 @@ public class State_Chen_OvrSklChixiao : State_Common_OverdriveAttack {
                 stateData.cameraData.focusBone = "632146h";
                 stateData.cameraData.cameraWeightModifier = 2f;
                 stateData.cameraData.cameraFovModifier = -5f;
+                
+                ReleaseSocket();
             }
         }
         

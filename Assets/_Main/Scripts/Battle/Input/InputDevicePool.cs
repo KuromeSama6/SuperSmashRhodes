@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace SuperSmashRhodes.Input {
-public class InputDevicePool : PersistentSingletonBehaviour<InputDevicePool> {
+public class InputDevicePool : SingletonBehaviour<InputDevicePool> {
     [Title("References")]
     public InputActionAsset inputSettings;
     public GameObject inputModulePrefab;

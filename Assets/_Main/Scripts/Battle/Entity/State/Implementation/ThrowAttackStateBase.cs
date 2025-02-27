@@ -95,7 +95,7 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
             }
 
             // successful hit
-            Debug.Log("hit");
+            // Debug.Log("hit");
             hasHit = true;
             bool switchSides = ShouldSwitchSides(opponent);
             player.audioManager.PlaySound("cmn/battle/sfx/throw/1");
@@ -123,7 +123,8 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
             
             // process throw hit
             opponent.BeginState("CmnHitStunGround");
-            opponent.stateFlags = CharacterStateFlag.TIME_THROW;
+            opponent.stateFlags = CharacterStateFlag.TIME_THROW | CharacterStateFlag.DEATH_HOLD;
+            stateData.cameraData.cameraFovModifier = -5;
 
             socket = new CinematicCharacterSocket(opponent, player, throwSocketBoneName, new(0, -1, 0));
             socket.Attach();
@@ -240,7 +241,7 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
     }
     protected virtual void OnFinalHit() {
         // OnHit(player.opponent);
-        Debug.Log("hitstun hard");
+        // Debug.Log("hitstun hard");
         opponent.BeginState("CmnHardKnockdown");
     }
     

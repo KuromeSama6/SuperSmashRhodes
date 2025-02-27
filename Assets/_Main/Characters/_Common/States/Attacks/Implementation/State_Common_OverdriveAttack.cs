@@ -20,11 +20,12 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
     protected override EntityStateType commonCancelOptions => EntityStateType.NONE;
     protected override int normalInputBufferLength => 20;
     protected override float inputMeter => 0;
-    public override bool mayEnterState => player.meter.gauge.value >= meterCost || true;
+    public override bool mayEnterState => player.meter.gauge.value >= meterCost;
     public override CharacterStateFlag globalFlags => CharacterStateFlag.PAUSE_GAUGE | CharacterStateFlag.GLOBAL_PAUSE_TIMER;
     public override StateIndicatorFlag stateIndicator => StateIndicatorFlag.SUPER | (player.burst.driveRelease ? StateIndicatorFlag.DRIVE_RELEASE : StateIndicatorFlag.NONE) | (cinematicHit ? StateIndicatorFlag.INVINCIBLE : StateIndicatorFlag.NONE);
+    public override bool landCancellable => false;
 
-    
+
     protected CinematicCharacterSocket socket { get; private set; }
     protected bool cinematicHit { get; private set; }
     protected bool hasHit { get; private set; }
@@ -151,6 +152,7 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
 
         player.burst.releaseFrames = 0;
         opponent.stateFlags = player.stateFlags = default;
+        player.meter.penaltyFrames += 180;
     }
 
     protected override void OnTick() {
@@ -241,8 +243,9 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
         base.OnApplyCinematicDamage(data);
     }
 
-    [AnimationEventHandler("std/ReleaseCinematicSocket")]
-    public virtual void OnSocketRelease(AnimationEventData data) {
+    protected void ReleaseSocket() {
+        if (socket == null || !socket.attached) return;
+        
         if (socket != null && socket.attached) {
             OnRelease();
         }
@@ -258,6 +261,11 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
             opponent.ApplyForwardVelocity(new(0, 3));
             opponent.frameData.landingFlag = LandingRecoveryFlag.HARD_KNOCKDOWN_LAND | LandingRecoveryFlag.HARD_LAND_COSMETIC;
         }
+    }
+    
+    [AnimationEventHandler("std/ReleaseCinematicSocket")]
+    public virtual void OnSocketRelease(AnimationEventData data) {
+        ReleaseSocket();
     }
 
 }

@@ -11,7 +11,8 @@ public class RoomConfiguration : ScriptableObject {
     [Title("Round Config")]
     public int winRounds;
     public int roundTime;
-
+    public bool infiniteTime;
+    
     [Title("Character Select")]
     public bool singleSided;
     public bool infiniteCharacterSelect;

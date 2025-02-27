@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using SuperSmashRhodes.Battle;
+using SuperSmashRhodes.Battle.Stage;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Input;
-using SuperSmashRhodes.Player;
+using SuperSmashRhodes.Match;
+using SuperSmashRhodes.Network.Room;
 using SuperSmashRhodes.Room;
 using SuperSmashRhodes.Scripts.Audio;
 using UnityEngine;
@@ -14,18 +17,28 @@ using UnityEngine.InputSystem.UI;
 
 namespace SuperSmashRhodes.UI.CharacterSelect {
 public class CharacterSelectUI : SingletonBehaviour<CharacterSelectUI> {
+    public RoomConfiguration roomConfiguration;
+    
     [Title("References")]
+    public Animator animator;
     public CanvasGroup controllerWaitPanel;
     public CanvasGroup characterSelectPanel;
     public CanvasGroup playerListPanel;
     public RectTransform drawerContainer;
     public RectTransform portraitContainer;
 
-    public Dictionary<int, CharacterSelectData> playerData { get; } = new();
+    [Title("Debug")]
+    public StageData stageData;
+    public StageBGMData bgmData;
+    
+    public Dictionary<int, PlayerMatchData> playerData { get; } = new();
     private bool showPlayerList => playerData.Count > 0;
     public Dictionary<CharacterDescriptor, CharacterPortrait> portraits = new();
     
+    public bool show { get; set; }
+    
     private void Start() {
+        show = true;
         InputDevicePool.inst.currentActionMap = "UI";
         
         // load portraits
@@ -35,10 +48,24 @@ public class CharacterSelectUI : SingletonBehaviour<CharacterSelectUI> {
             portraits[portrait.character] = portrait;
         }
 
-        AudioManager.inst.PlayBGM("bgm/characterselect", gameObject, .3f);
+        AudioManager.inst.PlayBGM("bgm/characterselect", gameObject, .5f, .3f);
     }
 
     private void Update() {
+        {
+            // panels
+            controllerWaitPanel.alpha = Mathf.Lerp(controllerWaitPanel.alpha, showPlayerList ? 0 : 1, Time.deltaTime * 10);
+            playerListPanel.alpha = Mathf.Lerp(playerListPanel.alpha, showPlayerList ? 1 : 0, Time.deltaTime * 10);
+
+            var delta = drawerContainer.sizeDelta;
+            delta.y = Mathf.Lerp(delta.y, show ? showPlayerList ? 300 : 100 : 0, Time.deltaTime * 15f);
+            drawerContainer.sizeDelta = delta;
+            
+            animator.SetBool("Show", show);
+        }
+        
+        if (!show) return;
+        
         {
             // player joining
             foreach (var (k, input) in InputDevicePool.inst.inputs) {
@@ -58,6 +85,12 @@ public class CharacterSelectUI : SingletonBehaviour<CharacterSelectUI> {
                     if (input["Submit"].triggered) {
                         var playerId = playerData.First(c => c.Value.input == input).Key;
                         playerData[playerId].confirmed = true;
+
+                        if (playerData.Count >= 2 && playerData.Values.All(c => c.confirmed)) {
+                            StopAllCoroutines();
+                            StartCoroutine(ShowVSScreen(playerData[0], playerData[1]));
+                            return;
+                        }
                     }
                     
                     continue;
@@ -66,7 +99,7 @@ public class CharacterSelectUI : SingletonBehaviour<CharacterSelectUI> {
                 if (input["Submit"].triggered) {
                     int playerId = playerData.ContainsKey(0) ? 1 : 0;
                     
-                    var data = new CharacterSelectData(input);
+                    var data = new PlayerMatchData(playerId, input);
                     data.selectedCharacter = portraits.Keys.ToList()[playerId];
                     
                     playerData[playerId] = data;
@@ -95,16 +128,19 @@ public class CharacterSelectUI : SingletonBehaviour<CharacterSelectUI> {
                 player.selectedCharacter = keylist[currentIndex];
             }
         }
-        
-        {
-            // panels
-            controllerWaitPanel.alpha = Mathf.Lerp(controllerWaitPanel.alpha, showPlayerList ? 0 : 1, Time.deltaTime * 10);
-            playerListPanel.alpha = Mathf.Lerp(playerListPanel.alpha, showPlayerList ? 1 : 0, Time.deltaTime * 10);
+    }
 
-            var delta = drawerContainer.sizeDelta;
-            delta.y = Mathf.Lerp(delta.y, showPlayerList ? 300 : 100, Time.deltaTime * 15f);
-            drawerContainer.sizeDelta = delta;
-        }
+    private IEnumerator ShowVSScreen(PlayerMatchData p1, PlayerMatchData p2) {
+        if (!show) yield break;
+        yield return new WaitForSeconds(2);
+        
+        if (playerData.Count < 2 || playerData.Values.Any(c => !c.confirmed)) yield break;
+        
+        CharacterVSScreen.inst.Show(p1, p2);
+        show = false;
+
+        yield return new WaitForSeconds(0.5f);
+        RoomManager.inst.BeginLocalMatch(roomConfiguration, stageData, bgmData, p1, p2);
         
     }
 }

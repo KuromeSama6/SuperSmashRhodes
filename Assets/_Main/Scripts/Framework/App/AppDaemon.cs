@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using MoreMountains.Tools;
+using SuperSmashRhodes.Adressable;
 using SuperSmashRhodes.Extensions;
 using UnityEngine;
 using UnityEngine.Events;

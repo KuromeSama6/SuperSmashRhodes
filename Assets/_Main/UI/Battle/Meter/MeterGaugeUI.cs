@@ -27,7 +27,7 @@ public class MeterGaugeUI : PerSideUIElement<MeterGaugeUI> {
     }
 
     private void Update() {
-        if (!player) return;
+        if (!player || !player.logicStarted) return;
         var gauge = player.meter;
         var meter = gauge.gauge.value;
         var percentage = meter / gauge.gauge.max;

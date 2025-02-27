@@ -41,11 +41,11 @@ public class BurstGaugeUI : PerSideUIElement<BurstGaugeUI> {
 
     private void Update() {
         var player = this.player;
-        if (player == null) return;
+        if (!player) return;
         
         rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, new Vector2(originalX + offsetX, rectTransform.anchoredPosition.y), Time.deltaTime * 5f);
         
-        if (GameManager.inst.globalStateFlags.HasFlag(CharacterStateFlag.PAUSE_GAUGE)) return;
+        // if (GameManager.inst.globalStateFlags.HasFlag(CharacterStateFlag.PAUSE_GAUGE)) return;
         
         var burst = player.burst;
         var gauge = burst.gauge;

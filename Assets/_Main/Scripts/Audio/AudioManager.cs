@@ -58,20 +58,37 @@ public class AudioManager : AutoInitSingletonBehaviour<AudioManager> {
         return ret;
     }
     
-    public void PlayBGM(string path, GameObject owner, float volume = 1f, float pitch = 1f) {
-        AssetManager.Get<BGMLoopData>(path, data => PlayBGM(data, owner, volume, pitch));
+    public void PlayBGM(string path, GameObject owner, float fadeIn = .5f, float volume = 1f, float pitch = 1f) {
+        AssetManager.Get<BGMLoopData>(path, data => PlayBGM(data, owner, fadeIn, volume, pitch));
     }
     
-    public ISoundHandle PlayBGM(BGMLoopData data, GameObject owner, float volume = 1f, float pitch = 1f) {
+    public ISoundHandle PlayBGM(IAudioLoopData data, GameObject owner, float fadeIn = .5f, float volume = 1f, float pitch = 1f) {
         ++idCounter;
         var go = new GameObject($"BGM${idCounter}");
         go.transform.parent = transform;
         
+        // release current bgm
+        if (channels.TryGetValue("_bgm", out var current)) {
+            current.Release(0.1f);
+        }
+        
         var ret = go.AddComponent<BGMLoopPlayer>();
-        ret.Play(data, volume, pitch);
+        ret.Play(data, fadeIn, volume, pitch);
+        channels["_bgm"] = ret;
         
         ownedPlayers[ret] = new OwnedPlayerData(owner);
         return ret;
+    }
+
+    public void StopChannel(string channel, float fadeOut = 0.1f) {
+        if (channels.TryGetValue(channel, out var current)) {
+            current.Release(fadeOut);
+            channels.Remove(channel);
+        }
+    }
+
+    public void StopBGM(float fadeOut = 0.1f) {
+        StopChannel("_bgm", fadeOut);
     }
     
 }

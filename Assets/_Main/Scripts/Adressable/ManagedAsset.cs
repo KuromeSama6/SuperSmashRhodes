@@ -52,6 +52,7 @@ public class ManagedAsset {
     }
     
     public void Release() {
+        if (!handle.IsValid()) return;
         if (status == AssetStatus.RELEASED) {
             return;
         }

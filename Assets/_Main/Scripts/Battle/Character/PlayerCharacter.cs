@@ -14,6 +14,7 @@ using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Battle.State.Implementation;
 using SuperSmashRhodes.Character.Gauge;
 using SuperSmashRhodes.Input;
+using SuperSmashRhodes.Network.Room;
 using SuperSmashRhodes.Runtime.State;
 using SuperSmashRhodes.UI.Battle;
 using SuperSmashRhodes.UI.Battle.AnnouncerHud;
@@ -58,6 +59,7 @@ public class PlayerCharacter : Entity {
     public List<CharacterAttackStateBase> gatlingMovesUsed { get; } = new();
 
     public bool atWall => pushboxManager.atWall;
+    public bool dead => activeState is State_SysDeath;
     public float wallDistance {
         get {
             if (side == EntitySide.RIGHT) {
@@ -143,8 +145,6 @@ public class PlayerCharacter : Entity {
         burst = GetComponent<PlayerBurstGauge>();
         
         pushboxManager.onGroundContact.AddListener(OnGroundContact);
-        
-        AssetManager.inst.PreloadAll($"chr/{config.id}/battle/**");
     }
 
     public override void ManualUpdate() {
@@ -168,6 +168,14 @@ public class PlayerCharacter : Entity {
             --applyGroundedFrictionFrames;
             groundedFrictionAlpha = Mathf.Lerp(groundedFrictionAlpha, 1, Time.fixedDeltaTime);
             rb.linearVelocityX = Mathf.Lerp(rb.linearVelocityX, 0, Time.fixedDeltaTime * 20f * groundedFrictionAlpha);
+        }
+        
+        // death
+        if (health <= 0 && !RoomManager.inst.current.config.isTraining && !(activeState is State_SysDeath) && !stateFlags.HasFlag(CharacterStateFlag.DEATH_HOLD)) {
+            BeginState("SysDeath");
+            stateFlags |= CharacterStateFlag.NO_NEW_STATE;
+            GameManager.inst.HandlePlayerDeath(this);
+            comboCounter.Reset();
         }
         
     }
@@ -223,6 +231,7 @@ public class PlayerCharacter : Entity {
     
     private void UpdateInput() { 
         if (inputProvider.inputBuffer == null) return;
+        if (stateFlags.HasFlag(CharacterStateFlag.PAUSE_INPUT) || GameManager.inst.globalStateFlags.HasFlag(CharacterStateFlag.PAUSE_INPUT)) return;
         
         // get priority sorted list
         var li = (from state in states.Values
@@ -327,6 +336,8 @@ public class PlayerCharacter : Entity {
         inputProvider = InputDevicePool.inst.GetInputProvider(this);
         
         ResetAirOptions();
+        
+        side = playerIndex == 0 ? EntitySide.LEFT : EntitySide.RIGHT;
     }
 
     public void SetZPriority() {
@@ -450,6 +461,8 @@ public class PlayerCharacter : Entity {
                 }
             }
 
+            meter.AddMeter(1f);
+            
         } else {
             // this.frameData.SetHitstunFrames(framesRemaining + frameData.onHit, Mathf.Max(frameData.total - attack.GetCurrentFrame(this), 0));
             
@@ -721,6 +734,7 @@ public class PlayerCharacter : Entity {
         var skipRegister = flags.HasFlag(DamageProperties.SKIP_REGISTER);
         if (attack != null || skipRegister) {
             comboCounter.RegisterAttack(
+                rawDamage,
                 attack,
                 this, 
                 flags, 
@@ -748,7 +762,6 @@ public class PlayerCharacter : Entity {
         var minDmg = attack == null ? 0 : rawDamage * attack.GetMinimumDamagePercentage(this);
         // Debug.Log(rawDamage);
         health -= Mathf.Max(Mathf.Max(1, minDmg), dmg);
-        burst.AddDeltaTotal(dmg / 2.5f, 60);
     }
 
     public bool MatchesAirState(AttackAirOkType flag) {
