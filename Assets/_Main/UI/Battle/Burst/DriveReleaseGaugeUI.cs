@@ -35,7 +35,7 @@ public class DriveReleaseGaugeUI : PerSideUIElement<DriveReleaseGaugeUI> {
 
     private void Update() {
         var player = this.player;
-        if (player == null) return;
+        if (player == null || !player.burst) return;
         
         rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, new Vector2(originalX + offsetX, rectTransform.anchoredPosition.y), Time.deltaTime * 10f);
         

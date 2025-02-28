@@ -14,13 +14,14 @@ public class EntityBoundingBoxManager : MonoBehaviour {
     public int hurtboxCount = 0;
     public SkeletonAnimation skeleton;
     public List<ExplicitBoundingBox> explicitBoundingBoxes = new();
-    
+
+    [Title("References")]
+    public Entity entity;
+        
     public EntityBoundingBox pushbox { get; private set; }
-    private Entity entity;
     private List<IEntityBoundingBox> boxes = new();
 
     private void Start() {
-        entity = GetComponentInParent<Entity>();
         
         // register
         // main pushbox
@@ -32,6 +33,13 @@ public class EntityBoundingBoxManager : MonoBehaviour {
         
         // Debug.Log($"{boxes.Count} {explicitBoundingBoxes.Count}");
         boxes.AddRange(explicitBoundingBoxes);
+        
+        gameObject.SetActive(false);
+        gameObject.SetActive(true);
+    }
+
+    private void Update() {
+        // Debug.Log($"{entity.name}: pushbox={pushbox.box}");
     }
 
     private EntityBoundingBox CreateBoundingBox(string name, BoundingBoxType type) {
@@ -62,7 +70,10 @@ public class EntityBoundingBoxManager : MonoBehaviour {
         boxes.RemoveAll(c => c is Component component && !component);
         
         foreach (var box in boxes) {
-            if (box != pushbox) box.box.enabled = enabled;
+            if (box != pushbox) {
+                if (box == null || box.box == null) continue;
+                box.box.enabled = enabled;
+            }
         }
     }
     

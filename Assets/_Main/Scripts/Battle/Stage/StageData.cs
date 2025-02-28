@@ -1,5 +1,4 @@
 ﻿using Sirenix.OdinInspector;
-using Sirenix.OdinInspector.Editor.Validation;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.Stage {

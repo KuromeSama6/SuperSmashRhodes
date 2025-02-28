@@ -105,6 +105,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a7ce01b2253e4645941819af4c94804
+    m_Address: cmn/battle/sfx/ui/roundend/0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2a7f0c2464afad8409f5121d903638b3
     m_Address: cmn/battle/sfx/attack/fist/heavy/3
     m_ReadOnly: 0
@@ -152,6 +157,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3d17d351e1b7bc943ad8bf954a7843ba
     m_Address: cmn/battle/sfx/dead
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3de868002a1356545bbfd6d52290546a
+    m_Address: chr/chen/general/vo/roundwon
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -272,6 +282,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 91846e7b73d7ac44595da362d34a30a2
     m_Address: cmn/battle/sfx/force_reset/0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9213a232ded082a4d8fef7bcefd8ccd0
+    m_Address: cmn/announcer/battle/game
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

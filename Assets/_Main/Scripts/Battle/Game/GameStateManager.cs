@@ -46,7 +46,11 @@ public class GameStateManager : SingletonBehaviour<GameStateManager> {
         manualUpdates.RemoveAll(c => c is MonoBehaviour beh && !beh);
         manualUpdates.ForEach(m => {
             if (m is MonoBehaviour beh && beh.isActiveAndEnabled) {
-                m.ManualUpdate();
+                try {
+                    m.ManualUpdate();
+                } catch (Exception e) {
+                    Debug.LogException(e);
+                }
             }
         });
     }
@@ -60,7 +64,11 @@ public class GameStateManager : SingletonBehaviour<GameStateManager> {
         manualUpdates.ForEach(m => {
             if (m is MonoBehaviour beh && beh && beh.isActiveAndEnabled) {
                 // Debug.Log(m);
-                m.ManualFixedUpdate();
+                try {
+                    m.ManualFixedUpdate();
+                } catch (Exception e) {
+                    Debug.LogException(e);
+                }
             }
         });
         

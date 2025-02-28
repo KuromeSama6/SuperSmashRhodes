@@ -46,13 +46,13 @@ public class State_Exusiai_SklApplePie : State_Common_SummonOnlySpecialAttack {
     }
 
     [AnimationEventHandler("ApplePie_Summon")]
-    private void OnApplePieSummon() {
+    public virtual void OnApplePieSummon() {
         applePie = entity.Summon<Token_Exusiai_ApplePie>("chr/exusiai/battle/token/ApplePie");
         entity.SetCarriedStateVariable("Token_ApplePie", null, applePie);
     }
 
     [AnimationEventHandler("ApplePie_Detach")] 
-    private void OnApplePieDetach() {
+    public virtual void OnApplePieDetach() {
         applePie.Detach();
         AddCancelOption("Exusiai_SklApplePie_FDetonate");
         applePie.rb.AddForce(PhysicsUtil.NormalizeSide(new Vector2(2f, 2f), entity.side), ForceMode2D.Impulse);

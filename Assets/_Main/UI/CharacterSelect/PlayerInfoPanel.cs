@@ -7,7 +7,6 @@ using SuperSmashRhodes.Scripts.Audio;
 using SuperSmashRhodes.UI.Generic;
 using SuperSmashRhodes.Util;
 using TMPro;
-using UnityEditor.Localization.Plugins.XLIFF.V20;
 using UnityEngine;
 using UnityEngine.UI;
 

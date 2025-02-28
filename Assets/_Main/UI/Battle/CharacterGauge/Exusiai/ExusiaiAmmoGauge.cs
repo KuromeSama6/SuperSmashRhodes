@@ -30,6 +30,7 @@ public class ExusiaiAmmoGauge : ComponentSpecificUIElement<Gauge_Exusiai_AmmoGau
         
         chamberedIndicator.gameObject.SetActive(playerComponent.chambered);
         var current = playerComponent.currentMagazine;
+        if (current == null) return;
         ammoText.text = $"{current.ammo.ToString().PadLeft(2, '0')}";
     }
 

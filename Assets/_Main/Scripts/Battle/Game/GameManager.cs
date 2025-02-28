@@ -93,7 +93,7 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
         }
 
         foreach (var entity in entityTable.Values) {
-            Destroy(entity.entity.gameObject);
+            if (entity.alive) Destroy(entity.entity.gameObject);
         }
         
         players.Clear();
@@ -117,13 +117,16 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
     }
     
     public PlayerCharacter CreatePlayer(int index, GameObject prefab) {
-        var input = Instantiate(prefab);
+        var input = Instantiate(prefab, new(index == 0 ? -1.5f : 1.5f, 0f, 0f), Quaternion.identity);
         var player = input.GetComponent<PlayerCharacter>();
         player.Init(index);
         player.name = "Player" + index;
         
         players[index] = player;
         targetGroup.AddMember(player.transform, 1, 0.5f);
+        
+        Physics2D.SyncTransforms();
+        Physics2D.Simulate(0);
         
         return player;
     }
@@ -145,6 +148,13 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
         if (RoomManager.inst.current == null && UnityEngine.Input.GetKeyDown(KeyCode.F6) && debugRoomConfig) {
             print("begin debug match");
             BeginDebugMatch();
+        }
+        
+        {
+            var hideTerrain = BackgroundUIManager.inst && BackgroundUIManager.inst.fullyDimmed;
+            foreach (var renderer in environmentRenderers) {
+                renderer.enabled = !hideTerrain;
+            }   
         }
         
         if (!inGame) return;
@@ -172,13 +182,6 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
             cameraFraming.FovRange = new(fov, fov);
         }
         
-        {
-            var hideTerrain = BackgroundUIManager.inst && BackgroundUIManager.inst.fullyDimmed;
-            foreach (var renderer in environmentRenderers) {
-                renderer.enabled = !hideTerrain;
-            }   
-        }
-        
         PruneEntities();
     }
 
@@ -191,6 +194,7 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
 
     public void AttemptPushboxCorrection(PlayerCharacter top, PlayerCharacter bottom) {
         if (pushboxCorrectionLock) return;
+        if (!inGame) return;
         pushboxCorrectionLock = true;
 
         float direction;
@@ -307,7 +311,8 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
 
     public void HandlePlayerDeath(PlayerCharacter player) {
         extraGlobalStateFlags |= CharacterStateFlag.GLOBAL_PAUSE_TIMER | CharacterStateFlag.PAUSE_INPUT | CharacterStateFlag.PAUSE_GAUGE;
-        AudioManager.inst.PlayAudioClip("cmn/announcer/battle/ko", gameObject, "active_announcer");
+        var room = RoomManager.inst.current;
+        room.EndRound(player.opponent);
 
     }
     

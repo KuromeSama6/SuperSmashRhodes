@@ -25,13 +25,15 @@ public class PlayerBurstGauge : CharacterComponent, IManualUpdate, IReflectionSe
     
     private void Start() {
         reflectionSerializer = new(this);
+        gauge.value = 500f;
+        burstAvailable = true;
+        burstUsed = false;
     }
 
     public override void OnRoundInit() {
         base.OnRoundInit();
-        gauge.value = 300f;
-
-        burstAvailable = burstUsed = false;
+        burstUsed = false;
+        burstAvailable = gauge.value >= 450f;
     }
 
     public void ManualUpdate() {

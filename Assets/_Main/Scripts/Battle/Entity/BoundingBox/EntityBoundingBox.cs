@@ -32,7 +32,7 @@ public class EntityBoundingBox : MonoBehaviour, IEntityBoundingBox, IManualUpdat
         SkeletonUtility.SetColliderPointsLocal(collider, bbFollower.Slot, bbFollower.CurrentAttachment);
 
         if (type == BoundingBoxType.HITBOX) {
-            enabled = entity.activeState.enableHitboxes;
+            enabled = entity.activeState != null && entity.activeState.enableHitboxes;
         }
     }
 
@@ -51,7 +51,7 @@ public class EntityBoundingBox : MonoBehaviour, IEntityBoundingBox, IManualUpdat
         var bb = other.gameObject.GetComponent<EntityBoundingBox>();
         if (bb == null || bb.entity == entity) return;
 
-        // Debug.Log($"{owner.name}: {name} hit {bb}");
+        // Debug.Log($"{owningPlayer.name}: {name} hit {bb}");
          
         entity.HandleEntityInteraction(this, bb, new() {
             point = other.ClosestPoint(transform.position)

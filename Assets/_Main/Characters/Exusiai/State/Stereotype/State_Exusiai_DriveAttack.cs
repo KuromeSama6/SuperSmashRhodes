@@ -17,6 +17,7 @@ public abstract class State_Exusiai_DriveAttack : State_Exusiai_FireWeaponAttack
         startup = 16,
         active = 2,
         recovery = 29,
+        onHit = +8
     };
     
     protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER;

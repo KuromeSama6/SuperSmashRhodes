@@ -7,6 +7,7 @@ using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Input;
 using SuperSmashRhodes.Scripts.Audio;
+using SuperSmashRhodes.UI.Battle;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Runtime.State {
@@ -20,7 +21,7 @@ public class State_SysDeath : CharacterState {
     protected override void OnStateBegin() {
         base.OnStateBegin();
 
-        var inAir = player.lastState is State_CmnHitStunAir;
+        var inAir = player.lastState is State_CmnHitStunAir && player.airborne;
         
         if (!inAir) {
             player.animation.AddUnmanagedAnimation("defaults/Die", false);
@@ -32,6 +33,9 @@ public class State_SysDeath : CharacterState {
         
         PostProcessManager.inst.showKnockout = true;
         stateData.cameraData.cameraWeightModifier = 5f;
+        stateData.cameraData.cameraWeightModifier = -15f;
+        
+        BackgroundUIManager.inst.Flash(0.1f);
         
         TimeManager.inst.Schedule(4, 60);
         TimeManager.inst.Queue(() => {
@@ -57,8 +61,15 @@ public class State_SysDeath : CharacterState {
             PostProcessManager.inst.showKnockout = false;
         }
 
+        if (frame == 45) {
+            stateData.renderColorData.white = Color.clear;
+        }
+        
         if (frame == 90) {
             stateData.cameraData.cameraWeightModifier = 0f;
+            player.stateFlags |= CharacterStateFlag.NO_CAMERA_WEIGHT;
+            stateData.cameraData.cameraFovModifier = 0f;
+            
         }
     }
 

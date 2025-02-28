@@ -37,7 +37,7 @@ public class TopCharacterInfo : PerSideUIElement<TopCharacterInfo> {
         badgeContainer.gameObject.ClearChildren();
         foreach (var badge in badges) {
             var badgeImage = Instantiate(badgeImagePrefab, badgeContainer).GetComponent<Image>();
-            badgeImage.sprite = badgeSprites[badge];
+            badgeImage.sprite = badgeSprites[badge == RoundCompletionStatus.LOST ? RoundCompletionStatus.UNKNOWN : badge];
         }
     }
 }

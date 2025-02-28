@@ -9,6 +9,7 @@ public class PlayerMatchData {
     public bool confirmed { get; set; }
     public bool isCpu { get; set; }
     public int playerId { get; set; }
+    public CarriedRoundData carriedData;
     
     public LocalInputModule input => InputDevicePool.inst.inputs.GetValueOrDefault(inputDeviceName);
     
@@ -27,5 +28,9 @@ public class PlayerMatchData {
         data.confirmed = true;
         return data;
     }
+}
+
+public struct CarriedRoundData {
+    public float carriedBurst;
 }
 }

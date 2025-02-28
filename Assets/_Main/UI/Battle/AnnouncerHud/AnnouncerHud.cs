@@ -13,7 +13,7 @@ public class AnnouncerHud : PerSideUIElement<AnnouncerHud> {
     public CanvasGroup canvasGroup;
     public UDictionary<StateIndicatorFlag, Image> stateIndicators;
     public UDictionary<StateIndicatorFlag, GameObject> stateTexts;
-
+    
     private float timeWithoutChange = 0;
     private StateIndicatorFlag state = StateIndicatorFlag.NONE;
     private readonly Dictionary<StateIndicatorFlag, Color> initialColors = new();

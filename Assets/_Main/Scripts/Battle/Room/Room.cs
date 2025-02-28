@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Battle.Stage;
@@ -8,8 +9,9 @@ using SuperSmashRhodes.Network.Rollbit;
 using SuperSmashRhodes.Room;
 using SuperSmashRhodes.Scripts.Audio;
 using SuperSmashRhodes.UI.Battle;
+using SuperSmashRhodes.UI.Battle.AnnouncerHud;
+using SuperSmashRhodes.UI.Generic;
 using SuperSmashRhodes.Util;
-using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.PlayerLoop;
@@ -66,7 +68,7 @@ public abstract class Room {
     }
     
     public void Tick() {
-        if (unmanaged && time >= 0 && !config.infiniteTime && !GameManager.inst.globalStateFlags.HasFlag(CharacterStateFlag.GLOBAL_PAUSE_TIMER)) {
+        if (unmanaged && time >= 0 && !config.infiniteTime && !gm.globalStateFlags.HasFlag(CharacterStateFlag.GLOBAL_PAUSE_TIMER)) {
             time -= Time.fixedDeltaTime;
             if (time <= 0) {
                 EndRound();
@@ -78,10 +80,11 @@ public abstract class Room {
     public void UpdateBadges() {
         foreach (var player in players.Values) {
             var badges = new List<RoundCompletionStatus>();
-            for (int i = 0; i < (config.winRounds * 2 - 1); i++) {
+            var results = this.results.FindAll(c => c.winner.playerId == player.playerId);
+            for (int i = 0; i < config.winRounds; i++) {
                 if (i < results.Count) {
                     var result = results[i];
-                    badges.Add(result.winner == player ? result.completionStatus : RoundCompletionStatus.LOST);
+                    badges.Add(result.completionStatus);
                     
                 } else {
                     badges.Add(RoundCompletionStatus.UNKNOWN);
@@ -90,6 +93,52 @@ public abstract class Room {
             
             TopCharacterInfo.Get(player.playerId).SetBadges(badges);
         }
+    }
+
+    public void EndRound(PlayerCharacter winner) {
+        var status = winner.healthPercent >= 1f ? RoundCompletionStatus.PERFECT : RoundCompletionStatus.COMPLETE;
+        var winnerPlayer = players[winner.playerIndex];
+        results.Add(new RoundResult(winnerPlayer, status));
+        
+        var isGameEnd = results.Count(c => c.winner.playerId == winnerPlayer.playerId) >= config.winRounds;
+        // Debug.Log(results.Count(c => c.winner.playerId == winnerPlayer.playerId));
+        unmanaged = false;
+        
+        RoomManager.inst.StartCoroutine(RoundEndRoutine(winner, status, isGameEnd));
+        BattleUIManager.inst.animator.SetBool("Preround", true);
+        
+        foreach (var player in gm.players.Values) {
+            SaveCarriedData(player);
+        }
+    }
+
+    private void LoadAndBeginNewRound() {
+        GameManager.inst.ResetRound();
+        
+        RoomManager.inst.StartCoroutine(BeginNewRoundRoutine());
+    }
+    
+
+    private void RoundInit() {
+        ++round;
+        gm.inGame = false;
+        
+        BattleUIManager.inst.animator.SetTrigger("Handover");
+        BattleUIManager.inst.animator.SetBool("Preround", false);
+        gm.extraGlobalStateFlags = CharacterStateFlag.MANAGED;
+        time = config.infiniteTime ? 999 : config.roundTime;
+        
+        BattleTimer.inst.counter.ApplyImmediately();
+        
+        foreach (var player in gm.players.Values) {
+            player.BeginLogic();
+        }
+        
+        UpdateBadges();
+    }
+
+    public int GetWinCount(int playerId) {
+        return results.Count(c => c.winner.playerId == playerId);
     }
     
     // Routines
@@ -100,26 +149,7 @@ public abstract class Room {
         RoundInit();
         yield return RoundStartRoutine();
         unmanaged = true;
-        GameManager.inst.inGame = true;
-
-    }
-
-    private void RoundInit() {
-        ++round;
-        GameManager.inst.inGame = false;
-        
-        BattleUIManager.inst.animator.SetTrigger("Handover");
-        BattleUIManager.inst.animator.SetBool("Preround", false);
-        gm.extraGlobalStateFlags = CharacterStateFlag.MANAGED;
-        time = config.infiniteTime ? 999 : config.roundTime;
-        
-        BattleTimer.inst.counter.ApplyImmediately();
-        
-        foreach (var player in GameManager.inst.players.Values) {
-            player.BeginLogic();
-        }
-        
-        UpdateBadges();
+        gm.inGame = true;
     }
     
     private IEnumerator GameEntryCinematicRoutine() {
@@ -143,22 +173,54 @@ public abstract class Room {
         yield return new WaitForFixedUpdate();
         yield return PlaySingleCharacterEntry(player);
         
-        // update for 2 more seconds
-        // for (float timer = 0; timer <= 2; timer += Time.deltaTime) {
-        //     foreach (var p in gm.players.Values) {
-        //         p.animation.animation.Update(Time.deltaTime);
-        //     }
-        //     yield return null;
-        // }
-        
         // center camera
         gm.targetGroup.Targets.Clear();
         gm.targetGroup.AddMember(gm.players[0].transform, 1, 0.5f);
         gm.targetGroup.AddMember(gm.players[1].transform, 1, 0.5f);
         gm.cameraFraming.FovRange = new(110, 110);
         
-        // put back the ui
+    }
+
+    private IEnumerator BeginNewRoundRoutine() {
+        yield return new WaitForSeconds(0.2f);
         
+        gm.extraGlobalStateFlags = CharacterStateFlag.PAUSE_GAUGE | CharacterStateFlag.PAUSE_STATE | CharacterStateFlag.PAUSE_PHYSICS;
+        gm.targetGroup.Targets.Clear();
+        gm.cameraFraming.FovRange = new(110, 110);
+        
+        // entry cinematic
+        gm.CreatePlayer(0, players[0].selectedCharacter.gameObject);
+        yield return new WaitForFixedUpdate();
+        gm.players[0].OnRoundInit();
+        
+        gm.CreatePlayer(1, players[1].selectedCharacter.gameObject);
+        yield return new WaitForFixedUpdate();
+        gm.players[1].OnRoundInit();
+        
+        // center camera
+        gm.targetGroup.Targets.Clear();
+        gm.targetGroup.AddMember(gm.players[0].transform, 1, 0.5f);
+        gm.targetGroup.AddMember(gm.players[1].transform, 1, 0.5f);
+        
+        yield return new WaitForFixedUpdate();
+        RoundInit();
+        yield return new WaitForFixedUpdate();
+
+        
+        // apply carried
+        foreach (var player in gm.players.Values) {
+            player.burst.gauge.value = players[player.playerIndex].carriedData.carriedBurst;
+            player.burst.burstAvailable = player.burst.gauge.value >= 450f;
+        }
+        
+        foreach (var comp in Object.FindObjectsByType<RotaryCounter>(FindObjectsInactive.Include, FindObjectsSortMode.None)) {
+            comp.ApplyImmediately();
+        }
+        BattleAnnouncerUI.inst.transitionCoverVisible = false;
+        
+        yield return RoundStartRoutine();
+        unmanaged = true;
+        gm.inGame = true;
     }
 
     private IEnumerator PlaySingleCharacterEntry(PlayerCharacter player) {
@@ -198,12 +260,57 @@ public abstract class Room {
         yield return new WaitForSeconds(1f);
         
         BattleAnnouncerUI.inst.Show(round);
-        AudioManager.inst.PlayAudioClip($"cmn/announcer/battle/round/{round}", GameManager.inst.gameObject, "active_announcer");
+        AudioManager.inst.PlayAudioClip($"cmn/announcer/battle/round/{round}", gm.gameObject, "active_announcer");
         yield return new WaitForSeconds(1.5f);
-        AudioManager.inst.PlayAudioClip("cmn/announcer/battle/fight", GameManager.inst.gameObject, "active_announcer");
+        AudioManager.inst.PlayAudioClip("cmn/announcer/battle/fight", gm.gameObject, "active_announcer");
         
         yield return new WaitForSeconds(.5f);
         gm.extraGlobalStateFlags = CharacterStateFlag.NONE;
+        Physics2D.SyncTransforms();
+    }
+
+    private IEnumerator RoundEndRoutine(PlayerCharacter winner, RoundCompletionStatus status, bool isGameEnd) {
+        if (status == RoundCompletionStatus.PERFECT) {
+            AudioManager.inst.PlayAudioClip("cmn/announcer/battle/perfect", gm.gameObject, "active_announcer");
+        } else if (isGameEnd) {
+            AudioManager.inst.PlayAudioClip("cmn/announcer/battle/game", gm.gameObject, "active_announcer");
+        } else {
+            AudioManager.inst.PlayAudioClip("cmn/announcer/battle/ko", gm.gameObject, "active_announcer");
+        }
+        yield return new WaitForSeconds(0.3f);
+        
+        BattleAnnouncerUI.inst.EndRound(status, isGameEnd);
+        AudioManager.inst.PlayAudioClip($"cmn/battle/sfx/ui/roundend/{(status == RoundCompletionStatus.PERFECT ? 1 : 0)}", gm.gameObject);
+        if (isGameEnd) {
+            AudioManager.inst.StopBGM(2.5f);
+        }
+        
+        yield return new WaitForSeconds(2.5f);
+        if (!isGameEnd) BattleUIManager.inst.animator.SetBool("Preround", false);
+        AudioManager.inst.PlayAudioClip("cmn/battle/sfx/ui/roundend/badge", gm.gameObject);
+        UpdateBadges();
+        yield return new WaitForSeconds(1f);
+
+        if (!isGameEnd) {
+            AudioManager.inst.PlayAudioClip($"chr/{winner.descriptor.id}/general/vo/roundwon", gm.gameObject, "active_vo");
+            winner.activeState.stateData.cameraData.cameraFovModifier = -10f;
+            yield return new WaitForSeconds(winner.descriptor.roundWonCinematicDuration);
+            
+        } else {
+            yield return new WaitForSeconds(2f);
+        }
+
+        // continue
+        BattleAnnouncerUI.inst.transitionCoverVisible = true;
+        yield return new WaitForSeconds(1f);
+        gm.inGame = false;
+        
+        if (!isGameEnd) LoadAndBeginNewRound();
+    }
+
+    private void SaveCarriedData(PlayerCharacter player) {
+        var data = players[player.playerIndex];
+        data.carriedData.carriedBurst = player.burst.gauge.value;
     }
 }
 

@@ -5,6 +5,7 @@ using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Util;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace SuperSmashRhodes.Battle {
 public class CharacterRenderController : MonoBehaviour, IManualUpdate {
@@ -24,6 +25,8 @@ public class CharacterRenderController : MonoBehaviour, IManualUpdate {
     public void ManualFixedUpdate() {
         var mat = renderer.material;
 
+        renderer.shadowCastingMode = owner.dead ? ShadowCastingMode.Off : ShadowCastingMode.On;
+        
         if (fxManager != null && !fxManager.playFlash) {
             if (owner.activeState == null) return;
             var data = owner.activeState.stateData.renderColorData;

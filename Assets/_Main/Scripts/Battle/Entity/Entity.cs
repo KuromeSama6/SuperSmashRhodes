@@ -184,7 +184,7 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
         if (state == null)
             throw new Exception("Cannot begin null state");
 
-        if (GameManager.inst.globalStateFlags.HasFlag(CharacterStateFlag.NO_NEW_STATE)) return;
+        if (this is PlayerCharacter player && player.stateFlags.HasFlag(CharacterStateFlag.NO_NEW_STATE)) return;
         
         if (activeState != null && activeState.active) {
             lastState = activeState;
@@ -208,7 +208,9 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
 
     public virtual void BeginLogic() {
         logicStarted = true;
-        animation.animation.timeScale = 1f;
+        if (animation) {
+            animation.animation.timeScale = 1f;   
+        }
     }
 
     public virtual void HandleEntityInteraction(IEntityBoundingBox from, IEntityBoundingBox to, EntityBBInteractionData data) {

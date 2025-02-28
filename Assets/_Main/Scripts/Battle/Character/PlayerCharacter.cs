@@ -149,6 +149,11 @@ public class PlayerCharacter : Entity {
 
     public override void ManualUpdate() {
         base.ManualUpdate();
+        
+        if (!GameManager.inst.inGame) {
+            transform.position = new(playerIndex == 0 ? -1.5f : 1.5f, 0f, 0f);
+            return;
+        }
     }
 
     protected override void OnTick() {
@@ -171,7 +176,7 @@ public class PlayerCharacter : Entity {
         }
         
         // death
-        if (health <= 0 && !RoomManager.inst.current.config.isTraining && !(activeState is State_SysDeath) && !stateFlags.HasFlag(CharacterStateFlag.DEATH_HOLD)) {
+        if (GameManager.inst.inGame && health <= 0 && !RoomManager.inst.current.config.isTraining && !(activeState is State_SysDeath) && !stateFlags.HasFlag(CharacterStateFlag.DEATH_HOLD)) {
             BeginState("SysDeath");
             stateFlags |= CharacterStateFlag.NO_NEW_STATE;
             GameManager.inst.HandlePlayerDeath(this);
@@ -256,6 +261,7 @@ public class PlayerCharacter : Entity {
 
     private void UpdatePosition() {
         var x = transform.position.x;
+        
         if (x <= GameManager.inst.leftWall.transform.position.x || x >= GameManager.inst.rightWall.transform.position.x) {
             rb.linearVelocityX = 0;
             Vector3 offset = new((side == EntitySide.LEFT ? 1 : -1) * .4f, 0, 0);
@@ -325,6 +331,7 @@ public class PlayerCharacter : Entity {
 
     public override void OnRoundInit() {
         base.OnRoundInit();
+        GameStateManager.inst.RefreshComponentReferences();
         // position
         
         // TODO: Z index management
@@ -338,6 +345,7 @@ public class PlayerCharacter : Entity {
         ResetAirOptions();
         
         side = playerIndex == 0 ? EntitySide.LEFT : EntitySide.RIGHT;
+        ForceUpdateColliders();
     }
 
     public void SetZPriority() {
@@ -353,7 +361,21 @@ public class PlayerCharacter : Entity {
     
     public override void BeginLogic() {
         base.BeginLogic();
-        if (playerIndex == 0) SetZPriority();
+        if (playerIndex == 0) {
+            SetZPriority();
+        }
+    }
+
+    public void ForceUpdateColliders() {
+        gameObject.SetActive(false);
+        gameObject.SetActive(true);
+
+        foreach (var collider in GetComponentsInChildren<Collider2D>()) {
+            var enabled = collider.enabled;
+            collider.enabled = !enabled;
+            collider.enabled = enabled;
+        }
+
     }
 
     protected override IAttack OnOutboundHit(Entity victim, EntityBBInteractionData data) {

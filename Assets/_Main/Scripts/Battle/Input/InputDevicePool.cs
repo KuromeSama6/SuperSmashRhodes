@@ -33,15 +33,15 @@ public class InputDevicePool : SingletonBehaviour<InputDevicePool> {
     protected override void Awake() {
         base.Awake();
         inputManager = GetComponent<PlayerInputManager>();
-        
-    }
-
-    private void Start() {
         InputSystem.onDeviceChange += OnDeviceChanged;
         container = new GameObject("InputModules");
         container.transform.parent = transform;
         
         ReloadLocalInput();
+        
+    }
+
+    private void Start() {
     }
 
     public void ReloadLocalInput() {

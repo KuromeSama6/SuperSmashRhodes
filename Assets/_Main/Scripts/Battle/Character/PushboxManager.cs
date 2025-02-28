@@ -56,7 +56,7 @@ public class PushboxManager : MonoBehaviour, IManualUpdate {
     }
 
     private void Update() {
-        // Debug.Log($"{player.name}: wall={atWall}, left={atLeftWall}, right={atRightWall}");
+        // Debug.Log($"{player.name}: physicsBox={physicsBox.enabled}/{physicsBox.isTrigger} correctionBox={correctionBox.enabled}/{correctionBox.isTrigger} wallDetectionBox={wallDetectionBox.enabled}/{wallDetectionBox.isTrigger}");
     }
 
     public void ManualFixedUpdate() {

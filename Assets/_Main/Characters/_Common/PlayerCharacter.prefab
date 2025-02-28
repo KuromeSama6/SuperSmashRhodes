@@ -111,6 +111,7 @@ MonoBehaviour:
   hurtboxCount: 5
   skeleton: {fileID: 7313164139058482545}
   explicitBoundingBoxes: []
+  entity: {fileID: 2764539944195769258}
 --- !u!1 &2621119331164264562
 GameObject:
   m_ObjectHideFlags: 0
@@ -221,6 +222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75589697253a45349a331ae1976ebd02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  assetPath: 
   rotationContainer: {fileID: 38523366297758202}
   socketsContainer: {fileID: 876969173430784063}
   config: {fileID: 0}
@@ -285,7 +287,6 @@ MonoBehaviour:
     - {fileID: 8203927862961518414}
     - {fileID: 2352599458182130192}
     - {fileID: 6290204124899039702}
-  staticOnGroundedTechFlashPlayer: {fileID: 8660760084955558788}
   superEmblem: {fileID: 9099637730359370887}
   driveReleaseEmblem: {fileID: 558275655851238996}
 --- !u!114 &5843533797680092123

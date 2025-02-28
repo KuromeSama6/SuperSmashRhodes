@@ -27,7 +27,7 @@ public class BurstGaugeUI : PerSideUIElement<BurstGaugeUI> {
     private RectTransform rectTransform => (RectTransform) transform;
     private float offsetX {
         get {
-            if (!player) return 0f;
+            if (!player || !player.burst) return 0f;
             if (!player.burst.driveRelease && !(player.activeState is State_CmnDriveRelease)) return 0f;
 
             return player.playerIndex == 0 ? -150 : 150;
@@ -41,7 +41,7 @@ public class BurstGaugeUI : PerSideUIElement<BurstGaugeUI> {
 
     private void Update() {
         var player = this.player;
-        if (!player) return;
+        if (!player || !player.burst) return;
         
         rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, new Vector2(originalX + offsetX, rectTransform.anchoredPosition.y), Time.deltaTime * 5f);
         

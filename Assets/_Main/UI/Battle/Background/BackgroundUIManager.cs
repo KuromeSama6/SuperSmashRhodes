@@ -52,7 +52,7 @@ public class BackgroundUIManager : SingletonBehaviour<BackgroundUIManager> {
         
         {
             var targetAlpha = backgroundData.dimAlpha;
-            if (Mathf.Approximately(targetAlpha, 0)) {
+            if (Mathf.Approximately(targetAlpha, 0) && GameManager.inst.inGame) {
                 if (GameManager.inst.GetPlayer(0).burst.driveRelease || GameManager.inst.GetPlayer(1).burst.driveRelease) {
                     targetAlpha = 0.95f;
                 }

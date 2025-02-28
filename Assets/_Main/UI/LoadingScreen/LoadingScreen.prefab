@@ -353,7 +353,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 60.005, y: -204.91}
+  m_AnchoredPosition: {x: 0, y: -0}
   m_SizeDelta: {x: 120.01, y: 0}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &6434472957538620725
@@ -392,11 +392,11 @@ MonoBehaviour:
     \n\u68C0\u67E5\u7F51\u7EDC\u8BBE\u7F6E \n\u68C0\u67E5\u7F51\u7EDC\u8BBE\u7F6E
     \n\n"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: aaaeec6321ea7cd46b5706f6b88b3ad6, type: 2}
-  m_sharedMaterial: {fileID: 470287967450013815, guid: aaaeec6321ea7cd46b5706f6b88b3ad6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d1f36c4b357bd664d96f7343152a3ac0, type: 2}
+  m_sharedMaterial: {fileID: -864385073314517843, guid: d1f36c4b357bd664d96f7343152a3ac0, type: 2}
   m_fontSharedMaterials:
-  - {fileID: 470287967450013815, guid: aaaeec6321ea7cd46b5706f6b88b3ad6, type: 2}
   - {fileID: -864385073314517843, guid: d1f36c4b357bd664d96f7343152a3ac0, type: 2}
+  - {fileID: -1775253599083177421, guid: 069beae4ad76d8544bd90e45439ffc9a, type: 2}
   - {fileID: 0}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -432,7 +432,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: -30
+  m_lineSpacing: 0
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -627,12 +627,10 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u597D\n\u597D\n\u597D"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: aaaeec6321ea7cd46b5706f6b88b3ad6, type: 2}
-  m_sharedMaterial: {fileID: 470287967450013815, guid: aaaeec6321ea7cd46b5706f6b88b3ad6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d1f36c4b357bd664d96f7343152a3ac0, type: 2}
+  m_sharedMaterial: {fileID: -864385073314517843, guid: d1f36c4b357bd664d96f7343152a3ac0, type: 2}
   m_fontSharedMaterials:
-  - {fileID: 470287967450013815, guid: aaaeec6321ea7cd46b5706f6b88b3ad6, type: 2}
   - {fileID: -864385073314517843, guid: d1f36c4b357bd664d96f7343152a3ac0, type: 2}
-  - {fileID: 0}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -667,7 +665,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: -30
+  m_lineSpacing: 0
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0

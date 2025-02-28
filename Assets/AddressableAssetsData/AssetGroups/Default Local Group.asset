@@ -20,6 +20,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 22553cd381e9f7c49b16ea26cf80fee5
+    m_Address: cmn/battle/sfx/ui/roundend/1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2ed092676f8d4b548ade3817db09fb17
+    m_Address: cmn/battle/sfx/ui/roundend/badge
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4b2b334589ffef64284225cedd96c4eb
     m_Address: chr/chen/battle/sfx/chixiao/2
     m_ReadOnly: 0
@@ -27,6 +37,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4c72c147dd766f941a335a6a1a5823fb
     m_Address: chr/exusiai/battle/fx/prefab/632146d/hit_sparks
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 542d2b6728f4e07448f302be7afc27ed
+    m_Address: chr/exusiai/general/vo/roundwon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6c69f75fbbf5d10468f260732fe7ab86
+    m_Address: cmn/announcer/battle/perfect
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

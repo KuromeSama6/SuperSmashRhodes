@@ -44,7 +44,7 @@ public class HealthBar : PerSideUIElement<HealthBar> {
         // set change indicator
         var step = Time.deltaTime * 100;
         if (actualHealth < current && Mathf.Abs(current - actualHealth) > step) {
-            if (player.comboCounter.displayedCount == 0) {
+            if (player.comboCounter != null && player.comboCounter.displayedCount == 0) {
                 current -= step;
                 
             }

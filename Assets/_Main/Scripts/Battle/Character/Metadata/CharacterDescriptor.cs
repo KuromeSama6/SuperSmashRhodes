@@ -31,6 +31,7 @@ public class CharacterDescriptor : ScriptableObject {
 
     [Title("Misc")]
     public float entryCinematicDuration = 7f;
+    public float roundWonCinematicDuration = 10f;
 }
 
 public enum CharacterProfession {
