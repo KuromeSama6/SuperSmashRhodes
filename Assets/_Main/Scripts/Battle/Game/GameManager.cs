@@ -10,8 +10,8 @@ using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Battle.Stage;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Match;
-using SuperSmashRhodes.Network.Room;
-using SuperSmashRhodes.Room;
+using SuperSmashRhodes.Network.RoomManagement;
+using SuperSmashRhodes.Match;
 using SuperSmashRhodes.Runtime.State;
 using SuperSmashRhodes.Scripts.Audio;
 using SuperSmashRhodes.UI.Battle;
@@ -78,8 +78,8 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
         AssetManager.inst.PreloadAll("cmn/battle/fx/**");
         AssetManager.inst.PreloadAll("cmn/announcer/battle/**");
         
-        foreach (var player in RoomManager.inst.current.players.Values) {
-            AssetManager.inst.PreloadAll($"chr/{player.selectedCharacter.id}/**");
+        foreach (var player in RoomManager.current.players.Values) {
+            AssetManager.inst.PreloadAll($"chr/{player.character.id}/**");
         }
     }
     
@@ -104,10 +104,10 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
     }
     
     private IEnumerator InitRoundCoroutine() {
-        var room = RoomManager.inst.current;
+        var room = RoomManager.current;
         
-        CreatePlayer(0, room.players[0].selectedCharacter.gameObject);
-        CreatePlayer(1, room.players[1].selectedCharacter.gameObject);
+        CreatePlayer(0, room.players[0].character.gameObject);
+        CreatePlayer(1, room.players[1].character.gameObject);
         
         yield return new WaitForFixedUpdate();
         
@@ -145,9 +145,17 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
     }
 
     public void ManualUpdate() {
-        if (RoomManager.inst.current == null && UnityEngine.Input.GetKeyDown(KeyCode.F6) && debugRoomConfig) {
-            print("begin debug match");
-            BeginDebugMatch();
+        if (RoomManager.current == null && debugRoomConfig) {
+            if (UnityEngine.Input.GetKeyDown(KeyCode.F6)) {
+                print("begin debug match");
+                BeginDebugMatch();   
+            }
+        }
+
+        if (RoomManager.current != null && debugRoomConfig) {
+            if (UnityEngine.Input.GetKeyDown(KeyCode.F5)) {
+                players[1].health = 0;
+            }
         }
         
         {
@@ -187,8 +195,8 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
 
     public void ManualFixedUpdate() {
         pushboxCorrectionLock = false;
-        if (RoomManager.inst.current != null) {
-            RoomManager.inst.current.Tick();
+        if (RoomManager.current != null) {
+            RoomManager.current.Tick();
         }
     }
 
@@ -311,23 +319,22 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
 
     public void HandlePlayerDeath(PlayerCharacter player) {
         extraGlobalStateFlags |= CharacterStateFlag.GLOBAL_PAUSE_TIMER | CharacterStateFlag.PAUSE_INPUT | CharacterStateFlag.PAUSE_GAUGE;
-        var room = RoomManager.inst.current;
+        var room = RoomManager.current;
         room.EndRound(player.opponent);
 
     }
     
     private void BeginDebugMatch() {
         var room = new LocalRoom(debugRoomConfig);
-        room.players[0] = PlayerMatchData.CreateDebugPlayerData(0, "keyboard1", debugCharacterP1);
-        room.players[1] = PlayerMatchData.CreateDebugPlayerData(1, "keyboard2", debugCharacterP2);
-        room.stageData = debugStageData;
-        room.bgmData = debugBgmData;
+        room.AddLocalPlayer("keyboard1");
+        room.AddLocalPlayer("keyboard2");
+
         RoomManager.inst.CreateRoom(room);
         
         PreloadResources();
         AudioManager.inst.PlayBGM(debugBgmData, gameObject, 1f, .2f);
         
-        room.BeginMatch();
+        room.BeginMatch(debugStageData, debugBgmData, true);
     }
     
     public void Serialize(StateSerializer serializer) {

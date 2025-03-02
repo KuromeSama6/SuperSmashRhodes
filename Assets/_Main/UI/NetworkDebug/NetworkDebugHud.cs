@@ -3,7 +3,7 @@ using SuperSmashRhodes.Config.Global;
 using SuperSmashRhodes.Match;
 using SuperSmashRhodes.Network;
 using SuperSmashRhodes.Network.Rollbit;
-using SuperSmashRhodes.Network.Room;
+using SuperSmashRhodes.Network.RoomManagement;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -34,6 +34,11 @@ public class NetworkDebugUI : MonoBehaviour {
         connectButton.onClick.AddListener(OnButtonPress);
         acceptMatchButton.onClick.AddListener(() => AcceptMatch(true));
         declineMatchButton.onClick.AddListener(() => AcceptMatch(false));
+
+        if (clientConfiguration) {
+            hostInput.text = clientConfiguration.host;
+            portInput.text = clientConfiguration.port.ToString();
+        }
     }
 
     private void Update() {
@@ -44,12 +49,12 @@ public class NetworkDebugUI : MonoBehaviour {
         
         // room info
         {
-            if (RoomManager.inst.current is NetworkRoom room) {
+            if (RoomManager.current is NetworkRoom room) {
                 roomInfoPanel.SetActive(true);
                 roomStatusText.text = $"Status: {room.status}";;
-                playerCountText.text = $"Players: {room.playerCount}";
+                playerCountText.text = $"Expected players: {room.playerCount}";
                 
-                spectatorCountText.text = $"Spectators: {room.spectatorCount}";
+                spectatorCountText.text = $"Expected spectators: {room.spectatorCount}";
                 matchAcceptPanel.SetActive(room.status == RoomStatus.WAIT_ACCEPT);
                 matchAcceptText.text = room.matchAccepted ? "Match accepted" : "Match is ready";
                 acceptMatchButton.interactable = declineMatchButton.interactable = !room.matchAccepted;
@@ -85,7 +90,7 @@ public class NetworkDebugUI : MonoBehaviour {
     }
 
     private void AcceptMatch(bool accepted) {
-        (RoomManager.inst.current as NetworkRoom)?.NotifyMatchAccept(accepted);
+        (RoomManager.current as NetworkRoom)?.NotifyMatchAccept(accepted);
     }
 
     private void Disconnect() {

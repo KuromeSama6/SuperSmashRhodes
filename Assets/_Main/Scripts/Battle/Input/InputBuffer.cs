@@ -117,6 +117,7 @@ public class InputBuffer : IStateSerializable {
         
     }
     public void Deserialize(StateSerializer serializer) {
+        
     }
 }
 

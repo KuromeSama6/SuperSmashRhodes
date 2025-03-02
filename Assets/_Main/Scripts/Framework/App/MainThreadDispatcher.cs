@@ -34,7 +34,12 @@ public class MainThreadDispatcher : AutoInitSingletonBehaviour<MainThreadDispatc
         lock (mainThreadActions) {
             while (mainThreadActions.Count > 0) {
                 Action action = mainThreadActions.Dequeue();
-                action?.Invoke();
+
+                try {
+                    action?.Invoke();
+                } catch (Exception e) {
+                    Debug.LogException(e);
+                }
             }
         }
     }

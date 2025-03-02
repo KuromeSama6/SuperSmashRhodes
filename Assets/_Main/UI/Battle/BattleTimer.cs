@@ -1,7 +1,7 @@
 ﻿using System;
 using Sirenix.OdinInspector;
 using SuperSmashRhodes.Framework;
-using SuperSmashRhodes.Network.Room;
+using SuperSmashRhodes.Network.RoomManagement;
 using SuperSmashRhodes.UI.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,14 +18,14 @@ public class BattleTimer : SingletonBehaviour<BattleTimer> {
     }
 
     private void Update() {
-        var room = RoomManager.inst.current;
+        var room = RoomManager.current;
         if (room == null || !room.config) return;
 
         infiniteTimeIndicator.gameObject.SetActive(room.config.infiniteTime);
         counter.gameObject.SetActive(!room.config.infiniteTime);
 
         if (!room.config.infiniteTime) {
-            counter.target = Mathf.Round(RoomManager.inst.current.time);
+            counter.target = Mathf.Round(RoomManager.current.time);
         }
         
     }

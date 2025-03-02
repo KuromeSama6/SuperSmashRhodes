@@ -2,7 +2,7 @@
 using Sirenix.OdinInspector;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Match;
-using SuperSmashRhodes.Network.Room;
+using SuperSmashRhodes.Network.RoomManagement;
 using SuperSmashRhodes.Util;
 using TMPro;
 using UnityEngine;
@@ -27,7 +27,7 @@ public class BattleAnnouncerUI : SingletonBehaviour<BattleAnnouncerUI> {
 
     private void Update() {
         transitionCover.alpha = Mathf.Lerp(transitionCover.alpha, transitionCoverVisible ? 1 : 0, Time.deltaTime * 10);
-        var room = RoomManager.inst.current;
+        var room = RoomManager.current;
         
         if (room != null) {
             if (room.config.isTraining) {

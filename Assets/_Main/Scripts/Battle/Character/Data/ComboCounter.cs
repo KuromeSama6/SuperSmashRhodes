@@ -2,7 +2,7 @@
 using System.Linq;
 using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Battle.State.Implementation;
-using SuperSmashRhodes.Network.Room;
+using SuperSmashRhodes.Network.RoomManagement;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -119,7 +119,7 @@ public class ComboCounter : RuntimeCharacterDataRegister, IReflectionSerializabl
         movesUsed.Clear();
         lastMove = null;
 
-        if (RoomManager.inst.current.config.isTraining) {
+        if (RoomManager.current.config.isTraining) {
             owner.health = owner.config.health;
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Framework;
@@ -15,8 +16,10 @@ public class InputDevicePool : SingletonBehaviour<InputDevicePool> {
 
     private PlayerInputManager inputManager;
     private GameObject container;
-    public Dictionary<String, LocalInputModule> inputs { get; } = new();
+    public readonly Dictionary<string, LocalInputModule> inputs = new();
 
+    private readonly List<InputDevice> recentDeviceStack = new();
+    
     public string currentActionMap {
         get => _currentActionMap;
         set {
@@ -30,6 +33,14 @@ public class InputDevicePool : SingletonBehaviour<InputDevicePool> {
     }
     private string _currentActionMap;
 
+    public LocalInputModule defaultInput {
+        get {
+            if (recentDeviceStack.Count == 0) return inputs["keyboard1"];
+            var ret = recentDeviceStack[0];
+            return inputs.Values.FirstOrDefault(i => i.device == ret);
+        }
+    }
+    
     protected override void Awake() {
         base.Awake();
         inputManager = GetComponent<PlayerInputManager>();
@@ -37,7 +48,7 @@ public class InputDevicePool : SingletonBehaviour<InputDevicePool> {
         container = new GameObject("InputModules");
         container.transform.parent = transform;
         
-        ReloadLocalInput();
+        ReloadLocalInput(); 
         
     }
 
@@ -52,7 +63,7 @@ public class InputDevicePool : SingletonBehaviour<InputDevicePool> {
         var devices = InputSystem.devices;
             
         foreach (var scheme in inputSettings.controlSchemes) {
-            using (var candidates = scheme.PickDevicesFrom(devices: devices)) {
+            using (var candidates = scheme.PickDevicesFrom(devices)) {
                 if (!candidates.isSuccessfulMatch) {
                     continue;
                 }
@@ -62,13 +73,23 @@ public class InputDevicePool : SingletonBehaviour<InputDevicePool> {
                 module.name = $"InputModule_{scheme.name}";
                 module.SwitchCurrentActionMap(_currentActionMap ?? "Player");
                 
-                inputs[scheme.name] = module.GetComponent<LocalInputModule>();   
+                var input = module.GetComponent<LocalInputModule>();
+                input.device = candidates.devices[0];
+                inputs[scheme.name] = input;
             }
         }
     }
     
     private void OnDeviceChanged(InputDevice device, InputDeviceChange change) {
         ReloadLocalInput();
+        
+        // Debug.Log($"device {device} changed: {change}");
+        if (change == InputDeviceChange.Added) {
+            recentDeviceStack.Insert(0, device);
+            
+        } else if (change == InputDeviceChange.Removed || change == InputDeviceChange.Disconnected) {
+            recentDeviceStack.Remove(device);
+        }
     }
     
     public IInputProvider GetInputProvider(PlayerCharacter player) {

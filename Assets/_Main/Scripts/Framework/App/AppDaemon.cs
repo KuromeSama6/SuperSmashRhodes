@@ -29,7 +29,7 @@ public class AppDaemon : PersistentSingletonBehaviour<AppDaemon> {
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Init() {
-        var go = new GameObject("ApplicationStatusHelper");
+        var go = new GameObject("AppDaemon");
         go.AddComponent<AppDaemon>();
 
         //TODO Frame rate in settings

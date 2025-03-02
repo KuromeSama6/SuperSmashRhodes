@@ -24,6 +24,7 @@ public class ByteBuf {
     }
     
     public byte[] GetBytesBetween(int start, int end) {
+        // Debug.Log($"getting bytes between {start} and {end}");
         return buf[start..end];
     }
 
@@ -49,12 +50,12 @@ public class ByteBuf {
         return BinaryPrimitives.ReadUInt64BigEndian(buf[at..(at + 8)]);
     }
     public string GetStringNT(int at, int maxLength) {
-        var bytes = GetBytesBetween(at, maxLength);
+        var bytes = GetBytes(at, maxLength);
         // parse to string
         var str = Encoding.UTF8.GetString(bytes);
         var parts = str.Split('\0');
         
-        return parts[0];
+        return parts.Length > 0 ? parts[0] : str;
     }
     
     public void SetByteAt(int at, byte value) {
@@ -77,10 +78,25 @@ public class ByteBuf {
         
         SetByteAt(at + (str != null ? str.Length : 0), 0x0);
     }
+    
+    public void SetString(int at, string str, int maxLength) {
+        if (str != null) {
+            var bytes = Encoding.UTF8.GetBytes(str);
+            SetBytes(at, bytes);
+        }
+        
+        for (int i = str != null ? str.Length : 0; i < maxLength; i++) {
+            SetByteAt(at + i, 0x0);
+        }
+    }
 
     public ByteBuf Copy() {
         return new(buf);
     }
-    
+
+    public override string ToString() {
+        return $"ByteBuf[{size}]({string.Join(", ", buf.Select(b => b.ToString("X2")))})";
+    }
+
 }
 }

@@ -12,6 +12,8 @@ public class LocalInputModule : MonoBehaviour, IInputProvider, IManualUpdate {
     public InputBuffer inputBuffer => localBuffer;
 
     public PlayerInput input { get; private set; }
+    public InputDevice device { get; set; }
+    
     private List<InputFrame> thisFrameInputs = new();
     private InputBuffer localBuffer;
     

@@ -17,6 +17,7 @@ public class PostProcessManager : SingletonBehaviour<PostProcessManager> {
     public UDictionary<string, MMShaker> shakers = new();
 
     public bool showKnockout { get; set; } = false;
+    public bool showBlur { get; set; } = false;
     
     private Vignette vignette;
     private DepthOfField dof;
@@ -37,6 +38,10 @@ public class PostProcessManager : SingletonBehaviour<PostProcessManager> {
         
             colorAdjustments.contrast.value = Mathf.Lerp(colorAdjustments.contrast.value, 0, Time.deltaTime * 2.5f);
             colorAdjustments.saturation.value = Mathf.Lerp(colorAdjustments.saturation.value, 0, Time.deltaTime * 2.5f);   
+        }
+
+        if (dof) {
+            dof.active = showBlur;
         }
     }
 

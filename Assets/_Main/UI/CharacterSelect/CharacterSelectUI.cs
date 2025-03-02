@@ -8,8 +8,9 @@ using SuperSmashRhodes.Battle.Stage;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Input;
 using SuperSmashRhodes.Match;
-using SuperSmashRhodes.Network.Room;
-using SuperSmashRhodes.Room;
+using SuperSmashRhodes.Network.RoomManagement;
+using SuperSmashRhodes.Match;
+using SuperSmashRhodes.Match.Player;
 using SuperSmashRhodes.Scripts.Audio;
 using UnityEngine;
 using UnityEngine.Events;
@@ -17,7 +18,6 @@ using UnityEngine.InputSystem.UI;
 
 namespace SuperSmashRhodes.UI.CharacterSelect {
 public class CharacterSelectUI : SingletonBehaviour<CharacterSelectUI> {
-    public RoomConfiguration roomConfiguration;
     
     [Title("References")]
     public Animator animator;
@@ -28,14 +28,18 @@ public class CharacterSelectUI : SingletonBehaviour<CharacterSelectUI> {
     public RectTransform portraitContainer;
 
     [Title("Debug")]
+    public RoomConfiguration debugRoomConfiguration;
     public StageData stageData;
     public StageBGMData bgmData;
     
-    public Dictionary<int, PlayerMatchData> playerData { get; } = new();
-    private bool showPlayerList => playerData.Count > 0;
+    private bool showPlayerList => room.players.Count >= 1;
+    private Room room => RoomManager.current;
     public Dictionary<CharacterDescriptor, CharacterPortrait> portraits = new();
     
     public bool show { get; set; }
+    public RoomConfiguration roomConfiguration => room != null ? room.config : null;
+    
+    private Coroutine showVSScreenRoutine;
     
     private void Start() {
         show = true;
@@ -49,6 +53,14 @@ public class CharacterSelectUI : SingletonBehaviour<CharacterSelectUI> {
         }
 
         AudioManager.inst.PlayBGM("bgm/characterselect", gameObject, .5f, .3f);
+        
+        // debug room configuration
+        if (debugRoomConfiguration && room == null) {
+            // create debug room
+            print("Creating debug room");
+            var room = new LocalRoom(debugRoomConfiguration);
+            RoomManager.inst.CreateRoom(room);
+        }
     }
 
     private void Update() {
@@ -64,84 +76,97 @@ public class CharacterSelectUI : SingletonBehaviour<CharacterSelectUI> {
             animator.SetBool("Show", show);
         }
         
-        if (!show) return;
+        if (!show || !roomConfiguration) return;
         
-        {
+        if (room is LocalRoom localRoom) {
             // player joining
             foreach (var (k, input) in InputDevicePool.inst.inputs) {
-                if (playerData.Values.Any(c => c.input == input)) {
-                    if (input["Cancel"].triggered) {
-                        var playerId = playerData.First(c => c.Value.input == input).Key;
-                        var data = playerData[playerId];
-                        
-                        if (data.confirmed) {
-                            data.confirmed = false;
-                        } else {
-                            playerData.Remove(playerId);
-                        }
-                        AudioManager.inst.PlayAudioClip("cmn/sfx/ui/button/back", gameObject);
-                    }
-                    
-                    if (input["Submit"].triggered) {
-                        var playerId = playerData.First(c => c.Value.input == input).Key;
-                        playerData[playerId].confirmed = true;
-
-                        if (playerData.Count >= 2 && playerData.Values.All(c => c.confirmed)) {
-                            StopAllCoroutines();
-                            StartCoroutine(ShowVSScreen(playerData[0], playerData[1]));
-                            return;
-                        }
-                    }
-                    
+                if (room.players.Values.Any(c => c is LocalPlayer localPlayer && localPlayer.input == input)) {
                     continue;
                 }
                 
                 if (input["Submit"].triggered) {
-                    int playerId = playerData.ContainsKey(0) ? 1 : 0;
+                    var player = localRoom.AddLocalPlayer(k);
+                    var character = portraits.Keys.ToList()[player.playerId];
                     
-                    var data = new PlayerMatchData(playerId, input);
-                    data.selectedCharacter = portraits.Keys.ToList()[playerId];
-                    
-                    playerData[playerId] = data;
+                    player.SetCharacter(character);
                     AudioManager.inst.PlayAudioClip("cmn/sfx/ui/button/normal", gameObject);
+                    return;
                 }
             }
         }
         
         // charater select
         var keylist = portraits.Keys.ToList();
-        foreach (var (k, player) in playerData) {
-            var input = player.input;
-            if (input["Navigate"].triggered && player.selectedCharacter && !player.confirmed) {
-                var value = input["Navigate"].ReadValue<Vector2>().x;
-                if (value == 0) continue;
-                var currentIndex = keylist.IndexOf(player.selectedCharacter);
-                if (value > 0) {
-                    currentIndex++;
-                    if (currentIndex >= portraits.Keys.Count) currentIndex = 0;
-                } else {
-                    currentIndex--;
-                    if (currentIndex < 0) currentIndex = portraits.Keys.Count - 1;
-                }
+        
+        // input
+        if (room.status == RoomStatus.CHARACTER_SELECT) {
+            foreach (var (k, player) in room.players.ToList()) {
+                if (player is LocalPlayer localPlayer) {
+                    var input = localPlayer.input;
+                
+                    if (input["Navigate"].triggered && player.character && !player.characterConfirmed) {
+                        var value = input["Navigate"].ReadValue<Vector2>().x;
+                        if (value == 0) continue;
+                        var currentIndex = keylist.IndexOf(player.character);
+                        if (value > 0) {
+                            currentIndex++;
+                            if (currentIndex >= portraits.Keys.Count) currentIndex = 0;
+                        } else {
+                            currentIndex--;
+                            if (currentIndex < 0) currentIndex = portraits.Keys.Count - 1;
+                        }
 
-                AudioManager.inst.PlayAudioClip("cmn/ui/navigate/normal", gameObject);
-                player.selectedCharacter = keylist[currentIndex];
+                        AudioManager.inst.PlayAudioClip("cmn/ui/navigate/normal", gameObject);
+                        localPlayer.SetCharacter(keylist[currentIndex]);
+                    }
+            
+            
+                    if (input["Cancel"].triggered) {
+                        if (player.characterConfirmed) {
+                            localPlayer.SetConfirmed(false);
+                        
+                        } else if (room is LocalRoom) {
+                            room.RemovePlayer(player.playerId);
+                        }
+                    
+                        AudioManager.inst.PlayAudioClip("cmn/sfx/ui/button/back", gameObject);
+                    }
+                    
+                    if (input["Submit"].triggered) {
+                        localPlayer.SetConfirmed(true);
+                        
+                    }   
+                }
             }
+        }
+        
+        if (room.allConfirmed && showVSScreenRoutine == null) {
+            showVSScreenRoutine = StartCoroutine(ShowVSScreen());
+            Debug.Log("beginning match");
+            return;
         }
     }
 
-    private IEnumerator ShowVSScreen(PlayerMatchData p1, PlayerMatchData p2) {
+    private IEnumerator ShowVSScreen() {
         if (!show) yield break;
         yield return new WaitForSeconds(2);
+
+        if (!room.allConfirmed) {
+            showVSScreenRoutine = null;
+            yield break;
+        }
         
-        if (playerData.Count < 2 || playerData.Values.Any(c => !c.confirmed)) yield break;
-        
-        CharacterVSScreen.inst.Show(p1, p2);
+        CharacterVSScreen.inst.Show();
         show = false;
 
         yield return new WaitForSeconds(0.5f);
-        RoomManager.inst.BeginLocalMatch(roomConfiguration, stageData, bgmData, p1, p2);
         
+        if (room is LocalRoom localRoom) {
+            localRoom.BeginMatch(stageData, bgmData);
+        } else if (room is NetworkRoom networkRoom) {
+            networkRoom.BeginMatchLocal();
+        }
     }
 }
 }

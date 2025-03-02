@@ -1,4 +1,5 @@
-﻿using SuperSmashRhodes.Util;
+﻿using SuperSmashRhodes.Config.Global;
+using SuperSmashRhodes.Util;
 
 namespace SuperSmashRhodes.Network.Rollbit {
 public abstract class ServerboundPacket : Packet {
@@ -6,7 +7,7 @@ public abstract class ServerboundPacket : Packet {
 
     public PacketHeader header {
         get {
-            return new PacketHeader(type, session.config.version, bodySize + 32, bodySize, 0, 0, session.config.userId);
+            return new PacketHeader(type, PacketHeader.ROLLBIT_MAGIC, ApplicationGlobalSettings.inst.rollbitVersion, bodySize + 32, bodySize, 0, 0, session.config.userId);
         }
     }
     

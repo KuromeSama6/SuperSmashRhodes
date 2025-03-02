@@ -2,7 +2,9 @@
 using Sirenix.OdinInspector;
 using Spine.Unity;
 using SuperSmashRhodes.Battle;
-using SuperSmashRhodes.Room;
+using SuperSmashRhodes.Match;
+using SuperSmashRhodes.Match.Player;
+using SuperSmashRhodes.Network.RoomManagement;
 using SuperSmashRhodes.Scripts.Audio;
 using SuperSmashRhodes.UI.Generic;
 using SuperSmashRhodes.Util;
@@ -27,8 +29,8 @@ public class PlayerInfoPanel : MonoBehaviour {
     public RectTransform cornerScroll;
     public CanvasGroup namesPanel;
     public CanvasGroup readyBadge;
-    
-    public PlayerMatchData data => CharacterSelectUI.inst.playerData.TryGetValue(playerId, out var ret) ? ret : null;
+
+    public Player player => RoomManager.current.GetPlayer(playerId);
 
     private CharacterDescriptor lastCharacter;
     private bool lastConfirmState;
@@ -41,18 +43,18 @@ public class PlayerInfoPanel : MonoBehaviour {
     }
 
     private void Update() {
-        infoPanel.alpha = Mathf.Lerp(infoPanel.alpha, data != null ? 1 : 0, Time.deltaTime * 10);
-        standbyPanel.alpha = Mathf.Lerp(standbyPanel.alpha, data == null ? 1 : 0, Time.deltaTime * 10);
-        skeletonGraphic.color = Color.Lerp(skeletonGraphic.color, Color.white.ApplyAlpha(data != null ? 1f : 0f), Time.deltaTime * 10f);
-        portrait.color = Color.Lerp(portrait.color, data != null && data.selectedCharacter ? (data.confirmed ? Color.white : Color.Lerp(Color.black, Color.white, .8f)) : Color.clear, Time.deltaTime * 10f);
-        emblemCarousel.alpha = Mathf.Lerp(emblemCarousel.alpha, data != null && data.selectedCharacter ? 0 : 1, Time.deltaTime * 5f);
-        emblem.color = Color.Lerp(emblem.color, Color.white.ApplyAlpha(data != null && data.selectedCharacter ? (data.confirmed ? 0.5f : 0.1f) : 0f), Time.deltaTime * 10f);
+        infoPanel.alpha = Mathf.Lerp(infoPanel.alpha, player != null ? 1 : 0, Time.deltaTime * 10);
+        standbyPanel.alpha = Mathf.Lerp(standbyPanel.alpha, player == null ? 1 : 0, Time.deltaTime * 10);
+        skeletonGraphic.color = Color.Lerp(skeletonGraphic.color, Color.white.ApplyAlpha(player != null ? 1f : 0f), Time.deltaTime * 10f);
+        portrait.color = Color.Lerp(portrait.color, player != null && player.character ? (player.characterConfirmed ? Color.white : Color.Lerp(Color.black, Color.white, .8f)) : Color.clear, Time.deltaTime * 10f);
+        emblemCarousel.alpha = Mathf.Lerp(emblemCarousel.alpha, player != null && player.character ? 0 : 1, Time.deltaTime * 5f);
+        emblem.color = Color.Lerp(emblem.color, Color.white.ApplyAlpha(player != null && player.character ? (player.characterConfirmed ? 0.5f : 0.1f) : 0f), Time.deltaTime * 10f);
         
-        cornerScroll.sizeDelta = new Vector2(cornerScroll.sizeDelta.x, Mathf.Lerp(cornerScroll.sizeDelta.y, data != null && data.confirmed ? 0f : 30f, Time.deltaTime * 15f));
+        cornerScroll.sizeDelta = new Vector2(cornerScroll.sizeDelta.x, Mathf.Lerp(cornerScroll.sizeDelta.y, player != null && player.characterConfirmed ? 0f : 30f, Time.deltaTime * 15f));
         LayoutRebuilder.ForceRebuildLayoutImmediate(cornerScroll.transform.parent as RectTransform);
 
         {
-            var ready = data != null && data.confirmed;
+            var ready = player != null && player.characterConfirmed;
             readyBadge.alpha = Mathf.Lerp(readyBadge.alpha, ready ? 1f : 0f, Time.deltaTime * 30f);
             readyBadge.transform.localScale = Vector3.Lerp(readyBadge.transform.localScale, Vector3.one * (ready ? 1f : 1.5f), Time.deltaTime * 20f);
 
@@ -60,15 +62,15 @@ public class PlayerInfoPanel : MonoBehaviour {
             portrait.material.SetFloat(GRAYSCALE, ready ? 0f : .5f);
         }
         
-        if (data == null) {
+        if (player == null) {
             lastCharacter = null;
             return;
         }
         
         // selection
         
-        if (data.selectedCharacter) {
-            var character = data.selectedCharacter;
+        if (player.character) {
+            var character = player.character;
             if (character != lastCharacter) {
                 lastCharacter = character;
                 SingleUpdate();
@@ -78,13 +80,13 @@ public class PlayerInfoPanel : MonoBehaviour {
             operatorSubname.text = $"{character.realName} {character.englishName}";
             operatorOrganization.text = $"{character.organizationChinese} {character.organizationEnglish}";
             
-            emblem.transform.localScale = Vector3.Lerp(emblem.transform.localScale, Vector3.one * (data.confirmed ? .9f : 1.2f), Time.deltaTime * 10f);
+            emblem.transform.localScale = Vector3.Lerp(emblem.transform.localScale, Vector3.one * (player.characterConfirmed ? .9f : 1.2f), Time.deltaTime * 10f);
             
-            namesPanel.alpha = Mathf.Lerp(namesPanel.alpha, data.confirmed ? 1f : 0.5f, Time.deltaTime * 10f);
+            namesPanel.alpha = Mathf.Lerp(namesPanel.alpha, player.characterConfirmed ? 1f : 0.5f, Time.deltaTime * 10f);
             
-            if (data.confirmed != lastConfirmState) {
-                lastConfirmState = data.confirmed;
-                ConfirmUpdate(data.confirmed);
+            if (player.characterConfirmed != lastConfirmState) {
+                lastConfirmState = player.characterConfirmed;
+                ConfirmUpdate(player.characterConfirmed);
             }
 
             var comp = portrait.GetComponent<RectTransform>();
@@ -112,7 +114,7 @@ public class PlayerInfoPanel : MonoBehaviour {
         if (confirmed) {
             var owner = CharacterSelectUI.inst.gameObject;
             AudioManager.inst.PlayAudioClip("cmn/sfx/ui/button/heavy", owner);
-            AudioManager.inst.PlayAudioClip($"chr/{data.selectedCharacter.id}/general/vo/entry", owner, "active_vo");
+            AudioManager.inst.PlayAudioClip($"chr/{player.character.id}/general/vo/entry", owner, "active_vo");
             this.CallLaterCoroutine(0.2f, () => {
                 AudioManager.inst.PlayAudioClip("cmn/battle/sfx/deploy", owner);
             });

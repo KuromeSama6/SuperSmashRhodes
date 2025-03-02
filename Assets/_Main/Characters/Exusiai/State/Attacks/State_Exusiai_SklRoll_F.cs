@@ -9,11 +9,16 @@ using UnityEngine;
 namespace SuperSmashRhodes.Runtime.State {
 [NamedToken("Exusiai_SklRoll_FThrow")]
 public class State_Exusiai_SklRoll_FThrow : State_Common_CommandThrow {
-    public State_Exusiai_SklRoll_FThrow(Entity entity) : base(entity) { }
+    public State_Exusiai_SklRoll_FThrow(Entity entity) : base(entity) {
+    }
     public override EntityStateType type => EntityStateType.CHR_ATK_SPECIAL_TRIGGER;
     public override float inputPriority => 5f;
+    protected override int normalInputBufferLength => 5;
     protected override string mainAnimation => "chr/SklRoll_FThrow";
-    protected override InputFrame[] requiredInput => new[] { new InputFrame(InputType.FORWARD, InputFrameType.HELD), new InputFrame(InputType.HS, InputFrameType.PRESSED)};
+    protected override InputFrame[] requiredInput => new[] {
+        new InputFrame(InputType.FORWARD, InputFrameType.HELD), 
+        new InputFrame(InputType.HS, InputFrameType.PRESSED)
+    };
 
     public override AttackFrameData frameData => new AttackFrameData() {
         startup = 7,

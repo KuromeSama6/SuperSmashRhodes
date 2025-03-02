@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
-using SuperSmashRhodes.Room;
+using SuperSmashRhodes.Match;
+using SuperSmashRhodes.Match.Player;
+using SuperSmashRhodes.Network.RoomManagement;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -19,7 +21,7 @@ public class CharacterVSPlayerInfo : MonoBehaviour {
     public Image easeOfUseIcon;
     public TMP_Text name, englishName, mainDescription, subDescription;
 
-    public PlayerMatchData data => CharacterSelectUI.inst.playerData.GetValueOrDefault(playerId);
+    public Player data => RoomManager.current.GetPlayer(playerId);
 
     private void Start() {
         
@@ -27,7 +29,7 @@ public class CharacterVSPlayerInfo : MonoBehaviour {
 
     private void Update() {
         if (data == null) return;
-        var descriptor = data.selectedCharacter;
+        var descriptor = data.character;
         if (!descriptor) return;
         
         portrait.sprite = portraitBackground.sprite = descriptor.portrait;

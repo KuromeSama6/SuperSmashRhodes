@@ -14,7 +14,7 @@ using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Battle.State.Implementation;
 using SuperSmashRhodes.Character.Gauge;
 using SuperSmashRhodes.Input;
-using SuperSmashRhodes.Network.Room;
+using SuperSmashRhodes.Network.RoomManagement;
 using SuperSmashRhodes.Runtime.State;
 using SuperSmashRhodes.UI.Battle;
 using SuperSmashRhodes.UI.Battle.AnnouncerHud;
@@ -176,7 +176,7 @@ public class PlayerCharacter : Entity {
         }
         
         // death
-        if (GameManager.inst.inGame && health <= 0 && !RoomManager.inst.current.config.isTraining && !(activeState is State_SysDeath) && !stateFlags.HasFlag(CharacterStateFlag.DEATH_HOLD)) {
+        if (GameManager.inst.inGame && health <= 0 && !RoomManager.current.config.isTraining && !(activeState is State_SysDeath) && !stateFlags.HasFlag(CharacterStateFlag.DEATH_HOLD)) {
             BeginState("SysDeath");
             stateFlags |= CharacterStateFlag.NO_NEW_STATE;
             GameManager.inst.HandlePlayerDeath(this);
@@ -247,6 +247,7 @@ public class PlayerCharacter : Entity {
             if (state == activeState && !activeState.isSelfCancellable) continue;
             
             if (activeState.stateData.cancelOptions.Contains(state) || BitUtil.CheckFlag((ulong)activeState.stateData.cancelFlag, (ulong)state.type)) {
+                
                 // state is valid
                 if (state.mayEnterState && state.IsInputValid(inputProvider.inputBuffer)) {
                     // check cancel state

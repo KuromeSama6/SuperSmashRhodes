@@ -1125,7 +1125,7 @@
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "keyboard1",
+                    "groups": "keyboard1;keyboard2;ps4_test",
                     "action": "Click",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -1136,7 +1136,7 @@
                     "path": "<Pen>/tip",
                     "interactions": "",
                     "processors": "",
-                    "groups": "keyboard1",
+                    "groups": "keyboard1;keyboard2;ps4_test",
                     "action": "Click",
                     "isComposite": false,
                     "isPartOfComposite": false

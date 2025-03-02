@@ -195,6 +195,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 52409f4bceb75fe4a87a45c672070d63
+    m_Address: bgm/results/victory
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 53cd1f5a311062544943ae37dda76107
     m_Address: chr/exusiai/battle/sfx/gun_shell_1
     m_ReadOnly: 0
@@ -222,6 +227,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 640e690c8a0410f44a900879bb28bce0
     m_Address: chr/chen/battle/vo/dp
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6440376ce4444ad4d9c2475a7d6bad4e
+    m_Address: chr/exusiai/general/vo/victory
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -335,6 +345,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: af7090c732cdd0f41933baed7805c6af
+    m_Address: bgm/results/victory/loop
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b3270193c6333fb4bb3682563d792e78
     m_Address: cmn/battle/sfx/attack/fist/heavy/2
     m_ReadOnly: 0
@@ -405,6 +420,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e2828db53c9b22045b1118be1c34a400
+    m_Address: bgm/results/victory/intro
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e4a653dbe3d535e4787ea79f55ab29d4
     m_Address: chr/exusiai/battle/sfx/originium/charge_lv3
     m_ReadOnly: 0
@@ -427,6 +447,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e9ff09133d5309648bcab82013b52f16
     m_Address: chr/exusiai/battle/sfx/632146d/blast
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb250ea7aa893e64899b2ee63c53dc1e
+    m_Address: chr/chen/general/vo/victory
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using Spine.Unity;
+using SuperSmashRhodes.Config.Global;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
@@ -32,6 +33,9 @@ public class CharacterDescriptor : ScriptableObject {
     [Title("Misc")]
     public float entryCinematicDuration = 7f;
     public float roundWonCinematicDuration = 10f;
+
+    public int characterIndex => CharacterDatabase.inst.characters.IndexOf(this);
+    public static CharacterDescriptor FromIndex(int index) => CharacterDatabase.inst.characters[index];
 }
 
 public enum CharacterProfession {

@@ -6,6 +6,7 @@ using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Input;
+using SuperSmashRhodes.Runtime.State;
 using SuperSmashRhodes.UI.Battle.AnnouncerHud;
 using SuperSmashRhodes.Util;
 using UnityEngine;
@@ -156,6 +157,7 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
 
     protected override void OnTick() {
         base.OnTick();
+        
         if (socket != null && socket.attached) {
             socket.Tick();
         }
@@ -243,6 +245,7 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
         // OnHit(player.opponent);
         // Debug.Log("hitstun hard");
         opponent.BeginState("CmnHardKnockdown");
+        player.meter.AddMeter(GetMeterGain(opponent, false));
     }
     
     public override void OnApplyCinematicDamage(AnimationEventData data) {

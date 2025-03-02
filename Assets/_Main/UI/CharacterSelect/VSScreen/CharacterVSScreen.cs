@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using SuperSmashRhodes.Framework;
-using SuperSmashRhodes.Room;
+using SuperSmashRhodes.Match;
+using SuperSmashRhodes.Match.Player;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,7 +25,7 @@ public class CharacterVSScreen : SingletonBehaviour<CharacterVSScreen> {
         animator.SetBool("Show", show);
     }
     
-    public void Show(PlayerMatchData player1, PlayerMatchData player2) {
+    public void Show() {
         show = true;
     }
 }

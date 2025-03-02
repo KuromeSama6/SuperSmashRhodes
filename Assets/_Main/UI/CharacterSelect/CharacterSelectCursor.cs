@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using Sirenix.OdinInspector;
-using SuperSmashRhodes.Room;
+using SuperSmashRhodes.Match;
+using SuperSmashRhodes.Match.Player;
+using SuperSmashRhodes.Network.RoomManagement;
 using SuperSmashRhodes.Util;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,7 +17,7 @@ public class CharacterSelectCursor : MonoBehaviour {
     public Image cursorOutline, cursorFill;
     public CanvasGroup p1Pointer, p2Pointer;
 
-    private PlayerMatchData data => CharacterSelectUI.inst.playerData.TryGetValue(playerId, out var ret) ? ret : null;
+    private Player data => RoomManager.current.GetPlayer(playerId);
     
     private void Start() {
         canvasGroup.alpha = 0;
@@ -24,7 +26,7 @@ public class CharacterSelectCursor : MonoBehaviour {
     private void Update() {
         canvasGroup.alpha = Mathf.Lerp(canvasGroup.alpha, data != null ? 1f : 0f, Time.deltaTime * 10f);
         if (data == null) return;
-        var hasMultipleSelected = CharacterSelectUI.inst.playerData.Values.Count(c => c.selectedCharacter == data.selectedCharacter) > 1;
+        var hasMultipleSelected = RoomManager.current.players.Values.Count(c => c.character == data.character) > 1;
         
         {
             // cursor color
@@ -46,13 +48,13 @@ public class CharacterSelectCursor : MonoBehaviour {
         }
 
         // update portrait location
-        var portrait = CharacterSelectUI.inst.portraits[data.selectedCharacter];
+        var portrait = CharacterSelectUI.inst.portraits[data.character];
         var rect = transform as RectTransform;
         var pos = rect.anchoredPosition;
         pos.x = Mathf.Lerp(pos.x, ((RectTransform)portrait.transform).anchoredPosition.x, Time.deltaTime * 15);
         rect.anchoredPosition = pos;
 
-        cursorOutline.transform.localScale = Vector3.Lerp(cursorOutline.transform.localScale, Vector3.one * (data.confirmed ? .95f : 1f), Time.deltaTime * 30f);
+        cursorOutline.transform.localScale = Vector3.Lerp(cursorOutline.transform.localScale, Vector3.one * (data.characterConfirmed ? .95f : 1f), Time.deltaTime * 30f);
 
     }
 }

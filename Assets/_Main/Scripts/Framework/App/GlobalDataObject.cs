@@ -1,4 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace SuperSmashRhodes.Framework {
@@ -12,7 +16,7 @@ public abstract class GlobalDataObject<T> : ScriptableObject where T : Scriptabl
 
             _inst = Resources.Load<T>(path);
             if (!_inst) {
-                Debug.LogError($"GlobalDataObject({path}) not found in Resources/Global. Creating it.");
+                Debug.LogWarning($"GlobalDataObject({path}) not found in Resources/Global. Creating it.");
                 var obj = CreateInstance<T>();
                 obj.name = fileName;
                 SaveAsset(obj, $"Assets/_Main/Resources/{path}.asset");
@@ -23,16 +27,24 @@ public abstract class GlobalDataObject<T> : ScriptableObject where T : Scriptabl
     }
 
     private static T _inst;
-
+    
+    public void SaveNow() {
+        #if UNITY_EDITOR
+            EditorUtility.SetDirty(this);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        #endif
+    }
+    
     private static void SaveAsset(T config, string path) {
     #if UNITY_EDITOR
         if (!Directory.Exists("Assets/Resources/_Main")) {
             Directory.CreateDirectory("Assets/Resources/_Main");
         }
 
-        UnityEditor.AssetDatabase.CreateAsset(config, path);
-        UnityEditor.AssetDatabase.SaveAssets();
-        UnityEditor.AssetDatabase.Refresh();
+        AssetDatabase.CreateAsset(config, path);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
 
         Debug.Log("Created new GlobalConfig at " + path);
     #else

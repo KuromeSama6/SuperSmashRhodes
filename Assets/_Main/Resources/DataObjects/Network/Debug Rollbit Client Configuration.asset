@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcf55044dee44ecf85d7d861ea079bab, type: 3}
   m_Name: Debug Rollbit Client Configuration
   m_EditorClassIdentifier: 
-  version: 1
+  host: 202.182.125.24
+  port: 47767
   userId: 12345678abcdefg
   aesKey: P&#IGc8*n6tqJjFZ
+  debugSkipCharacterSelect: 1

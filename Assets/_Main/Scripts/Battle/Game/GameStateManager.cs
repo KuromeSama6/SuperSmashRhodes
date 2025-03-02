@@ -6,7 +6,7 @@ using Sirenix.Utilities;
 using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Match;
-using SuperSmashRhodes.Network.Room;
+using SuperSmashRhodes.Network.RoomManagement;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.Game {

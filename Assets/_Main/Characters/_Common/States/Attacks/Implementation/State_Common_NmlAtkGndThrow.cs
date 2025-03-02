@@ -36,6 +36,9 @@ public abstract class State_Common_NmlAtkGndThrow : ThrowAttackStateBase {
     protected override bool MayHit(PlayerCharacter other) {
         return base.MayHit(other) && !other.airborne;
     }
+    public override float GetMeterGain(Entity to, bool blocked) {
+        return 10f;
+    }
 
 }
 }
