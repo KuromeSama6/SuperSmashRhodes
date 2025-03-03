@@ -13,6 +13,7 @@ public class DebugInputBufferDisplay : PerSideUIElement<DebugInputBufferDisplay>
         var buffer = player.inputProvider.inputBuffer;
         
         StringBuilder sb = new();
+        sb.AppendLine(player.inputProvider.ToString());
         foreach (var chord in buffer.buffer) {
             if (chord.inputs.Length > 0) sb.AppendLine(string.Join(" ", chord.inputs));
             else sb.AppendLine("-");

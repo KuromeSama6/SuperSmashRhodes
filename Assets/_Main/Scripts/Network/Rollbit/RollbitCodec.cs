@@ -5,8 +5,10 @@ using SuperSmashRhodes.Util;
 namespace SuperSmashRhodes.Network.Rollbit {
 public static class RollbitCodec {
     public static byte[] CreateOutboundPacket(ServerboundPacket packet, uint requestId = 0, string aesKey = null) {
-        var header = packet.header;
-        var body = packet.Serialize();
+        return CreateOutboundPacket(packet.header, packet.Serialize(), requestId, aesKey);
+    }
+    
+    public static byte[] CreateOutboundPacket(PacketHeader header, ByteBuf body, uint requestId = 0, string aesKey = null) {
         var padding = (16 - body.size % 16) % 16;
             
         var buf = new ByteBuf(32 + body.size + padding);

@@ -1,9 +1,11 @@
-﻿using System;
+﻿
+using System;
 using System.Collections;
 using System.Text;
 using Sirenix.OdinInspector;
 using SuperSmashRhodes.Config.Global;
 using SuperSmashRhodes.Framework;
+using SuperSmashRhodes.Network;
 using SuperSmashRhodes.Network.RoomManagement;
 using TMPro;
 using UnityEngine;
@@ -31,6 +33,11 @@ public class VersionCanvasUI : SingletonBehaviour<VersionCanvasUI> {
                 if (room is NetworkRoom networkRoom) {
                     sb.AppendLine(networkRoom.session.config.userId);
                     sb.AppendLine($"RTA {networkRoom.session.lastPingLatency}ms");
+
+                    if (networkRoom.fighting) {
+                        var inputManager = networkRoom.inputManager;
+                        sb.AppendLine($"DL Send {inputManager.sendFrame} Receive {inputManager.receiveFrame}");
+                    }
 
                 } else {
                     sb.AppendLine("local");

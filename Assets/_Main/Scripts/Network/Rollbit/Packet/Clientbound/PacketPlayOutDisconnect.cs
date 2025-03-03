@@ -28,6 +28,9 @@ public enum ServerDisconnectionReason : ushort {
     
     ROOM_FULL = 20,
     MATCH_DECLINED = 21,
+    NOT_ENOUGH_PLAYERS = 22,
+    
+    ROUND_COUNT_MISMATCH = 30,
     
     NEGOTIATION_FALIURE = 66
 }

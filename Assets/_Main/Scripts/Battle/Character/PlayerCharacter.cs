@@ -164,7 +164,7 @@ public class PlayerCharacter : Entity {
         UpdatePosition();
         UpdateGravity();
         UpdateRotation();
-        inputProvider = InputDevicePool.inst.GetInputProvider(this);
+        inputProvider = GameManager.inst.GetInputProvider(this);
         if (backdashCooldown > 0) {
             --backdashCooldown;
         }
@@ -341,7 +341,6 @@ public class PlayerCharacter : Entity {
         airActionPerformed = false;
         
         // input provider
-        inputProvider = InputDevicePool.inst.GetInputProvider(this);
         
         ResetAirOptions();
         

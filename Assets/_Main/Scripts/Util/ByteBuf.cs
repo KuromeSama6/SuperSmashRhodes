@@ -94,6 +94,14 @@ public class ByteBuf {
         return new(buf);
     }
 
+    public ByteBuf Slice(int from) {
+        return new(buf[from..]);
+    }
+    
+    public ByteBuf Slice(int from, int length) {
+        return new(buf[from..(from + length)]);
+    }
+    
     public override string ToString() {
         return $"ByteBuf[{size}]({string.Join(", ", buf.Select(b => b.ToString("X2")))})";
     }

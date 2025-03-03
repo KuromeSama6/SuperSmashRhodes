@@ -9,8 +9,15 @@ public class RollbitClientConfiguration : ScriptableObject {
     public int port;
     public string userId;
     public string aesKey;
-
+    
+    [Title("Network")]
+    public int p2PNegotiationAttempts = 10;
+    public NetcodeMode netcodeMode = NetcodeMode.ROLLBACK;
+    public int maxRollbackFrames = 7;
+    
     [Title("Debug")]
     public bool debugSkipCharacterSelect;
+    public bool debugP2PLatency;
+    public Vector2Int debugP2PLatencyRange;
 }
 }

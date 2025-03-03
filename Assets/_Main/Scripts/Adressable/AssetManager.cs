@@ -35,7 +35,7 @@ public class AssetManager : AutoInitSingletonBehaviour<AssetManager> {
         
         InstantiateAutoPrefabs();
         
-        PreloadAll("bgm/**");
+        PreloadAll("bgm/**", AssetReleaseMethod.MANUAL);
     }
 
     public List<string> GetAssets(string pattern) {
@@ -67,7 +67,7 @@ public class AssetManager : AutoInitSingletonBehaviour<AssetManager> {
     private void OnSceneUnloaded(Scene scene) {
         foreach (var asset in assets.Values) {
             if (asset.releaseMethod == AssetReleaseMethod.ON_SCENE_UNLOAD) {
-                asset.Release();
+                // asset.Release();
             }
         }
     }
@@ -79,7 +79,7 @@ public class AssetManager : AutoInitSingletonBehaviour<AssetManager> {
                 var go = Instantiate(res);
                 go.name = $"{res.name}$Auto";
                 DontDestroyOnLoad(go);
-            });
+            }, AssetReleaseMethod.MANUAL);
         }
     }
     
@@ -97,18 +97,18 @@ public class AssetManager : AutoInitSingletonBehaviour<AssetManager> {
         }
     }
     
-    public static void Get<T>(AssetReferenceT<T> reference, Action<T> callback) where T: Object {
-        Get(reference.RuntimeKey.ToString(), callback);
+    public static void Get<T>(AssetReferenceT<T> reference, Action<T> callback, AssetReleaseMethod releaseMethod = AssetReleaseMethod.ON_SCENE_UNLOAD) where T: Object {
+        Get(reference.RuntimeKey.ToString(), callback, releaseMethod);
     }
     
-    public static void Get<T>(string key, Action<T> callback) {
+    public static void Get<T>(string key, Action<T> callback, AssetReleaseMethod releaseMethod = AssetReleaseMethod.ON_SCENE_UNLOAD) where T: Object {
         if (!inst.ready) {
             inst.queue.Add(() => Get(key, callback));
             return;
         }
         
         if (inst.assets.ContainsKey(key)) {
-            inst.assets[key].Get(callback);
+            inst.assets[key].Get(callback, releaseMethod);
             
         } else {
             Debug.LogError($"Asset {key} not found");

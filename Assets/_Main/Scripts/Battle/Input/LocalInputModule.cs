@@ -30,7 +30,16 @@ public class LocalInputModule : MonoBehaviour, IInputProvider, IManualUpdate {
     
     public InputAction this[string action] => input.actions[action];
 
-    public void ManualFixedUpdate() {
+    public void LogicUpdate() {
+        
+    }
+    
+    
+    public void SetBuffer(InputBuffer newBuffer) {
+        localBuffer = newBuffer;
+    }
+
+    public void LogicPreUpdate() {
         if (!input) return;
         
         {

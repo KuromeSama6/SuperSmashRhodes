@@ -21,7 +21,7 @@ public class TimeManager : SingletonBehaviour<TimeManager>, IManualUpdate, IAuto
         
     }
 
-    public void ManualFixedUpdate() { 
+    public void LogicUpdate() { 
         if (scheduledDelay > 0) {
             --scheduledDelay;
             if (scheduledDelay == 0) {

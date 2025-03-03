@@ -12,7 +12,7 @@ namespace SuperSmashRhodes.Input {
 /// </summary>
 public class InputBuffer : IStateSerializable {
     public int maxSize { get; set; }
-    public List<InputChord> buffer { get; } = new();
+    public List<InputChord> buffer { get; private set; } = new();
     public InputChord thisFrame => buffer[0];
 
     public InputBuffer(int maxSize) {
@@ -22,6 +22,10 @@ public class InputBuffer : IStateSerializable {
     
     public InputBuffer(int maxSize, InputChord[] buffer) : this(maxSize) {
         this.buffer = buffer.ToList();
+    }
+
+    private InputBuffer() {
+        
     }
 
     public void PushAndTick(params InputFrame[] inputs) {
@@ -113,6 +117,13 @@ public class InputBuffer : IStateSerializable {
         
         return input;
     }
+
+    public InputBuffer Copy() {
+        var ret = new InputBuffer(maxSize);
+        ret.buffer = buffer.ToList();
+        return ret;
+    }
+    
     public void Serialize(StateSerializer serializer) {
         
     }

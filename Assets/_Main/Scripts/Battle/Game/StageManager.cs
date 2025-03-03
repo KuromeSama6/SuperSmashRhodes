@@ -25,7 +25,7 @@ public class StageManager : SingletonBehaviour<StageManager>, IManualUpdate {
         
     }
 
-    public void ManualFixedUpdate() {
+    public void LogicUpdate() {
         if (!p1 || !p2) return;
         
         var centerPoint = (p1.transform.position.x + p2.transform.position.x) / 2f;

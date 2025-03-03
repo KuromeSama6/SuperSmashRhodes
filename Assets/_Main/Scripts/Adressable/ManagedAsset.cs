@@ -38,10 +38,12 @@ public class ManagedAsset {
         };
     }
 
-    public void Get<T>(Action<T> callback) {
+    public void Get<T>(Action<T> callback, AssetReleaseMethod releaseMethod) {
         if (status == AssetStatus.STANDBY) {
             callback.Invoke((T)handle.Result);
+            
         } else {
+            this.releaseMethod = releaseMethod;
             Load(() => callback.Invoke((T)handle.Result));
         }
     }

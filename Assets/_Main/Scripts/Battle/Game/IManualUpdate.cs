@@ -1,6 +1,32 @@
 ﻿namespace SuperSmashRhodes.Battle.Game {
-public interface IManualUpdate { 
-    void ManualUpdate();
-    void ManualFixedUpdate();
+/// <summary>
+/// Represents a component that can be manually updated by the GameStateManager.
+/// </summary>
+public interface IManualUpdate {
+    /// <summary>
+    /// Called once per game frame, in Update().
+    /// This is not managed by the GameStateManager.
+    /// Use this for cosemetic updates.
+    /// </summary>
+    void ManualUpdate() {
+        
+    }
+    
+    /// <summary>
+    /// Called once per logical frame, in FixedUpdate(). This is called before inputs are solidified and sent over the network.
+    /// Use this for input processing.
+    /// This is managed by the GameStateManager.
+    /// </summary>
+    void LogicPreUpdate() {
+        
+    }
+    
+    /// <summary>
+    /// Called once per logical frame, in FixedUpdate().
+    /// Use this for regular game logic.
+    /// </summary>
+    void LogicUpdate() {
+        
+    }
 }
 }

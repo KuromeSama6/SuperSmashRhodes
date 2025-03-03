@@ -18,7 +18,7 @@ public class EntityBoundingBox : MonoBehaviour, IEntityBoundingBox, IManualUpdat
         owningPlayer = entity.owner;
     }
 
-    public void ManualFixedUpdate() {
+    public void LogicUpdate() {
         if (!entity.logicStarted) return;
         
         if (!collider) {

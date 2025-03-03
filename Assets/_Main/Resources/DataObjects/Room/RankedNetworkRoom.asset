@@ -14,7 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isNetworked: 1
   isTraining: 0
+  netcodeMode: 0
+  maxRollbackFrames: 7
   winRounds: 2
   roundTime: 99
+  infiniteTime: 0
+  singleSided: 0
   infiniteCharacterSelect: 0
   characterSelectTime: 30
+  cacheGameState: 0

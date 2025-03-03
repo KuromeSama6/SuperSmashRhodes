@@ -26,7 +26,7 @@ public class BattleAnnouncerUI : SingletonBehaviour<BattleAnnouncerUI> {
     }
 
     private void Update() {
-        transitionCover.alpha = Mathf.Lerp(transitionCover.alpha, transitionCoverVisible ? 1 : 0, Time.deltaTime * 10);
+        transitionCover.alpha = Mathf.Lerp(transitionCover.alpha, transitionCoverVisible ? 1 : 0, Time.deltaTime * 10f);
         var room = RoomManager.current;
         
         if (room != null) {

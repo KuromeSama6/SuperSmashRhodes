@@ -128,6 +128,7 @@ public class NetworkSession : IDisposable, IPacketHandler {
         // handshake
         SendPacket<PacketPlayOutHandshake>(new PacketPlayInHandshake(this, PlayerRole.PLAYER)).ContinueWith(packet => {
             Debug.Log("Handshake response: " + packet.Result);
+            heartbeatTimer?.Dispose();
             heartbeatTimer = new Timer(HeartbeatTick, this, 0, packet.Result.heartbeatInterval / 2);
             onEstablished.Invoke();
             lock (this) {

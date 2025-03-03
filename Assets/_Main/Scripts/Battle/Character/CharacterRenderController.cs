@@ -22,7 +22,7 @@ public class CharacterRenderController : MonoBehaviour, IManualUpdate {
         owner = GetComponent<PlayerCharacter>();
     }
 
-    public void ManualFixedUpdate() {
+    public void LogicUpdate() {
         var mat = renderer.material;
 
         renderer.shadowCastingMode = owner.dead ? ShadowCastingMode.Off : ShadowCastingMode.On;

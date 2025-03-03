@@ -1,4 +1,5 @@
 ﻿using Sirenix.OdinInspector;
+using SuperSmashRhodes.Network;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Match {
@@ -7,6 +8,7 @@ public class RoomConfiguration : ScriptableObject {
     [Title("General Config")]
     public bool isNetworked;
     public bool isTraining;
+    
     
     [Title("Round Config")]
     public int winRounds;

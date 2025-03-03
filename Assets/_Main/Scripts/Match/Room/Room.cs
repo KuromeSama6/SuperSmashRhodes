@@ -36,6 +36,7 @@ public abstract class Room {
     public float time { get; protected set; } = 999;
     public int round { get; protected set; }
     public List<RoundResult> results { get; } = new();
+    public int roundsPlayed { get; private set; }
     
     private RoomStatus _status = RoomStatus.STANDBY;
     private bool unmanaged = false;
@@ -69,7 +70,7 @@ public abstract class Room {
         onDestroy.RemoveAllListeners();
     }
 
-    protected void StartMatch() {
+    protected virtual void StartMatch() {
         status = RoomStatus.PLAYING;
         StartCoroutine(MatchRoutine());
         round = 0;
@@ -111,6 +112,8 @@ public abstract class Room {
     }
 
     public void EndRound(PlayerCharacter winner) {
+        ++roundsPlayed;
+        
         var status = winner.healthPercent >= 1f ? RoundCompletionStatus.PERFECT : RoundCompletionStatus.COMPLETE;
         var winnerPlayer = players[winner.playerIndex];
         results.Add(new RoundResult(winnerPlayer, status));
@@ -185,7 +188,7 @@ public abstract class Room {
     }
     
     //region Routines
-    private IEnumerator MatchRoutine() {
+    protected virtual IEnumerator MatchRoutine() {
         yield return GameEntryCinematicRoutine();
         
         // start logic
@@ -301,7 +304,7 @@ public abstract class Room {
         }
     }
 
-    private IEnumerator RoundStartRoutine() {
+    protected virtual IEnumerator RoundStartRoutine() {
         yield return new WaitForSeconds(1f);
         
         BattleAnnouncerUI.inst.Show(round);

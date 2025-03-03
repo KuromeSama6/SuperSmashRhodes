@@ -9,6 +9,7 @@ using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Battle.Stage;
 using SuperSmashRhodes.Framework;
+using SuperSmashRhodes.Input;
 using SuperSmashRhodes.Match;
 using SuperSmashRhodes.Network.RoomManagement;
 using SuperSmashRhodes.Match;
@@ -193,7 +194,7 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
         PruneEntities();
     }
 
-    public void ManualFixedUpdate() {
+    public void LogicUpdate() {
         pushboxCorrectionLock = false;
         if (RoomManager.current != null) {
             RoomManager.current.Tick();
@@ -305,6 +306,21 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
         return reference.entity;
     }
 
+    public IInputProvider GetInputProvider(PlayerCharacter playerCharacter) {
+        var room = RoomManager.current;
+        if (room is NetworkRoom networkRoom) {
+            if (networkRoom.localPlayer.playerId == playerCharacter.playerIndex) {
+                return InputDevicePool.inst.GetInputProvider(playerCharacter);
+                
+            } else {
+                return networkRoom.inputManager.remoteBuffer;
+            }
+            
+        } else {
+            return InputDevicePool.inst.GetInputProvider(playerCharacter);
+        }
+    }
+    
     private void PruneEntities() {
         foreach (var entity in entityTable.Values.ToList()) {
             if (!entity.alive) continue;

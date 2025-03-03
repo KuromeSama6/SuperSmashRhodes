@@ -134,7 +134,7 @@ public class EntityAudioManager : MonoBehaviour, IStateSerializable, IManualUpda
     public void ManualUpdate() {
         
     }
-    public void ManualFixedUpdate() {
+    public void LogicUpdate() {
         Prune();
     }
 }

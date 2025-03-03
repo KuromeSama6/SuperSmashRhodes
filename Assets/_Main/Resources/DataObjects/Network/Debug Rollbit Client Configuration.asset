@@ -16,4 +16,9 @@ MonoBehaviour:
   port: 47767
   userId: 12345678abcdefg
   aesKey: P&#IGc8*n6tqJjFZ
+  p2PNegotiationAttempts: 10
+  netcodeMode: 1
+  maxRollbackFrames: 7
   debugSkipCharacterSelect: 1
+  debugP2PLatency: 0
+  debugP2PLatencyRange: {x: 50, y: 200}

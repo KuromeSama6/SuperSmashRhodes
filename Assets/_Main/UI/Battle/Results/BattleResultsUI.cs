@@ -25,7 +25,6 @@ public class BattleResultsUI : SingletonBehaviour<BattleResultsUI> {
 
     private void Update() {
         canvasGroup.alpha = visible ? 1 : 0;
-        
 
     }
 

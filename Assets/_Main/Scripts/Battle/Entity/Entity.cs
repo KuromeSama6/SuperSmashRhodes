@@ -120,7 +120,7 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
         
     }
 
-    public virtual void ManualFixedUpdate() {
+    public virtual void LogicUpdate() {
         if (!logicStarted) return;
 
         rb.simulated = shouldSimulatePhysics;

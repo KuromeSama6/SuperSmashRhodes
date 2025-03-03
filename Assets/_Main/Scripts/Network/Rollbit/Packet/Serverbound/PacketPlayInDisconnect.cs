@@ -23,6 +23,7 @@ public enum ClientDisconnectionReason : ushort {
     BACK_TO_LOBBY = 1,
     CONNECTION_RESET = 2,
     PROTOCOL_ERROR = 3,
-    CLIENT_ERROR = 4 
+    CLIENT_ERROR = 4,
+    P2P_ERROR = 5,
 }
 }

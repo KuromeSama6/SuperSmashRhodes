@@ -58,6 +58,8 @@ public class AppDaemon : PersistentSingletonBehaviour<AppDaemon> {
     }
     
     private static void HandleLog(string logString, string stackTrace, LogType type) {
+        if (Application.isEditor) return;
+        
         // Combine the log message, stack trace, and log type
         string logEntry = $"{System.DateTime.Now}: [{type}] {logString}\n";
         if (type == LogType.Exception) {

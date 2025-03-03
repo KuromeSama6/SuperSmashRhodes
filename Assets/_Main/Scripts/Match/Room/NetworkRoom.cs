@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using SuperSmashRhodes.Battle;
+using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Config.Global;
 using SuperSmashRhodes.Framework;
+using SuperSmashRhodes.Input;
 using SuperSmashRhodes.Match;
 using SuperSmashRhodes.Match.Player;
 using SuperSmashRhodes.Network.Rollbit;
@@ -20,14 +24,22 @@ public class NetworkRoom : Room, IPacketHandler {
     public bool matchAccepted { get; private set; }
     public NetworkSession session { get; private set; }
     public P2PConnector p2PConnector { get; private set; }
+    public NetworkInputManager inputManager { get; private set; }
+    public bool fighting { get; private set; }
+    public int roundsWon => GetWinCount(localPlayer.playerId);
+    
     private readonly Dictionary<string, Player> idMap = new();
-
+    
     public override bool allConfirmed => status == RoomStatus.NEGOTIATING;
-
+    public NetworkLocalPlayer localPlayer => idMap[session.config.userId] as NetworkLocalPlayer;
+    
     public NetworkRoom(RoomConfiguration configuration, NetworkSession session) : base(configuration) {
         this.session = session;
         session.AddPacketHandler(this);
+        
         this.session.onDisconnected.AddListener(OnDisconnected);
+        
+        inputManager = new(this);
     }
     
     public void NotifyMatchAccept(bool accepted) {
@@ -53,11 +65,21 @@ public class NetworkRoom : Room, IPacketHandler {
         p2PConnector?.Dispose();
     }
     
+    private void OnInputFrameReceived(NetworkInputFrame frame) {
+        lock (inputManager) {
+            inputManager.AddInput(frame);   
+        }
+    }
+
+    private Task<PacketPlayOutGenericResponse> ReportRoundStatus(bool fighting) {
+        return session.SendPacket<PacketPlayOutGenericResponse>(new PacketPlayInRoundStatus(session, fighting, this));
+    }
+    
     // Packet handlers
     [PacketHandler]
     public void OnRoomStatusUpdate(PacketPlayOutRoomStatus packet) {
-        Debug.Log($"Room status update: {packet.status}, players: {String.Join(", ", packet.userIds)}");
-
+        Debug.Log($"Room status update: {packet.status}, fighting: {packet.fighting} players: {String.Join(", ", packet.userIds)}");
+        
         if (status != packet.status) {
             status = packet.status;
 
@@ -87,6 +109,16 @@ public class NetworkRoom : Room, IPacketHandler {
                 MainThreadDispatcher.RunOnMain(BeginMatchLocal);
             }
         }
+        
+        if (fighting != packet.fighting) {
+            fighting = packet.fighting;
+
+            inputManager.active = fighting;
+            if (fighting) {
+                inputManager.Reset();
+                GameStateManager.inst.ResetFrame();
+            }
+        }
     }
 
     [PacketHandler]
@@ -108,7 +140,7 @@ public class NetworkRoom : Room, IPacketHandler {
     }
     
     //region routines
-    
+
     private IEnumerator ShowCharacterSelectRoutine() {
         foreach (var (id, player) in players) {
             player.character = CharacterDescriptor.FromIndex(id);
@@ -171,7 +203,8 @@ public class NetworkRoom : Room, IPacketHandler {
             "网络状态",
             "SAELN服务",
             "IP地址",
-            "P2P连接"
+            "P2P握手",
+            "连接状态确认"
         );
         
         // check network status
@@ -193,6 +226,7 @@ public class NetworkRoom : Room, IPacketHandler {
         // find free port
         p2PConnector = new(session);
         p2PConnector.Bind();
+        p2PConnector.onInputFrameReceived.AddListener(OnInputFrameReceived);
         
         if (!p2PConnector.bound) {
             loadingScreen.UpdateLoadingStatus(LoadingStatus.BAD);
@@ -231,8 +265,30 @@ public class NetworkRoom : Room, IPacketHandler {
             yield break;
         }
 
+        while (status != RoomStatus.CLIENT_LOADING) {
+            yield return null;
+        }
+        
+        Debug.Log("Connection established, starting match");
+        loadingScreen.UpdateLoadingStatus(LoadingStatus.GOOD);
+        yield return new WaitForSeconds(1f);
+        yield return LoadMatchSceneRoutine();
+        
+        // report status
+        
+        StartMatch();
     }
-    
+
+    protected override IEnumerator RoundStartRoutine() {
+        // wait for room status
+        ReportRoundStatus(true);
+        while (!fighting) {
+            yield return null;
+        }
+        
+        yield return base.RoundStartRoutine();
+    }
+
     //endregion
 }
 }

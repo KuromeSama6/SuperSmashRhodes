@@ -1,4 +1,5 @@
 ﻿using SuperSmashRhodes.Battle;
+using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Network.RoomManagement;
 
 namespace SuperSmashRhodes.Match.Player {
@@ -13,6 +14,8 @@ public abstract class Player {
     public CharacterDescriptor character { get; set; }
     public bool characterConfirmed { get; set; }
     public Room room { get; private set; }
+
+    public PlayerCharacter playerCharacter => GameManager.inst ? GameManager.inst.GetPlayer(playerId) : null;
 
     public Player(Room room, int playerId, string userId) {
         this.room = room;

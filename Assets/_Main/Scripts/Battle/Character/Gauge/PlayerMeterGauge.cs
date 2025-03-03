@@ -66,7 +66,7 @@ public class PlayerMeterGauge : CharacterComponent, IManualUpdate, IReflectionSe
     public void ManualUpdate() {
         
     }
-    public void ManualFixedUpdate() {
+    public void LogicUpdate() {
         // tension balance update
         if (GameManager.inst.globalStateFlags.HasFlag(CharacterStateFlag.PAUSE_GAUGE)) return;
         
