@@ -21,7 +21,6 @@ public class GameStateManager : SingletonBehaviour<GameStateManager> {
 
     private readonly List<IManualUpdate> manualUpdates = new();
     private readonly Dictionary<int, IAutoSerialize> autoSerializers = new();
-    private readonly Dictionary<int, SerializedGameState> gamestateCache = new();
     private readonly Queue<SerializedGameState> queuedStateLoads = new();
     private readonly Queue<Action<SerializedGameState>> queuedStateSaves = new();
     
@@ -73,6 +72,7 @@ public class GameStateManager : SingletonBehaviour<GameStateManager> {
     private void FixedUpdate() {
         // 0. check network input manager
         if (networkInputManager != null) {
+            networkInputManager.PreTick();
             if (networkInputManager.pauseGameState) return;
         }
         
@@ -97,14 +97,7 @@ public class GameStateManager : SingletonBehaviour<GameStateManager> {
         });
 
         // 4. save state
-        if (requiresStateCache) {
-            var gameState = SerializeGameStateImmediate();
-            gamestateCache[frame] = gameState;
-
-            if (gamestateCache.Count > 120) {
-                Debug.LogWarning($"Game state cache is too big (at {gamestateCache.Count}). Continuing may lead to performance issues and memory leaks.");
-            }
-        }
+        // Handled by the network input manager
         
         // 5. tick network input manager
         networkInputManager?.Tick();
@@ -133,19 +126,7 @@ public class GameStateManager : SingletonBehaviour<GameStateManager> {
             }
         });
     }
-
-    public void RollbackToFrame(int targetFrame) {
-        if (gamestateCache.ContainsKey(targetFrame)) {
-            LoadGameStateImmediate(gamestateCache[targetFrame]);
-            gamestateCache.Remove(targetFrame);
-        } else {
-            throw new InvalidOperationException($"Cannot rollback to frame {targetFrame} as it is not cached.");
-        }
-    }
     
-    public void DeleteGameState(int frame) {
-        gamestateCache.Remove(frame);
-    }
     
     public void QueueLoadGameState(SerializedGameState state) {
         queuedStateLoads.Enqueue(state);
@@ -159,7 +140,7 @@ public class GameStateManager : SingletonBehaviour<GameStateManager> {
         frame = 0;
     }
     
-    private SerializedGameState SerializeGameStateImmediate() {
+    public SerializedGameState SerializeGameStateImmediate() {
         var ser = new StateSerializer(GetType());
         ser.Put("frame", frame);
         
@@ -180,7 +161,7 @@ public class GameStateManager : SingletonBehaviour<GameStateManager> {
         return new SerializedGameState(frame, ser);
     }
     
-    private void LoadGameStateImmediate(SerializedGameState state) {
+    public void LoadGameStateImmediate(SerializedGameState state) {
         var ser = state.serializer;
 
         {

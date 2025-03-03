@@ -119,8 +119,7 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
             }
             
             OnThrowHit(opponent);
-            opponent.inputProvider.inputBuffer.SimulatedClear();
-            player.inputProvider.inputBuffer.SimulatedClear();
+            opponent.bufferClearRequested = player.bufferClearRequested = true;
             
             // process throw hit
             opponent.BeginState("CmnHitStunGround");

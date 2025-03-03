@@ -53,6 +53,8 @@ public class State_CmnJump : CharacterState {
         }
         
         entity.rb.linearVelocity = Vector2.zero;
+        stateData.physicsPushboxDisabled = true;
+        
         entity.rb.AddForce(new(xForce, player.characterConfig.jumpVelocityFinal), ForceMode2D.Impulse);
         
         AddCancelOption(EntityStateType.CHR_ATK_AIR_NORMAL | EntityStateType.CHR_ATK_SPECIAL_SUPER);
@@ -61,6 +63,7 @@ public class State_CmnJump : CharacterState {
         // Debug.Log(player.characterConfig.airDashAvailableFrameFinal);
         yield return player.characterConfig.airDashAvailableFrameFinal;
         // Debug.Log("ok");
+        stateData.physicsPushboxDisabled = false;
         CancelInto("CmnAirNeutral");
     }
 }

@@ -16,6 +16,7 @@ public class State_CmnDash : CharacterState {
 
     public override EntityStateType type => EntityStateType.CHR_MOVEMENT_LOOP;
     public override float inputPriority => 1.1f;
+    protected override SubroutineFlags mainRoutineFlags => SubroutineFlags.NO_PRETICK_SUBROUTINES;
 
     public override bool mayEnterState {
         get {

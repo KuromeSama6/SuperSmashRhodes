@@ -77,6 +77,7 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
     public void PreloadResources() {
         AssetManager.inst.PreloadAll("cmn/battle/sfx/**");
         AssetManager.inst.PreloadAll("cmn/battle/fx/**");
+        AssetManager.inst.PreloadAll("bgm/**");
         AssetManager.inst.PreloadAll("cmn/announcer/battle/**");
         
         foreach (var player in RoomManager.current.players.Values) {
@@ -345,6 +346,9 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
         room.AddLocalPlayer("keyboard1");
         room.AddLocalPlayer("keyboard2");
 
+        room.players[0].character = debugCharacterP1;
+        room.players[1].character = debugCharacterP2;
+        
         RoomManager.inst.CreateRoom(room);
         
         PreloadResources();

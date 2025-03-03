@@ -120,6 +120,9 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
         
     }
 
+    public virtual void LogicPreUpdate() {
+    }
+
     public virtual void LogicUpdate() {
         if (!logicStarted) return;
 

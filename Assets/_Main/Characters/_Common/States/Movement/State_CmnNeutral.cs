@@ -11,6 +11,7 @@ namespace SuperSmashRhodes.Runtime.State {
 public class State_CmnNeutral : CharacterState {
     public override float inputPriority => -1;
     public override EntityStateType type => EntityStateType.CHR_NEUTRAL;
+    protected override SubroutineFlags mainRoutineFlags => SubroutineFlags.NO_PRETICK_SUBROUTINES;
 
     public State_CmnNeutral(Entity entity) : base(entity) { }
     
@@ -46,6 +47,7 @@ public class State_CmnNeutral : CharacterState {
 public class State_CmnNeutralCrouch : CharacterState {
     public State_CmnNeutralCrouch(Entity entity) : base(entity) { }
     public override EntityStateType type => EntityStateType.CHR_NEUTRAL;
+    protected override SubroutineFlags mainRoutineFlags => SubroutineFlags.NO_PRETICK_SUBROUTINES;
     public override float inputPriority => 0;
     public override bool IsInputValid(InputBuffer buffer) {
         return buffer.thisFrame.HasInput(entity.side, InputType.DOWN, InputFrameType.HELD);
@@ -74,6 +76,7 @@ public class State_CmnNeutralCrouch : CharacterState {
 public class State_CmnAirNeutral : CharacterState {
     public State_CmnAirNeutral(Entity entity) : base(entity) { }
     public override EntityStateType type => EntityStateType.CHR_NEUTRAL;
+    protected override SubroutineFlags mainRoutineFlags => SubroutineFlags.NO_PRETICK_SUBROUTINES;
     public override float inputPriority => -1;
 
     private bool cancelOptionsAdded;

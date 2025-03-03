@@ -117,6 +117,7 @@ public class NetworkRoom : Room, IPacketHandler {
             if (fighting) {
                 inputManager.Reset();
                 GameStateManager.inst.ResetFrame();
+                // MainThreadDispatcher.RunOnMain(() => Time.timeScale = .1f);
             }
         }
     }

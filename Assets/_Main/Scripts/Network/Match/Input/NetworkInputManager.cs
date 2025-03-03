@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SuperSmashRhodes.Battle.Game;
+using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Input;
 using SuperSmashRhodes.Network.Rollbit;
 using SuperSmashRhodes.Network.Rollbit.P2P;
@@ -18,7 +19,7 @@ public class NetworkInputManager {
     
     private readonly NetworkRoom room;
     private readonly Dictionary<int, NetworkInputFrame> receiveQueue = new();
-    private readonly Dictionary<int, CachedInputFrame> inputCache = new();
+    private readonly Dictionary<int, CachedFrame> inputCache = new();
     
     private P2PConnector p2PConnector => room.p2PConnector;
     private NetcodeMode netcodeMode => room.session.config.netcodeMode;
@@ -34,8 +35,7 @@ public class NetworkInputManager {
             if (!active) return false;
             
             if (netcodeMode == NetcodeMode.ROLLBACK) {
-                return sendFrame - room.session.config.maxRollbackFrames > receiveFrame; 
-                
+                return sendFrame - room.session.config.maxRollbackFrames > receiveFrame;
             } else {
                 return sendFrame > receiveFrame;
             }
@@ -71,7 +71,7 @@ public class NetworkInputManager {
         
         receiveQueue.Add(frame.frame, frame);
         
-        Debug.Log($"Received actual frame {frame.frame}, current frame {receiveFrame}, send frame {sendFrame}, queue {string.Join(", ", receiveQueue.Keys)}, data {frame}");
+        Debug.Log($"Received actual data {frame} frame {frame.frame}, current frame {receiveFrame}, send frame {sendFrame}, queue {string.Join(", ", receiveQueue.Keys)}");
         ApplyRemoteInput();
         
     }
@@ -91,6 +91,74 @@ public class NetworkInputManager {
             }
         }
     }
+
+    public void PreTick() {
+        if (!active) return;
+        Debug.Log($"--- New PreTick: Send {sendFrame}, Receive {receiveFrame}, Local Receive {localReceiveFrame}, Check Frame {receiveFrame + 1}  ---");
+        bool doRollback = false;
+        CachedFrame cachedFrame = null;
+        if (netcodeMode == NetcodeMode.ROLLBACK) {
+            var frame = receiveFrame + 1;
+            if (receiveQueue.ContainsKey(frame) && inputCache.ContainsKey(frame)) {
+                // compare
+                cachedFrame = inputCache[frame];
+                var cached = cachedFrame.predictedRemoteInputs;
+                var actual = receiveQueue[frame].inputs;
+                // compare ignore order
+                var equal = cached.OrderBy(c => c).SequenceEqual(actual.OrderBy(c => c));
+                
+                if (equal) {
+                    Debug.Log($"Prediction was correct for remote input frame {frame}");
+                    ++receiveFrame;
+                    receiveQueue.Remove(frame);
+
+                } else {
+                    Debug.LogWarning($"Cached input for frame {frame} does not match actual input. Cached: {string.Join(", ", cached)}, actual: {string.Join(", ", actual)}");
+                    doRollback = true;
+                }
+                
+                inputCache.Remove(frame);
+            }
+        }
+        
+        if (doRollback) {
+            Debug.Log("beginning rollback");
+            var start = receiveFrame + 1;
+            GameStateManager.inst.LoadGameStateImmediate(cachedFrame.gameState);
+            
+            remoteBuffer.SetBuffer(cachedFrame.remoteBuffer);
+
+            int nextSolidifiedFrame = start;
+            for (int frame = start; frame <= localReceiveFrame; frame++) {
+                Debug.Log($"Rollback frame #{frame}, rcv {receiveFrame}, local rcv {localReceiveFrame}, next solidified {nextSolidifiedFrame}");
+                var cached = inputCache.GetValueOrDefault(frame, cachedFrame);
+                
+                room.localPlayer.playerCharacter.inputProvider.SetBuffer(cached.localBuffer);
+                if (receiveQueue.ContainsKey(frame)) {
+                    remoteBuffer.inputBuffer.PushAndTick(receiveQueue[frame].inputs);
+                    Debug.Log("using actual remote input");
+                    if (frame == nextSolidifiedFrame) {
+                        ++receiveFrame;
+                        ++nextSolidifiedFrame;
+                        receiveQueue.Remove(frame);
+                        Debug.Log($"Solified frame {frame}");
+                    }
+                    
+                } else {
+                    // repredict based on new input
+                    var predictedRemote = PredictInput(remoteBuffer.inputBuffer.thisFrame.inputs);
+                    remoteBuffer.inputBuffer.PushAndTick(predictedRemote);
+                    
+                    inputCache[frame] = new(frame, cached.localBuffer, remoteBuffer.inputBuffer, predictedRemote, GameStateManager.inst.SerializeGameStateImmediate());
+                    Debug.Log($"repredicted frame {frame}");
+                }
+                
+                GameStateManager.inst.TickGameStateImmediate();
+            }
+            
+        }
+    }
+        
     
     /// <summary>
     /// Ticks this input manager and sends the current frame to the other player.
@@ -100,60 +168,7 @@ public class NetworkInputManager {
         if (!active) return;
         Debug.Log($"--- New Tick: Send {sendFrame}, Receive {receiveFrame}, Local Receive {localReceiveFrame}, Check Frame {receiveFrame + 1}  ---");
         // check for new inputs in queue
-        bool doRollback = false;
-        if (netcodeMode == NetcodeMode.ROLLBACK && receiveQueue.Count > 0) {
-            var frame = receiveFrame + 1;
-            if (receiveQueue.ContainsKey(frame) && inputCache.ContainsKey(frame)) {
-                // compare
-                var cached = inputCache[frame].predictedRemoteInputs;
-                var actual = receiveQueue[frame].inputs;
-                // compare ignore order
-                var equal = CompareInputs(cached, actual);
-                
-                if (equal) {
-                    Debug.Log($"Prediction was correct for remote input frame {frame}");
-                    ++receiveFrame;
-                    GameStateManager.inst.DeleteGameState(frame);
-                    receiveQueue.Remove(frame);
-
-                } else {
-                    Debug.LogWarning($"Cached input for frame {frame} does not match actual input. Cached: {string.Join(", ", cached)}, actual: {string.Join(", ", actual)}");
-                    doRollback = true;
-                }
-            }
-        }
         
-        if (doRollback) {
-            Debug.Log("beginning rollback");
-            var start = receiveFrame + 1;
-            GameStateManager.inst.RollbackToFrame(start);
-            
-            remoteBuffer.SetBuffer(inputCache[start].remoteBuffer);
-            
-            for (int frame = start; frame <= localReceiveFrame; frame++) {
-                Debug.Log($"Rollback frame #{frame}, receive queue contains key: {receiveQueue.ContainsKey(frame)}");
-                var cached = inputCache[frame];
-                
-                room.localPlayer.playerCharacter.inputProvider.SetBuffer(cached.localBuffer);
-                if (receiveQueue.ContainsKey(frame)) {
-                    remoteBuffer.inputBuffer.PushAndTick(receiveQueue[frame].inputs);
-                    if (frame == start) ++receiveFrame;
-                    receiveQueue.Remove(frame);
-                    Debug.Log($"Solified frame {frame}");
-                    
-                } else {
-                    // repredict based on new input
-                    var predictedRemote = PredictInput(remoteBuffer.inputBuffer.thisFrame.inputs);
-                    remoteBuffer.inputBuffer.PushAndTick(predictedRemote);
-                    
-                    inputCache[frame] = new(frame, cached.localBuffer, remoteBuffer.inputBuffer, predictedRemote);
-                    Debug.Log($"repredicted frame {frame}");
-                }
-                
-                GameStateManager.inst.TickGameStateImmediate();
-            }
-            
-        }
         
         // poll local input
         var character = room.localPlayer.playerCharacter;
@@ -170,9 +185,6 @@ public class NetworkInputManager {
             if (receiveQueue.ContainsKey(sendFrame)) {
                 Debug.Log($"remote input for frame {sendFrame} already exists");
                 remote = receiveQueue[sendFrame].inputs;
-                predicted = false;
-                // receiveQueue.Remove(sendFrame);
-                // receiveFrame = Math.Max(receiveFrame, sendFrame);
 
             } else {
                 Debug.Log($"No remote input for frame {sendFrame}, predicting");
@@ -181,16 +193,17 @@ public class NetworkInputManager {
             
             remoteBuffer.inputBuffer.PushAndTick(remote);
 
-            
-            inputCache[sendFrame] = new(sendFrame, room.localPlayer.playerCharacter.inputProvider.inputBuffer, remoteBuffer.inputBuffer, remote);
+
+            var gameState = GameStateManager.inst.SerializeGameStateImmediate();
+            inputCache[sendFrame] = new(sendFrame, room.localPlayer.playerCharacter.inputProvider.inputBuffer, remoteBuffer.inputBuffer, remote, gameState);
             
             ++localReceiveFrame;
         }
         
-        Debug.Log($"send frame {sendFrame}, rcv {receiveFrame}, local rcv {localReceiveFrame} inputs {string.Join(", ", chord.inputs)}");    
-        
+        Debug.Log($"send frame {sendFrame}, rcv {receiveFrame}, local rcv {localReceiveFrame} inputs {string.Join(", ", chord.inputs)}");
     }
-
+    
+    
     private InputFrame[] PredictInput(InputFrame[] frame) {
         // simple prediction
         //TODO: thresholds for different input types
@@ -227,17 +240,19 @@ public struct NetworkInputFrame {
     }
 }
 
-struct CachedInputFrame {
+class CachedFrame {
     public readonly int frame;
     public readonly InputBuffer localBuffer;
     public readonly InputBuffer remoteBuffer;
     public readonly InputFrame[] predictedRemoteInputs;
+    public readonly SerializedGameState gameState;
     
-    public CachedInputFrame(int frame, InputBuffer local, InputBuffer remote, InputFrame[] predictedRemoteInputs) {
+    public CachedFrame(int frame, InputBuffer local, InputBuffer remote, InputFrame[] predictedRemoteInputs, SerializedGameState gameState) {
         this.frame = frame;
         localBuffer = local.Copy();
         remoteBuffer = remote.Copy();
         this.predictedRemoteInputs = predictedRemoteInputs;
+        this.gameState = gameState;
     }
 }
 }

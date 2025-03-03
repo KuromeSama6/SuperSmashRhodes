@@ -13,6 +13,7 @@ public class State_CmnMoveForward : CharacterState {
 
     public override EntityStateType type => EntityStateType.CHR_MOVEMENT_LOOP;
     public override float inputPriority => 1;
+    protected override SubroutineFlags mainRoutineFlags => SubroutineFlags.NO_PRETICK_SUBROUTINES;
     
     public override bool IsInputValid(InputBuffer buffer) {
         return buffer.thisFrame.HasInput(entity.side, InputType.FORWARD, InputFrameType.HELD) &&
@@ -51,6 +52,7 @@ public class State_CmnMoveBackward : CharacterState {
 
     public override EntityStateType type => EntityStateType.CHR_MOVEMENT_LOOP;
     public override float inputPriority => 1;
+    protected override SubroutineFlags mainRoutineFlags => SubroutineFlags.NO_PRETICK_SUBROUTINES;
     
     public override bool IsInputValid(InputBuffer buffer) {
         return buffer.thisFrame.HasInput(entity.side, InputType.BACKWARD, InputFrameType.HELD)

@@ -34,8 +34,6 @@ public class AssetManager : AutoInitSingletonBehaviour<AssetManager> {
         SceneManager.sceneUnloaded += OnSceneUnloaded;
         
         InstantiateAutoPrefabs();
-        
-        PreloadAll("bgm/**", AssetReleaseMethod.MANUAL);
     }
 
     public List<string> GetAssets(string pattern) {

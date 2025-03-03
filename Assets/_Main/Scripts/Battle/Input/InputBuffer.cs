@@ -98,10 +98,6 @@ public class InputBuffer : IStateSerializable {
     public bool HasInputUnordered(EntitySide side, params InputFrame[] seq) {
         return seq.ToList().TrueForAll(c => buffer.Any(d => d.HasInput(side, c)));
     }
-
-    public void SimulatedClear() {
-        PushAndTick(new InputFrame(InputType.ESC_CLEAR_BUFFER, InputFrameType.PRESSED));
-    }
     
     public static InputType TranslateToRawDirection(InputType input, EntitySide side) {
         if (input == InputType.FORWARD) {
@@ -138,7 +134,7 @@ public enum InputFrameType {
     RELEASED
 }
 
-public struct InputFrame : IEquatable<InputFrame> {
+public struct InputFrame : IEquatable<InputFrame>, IComparable<InputFrame> {
     public InputType type { get; set; }
     public InputFrameType frameType { get; }
     
@@ -156,6 +152,12 @@ public struct InputFrame : IEquatable<InputFrame> {
 
     public override string ToString() {
         return $"{type}#{frameType}";
+    }
+    public int CompareTo(InputFrame other) {
+        int typeComparison = type.CompareTo(other.type);
+        if (typeComparison != 0)
+            return typeComparison;
+        return frameType.CompareTo(other.frameType);
     }
 }
 

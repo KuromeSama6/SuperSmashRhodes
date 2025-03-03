@@ -57,6 +57,7 @@ public class PlayerCharacter : Entity {
     public int airOptions { get; set; }
     public IInputProvider inputProvider { get; private set; } = new NOPInputProvider(); // InputProvider assigned on round start
     public List<CharacterAttackStateBase> gatlingMovesUsed { get; } = new();
+    public bool bufferClearRequested { get; set; }
 
     public bool atWall => pushboxManager.atWall;
     public bool dead => activeState is State_SysDeath;
@@ -152,7 +153,17 @@ public class PlayerCharacter : Entity {
         
         if (!GameManager.inst.inGame) {
             transform.position = new(playerIndex == 0 ? -1.5f : 1.5f, 0f, 0f);
+            
             return;
+        }
+    }
+
+    public override void LogicPreUpdate() {
+        base.LogicPreUpdate();
+
+        if (bufferClearRequested) {
+            inputProvider.inputBuffer.PushAndTick(new InputFrame(InputType.ESC_CLEAR_BUFFER, InputFrameType.PRESSED));
+            bufferClearRequested = false;
         }
     }
 
@@ -548,7 +559,6 @@ public class PlayerCharacter : Entity {
                 BackgroundUIManager.inst.Flash(0.1f);
                 
                 TimeManager.inst.Queue(() => slowdownFrames = 35);
-                inputProvider.inputBuffer.SimulatedClear();
 
             } else if (level == CounterHitType.MEDIUM) {
                 SimpleCameraShakePlayer.inst.Play("cmn/battle/fx/camerashake/counter", "slide_medium");
@@ -562,7 +572,7 @@ public class PlayerCharacter : Entity {
                 fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/counter/flash", CharacterFXSocketType.WORLD_UNBOUND, transform.position, new(side == EntitySide.LEFT ? 0 : 180, 0, 0));
                 
                 audioManager.PlaySoundClip("cmn/battle/sfx/counter/large");
-                inputProvider.inputBuffer.SimulatedClear();
+                opponent.bufferClearRequested = true;
 
 
             } else if (level == CounterHitType.SMALL) {

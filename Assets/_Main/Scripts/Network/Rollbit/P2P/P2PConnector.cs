@@ -51,6 +51,7 @@ public class P2PConnector : IDisposable {
         listener.PeerDisconnectedEvent += OnPeerDisconnected;
         listener.ConnectionRequestEvent += OnConnectionRequest;
         listener.NetworkReceiveEvent += OnNetworkReceive;
+        attemptsRemaining = Math.Max(1, networkSession.config.p2PNegotiationAttempts);
         
         netManager = new NetManager(listener);
         netManager.NatPunchEnabled = true;
@@ -76,7 +77,6 @@ public class P2PConnector : IDisposable {
     public void BeginP2P(PacketPlayOutBeginP2P packet) {
         negotiationPacket = packet;
         status = P2PNegotiationStatus.NEGOTIATING;
-        attemptsRemaining = Math.Max(1, networkSession.config.p2PNegotiationAttempts);
         --attemptsRemaining;
         
         Debug.Log($"P2P Connection Attempt ({attemptsRemaining} attempts left): {packet}");
