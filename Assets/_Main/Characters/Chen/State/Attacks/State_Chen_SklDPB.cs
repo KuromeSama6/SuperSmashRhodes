@@ -16,9 +16,7 @@ public class State_Chen_SklDPB : State_Common_DP {
     public override AttackFrameData frameData => new() {
         startup = 8,
         active = 45,
-        recovery = 30,
-        onHit = -3,
-        onBlock = -15
+        recovery = 30
     };
     protected override InputFrame[] requiredInput => new[] {
         new InputFrame(InputType.FORWARD, InputFrameType.HELD),

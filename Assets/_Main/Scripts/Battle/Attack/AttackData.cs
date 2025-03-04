@@ -1,4 +1,5 @@
 ﻿using SuperSmashRhodes.Battle.Serialization;
+using SuperSmashRhodes.Runtime.State;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
@@ -42,7 +43,25 @@ public class AttackData : IHandleSerializable {
 }
 
 public struct AttackFrameData {
-    public int startup, active, recovery, onHit, onBlock;
+    public int startup, active, recovery;
     public int total => startup + active + recovery;
+
+    public static int GetStandardStun(Entity to, bool blocked, int attackLevel) {
+        if (blocked) {
+            return attackLevel switch {
+                0 => 9,
+                1 => 11,
+                2 => 13,
+                3 => 16,
+                4 => 18,
+                _ => 18
+            };
+
+        } else {
+            var ret = 11 + attackLevel;
+            if (to.activeState is State_CmnNeutralCrouch) ret += 1;
+            return ret;
+        }
+    }
 }
 }

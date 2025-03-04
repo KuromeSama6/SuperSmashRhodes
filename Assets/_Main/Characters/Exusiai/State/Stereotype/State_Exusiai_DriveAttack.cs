@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Framework;
@@ -16,8 +17,7 @@ public abstract class State_Exusiai_DriveAttack : State_Exusiai_FireWeaponAttack
     public override AttackFrameData frameData => new AttackFrameData() {
         startup = 16,
         active = 2,
-        recovery = 29,
-        onHit = +8
+        recovery = 29
     };
     
     protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER;
@@ -40,72 +40,57 @@ public abstract class State_Exusiai_DriveAttack : State_Exusiai_FireWeaponAttack
         loopFrame = 0;
     }
 
-    public override IEnumerator MainRoutine() {
-        entity.animation.AddUnmanagedAnimation(mainAnimation, false);
-        phase = AttackPhase.STARTUP;
-        OnStartup();
-        
-        player.ApplyGroundedFriction(frameData.startup);
-        entity.audioManager.PlaySound(GetAttackNormalSfx());
-        yield return frameData.startup;
+    public override EntityStateSubroutine BeginMainSubroutine() {
+        return Sub_Startup;
+    }
 
+    protected override void Sub_Active(SubroutineContext ctx) {
         phase = AttackPhase.ACTIVE;
         OnActive();
         player.ApplyGroundedFriction(frameData.active);
         
         bulletsShot = 1;
-        
+
         if (gauge.mayFire) {
             gauge.Fire();
             audioLoopHandle = entity.audioManager.PlaySoundLoop("chr/exusiai/battle/sfx/gun_loop", 0.5f, true);
-            do {
-                ++loopFrame;
-                if (loopFrame >= loopLength) {
-                    if (gauge.mayFire) {
-                        gauge.Fire();
-                        OnShotFired();
-                        ++hitsRemaining;
-                        ++bulletsShot;
-                        loopFrame = 0;
-                        entity.animation.SetFrame(loopStartFrame);
-                        
-                    } else {
-                        hitsRemaining = 0;
-                        entity.audioManager.PlaySound("chr/exusiai/battle/sfx/gun_empty");
-                        break;
-                    }
-                }
-                
-                // drive cancel
-                var thisFrame = GetCurrentInputBuffer().thisFrame;
-                // if (type != EntityStateType.CHR_ATK_8D && thisFrame.HasInput(owner.side, InputType.D, InputFrameType.HELD)) {
-                //     string targetType;
-                //     if (thisFrame.HasInput(owner.side, InputType.DOWN, InputFrameType.HELD)) targetType = "Exusiai_NmlAtk2D";
-                //     else if (thisFrame.HasInput(owner.side, InputType.FORWARD, InputFrameType.HELD)) targetType = "Exusiai_NmlAtk6D";
-                //     else if (thisFrame.HasInput(owner.side, InputType.BACKWARD, InputFrameType.HELD)) targetType = "Exusiai_NmlAtk4D";
-                //     else targetType = "Exusiai_NmlAtk5D";
-                //
-                //     if (targetType != id) {
-                //         CancelInto(targetType);
-                //     }
-                // }
-                
-                yield return 1;
-            } while (GetCurrentInputBuffer().thisFrame.HasInput(entity.side, InputType.D, InputFrameType.HELD));
+            ctx.Next(0, Sub_FireLoop);
             
-            entity.audioManager.PlaySound($"chr/exusiai/battle/sfx/gun_shell_{Random.Range(1, 4)}");
         } else {
-            // whiff direct
             hitsRemaining = 0;
             entity.audioManager.PlaySound("chr/exusiai/battle/sfx/gun_empty");
+            ctx.Next(frameData.active, Sub_RecoveryStart);
         }
-        yield return frameData.active; 
-        
+    }
+
+    protected override void Sub_RecoveryStart(SubroutineContext ctx) {
+        base.Sub_RecoveryStart(ctx);
         entity.audioManager.StopSound(audioLoopHandle, "chr/exusiai/battle/sfx/gun_loop_tail", 0.5f);
-        player.ApplyGroundedFriction(frameData.active);
-        phase = AttackPhase.RECOVERY;
-        OnRecovery();
-        yield return frameData.recovery;
+    }
+
+    protected virtual void Sub_FireLoop(SubroutineContext ctx) {
+        ++loopFrame;
+        if (loopFrame >= loopLength) {
+            if (gauge.mayFire) {
+                gauge.Fire();
+                OnShotFired();
+                ++hitsRemaining;
+                ++bulletsShot;
+                loopFrame = 0;
+                entity.animation.SetFrame(loopStartFrame);
+                        
+            } else {
+                hitsRemaining = 0;
+                entity.audioManager.PlaySound("chr/exusiai/battle/sfx/gun_empty");
+                ctx.Next(0, Sub_RecoveryStart);
+            }
+        }
+
+        if (GetCurrentInputBuffer().thisFrame.HasInput(entity.side, InputType.D, InputFrameType.HELD)) {
+            ctx.Repeat();
+        } else {
+            ctx.Next(0, Sub_RecoveryStart);
+        }
     }
 
     public override float GetAtWallPushbackMultiplier(Entity to) {

@@ -35,6 +35,8 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
     protected virtual EntityGhostFXData ghostFXData => new(Color.white);
     protected virtual Color cinematicBackgroundColor => "2B395C".HexToColor();
 
+    private int activeFrameCounter;
+    
     protected override void OnStateBegin() {
         base.OnStateBegin();
         player.meter.gauge.value -= meterCost;
@@ -52,9 +54,15 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
         }
         
         player.fxManager.PlayEmblemFX(1f, true);
+        activeFrameCounter = 0;
     }
     
-    public override IEnumerator MainRoutine() {
+    public override EntityStateSubroutine BeginMainSubroutine() {
+        return Sub_StartupBeforeSuperfreeze;
+    }
+
+    //region Subroutines
+    protected virtual void Sub_StartupBeforeSuperfreeze(SubroutineContext ctx) {
         entity.animation.AddUnmanagedAnimation(mainAnimation, false);
         phase = AttackPhase.STARTUP;
         OnStartup();
@@ -72,77 +80,78 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
         stateData.backgroundUIData.priority = 20;
         stateData.backgroundUIData.dimAlpha = 0.98f;
         stateData.backgroundUIData.dimSpeed = 10;
-        yield return framesBeforeSuperfreeze;
         
+        ctx.Next(framesBeforeSuperfreeze, Sub_StartupAfterSuperfreeze);
+    }
+    
+    protected virtual void Sub_StartupAfterSuperfreeze(SubroutineContext ctx) {
         TimeManager.inst.globalFreezeFrames = superfreezeLength;
-        yield return 1;
-        
-        yield return frameData.startup - framesBeforeSuperfreeze;
+        ctx.Next(frameData.startup - framesBeforeSuperfreeze + 1, Sub_ActiveNormal);
+    }
 
+    protected virtual void Sub_ActiveNormal(SubroutineContext ctx) {
         phase = AttackPhase.ACTIVE;
         stateData.cameraData.cameraFovModifier = 0f; 
         stateData.cameraData.cameraWeightModifier = 0f;
         OnActive();
         player.ApplyGroundedFriction(frameData.active);
         entity.audioManager.PlaySound(GetAttackNormalSfx());
-        
-        // check for cinematic hit
         cinematicHitWindow = true;
-        for (int i = 0; i < frameData.active; i++) {
-            // Debug.Log($"active, {hitsRemaining} rem");
-            if (cinematicHit) {
-                // Debug.Log("cinematic hit");
-                break;
-            }
-            yield return 1;
-        }
-        cinematicHitWindow = false;
         
+        ctx.Next(0, Sub_ActiveCinematicCheckLoop);
+    }
+    
+    protected virtual void Sub_ActiveCinematicCheckLoop(SubroutineContext ctx) {
         if (cinematicHit) {
-            // big cinematic effect!!!
-            stateData.gravityScale = 0;
-            stateData.ghostFXData = ghostFXData;
-
-            if (useCinematicSocket) {
-                socket = new CinematicCharacterSocket(opponent, player, "throw_opponent", new(0, 0, 0));
-                socket.Attach();   
-            }
-            
-            // superfreeze part 2
-            stateData.backgroundUIData.dimAlpha = 1f;
-            stateData.backgroundUIData.bgType = BackgroundType.SUPER;
-            stateData.backgroundUIData.bgColor = cinematicBackgroundColor;
-            stateData.backgroundUIData.transitionFrame = 0;
-            stateData.backgroundUIData.transition = TransitionType.SUPER_FADE_IN;
-
-            TimeManager.inst.globalFreezeFrames = superfreezeHitstopLength;
-            yield return 1;
-            // Debug.Log("continue");
-
-            var length = cinematicTotalLength - frameData.active - frameData.startup;
-            // Debug.Log(length);
-            yield return (int)length;
-            // Debug.Log("end");
-            
-            opponent.stateFlags = player.stateFlags = default;
-            
-
-        } else {
-            if (hitsRemaining > 0) OnWhiff();
-            player.animation.Tick(farHitSkipFrame - frame);
-            opponent.stateFlags = player.stateFlags = default;
-            stateData.backgroundUIData = new();
-            yield return farHitActiveFrames;
-            
-            player.ApplyGroundedFriction(frameData.active);
-            phase = AttackPhase.RECOVERY;
-            OnRecovery();
-            
-            yield return frameData.recovery;
-            // Debug.Log("recovery");
+            ctx.Next(0, Sub_ActiveCinematic);
+            return;
         }
+        
+        if (activeFrameCounter < frameData.active) {
+            ctx.Repeat();
+            ++activeFrameCounter;
+            return;
+        }
+
+        cinematicHitWindow = false;
+        ctx.Next(0, Sub_ActiveNonCinematic);
     }
 
+    protected virtual void Sub_ActiveCinematic(SubroutineContext ctx) {
+        // big cinematic effect!!!
+        stateData.gravityScale = 0;
+        stateData.ghostFXData = ghostFXData;
+
+        if (useCinematicSocket) {
+            socket = new CinematicCharacterSocket(opponent, player, "throw_opponent", new(0, 0, 0));
+            socket.Attach();   
+        }
+            
+        // superfreeze part 2
+        stateData.backgroundUIData.dimAlpha = 1f;
+        stateData.backgroundUIData.bgType = BackgroundType.SUPER;
+        stateData.backgroundUIData.bgColor = cinematicBackgroundColor;
+        stateData.backgroundUIData.transitionFrame = 0;
+        stateData.backgroundUIData.transition = TransitionType.SUPER_FADE_IN;
+
+        TimeManager.inst.globalFreezeFrames = superfreezeHitstopLength;
+
+        var length = cinematicTotalLength - frameData.active - frameData.startup + 1;
+        ctx.Exit((int)length);
+    }
+    
+    protected virtual void Sub_ActiveNonCinematic(SubroutineContext ctx) {
+        if (hitsRemaining > 0) OnWhiff();
+        player.animation.Tick(farHitSkipFrame - frame);
+        opponent.stateFlags = player.stateFlags = default;
+        stateData.backgroundUIData = new();
+        
+        ctx.Next(farHitActiveFrames, Sub_RecoveryStart);
+    }
+    
+    
+    //endregion
+    
     protected override void OnStateEnd(EntityState nextState) {
         base.OnStateEnd(nextState);
         if (socket != null && socket.attached) {

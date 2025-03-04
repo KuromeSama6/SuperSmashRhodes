@@ -17,8 +17,6 @@ public class State_Exusiai_NmlAtk5CS : State_Common_NmlAtk5CS {
         startup = 8,
         active = 6,
         recovery = 12,
-        onHit = +4,
-        onBlock = +2,
     };
 
     public override float GetUnscaledDamage(Entity to) {
@@ -37,8 +35,6 @@ public class State_Exusiai_NmlAtk5S : State_Common_NmlAtk5S {
         startup = 10,
         active = 3,
         recovery = 19,
-        onHit = -4,
-        onBlock = -7,
     };
     public override float GetUnscaledDamage(Entity to) {
         return 37;
@@ -57,8 +53,6 @@ public class State_Exusiai_NmlAtk2S : State_Exusiai_MultihitWeaponNormalAttack {
         startup = 10,
         active = 11,
         recovery = 15,
-        onHit = 0,
-        onBlock = -7,
     };
     protected override InputFrame[] requiredInput => new[] { new InputFrame(InputType.DOWN, InputFrameType.HELD), new InputFrame(InputType.S, InputFrameType.PRESSED)};
     protected override int normalInputBufferLength => 6;
@@ -97,8 +91,6 @@ public class State_Exusiai_NmlAtk5H : State_Exusiai_MultihitWeaponNormalAttack {
         startup = 12,
         active = 12,
         recovery = 16,
-        onHit = +5,
-        onBlock = -6,
     };
     protected override InputFrame[] requiredInput => new[] { new InputFrame(InputType.HS, InputFrameType.PRESSED)};
     protected override int normalInputBufferLength => 6;
@@ -137,8 +129,6 @@ public class State_Exusiai_NmlAtk2H : State_Exusiai_MultihitWeaponNormalAttack {
         startup = 13,
         active = 17,
         recovery = 28,
-        onHit = +10,
-        onBlock = -18,
     };
     protected override InputFrame[] requiredInput => new[] { new InputFrame(InputType.DOWN, InputFrameType.HELD), new InputFrame(InputType.HS, InputFrameType.PRESSED)};
     protected override int normalInputBufferLength => 6;
@@ -180,8 +170,6 @@ public class State_Exusiai_NmlAtk6H : State_Exusiai_MultihitWeaponNormalAttack {
         startup = 18,
         active = 20,
         recovery = 33,
-        onHit = +22,
-        onBlock = -16,
     };
     protected override InputFrame[] requiredInput => new[] { new InputFrame(InputType.FORWARD, InputFrameType.HELD), new InputFrame(InputType.HS, InputFrameType.PRESSED)};
     protected override int normalInputBufferLength => 6;
@@ -235,8 +223,6 @@ public class State_Exusiai_NmlAtk5P : State_Common_NmlAtk5P {
         startup = 5,
         active = 3,
         recovery = 9,
-        onHit = +1,
-        onBlock = -2,
     };
     public override float GetUnscaledDamage(Entity to) {
         return 21f;
@@ -254,8 +240,6 @@ public class State_Exusiai_NmlAtk2P : State_Common_NmlAtk2P {
         startup = 4,
         active = 2,
         recovery = 10,
-        onHit = +1,
-        onBlock = -2,
     };
     public override float GetUnscaledDamage(Entity to) {
         return 18f;
@@ -273,8 +257,6 @@ public class State_Exusiai_NmlAtk8P : State_Common_NmlAtk8P {
         startup = 6,
         active = 3,
         recovery = 9,
-        onHit = 0,
-        onBlock = 0,
     };
     public override float GetUnscaledDamage(Entity to) {
         return 20f;
@@ -292,8 +274,6 @@ public class State_Exusiai_NmlAtk8S : State_Common_NmlAtk8S {
         startup = 7,
         active = 4,
         recovery = 8,
-        onHit = 0,
-        onBlock = 0,
     };
     public override float GetUnscaledDamage(Entity to) {
         return 26f;
@@ -378,8 +358,7 @@ public class State_Exusiai_NmlAtk8D : State_Exusiai_DriveAttack {
     public override AttackFrameData frameData => new AttackFrameData() {
         startup = 16,
         active = 2,
-        recovery = 12,
-        onBlock = 0
+        recovery = 12
     };
 
     public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
@@ -423,8 +402,7 @@ public class State_Exusiai_NmlAtk82D : State_Exusiai_DriveAttack {
     public override AttackFrameData frameData => new AttackFrameData() {
         startup = 16,
         active = 2,
-        recovery = 20,
-        onBlock = -18
+        recovery = 20
     };
 
     public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {

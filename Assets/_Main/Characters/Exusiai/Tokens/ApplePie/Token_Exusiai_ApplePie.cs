@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.FX;
@@ -71,15 +72,16 @@ public class State_Token_Exusiai_ApplePie_Main : TokenState {
         // Debug.Log("state begin");
     }
     
-    public override IEnumerator MainRoutine() {
-        // Debug.Log($"tick {GameStateManager.inst.frame} {fuse} {GetHashCode()}, contains {entity.states.ContainsValue(this)}");
+    public override EntityStateSubroutine BeginMainSubroutine() {
         EnsureEntity();
-        yield return fuseLength;
-        
-        // Debug.Log($"done, {entity}");
+        return ctx => ctx.Exit(fuseLength);
+    }
+
+    protected override void OnStateEndComplete(EntityState nextState) {
+        base.OnStateEndComplete(nextState);
         Detonate();
     }
-    
+
     private IEnumerator Flash() {
         applePie.spriteRenderer.color = Color.red;
         yield return new WaitForSeconds(0.1f);
@@ -108,8 +110,7 @@ public class State_Token_Exusiai_ApplePie_Attack : TokenAttackStateBase {
     }
     protected override string mainAnimation { get; } = null;
     public override AttackFrameData frameData => new AttackFrameData() {
-        startup = 0, active = 5, recovery = 1,
-        onBlock = isLargeExplosion ? 20 : 10, onHit = 10
+        startup = 0, active = 5, recovery = 1
     };
 
     protected override bool mayDestroy => true;

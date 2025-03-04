@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.Game;
@@ -49,10 +50,12 @@ public class State_SysDeath : CharacterState {
         SimpleCameraShakePlayer.inst.PlayCommon("knockout");
     }
 
-    public override IEnumerator MainRoutine() {
-        while (true) {
-            yield return 1;
-        }
+    public override EntityStateSubroutine BeginMainSubroutine() {
+        return Sub_Loop;
+    }
+
+    protected virtual void Sub_Loop(SubroutineContext ctx) {
+        ctx.Repeat();
     }
 
     protected override void OnTick() {

@@ -26,7 +26,8 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
     private int hitAnimationStartFrame;
     private CinematicCharacterSocket socket;
     private bool mayHit, clash;
-    
+    private int contactCheckCounter;
+
     protected override void OnStateBegin() {
         base.OnStateBegin();
         stateData.ClearCancelOptions();
@@ -39,35 +40,48 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
         }
         mayHit = false;
         clash = false;
+        contactCheckCounter = 0;
     }
 
-    public override IEnumerator MainRoutine() {
+    public override EntityStateSubroutine BeginMainSubroutine() {
+        return Sub_ThrowStartup;
+    }
+
+    protected virtual void Sub_ThrowStartup(SubroutineContext ctx) {
         phase = AttackPhase.STARTUP;
         // Debug.Log("start");
-        var opponent = player.opponent;
         player.animation.AddUnmanagedAnimation(mainAnimation, false);
         OnStartup();
-        
-        yield return frameData.startup;
-        
-        // proximity check
+        ctx.Next(frameData.startup, Sub_ThrowActive);
+    }
+
+    protected virtual void Sub_ThrowActive(SubroutineContext ctx) {
         phase = AttackPhase.ACTIVE;
         OnActive();
         connected = false;
-        for (int i = 0; i < frameData.active; i++) {
-            if (player.opponentDistance < distanceRequirement) {
-                if (!connected) {
-                    opponent.fxManager.PlayGameObjectFX(
-                        "cmn/battle/fx/prefab/common/throw_circle/0", 
-                        CharacterFXSocketType.SELF
-                    );
-                }
-                connected = true;
+        ctx.Next(frameData.active, Sub_CheckWaitLoop);
+    }
+
+    protected virtual void Sub_CheckWaitLoop(SubroutineContext ctx) {
+        if (player.opponentDistance < distanceRequirement) {
+            if (!connected) {
+                opponent.fxManager.PlayGameObjectFX(
+                    "cmn/battle/fx/prefab/common/throw_circle/0", 
+                    CharacterFXSocketType.SELF
+                );
             }
-            yield return 1;
+            connected = true;
         }
         
-        // process hit
+        ++contactCheckCounter;
+        if (contactCheckCounter >= frameData.active) {
+            ctx.Next(0, Sub_ThrowCheckHit);
+        } else {
+            ctx.Repeat();
+        }
+    }
+
+    protected virtual void Sub_ThrowCheckHit(SubroutineContext ctx) {
         mayHit = MayHit(player.opponent);
 
         clash = false;
@@ -78,10 +92,9 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
                 if (th.phase < AttackPhase.RECOVERY && ClashableWith(th)) clash = true;
             }
         }
-        
+
         if (connected && mayHit) {
             if (clash) {
-                // Debug.Log(player.transform.position.y);
                 player.fxManager.PlayGameObjectFX(
                     "cmn/battle/fx/prefab/common/throw_clash/0", 
                     CharacterFXSocketType.WORLD_UNBOUND,
@@ -92,9 +105,10 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
                 );
                 player.audioManager.PlaySound("cmn/battle/sfx/throw_break/1");
                 OnThrowTech(opponent);
-                yield break;
+                ctx.Exit();
+                return;
             }
-
+            
             // successful hit
             // Debug.Log("hit");
             hasHit = true;
@@ -129,20 +143,23 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
             socket = new CinematicCharacterSocket(opponent, player, throwSocketBoneName, new(0, -1, 0));
             socket.Attach();
             hitAnimationStartFrame = frame;
-            yield return animationLength - frameData.startup;
-            OnFinalHit();
-            socket.Release();
-            socket = null;
-            opponent.stateFlags = default;
-            CancelInto(player.airborne ? "CmnAirNeutral" : "CmnNeutral");
-
+            
+            ctx.Next(animationLength - frameData.startup, Sub_ThrowHitEnd);
+            
         } else {
             phase = AttackPhase.RECOVERY;
             OnThrowWhiff(opponent);
             entity.animation.AddUnmanagedAnimation(whiffAnimation, false);
-            yield return frameData.recovery;
+            ctx.Exit(frameData.recovery);
         }
+    }
 
+    protected virtual void Sub_ThrowHitEnd(SubroutineContext ctx) {
+        OnFinalHit();
+        socket.Release();
+        socket = null;
+        opponent.stateFlags = default;
+        CancelInto(player.airborne ? "CmnAirNeutral" : "CmnNeutral");
     }
 
     protected override void OnStateEnd(EntityState nextState) {

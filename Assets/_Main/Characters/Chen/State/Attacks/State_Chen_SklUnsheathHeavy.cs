@@ -15,9 +15,7 @@ public class State_Chen_SklUnsheathHeavy : State_Common_SpecialAttack {
     public override AttackFrameData frameData => new() {
         startup = 25,
         active = 8,
-        recovery = 38,
-        onHit = +20,
-        onBlock = -10, 
+        recovery = 38, 
     };
     
     // 214H

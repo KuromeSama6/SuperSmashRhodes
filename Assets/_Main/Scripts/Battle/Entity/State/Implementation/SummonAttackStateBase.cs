@@ -1,6 +1,8 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using SuperSmashRhodes.Input;
+using SuperSmashRhodes.Runtime.State;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.State.Implementation {
@@ -26,7 +28,11 @@ public abstract class SummonAttackStateBase : TokenState, IAttack {
         entity.boundingBoxManager.SetAll(false);
     }
 
-    public override IEnumerator MainRoutine() {
+    public override EntityStateSubroutine BeginMainSubroutine() {
+        return Sub_Startup;
+    }
+
+    protected virtual void Sub_Startup(SubroutineContext ctx) {
         if (mainAnimation != null) {
             entity.animation.AddUnmanagedAnimation(mainAnimation, false);   
         }
@@ -34,23 +40,31 @@ public abstract class SummonAttackStateBase : TokenState, IAttack {
         entity.boundingBoxManager.SetAll(false);
         OnStartup();
         
-        yield return frameData.startup;
-
+        ctx.Next(frameData.startup, Sub_Active);
+    }
+    
+    protected virtual void Sub_Active(SubroutineContext ctx) {
         phase = AttackPhase.ACTIVE;
         entity.boundingBoxManager.SetAll(true);
         OnActive();
-        yield return frameData.active;
         
+        ctx.Next(frameData.active, Sub_Recovery);
+    }
+    
+    protected virtual void Sub_Recovery(SubroutineContext ctx) {
         phase = AttackPhase.RECOVERY;
         entity.boundingBoxManager.SetAll(false);
         OnRecovery();
-        yield return frameData.recovery;
-
-        while (!mayDestroy) {
-            yield return 1;
-        }
+        
+        ctx.Next(frameData.recovery, Sub_WaitForDestroy);
     }
 
+    protected virtual void Sub_WaitForDestroy(SubroutineContext ctx) {
+        while (!mayDestroy) {
+            ctx.Repeat();
+        }
+    }
+    
     protected override void OnStateEnd(EntityState nextState) {
         base.OnStateEnd(nextState);
         entity.boundingBoxManager.SetAll(false);
@@ -169,12 +183,7 @@ public abstract class SummonAttackStateBase : TokenState, IAttack {
         return 1f;
     }
     public int GetStunFrames(Entity to, bool blocked) {
-        var current = GetCurrentFrame(to);
-        if (blocked) {
-            return frameData.onBlock;
-        } else {
-            return frameData.onHit;
-        }
+        return AttackFrameData.GetStandardStun(to, blocked, GetAttackLevel(to));
     }
 }
 

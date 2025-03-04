@@ -12,8 +12,7 @@ public class State_Exusiai_SklReload : State_Common_SpecialAttack {
     public State_Exusiai_SklReload(Entity entity) : base(entity) { }
     protected override string mainAnimation => "chr/SklReload";
     public override AttackFrameData frameData => new AttackFrameData() {
-        startup = 20, active = 55, recovery = 16,
-        onBlock = 0, onHit = 0
+        startup = 20, active = 55, recovery = 16
     };
 
     protected override InputFrame[] requiredInput => new[] {

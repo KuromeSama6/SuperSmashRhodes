@@ -15,8 +15,7 @@ public class State_Chen_OvrSklChixiao : State_Common_OverdriveAttack {
     public State_Chen_OvrSklChixiao(Entity entity) : base(entity) { }
     protected override string mainAnimation => "chr/OvrSklChixiao";
     public override AttackFrameData frameData => new() {
-        startup = 9, active = 5, recovery = 42,
-        onHit = +5, onBlock = -31
+        startup = 9, active = 5, recovery = 42
     };
     protected override InputFrame[] requiredInput => new InputFrame[] {
         new(InputType.FORWARD, InputFrameType.HELD),

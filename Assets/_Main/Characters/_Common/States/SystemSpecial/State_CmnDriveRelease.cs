@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.Game;
@@ -52,26 +53,26 @@ public class State_CmnDriveRelease : CharacterState {
         base.OnStateEnd(nextState);
     }
 
-    public override IEnumerator MainRoutine() {
+    public override EntityStateSubroutine BeginMainSubroutine() {
         player.audioManager.PlaySound("cmn/battle/sfx/driverelease");
-        
+
         var pos = player.transform.position;
         player.rb.linearVelocity = Vector2.zero;
         player.audioManager.PlaySound($"chr/{player.config.id}/battle/vo/driverelease");
         player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/super/smoke", CharacterFXSocketType.WORLD_UNBOUND, pos);
         player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/driverelease/star", CharacterFXSocketType.WORLD_UNBOUND, pos);
-        
+
         PortraitCutscenePlayer.Get(player.playerIndex).Play(player.descriptor.portrait, 1f);
-        
+
         float frames;
-        
+
         if (player.lastState != null) {
             // Debug.Log(player.lastState);
             if (player.lastState is CharacterAttackStateBase) isReleaseCancel = true;
             if (player.lastState is State_Common_Stun) isReleaseCancel = true;
             if (player.lastState.type.HasFlag(EntityStateType.CHR_COMMON_RECOVERY)) isReleaseCancel = true;
         }
-        
+
         if (!isReleaseCancel) {
             frames = 4 * 60;
         } else {
@@ -80,20 +81,25 @@ public class State_CmnDriveRelease : CharacterState {
 
         if (player.burst.gauge.value >= 600f) frames *= 1.5f;
         if (player.health / player.config.health <= .2f) frames *= 1.5f;
-        
+
         frames = Mathf.Min(frames, player.burst.maxReleaseFrames);
-        
+
         player.burst.BeginDriveRelease((int)frames);
         var counter = DriveReleaseGaugeUI.Get(player.playerIndex).counter;
         counter.target = frames / 60f * 10f;
         counter.ApplyImmediately();
-        
+
         // Superfreeze effects
         stateData.backgroundUIData.priority = 10;
         stateData.backgroundUIData.dimAlpha = 0.995f;
         stateData.backgroundUIData.dimSpeed = 10;
         TimeManager.inst.globalFreezeFrames = 60;
-        yield return 1;
+
+        return Sub_Main;
+    }
+
+    protected virtual void Sub_Main(SubroutineContext ctx) {
+        ctx.Next(1);
     }
 }
 }

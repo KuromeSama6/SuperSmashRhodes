@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Battle.FX;
@@ -55,41 +56,42 @@ public class State_CmnHitStunAir : State_Common_Stun {
         landingRecoveryFlag = LandingRecoveryFlag.NONE;
     }
 
-    public override IEnumerator MainRoutine() {
-        while (true) {
-            // Debug.Log($"state begin, {landed}");
-            while (!landed) {
-                yield return 1;
-            }
-            
-            if (player.frameData.shouldGroundBounce) {
-                var force = player.frameData.ConsumeContactBounce();
-                var decayData = opponent.comboDecayData;
-                var comboCounter = player.comboCounter;
-                player.rb.AddForce(force.bounceForce * new Vector2(
-                                       decayData.opponentBlowbackCurve.Evaluate(comboCounter.comboDecay), 
-                                       decayData.opponentLaunchCurve.Evaluate(comboCounter.comboDecay)
-                                   ), ForceMode2D.Impulse); 
-                // while (player.transform.position.y < 1f) {
-                //     yield return 1;
-                // }
-                landed = false;
-                player.airborne = true;
+    public override EntityStateSubroutine BeginMainSubroutine() {
+        return Sub_WaitForLand;
+    }
 
-                player.airHitstunRotation = 0f;  
-                if (force.flags.HasFlag(BounceFlags.HEAVY)) {
-                    player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/land/hard", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position);
-                    player.audioManager.PlaySound("cmn/battle/sfx/wall_bounce");
-                    SimpleCameraShakePlayer.inst.PlayCommon("groundbounce_heavy");
+    protected virtual void Sub_WaitForLand(SubroutineContext ctx) {
+        if (!landed) {
+            ctx.Repeat();
+            return;
+        }
+        
+        if (player.frameData.shouldGroundBounce) {
+            var force = player.frameData.ConsumeContactBounce();
+            var decayData = opponent.comboDecayData;
+            var comboCounter = player.comboCounter;
+            player.rb.AddForce(force.bounceForce * new Vector2(
+                                   decayData.opponentBlowbackCurve.Evaluate(comboCounter.comboDecay), 
+                                   decayData.opponentLaunchCurve.Evaluate(comboCounter.comboDecay)
+                               ), ForceMode2D.Impulse); 
+            // while (player.transform.position.y < 1f) {
+            //     yield return 1;
+            // }
+            landed = false;
+            player.airborne = true;
+
+            player.airHitstunRotation = 0f;  
+            if (force.flags.HasFlag(BounceFlags.HEAVY)) {
+                player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/land/hard", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position);
+                player.audioManager.PlaySound("cmn/battle/sfx/wall_bounce");
+                SimpleCameraShakePlayer.inst.PlayCommon("groundbounce_heavy");
                     
-                } else {
-                    SimpleCameraShakePlayer.inst.PlayCommon("groundbounce");
-                }
-                
-                continue;
+            } else {
+                SimpleCameraShakePlayer.inst.PlayCommon("groundbounce");
             }
             
-            break;
+            ctx.Repeat(0);
+            return;
         }
         
         CancelInto(landingRecoveryFlag.HasFlag(LandingRecoveryFlag.HARD_KNOCKDOWN_LAND) ? "CmnHardKnockdown" : "CmnSoftKnockdown");

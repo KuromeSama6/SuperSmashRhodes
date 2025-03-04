@@ -15,9 +15,7 @@ public class State_Chen_SklDPC : State_Common_SpecialAttack {
     public override AttackFrameData frameData => new() {
         startup = 13,
         active = 75,
-        recovery = 20,
-        onHit = -3,
-        onBlock = -6
+        recovery = 20
     };
     protected override InputFrame[] requiredInput => new[] {
         new InputFrame(InputType.FORWARD, InputFrameType.HELD),

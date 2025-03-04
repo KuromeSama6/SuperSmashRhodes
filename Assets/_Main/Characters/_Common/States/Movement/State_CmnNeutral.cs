@@ -30,16 +30,18 @@ public class State_CmnNeutral : CharacterState {
         player.frameData.groundBounces.Clear();
     }
 
-    public override IEnumerator MainRoutine() {
+    public override EntityStateSubroutine BeginMainSubroutine() {
         entity.animation.AddUnmanagedAnimation("std/neutral", true, player.neutralAniTransitionOverride);
         player.neutralAniTransitionOverride = 0.05f;
 
-        while (true) {
-            player.ApplyGroundedFriction();
-            yield return 1;
-        }
-        
+        return Sub_NeutralLoop;
     }
+
+    protected virtual void Sub_NeutralLoop(SubroutineContext ctx) {
+        player.ApplyGroundedFriction();
+        ctx.Repeat();
+    }
+    
 }
 
 
@@ -62,13 +64,20 @@ public class State_CmnNeutralCrouch : CharacterState {
         stateData.maySwitchSides = true;
     }
 
-    public override IEnumerator MainRoutine() {
+    public override EntityStateSubroutine BeginMainSubroutine() {
         entity.animation.AddUnmanagedAnimation("std/crouch", true, player.neutralAniTransitionOverride);
         player.neutralAniTransitionOverride = 0.05f;
-        while (RevalidateInput()) {
+        return Sub_NeutralLoop;
+    }
+    
+    protected virtual void Sub_NeutralLoop(SubroutineContext ctx) {
+        if (RevalidateInput()) {
             player.ApplyGroundedFriction();
-            yield return 1;
+            ctx.Repeat();   
+            return;
         }
+        
+        ctx.Exit();
     }
 }
 
@@ -96,15 +105,28 @@ public class State_CmnAirNeutral : CharacterState {
         stateData.maySwitchSides = true;
     }
 
-    public override IEnumerator MainRoutine() {
+    public override EntityStateSubroutine BeginMainSubroutine() {
         entity.animation.AddUnmanagedAnimation("std/jump_up", true, player.neutralAniTransitionOverride);
-        
-        while (entity.rb.linearVelocityY > 0f) yield return 1;
-        
-        entity.animation.AddUnmanagedAnimation("std/jump_down", true, 0.1f);
-        while (player.airborne) yield return 1;
+        return Sub_JumpUpLoop;
     }
 
+    protected virtual void Sub_JumpUpLoop(SubroutineContext ctx) {
+        if (entity.rb.linearVelocityY > 0f) {
+            ctx.Repeat();
+        } else {
+            entity.animation.AddUnmanagedAnimation("std/jump_down", true, 0.1f);
+            ctx.Next(0, Sub_JumpDownLoop);
+        }
+    }
+    
+    protected virtual void Sub_JumpDownLoop(SubroutineContext ctx) {
+        if (player.airborne) {
+            ctx.Repeat();
+        } else {
+            ctx.Exit();
+        }
+    }
+    
     public override void OnLand(LandingRecoveryFlag flag, int recoveryFrames) {
         base.OnLand(flag, recoveryFrames);
         CancelInto("CmnLandingRecovery");

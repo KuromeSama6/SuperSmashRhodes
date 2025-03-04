@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.FX;
 using SuperSmashRhodes.Battle.Game;
@@ -50,18 +51,24 @@ public class State_CmnAirBackdash : CharacterState {
         // player.neutralAniTransitionOverride = 0f;
         // player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/dash_dust", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position, Vector3.zero, new(-1, 1, 1));
     }
-    
-    public override IEnumerator MainRoutine() {
+
+    public override EntityStateSubroutine BeginMainSubroutine() {
+        return Sub_DashMain;
+    }
+
+    protected virtual void Sub_DashMain(SubroutineContext ctx) {
         stateData.gravityScale = 0;
         player.animation.AddUnmanagedAnimation("std/backdash", false);
         player.rb.linearVelocity = Vector2.zero;
         player.rb.AddForce(player.TranslateDirectionalForce(new(-player.characterConfig.airBackdashSpeedFinal, 0)), ForceMode2D.Impulse);
 
-        var pos = player.transform.position + new Vector3(0, 1, 0);
         player.audioManager.PlaySoundClip("cmn/battle/sfx/movement/airdash");
         
-        yield return player.characterConfig.airBackdashDurationFinal;
-        
+        ctx.Next(player.characterConfig.airBackdashDurationFinal, "CmnAirNeutral");
+    }
+
+    protected override void OnStateEndComplete(EntityState nextState) {
+        base.OnStateEndComplete(nextState);
         player.rb.linearVelocityX *= 0.5f;
         player.neutralAniTransitionOverride = 0.1f;
         CancelInto("CmnAirNeutral");

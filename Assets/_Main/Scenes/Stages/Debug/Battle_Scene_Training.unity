@@ -8366,6 +8366,7 @@ MonoBehaviour:
   debugBgmData: {fileID: 11400000, guid: 733049346e767764ea7ad67fc494015a, type: 2}
   debugCharacterP1: {fileID: 11400000, guid: c52433aa203201d4c8cd04a4724cb542, type: 2}
   debugCharacterP2: {fileID: 11400000, guid: 6a72b99c89c50d84eb94b7a3c20f0bf9, type: 2}
+  directDebugMode: 1
 --- !u!4 &1118464139
 Transform:
   m_ObjectHideFlags: 0

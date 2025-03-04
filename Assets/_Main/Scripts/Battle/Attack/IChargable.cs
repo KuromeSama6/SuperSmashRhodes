@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using SuperSmashRhodes.Battle.State;
 
 namespace SuperSmashRhodes.Battle {
 /**
@@ -7,6 +8,6 @@ namespace SuperSmashRhodes.Battle {
 public interface IChargable {
     int chargeEntryFrame { get; }
     bool mayCharge { get; }
-    IEnumerator ChargeRoutine();
+    EntityStateSubroutine GetChargeSubroutine();
 }
 }

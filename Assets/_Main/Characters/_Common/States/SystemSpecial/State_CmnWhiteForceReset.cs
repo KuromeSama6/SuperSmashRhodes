@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Numerics;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.FX;
@@ -37,8 +38,8 @@ public class State_CmnWhiteForceReset : CharacterState {
         player.meter.penaltyFrames += 360;
     }
 
-    public override IEnumerator MainRoutine() {
-        yield break;
+    public override EntityStateSubroutine BeginMainSubroutine() {
+        return ctx => ctx.Exit();
     }
 }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Framework;
@@ -29,15 +30,19 @@ public class State_CmnJump : CharacterState {
         if (player.airborne) --player.airOptions;
     }
 
-    public override IEnumerator MainRoutine() {
+    public override EntityStateSubroutine BeginMainSubroutine() {
+        return Sub_PreJump;
+    }
+
+    protected virtual void Sub_PreJump(SubroutineContext ctx) {
         entity.animation.AddUnmanagedAnimation("std/prejump", false, .1f);
+        player.ApplyGroundedFrictionImmediate();
         
         var prejumpFrames = player.characterConfig.prejumpFinal;
-        var originalX = player.rb.linearVelocityX;
-        
-        player.ApplyGroundedFrictionImmediate();
-        yield return prejumpFrames;
+        ctx.Next(prejumpFrames, Sub_JumpMain);
+    }
 
+    protected virtual void Sub_JumpMain(SubroutineContext ctx) {
         player.airborne = true;
         entity.animation.AddUnmanagedAnimation("std/jump_up", true);
 
@@ -56,15 +61,10 @@ public class State_CmnJump : CharacterState {
         stateData.physicsPushboxDisabled = true;
         
         entity.rb.AddForce(new(xForce, player.characterConfig.jumpVelocityFinal), ForceMode2D.Impulse);
-        
         AddCancelOption(EntityStateType.CHR_ATK_AIR_NORMAL | EntityStateType.CHR_ATK_SPECIAL_SUPER);
 
-        //TODO: Air options available on frame #
-        // Debug.Log(player.characterConfig.airDashAvailableFrameFinal);
-        yield return player.characterConfig.airDashAvailableFrameFinal;
-        // Debug.Log("ok");
-        stateData.physicsPushboxDisabled = false;
-        CancelInto("CmnAirNeutral");
+        ctx.Next(player.characterConfig.airDashAvailableFrameFinal, "CmnAirNeutral");
     }
+
 }
 }

@@ -169,13 +169,13 @@ public class PlayerCharacter : Entity {
 
     protected override void OnTick() {
         base.OnTick();
+        inputProvider = GameManager.inst.GetInputProvider(this);
         frameData.Tick();
         UpdateInput();
         UpdateFacing();
         UpdatePosition();
         UpdateGravity();
         UpdateRotation();
-        inputProvider = GameManager.inst.GetInputProvider(this);
         if (backdashCooldown > 0) {
             --backdashCooldown;
         }
@@ -411,17 +411,21 @@ public class PlayerCharacter : Entity {
     }
 
     private IAttack ProcessOutboundHit(PlayerCharacter to) {
+        // Debug.Log(1);
         if (!(activeState is CharacterAttackStateBase move)) {
             // invalid attack state1
             return null;
         }
         
+        // Debug.Log(2);
         // reject if move has no active frames
         if (!move.hasActiveFrames) return null;
+        // Debug.Log(3);
         // Debug.Log($"move {move.phase} {move.frame}"); 
         // reject if move is not active
         if (move.phase != AttackPhase.ACTIVE) return null;
         
+        // Debug.Log(4);
         // move.OnContact(to);
         return move;
     }

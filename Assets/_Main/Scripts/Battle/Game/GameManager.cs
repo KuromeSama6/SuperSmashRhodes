@@ -40,6 +40,7 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
     public StageData debugStageData;
     public StageBGMData debugBgmData;
     public CharacterDescriptor debugCharacterP1, debugCharacterP2;
+    public bool directDebugMode;
 
     public CharacterStateFlag globalStateFlags {
         get {
@@ -72,6 +73,11 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
         environmentRenderers.AddRange(environmentContainer.gameObject.GetComponentsInChildren<Renderer>());
         cameraFraming = mainCamera.GetComponent<CinemachineGroupFraming>();
         targetGroup.Targets = new();
+
+        if (directDebugMode) {
+            inGame = true;
+            StartCoroutine(BeginDirectDebugRoutine());
+        }
     }
 
     public void PreloadResources() {
@@ -79,9 +85,11 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
         AssetManager.inst.PreloadAll("cmn/battle/fx/**");
         AssetManager.inst.PreloadAll("bgm/**");
         AssetManager.inst.PreloadAll("cmn/announcer/battle/**");
-        
-        foreach (var player in RoomManager.current.players.Values) {
-            AssetManager.inst.PreloadAll($"chr/{player.character.id}/**");
+
+        if (RoomManager.current != null) {
+            foreach (var player in RoomManager.current.players.Values) {
+                AssetManager.inst.PreloadAll($"chr/{player.character.id}/**");
+            }   
         }
     }
     
@@ -116,6 +124,31 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
         foreach (var player in players.Values) {
             player.BeginLogic();
         }
+    }
+
+    private IEnumerator BeginDirectDebugRoutine() {
+        targetGroup.Targets.Clear();
+        
+        CreatePlayer(0, debugCharacterP1.gameObject);
+        CreatePlayer(1, debugCharacterP2.gameObject);
+        yield return new WaitForFixedUpdate();
+        
+        BattleUIManager.inst.animator.SetBool("Preround", false);
+        
+        foreach (var player in players.Values) {
+            player.OnRoundInit();
+        }
+        
+        yield return new WaitForFixedUpdate();
+        foreach (var player in players.Values) {
+            player.BeginLogic();
+        }
+        
+        AssetManager.inst.PreloadAll("cmn/battle/sfx/**");
+        AssetManager.inst.PreloadAll("cmn/battle/fx/**");
+        foreach (var player in players.Values) {
+            AssetManager.inst.PreloadAll($"chr/{player.descriptor.id}/**");
+        }   
     }
     
     public PlayerCharacter CreatePlayer(int index, GameObject prefab) {
@@ -308,6 +341,10 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
     }
 
     public IInputProvider GetInputProvider(PlayerCharacter playerCharacter) {
+        if (directDebugMode) {
+            return InputDevicePool.inst.GetInputProvider(playerCharacter);
+        }
+        
         var room = RoomManager.current;
         if (room is NetworkRoom networkRoom) {
             if (networkRoom.localPlayer.playerId == playerCharacter.playerIndex) {

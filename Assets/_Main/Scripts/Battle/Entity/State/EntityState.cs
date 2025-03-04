@@ -28,9 +28,10 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
     public virtual AttackType invincibility => AttackType.NONE;
     public virtual bool isSelfCancellable => false;
     public virtual bool enableHitboxes => true;
-    public int activeRoutines => routines.Count;
 
     public UnityEvent onStateEnd { get; } = new();
+    public SubroutineRunner currentRoutine { get; private set; }
+    
     public virtual CharacterStateFlag globalFlags => CharacterStateFlag.NONE;
     protected virtual EntityStateSerializationFlags serializationFlags => EntityStateSerializationFlags.NONE;
     protected virtual SubroutineFlags mainRoutineFlags => SubroutineFlags.NONE;
@@ -39,9 +40,6 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
     private int scheduledPauseAnimationFrames;
     [SerializationOptions(SerializationOption.EXCLUDE)]
     private readonly Dictionary<string, List<MethodInfo>> animationEventHandlers = new();
-    [SerializationOptions(SerializationOption.EXCLUDE)]
-    public List<StateSubroutine> routines { get; } = new();
-    private StateSubroutine currentRoutine => routines.Count > 0 ? routines[0] : null;
     [SerializationOptions(SerializationOption.EXCLUDE)]
     private ReflectionSerializer reflectionSerializer;
     
@@ -69,12 +67,9 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
 
     private void Init() {
         OnStateBegin();
-        routines.Clear();
-        var routine = new StateSubroutine(() => MainRoutine(), 0, mainRoutineFlags);
-        routines.Insert(0, routine);
-        routine.Hydrate();
+        currentRoutine = new(BeginMainSubroutine());
 
-    // Debug.Log("push subroutine");
+        // Debug.Log("push subroutine");
     }
 
     public void BeginState() {
@@ -97,7 +92,7 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
         OnTick();
         
         // scheduled animation
-        if (entity.shouldTickAnimation && !currentRoutine.flags.HasFlag(SubroutineFlags.PAUSE_ANIMATION)) {
+        if (entity.shouldTickAnimation && !currentRoutine.context.flags.HasFlag(SubroutineFlags.PAUSE_ANIMATION)) {
             if (scheduledPauseAnimationFrames > 0) {
                 --scheduledPauseAnimationFrames;
             
@@ -111,33 +106,41 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
         
         if (interruptFrames > 0) {
             --interruptFrames;
-            // Debug.Log("interrupt");
+            return;
+        }
+
+        if (currentRoutine.called && !currentRoutine.NextState()) {
+            RoutineStateEnd();
             return;
         }
         
-        if (currentRoutine.enumerator.MoveNext()) {
-            var current = currentRoutine.enumerator.Current;
-            ++currentRoutine.timesTicked;
-            HandleRoutineReturn(current);
-            // if (entity.entityId == 0) Debug.Log($"routine tick, state={id} routine={currentRoutine}, rem={routines.Count}, current={current}");
-            
-        } else {
-            if (routines.Count > 1) {
-                var popped = routines[0];
-                routines.RemoveAt(0);
-                HandleRoutineReturn(null);
-                frame = popped.parentFrame;
-                if (entity.shouldTickAnimation) {
-                    entity.animation.Tick();
-                }
-                // Debug.Log($"routine end, rem={routines.Count}");
+        if (currentRoutine.context.nextState != null) {
+            var next = entity.states[currentRoutine.context.nextState];
+            OnStateEndComplete(next);
+            CancelInto(next.id);
+            return;
+        }
 
-            } else {
-                EndState(entity.GetDefaultState());
+        if (!currentRoutine.called) {
+            currentRoutine.Call();
+            var interrupt = currentRoutine.context.interruptFrames;
+            if (interrupt > 0) {
+                interruptFrames += Mathf.Max(interrupt - 1, 0);   
             }
+        }
+        
+        if (interruptFrames <= 0 && !currentRoutine.NextState()) {
+            RoutineStateEnd();
         }
     }
 
+    private void RoutineStateEnd() {
+        var nextState = currentRoutine.context.nextState;
+        var state = nextState == null ? entity.GetDefaultState() : entity.states[nextState];
+        OnStateEndComplete(state);
+        EndState(state);
+}
+    
     public void EndState(EntityState nextState) {
         active = false;
         OnStateEnd(nextState);
@@ -162,42 +165,8 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
         }
     }
     
-    private void HandleRoutineReturn(object obj) {
-        if (obj == null) return;
-        
-        // interrupt frames
-        // if (entity.entityId == 0) Debug.Log($"handle ret {obj} {obj.GetType()}");
-        if (obj is int framesSkipped) {
-            interruptFrames += Mathf.Max(framesSkipped - 1, 0);
-            return;
-        }
-        
-        if (obj is float framesSkippedFloat) {
-            interruptFrames += Mathf.Max((int)framesSkippedFloat - 1, 0);
-            return;
-        }
-
-        if (obj is EntityStateYieldInstruction yieldInstruction) {
-            yieldInstruction.Execute(stateData);
-            return;
-        }
-
-        if (obj is IEnumerator enumerator) {
-            routines.Insert(0, new StateSubroutine(() => enumerator, frame));
-            return;
-        }
-        
-        if (obj is StateSubroutine wrapper) {
-            routines.Insert(0, wrapper);
-            return;
-        }
-        
-    }
-    
-    public void BeginSubroutine(IEnumerator routine, SubroutineFlags flags = SubroutineFlags.PAUSE_ANIMATION) {
-        var wrapper = new StateSubroutine(() => routine, frame, flags);
-        routines.Insert(0, wrapper);
-        wrapper.Hydrate();
+    public void BeginSubroutine(EntityStateSubroutine subroutine) {
+        currentRoutine.Switch(subroutine);
     }
     
     // Member methods
@@ -244,9 +213,12 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
     protected virtual void OnStateEnd(EntityState nextState) {
         entity.onStateEnd.Invoke(this);
     }
+    protected virtual void OnStateEndComplete(EntityState nextState) {
+        
+    }
     public virtual void OnLand(LandingRecoveryFlag flag, int recoveryFrames) {}
     // Abstract methods
-    public abstract IEnumerator MainRoutine();
+    public abstract EntityStateSubroutine BeginMainSubroutine();
     
     // Handlers
     
@@ -294,27 +266,27 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
     public virtual void Serialize(StateSerializer serializer) {
         reflectionSerializer.Serialize(serializer);
         
-        // routines
-        var handles = routines.Select(c => c.GetHandle()).ToList();
-        // Debug.Log($"routine handles {string.Join(", ", handles)}");
-        serializer.PutList("routines", handles);
+        // // routines
+        // var handles = routines.Select(c => c.GetHandle()).ToList();
+        // // Debug.Log($"routine handles {string.Join(", ", handles)}");
+        // serializer.PutList("routines", handles);
     }
     
     public virtual void Deserialize(StateSerializer serializer) {
         // Debug.Log($"begin deserialize {entity.entityId} {this} {frame} {entity.GetHashCode()}");
         // Debug.Log($"start, {routines.Count}, {currentRoutine}, int={interruptFrames}, vel={entity.rb.linearVelocity}");
-        OnStateBegin();
-        {
-            // routines first
-            var list = new List<IHandle>();
-            serializer.GetList("routines", list);
-            
-            routines.Clear();
-            foreach (var handle in list) {
-                routines.Add((StateSubroutine)handle.Resolve());
-            }
-            
-        }
+        // OnStateBegin();
+        // {
+        //     // routines first
+        //     var list = new List<IHandle>();
+        //     serializer.GetList("routines", list);
+        //     
+        //     routines.Clear();
+        //     foreach (var handle in list) {
+        //         routines.Add((StateSubroutine)handle.Resolve());
+        //     }
+        //     
+        // }
         // Debug.Log($"reflections {entity.entityId}");
         reflectionSerializer.Deserialize(serializer);
         
@@ -364,7 +336,7 @@ public abstract class CharacterState : EntityState {
                 // Debug.Log($"chargable, entry = {chargable.chargeEntryFrame}, mayCharge = {chargable.mayCharge}");
                 if (frame == chargable.chargeEntryFrame && chargable.mayCharge) {
                     // Debug.Log("charge start");
-                    BeginSubroutine(chargable.ChargeRoutine());
+                    BeginSubroutine(chargable.GetChargeSubroutine());
                     OnChargeBegin();
                 }
             }

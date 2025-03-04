@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Framework;
@@ -44,16 +45,23 @@ public class State_CmnBlockStunCrouch : State_Common_Stun {
         // player.ApplyGroundedFrictionImmediate();
     }
 
-    public override IEnumerator MainRoutine() {
+    public override EntityStateSubroutine BeginMainSubroutine() {
         AddCancelOption("CmnDriveRelease");
-        while (frames > 0) {
+        return Sub_StunLoop;
+    }
+
+    protected override void Sub_StunLoop(SubroutineContext ctx) {
+        if (frames > 0) {
             player.ApplyGroundedFriction();
             if (!RevalidateInput()) {
                 CancelInto("CmnBlockStun");
-                yield break;
+                return;
             }
-            yield return 1;
+            ctx.Repeat();
+            return;
         }
+        
+        ctx.Exit();
     }
 
 }
@@ -74,8 +82,8 @@ public class State_CmnBlockStunAir : State_Common_Stun {
         AddCancelOption("CmnDriveRelease");
     }
 
-    public override IEnumerator MainRoutine() {
-        while (true) yield return 1;
+    public override EntityStateSubroutine BeginMainSubroutine() {
+        return ctx => ctx.Repeat();
     }
 
     public override void OnLand(LandingRecoveryFlag flag, int recoveryFrames) {

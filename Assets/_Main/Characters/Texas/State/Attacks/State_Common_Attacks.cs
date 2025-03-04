@@ -11,8 +11,6 @@ public class StateTexasNmlAtk5CS : State_Common_NmlAtk5CS {
         startup = 7,
         active = 6,
         recovery = 10,
-        onHit = +4,
-        onBlock = +1,
     };
 
     public override float GetUnscaledDamage(Entity to) {

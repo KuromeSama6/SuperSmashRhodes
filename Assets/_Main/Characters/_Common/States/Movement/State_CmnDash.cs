@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Battle.FX;
@@ -42,11 +43,14 @@ public class State_CmnDash : CharacterState {
         player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/dash_dust", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position, Vector3.zero, new Vector3(player.side == EntitySide.LEFT ? 1 : -1, 1, 1));
     }
 
-    public override IEnumerator MainRoutine() {
+    public override EntityStateSubroutine BeginMainSubroutine() {
         // owner.animation.AddUnmanagedAnimation("std/dash_start", false, .2f);
         entity.animation.AddUnmanagedAnimation("std/dash_loop", true);
-        
-        while (GetCurrentInputBuffer().thisFrame.HasInput(entity.side, InputType.DASH, InputFrameType.HELD) || GetCurrentInputBuffer().thisFrame.HasInput(entity.side, InputType.FORWARD, InputFrameType.HELD)) {
+        return Sub_DashLoop;
+    }
+
+    protected virtual void Sub_DashLoop(SubroutineContext ctx) {
+        if (GetCurrentInputBuffer().thisFrame.HasInput(entity.side, InputType.DASH, InputFrameType.HELD) || GetCurrentInputBuffer().thisFrame.HasInput(entity.side, InputType.FORWARD, InputFrameType.HELD)) {
             var force = player.characterConfig.dashAccelCurve.Evaluate(frame);
             entity.rb.AddForceX(PhysicsUtil.NormalizeSide(force, entity.side));
             entity.rb.linearVelocityX = Mathf.Clamp(entity.rb.linearVelocityX, -player.characterConfig.dashSpeedFinal, player.characterConfig.dashSpeedFinal);
@@ -54,18 +58,19 @@ public class State_CmnDash : CharacterState {
             player.meter.AddMeter(0.05f);
             player.meter.balance.value += 0.0012f * player.meter.meterGainMultiplier;
             player.burst.AddDelta(0.03f, 1);
-            yield return 1;
+            ctx.Repeat();
+            
+        } else {
+            var buffer = GetCurrentInputBuffer();
+            
+            if (buffer.thisFrame.HasInput(entity.side, InputType.FORWARD, InputFrameType.HELD)) {
+                CancelInto("CmnMoveForward");
+            } else {
+                ctx.Exit();
+            }
         }
-        
-        // state end
-        var buffer = GetCurrentInputBuffer();
-        if (buffer.thisFrame.HasInput(entity.side, InputType.FORWARD, InputFrameType.HELD)) {
-            CancelInto("CmnMoveForward");
-            yield break;
-        }
-        
     }
-
+    
     protected override void OnTick() {
         base.OnTick();
     }

@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Framework;
@@ -35,13 +36,20 @@ public class State_CmnLandingRecovery : CharacterState {
         player.animation.AddUnmanagedAnimation(animationName, false);
     }
     
-    public override IEnumerator MainRoutine() {
-        while (player.frameData.landingRecoveryFrames > 0) {
-            --player.frameData.landingRecoveryFrames;
-            yield return 1;
-        }
+    public override EntityStateSubroutine BeginMainSubroutine() {
+        return Sub_Loop;
     }
 
+    protected virtual void Sub_Loop(SubroutineContext ctx) {
+        if (player.frameData.landingRecoveryFrames > 0) {
+            --player.frameData.landingRecoveryFrames;
+            ctx.Repeat();
+            return;
+        }
+        
+        ctx.Exit();
+    }
+    
     protected override void OnTick() {
         base.OnTick();
         if (frame == 2) {

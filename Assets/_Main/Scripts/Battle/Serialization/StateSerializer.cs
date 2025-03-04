@@ -81,6 +81,10 @@ public class StateSerializer {
         }
     }
 
+    public T GetHandle<T>(string key) {
+        return (T)Get<IHandle>(key).Resolve();
+    }
+
     public StateSerializer GetObject(string key) {
         return new StateSerializer(Get<SerializedDictionary>(key));
     }

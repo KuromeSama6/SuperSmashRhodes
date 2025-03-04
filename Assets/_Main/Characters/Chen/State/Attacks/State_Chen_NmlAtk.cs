@@ -19,8 +19,6 @@ public class State_Chen_NmlAtk5CS : State_Common_NmlAtk5CS {
         startup = 7,
         active = 6,
         recovery = 10,
-        onHit = +4,
-        onBlock = +1,
     };
 
     public override float GetUnscaledDamage(Entity to) {
@@ -39,8 +37,6 @@ public class State_Chen_NmlAtk5H : State_Common_NmlAtk5H {
         startup = 12,
         active = 6,
         recovery = 21,
-        onHit = -5,
-        onBlock = -8,
     };
     public override float GetUnscaledDamage(Entity to) {
         return 48;
@@ -73,8 +69,6 @@ public class State_Chen_NmlAtk2S : State_Common_NmlAtk2S {
         startup = 11,
         active = 3,
         recovery = 20,
-        onHit = -5,
-        onBlock = -8,
     };
     public override float GetUnscaledDamage(Entity to) {
         return 32;
@@ -103,8 +97,6 @@ public class State_Chen_NmlAtk5S : State_Common_NmlAtk5S {
         startup = 10,
         active = 5,
         recovery = 13,
-        onHit = +5,
-        onBlock = +2,
     };
 
     protected override void OnStartup() {
@@ -134,8 +126,6 @@ public class State_Chen_NmlAtk6S : State_Common_NmlAtk6S {
         startup = 12,
         active = 3,
         recovery = 21,
-        onHit = +6,
-        onBlock = -7,
     };
 
     protected override void OnStartup() {
@@ -165,8 +155,6 @@ public class State_Chen_NmlAtk6H : State_Common_NmlAtk6H {
         startup = 15,
         active = 6,
         recovery = 26,
-        onHit = +10,
-        onBlock = -13,
     };
 
     protected override void OnStartup() {
@@ -214,8 +202,6 @@ public class State_Chen_NmlAtk2H : State_Common_NmlAtk2H {
         startup = 11,
         active = 5,
         recovery = 28,
-        onHit = +2,
-        onBlock = -13,
     };
     public override float GetUnscaledDamage(Entity to) {
         return 54;
@@ -248,8 +234,6 @@ public class State_Chen_NmlAtk5P : State_Common_NmlAtk5P {
         startup = 5,
         active = 4,
         recovery = 7,
-        onHit = +2,
-        onBlock = -1,
     };
     public override float GetUnscaledDamage(Entity to) {
         return 25f;
@@ -267,8 +251,6 @@ public class State_Chen_NmlAtk2P : State_Common_NmlAtk2P {
         startup = 5,
         active = 4,
         recovery = 7,
-        onHit = +1,
-        onBlock = -2,
     };
     public override float GetUnscaledDamage(Entity to) {
         return 21f;

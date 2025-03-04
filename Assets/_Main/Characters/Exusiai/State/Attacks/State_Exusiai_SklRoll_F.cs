@@ -51,8 +51,7 @@ public class State_Exusiai_SklRoll_FSlide : State_Common_SpecialAttack {
     public State_Exusiai_SklRoll_FSlide(Entity entity) : base(entity) { }
     protected override string mainAnimation => "chr/SklRoll_FSlide";
     public override AttackFrameData frameData => new AttackFrameData() {
-        startup = 7, active = 12, recovery = 30,
-        onHit = +20, onBlock = -15
+        startup = 7, active = 12, recovery = 30
     };
     protected override InputFrame[] requiredInput => new[] {
         new InputFrame(InputType.FORWARD, InputFrameType.HELD), 
@@ -107,8 +106,7 @@ public class State_Exusiai_SklRoll_FEvade : State_Common_UtilityMove {
     public State_Exusiai_SklRoll_FEvade(Entity entity) : base(entity) { }
     protected override string mainAnimation => "chr/SklRoll_FEvade";
     public override AttackFrameData frameData => new AttackFrameData() {
-        startup = 9, active = 12, recovery = 5,
-        onHit = 0, onBlock = 0
+        startup = 9, active = 12, recovery = 5
     };
     protected override InputFrame[] requiredInput => new[] {
         new InputFrame(InputType.BACKWARD, InputFrameType.HELD), 

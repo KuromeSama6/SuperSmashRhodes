@@ -1,7 +1,9 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using SuperSmashRhodes.Battle.Animation;
 using SuperSmashRhodes.Input;
+using SuperSmashRhodes.Runtime.State;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle.State.Implementation {
@@ -38,7 +40,11 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         attackStage = 0;
     }
 
-    public override IEnumerator MainRoutine() {
+    public override EntityStateSubroutine BeginMainSubroutine() {
+        return Sub_Startup;
+    }
+    
+    protected virtual void Sub_Startup(SubroutineContext ctx) {
         entity.animation.AddUnmanagedAnimation(mainAnimation, false);
         // Debug.Log("start");
         phase = AttackPhase.STARTUP;
@@ -46,34 +52,40 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         
         player.ApplyGroundedFriction(frameData.startup);
         entity.audioManager.PlaySound(GetAttackNormalSfx());
-        yield return frameData.startup;
-        // Debug.Log($"active {frame} {Time.frameCount}");
 
+        ctx.Next(frameData.startup, Sub_Active);
+    }
+    
+    protected virtual void Sub_Active(SubroutineContext ctx) {
         phase = AttackPhase.ACTIVE;
         OnActive();
         player.ApplyGroundedFriction(frameData.active);
-        yield return frameData.active;
-        
+
+        ctx.Next(frameData.active, Sub_RecoveryStart);
+    }
+
+    protected virtual void Sub_RecoveryStart(SubroutineContext ctx) {
         player.ApplyGroundedFriction(frameData.active);
-        // Debug.Log($"recov {frame}");
-        
-        // Debug.Log($"rec {frame} {Time.frameCount}");
         phase = AttackPhase.RECOVERY;
         OnRecovery();
-        // Debug.Log($"{id} {player.frameData.landingFlag} {player.airborne}");
+
         if (player.airborne && player.frameData.landingFlag.HasFlag(LandingRecoveryFlag.UNTIL_LAND)) {
             player.frameData.landingRecoveryFrames = frameData.recovery;
-            while (player.airborne) {
-                // Debug.Log("wait");
-                yield return 1;
-            }
-            CancelInto("CmnLandingRecovery");
+            ctx.Next(0, Sub_GroundedRecovery);
             
         } else {
-            yield return frameData.recovery;   
+            ctx.Exit(frameData.recovery);
         }
     }
 
+    protected virtual void Sub_GroundedRecovery(SubroutineContext ctx) {
+        if (player.airborne) {
+            ctx.Repeat(1);
+        } else {
+            CancelInto("CmnLandingRecovery");
+        }
+    }
+    
     protected override void OnStateEnd(EntityState nextState) {
         base.OnStateEnd(nextState);
         player.boundingBoxManager.SetAll(false);
@@ -222,9 +234,9 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         return null;
     }
     protected virtual void OnNotifyStage(int stage) {}
-    public virtual int GetFrameAdvantage(Entity to, bool blocked) {
-        var data = frameData;
-        return blocked ? data.onBlock : data.onHit;
+    
+    public virtual int GetExtraStunFrames(Entity to, bool blocked) {
+        return 0;
     }
 
     public string GetHitSfx(Entity to) {
@@ -238,7 +250,11 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     }
     
     public virtual int GetStunFrames(Entity to, bool blocked) {
-        return Mathf.Max(0, frameData.active + frameData.recovery + GetFrameAdvantage(to, blocked) - (frame - frameData.startup));
+        // return Mathf.Max(0, frameData.active + frameData.recovery + GetFrameAdvantage(to, blocked) - (frame - frameData.startup));
+        // standardized hitstun
+        
+        var extra = GetExtraStunFrames(to, blocked);
+        return AttackFrameData.GetStandardStun(to, blocked, GetAttackLevel(to)) + extra;
     }
     
     public override void OnLand(LandingRecoveryFlag flag, int recoveryFrames) {

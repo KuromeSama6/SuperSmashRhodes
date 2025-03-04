@@ -16,8 +16,7 @@ public class State_Chen_Skl7HolyScriptureBreak : State_Common_SpecialAttack {
     public State_Chen_Skl7HolyScriptureBreak(Entity entity) : base(entity) { }
     protected override string mainAnimation => "chr/Skl7HolyScriptureBreak";
     public override AttackFrameData frameData => new() {
-        startup = 41, active = 21, recovery = 26,
-        onHit = +15, onBlock = driveRelease ? +11 : -5
+        startup = 41, active = 21, recovery = 26
     };
     protected override InputFrame[] requiredInput => new InputFrame[] {
         new(InputType.BACKWARD, InputFrameType.HELD),

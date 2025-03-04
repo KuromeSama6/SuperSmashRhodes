@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Framework;
@@ -20,8 +21,12 @@ public class State_CmnHardKnockdown : CharacterState {
         base.OnStateBegin();
         entity.animation.AddUnmanagedAnimation("std/down", false);
     }
-    public override IEnumerator MainRoutine() {
-        yield return 55;
+    public override EntityStateSubroutine BeginMainSubroutine() {
+        return ctx => ctx.Exit(55);
+    }
+
+    protected override void OnStateEndComplete(EntityState nextState) {
+        base.OnStateEndComplete(nextState);
         player.SetCarriedStateVariable("_hardKnockdown", "CmnSoftKnockdown", true);
         CancelInto("CmnSoftKnockdown");
     }

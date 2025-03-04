@@ -16,8 +16,7 @@ public class State_CmnBurst : CharacterAttackStateBase {
     public override float inputPriority => 10;
     protected override string mainAnimation => "cmn/NmlSysBurst";
     public override AttackFrameData frameData => new AttackFrameData() {
-        startup = 5, active = 11, recovery = 39,
-        onHit = 0, onBlock = -30
+        startup = 5, active = 11, recovery = 39
     };
 
     protected override EntityStateType commonCancelOptions => EntityStateType.NONE;

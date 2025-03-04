@@ -25,9 +25,11 @@ public class CharacterRenderController : MonoBehaviour, IManualUpdate {
     public void LogicUpdate() {
         var mat = renderer.material;
 
-        renderer.shadowCastingMode = owner.dead ? ShadowCastingMode.Off : ShadowCastingMode.On;
+        if (owner) {
+            renderer.shadowCastingMode = owner.dead ? ShadowCastingMode.Off : ShadowCastingMode.On;   
+        }
         
-        if (fxManager != null && !fxManager.playFlash) {
+        if (fxManager && !fxManager.playFlash) {
             if (owner.activeState == null) return;
             var data = owner.activeState.stateData.renderColorData;
             if (!data.flags.HasFlag(CharacterRenderColorData.Flag.PAUSE)) {

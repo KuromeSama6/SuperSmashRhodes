@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Battle.FX;
@@ -47,11 +48,19 @@ public class State_CmnBackdash : CharacterState {
         player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/dash_dust", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position, Vector3.zero, new Vector3(player.side == EntitySide.LEFT ? 1 : -1, 1, 1));
     }
     
-    public override IEnumerator MainRoutine() {
-        while (player.airborne) {
-            if (frame > player.characterConfig.backdashInvulnFinal) invincible = false;
-            yield return 1;
-        }
+    public override EntityStateSubroutine BeginMainSubroutine() {
+        return Sub_Loop;
     }
+
+    protected virtual void Sub_Loop(SubroutineContext ctx) {
+        if (!player.airborne) {
+            ctx.Exit();
+            return;
+        }
+        
+        if (frame > player.characterConfig.backdashInvulnFinal) invincible = false;
+        ctx.Repeat();
+    }
+    
 }
 }

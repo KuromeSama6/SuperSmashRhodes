@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Battle.State.Implementation;
@@ -40,12 +41,17 @@ public class State_CmnSoftKnockdown : CharacterState {
             // add cancel options
             AddCancelOption(EntityStateType.CHR_ATK_SPECIAL_SUPER);
         }
+        
+        
     }
-    public override IEnumerator MainRoutine() {
-        yield return 1;
-        player.comboCounter.Reset();
-        yield return 30;
+    public override EntityStateSubroutine BeginMainSubroutine() {
+        return ctx => ctx.Exit(30);
+    }
+
+    protected override void OnStateEndComplete(EntityState nextState) {
+        base.OnStateEndComplete(nextState);
         player.neutralAniTransitionOverride = 0f;
+        
     }
 
     protected override void OnStateEnd(EntityState nextState) {

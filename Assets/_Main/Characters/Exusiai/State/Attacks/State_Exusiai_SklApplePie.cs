@@ -21,8 +21,7 @@ public class State_Exusiai_SklApplePie : State_Common_SummonOnlySpecialAttack {
     protected override string mainAnimation => "chr/SklApplePie";
     protected override float inputMeter => 1f;
     public override AttackFrameData frameData => new AttackFrameData() {
-        startup = 11, active = 12, recovery = 14,
-        onHit = 0, onBlock = 0
+        startup = 11, active = 12, recovery = 14
     };
 
     public override Hitstate hitstate => Hitstate.COUNTER;
@@ -66,8 +65,7 @@ public class State_Exusiai_SklApplePie_FDetonate : State_Common_SummonOnlySpecia
     protected override string mainAnimation => "chr/SklApplePie_FDetonate";
     protected override float inputMeter => 1.5f;
     public override AttackFrameData frameData => new AttackFrameData() {
-        startup = 9, active = 15, recovery = 12,
-        onHit = 0, onBlock = 0
+        startup = 9, active = 15, recovery = 12
     };
     public override float inputPriority => 5;
     protected override InputFrame[] requiredInput => new[] { new InputFrame(InputType.BACKWARD, InputFrameType.HELD), new InputFrame(InputType.HS, InputFrameType.PRESSED)};

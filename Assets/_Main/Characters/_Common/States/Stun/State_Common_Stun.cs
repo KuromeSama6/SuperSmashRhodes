@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Framework;
@@ -23,21 +24,25 @@ public abstract class State_Common_Stun : CharacterState {
         stateData.maySwitchSides = true;
     }
 
-    public override IEnumerator MainRoutine() {
-        while (frames > 0) {
-            // Debug.Log("tick");
+    public override EntityStateSubroutine BeginMainSubroutine() {
+        return Sub_StunLoop;
+    }
+
+    protected virtual void Sub_StunLoop(SubroutineContext ctx) {
+        if (frames > 0) {
             player.ApplyGroundedFriction();
-            // Debug.Log($"stun {frames}");
 
             if (!player.airborne && player.transform.position.y >= 0.2f) {
                 CancelInto("CmnHitStunAir");
-                yield break;
             }
             
-            yield return 1;
+            ctx.Repeat();
+            return;
         }
+        
+        ctx.Exit();
     }
-
+    
     protected override void OnStateEnd(EntityState nextState) {
         base.OnStateEnd(nextState);
         player.frameData.throwInvulnFrames = 5;

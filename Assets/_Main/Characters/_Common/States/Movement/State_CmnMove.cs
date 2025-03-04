@@ -1,9 +1,11 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Input;
 using SuperSmashRhodes.Util;
+using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Runtime.State {
@@ -31,17 +33,24 @@ public class State_CmnMoveForward : CharacterState {
         stateData.maySwitchSides = true;
     }
 
-    public override IEnumerator MainRoutine() {
+    public override EntityStateSubroutine BeginMainSubroutine() {
         entity.animation.AddUnmanagedAnimation("std/walk", true, .05f);
-        
-        while (RevalidateInput()) {
+        return Sub_MoveLoop;
+    }
+
+    protected virtual void Sub_MoveLoop(SubroutineContext ctx) {
+        if (RevalidateInput()) {
             entity.rb.AddForceX(PhysicsUtil.NormalizeSide(50, entity.side));
             entity.rb.linearVelocityX = Mathf.Clamp(entity.rb.linearVelocityX, -player.characterConfig.walkSpeedFinal, player.characterConfig.walkSpeedFinal);
             // 0.01% meter gain per frame
             player.meter.AddMeter(0.02f);
             player.meter.balance.value += 0.0007f;
             player.burst.AddDelta(0.015f, 1);
-            yield return 1;
+            ctx.Repeat();
+            return;
+            
+        } else {
+            ctx.Exit();   
         }
     }
 }
@@ -71,17 +80,24 @@ public class State_CmnMoveBackward : CharacterState {
         stateData.maySwitchSides = true;
     }
 
-    public override IEnumerator MainRoutine() {
+    public override EntityStateSubroutine BeginMainSubroutine() {
         entity.animation.AddUnmanagedAnimation("std/walk", true, .05f);
-        
-        while (RevalidateInput()) {
+        return Sub_MoveLoop;
+    }
+
+    protected virtual void Sub_MoveLoop(SubroutineContext ctx) {
+        if (RevalidateInput()) {
             entity.rb.AddForceX(PhysicsUtil.NormalizeSide(-50, entity.side));
             entity.rb.linearVelocityX = Mathf.Clamp(entity.rb.linearVelocityX, -player.characterConfig.backwalkSpeedFinal, player.characterConfig.backwalkSpeedFinal);
             
             player.burst.AddDelta(-0.1f, 1);
-            yield return 1;
+            ctx.Repeat();
+            
+        } else {
+            ctx.Exit();
         }
     }
+    
 }
 
 

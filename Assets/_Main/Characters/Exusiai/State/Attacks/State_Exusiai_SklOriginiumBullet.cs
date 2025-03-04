@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections;
 using SuperSmashRhodes.Battle;
+using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Battle.FX;
+using SuperSmashRhodes.Battle.Game;
+using SuperSmashRhodes.Battle.State;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Input;
 using SuperSmashRhodes.Runtime.Gauge;
@@ -15,13 +18,12 @@ public class State_Exusiai_SklOriginiumBullet : State_Common_SpecialAttack, ICha
     public State_Exusiai_SklOriginiumBullet(Entity entity) : base(entity) { }
     protected override string mainAnimation => "chr/SklOriginiumBullet";
     private int bulletsUsed;
+    private int chargeProgress;
 
     public override AttackFrameData frameData => new AttackFrameData() {
         startup = 19,
         active = 4,
-        recovery = 20,
-        onHit = 10, 
-        onBlock = -7
+        recovery = 20
     };
     protected override InputFrame[] requiredInput => new[] {
         new InputFrame(InputType.DOWN, InputFrameType.HELD), new InputFrame(InputType.BACKWARD, InputFrameType.PRESSED), new InputFrame(InputType.HS, InputFrameType.PRESSED)
@@ -33,32 +35,37 @@ public class State_Exusiai_SklOriginiumBullet : State_Common_SpecialAttack, ICha
     protected override void OnStateBegin() {
         base.OnStateBegin();
         bulletsUsed = 0;
+        chargeProgress = 0;
         
         player.audioManager.PlaySound("chr/exusiai/battle/sfx/originium/draw");
     }
 
-    public IEnumerator ChargeRoutine() {
-        int progress = 0;
-        var ammoCount = player.GetComponent<Gauge_Exusiai_AmmoGauge>().displayCount;
-        
-        while (mayCharge) {
-            progress += 1;
-            // 1st charge - 10 bullets
-            if (progress == (driveRelease ? 5 : 15) && ammoCount >= (driveRelease ? 5 : 10)) AddCharge(1); 
-            // 2nd charge - 15 bullets
-            if (progress == (driveRelease ? 30 : 75) && ammoCount >= (driveRelease ? 5 : 15)) AddCharge(1);
-            yield return 1;
-        }
-        
-        // Debug.Log("charge end");
+    public EntityStateSubroutine GetChargeSubroutine() {
+        chargeProgress = 0;
+        player.stateFlags |= CharacterStateFlag.PAUSE_ANIMATIONS;
+        return Sub_ChargeLoop;
     }
 
+    protected virtual void Sub_ChargeLoop(SubroutineContext ctx) {
+        if (mayCharge) {
+            chargeProgress += 1;
+            // 1st charge - 10 bullets
+            if (chargeProgress == (driveRelease ? 5 : 15) && chargeProgress >= (driveRelease ? 5 : 10)) AddCharge(1); 
+            // 2nd charge - 15 bullets
+            if (chargeProgress == (driveRelease ? 30 : 75) && chargeProgress >= (driveRelease ? 5 : 15)) AddCharge(1);
+            
+            ctx.Repeat();
+            return;
+        }
+        
+        player.stateFlags &= ~CharacterStateFlag.PAUSE_ANIMATIONS;
+        ctx.Next(2, Sub_Active);
+    }
     
     protected override void OnActive() {
         base.OnActive();
         var gauge = player.GetComponent<Gauge_Exusiai_AmmoGauge>();
         if (gauge.mayFire) {
-            
             BackgroundUIManager.inst.Flash(0.03f);
             player.audioManager.PlaySound($"chr/exusiai/battle/vo/modal/{Random.Range(0, 4)}");
             var bullets = chargeLevel switch {
@@ -74,10 +81,10 @@ public class State_Exusiai_SklOriginiumBullet : State_Common_SpecialAttack, ICha
             gauge.PlayMuzzleFlash();
 
             if (bulletsUsed >= 15) {
-                player.fxManager.PlayGameObjectFXAtSocket("chr/exusiai/fx/prefab/214h/shot/lv3", "MuzzleSocket");
+                player.fxManager.PlayGameObjectFXAtSocket("chr/exusiai/fx/prefab/214h/shot/lv3", "MuzzleSocket", Vector3.zero, Vector3.zero, new(player.side == EntitySide.LEFT ? 1 : -1, 1, 1));
                 SimpleCameraShakePlayer.inst.Play("chr/exusiai/battle/fx/camerashake/214h", "lv3"); 
             } else if (bulletsUsed >= 10) {
-                player.fxManager.PlayGameObjectFXAtSocket("chr/exusiai/fx/prefab/214h/shot/lv2", "MuzzleSocket");
+                player.fxManager.PlayGameObjectFXAtSocket("chr/exusiai/fx/prefab/214h/shot/lv2", "MuzzleSocket", Vector3.zero, Vector3.zero, new(player.side == EntitySide.LEFT ? 1 : -1, 1, 1));
                 SimpleCameraShakePlayer.inst.Play("chr/exusiai/battle/fx/camerashake/214h", "lv2"); 
             } else {
                 SimpleCameraShakePlayer.inst.Play("chr/exusiai/battle/fx/camerashake/214h", "lv1");   
@@ -139,12 +146,12 @@ public class State_Exusiai_SklOriginiumBullet : State_Common_SpecialAttack, ICha
         return 4;
     }
 
-    public override int GetFrameAdvantage(Entity to, bool blocked) {
+    public override int GetExtraStunFrames(Entity to, bool blocked) {
         if (!blocked) return 10;
         
-        if (bulletsUsed >= 15) return +12;
-        if (bulletsUsed >= 10) return +1;
-        return -7;
+        if (bulletsUsed >= 15) return +18;
+        if (bulletsUsed >= 10) return +3;
+        return -6;
     }
 
     public override CounterHitType GetCounterHitType(Entity to) {

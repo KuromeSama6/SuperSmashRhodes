@@ -9,7 +9,6 @@ public class RoomConfiguration : ScriptableObject {
     public bool isNetworked;
     public bool isTraining;
     
-    
     [Title("Round Config")]
     public int winRounds;
     public int roundTime;

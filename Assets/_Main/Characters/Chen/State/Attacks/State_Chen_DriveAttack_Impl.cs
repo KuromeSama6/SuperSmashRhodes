@@ -21,8 +21,7 @@ public class State_Chen_NmlAtk5D : State_Chen_DriveAttack {
         new InputFrame(InputType.D, InputFrameType.PRESSED)
     };
     public override AttackFrameData frameData => new() {
-        startup = 12, active = 14, recovery = 26,
-        onHit = +10, onBlock = driveRelease ? +5 : -6
+        startup = 12, active = 14, recovery = 26
     };
 
     public override AttackType invincibility {
@@ -136,8 +135,7 @@ public class State_Chen_NmlAtk6D : State_Chen_DriveAttack {
         new InputFrame(InputType.D, InputFrameType.PRESSED)
     };
     public override AttackFrameData frameData => new() {
-        startup = 16, active = 14, recovery = 26,
-        onHit = +10, onBlock = driveRelease ? +5 : -6
+        startup = 16, active = 14, recovery = 26
     };
 
     public override AttackType invincibility {
@@ -213,8 +211,7 @@ public class State_Chen_NmlAtk8D : State_Chen_NmlAtk5D {
     protected override string mainAnimation => "cmn/NmlAtk5D";
     protected override AttackAirOkType airOk => AttackAirOkType.AIR;
     public override AttackFrameData frameData => new() {
-        startup = 16, active = 14, recovery = 26,
-        onHit = +10, onBlock = driveRelease ? +1 : -10
+        startup = 16, active = 14, recovery = 26
     };
 
     public override LandingRecoveryFlag landingRecoveryFlag => LandingRecoveryFlag.UNTIL_LAND;
@@ -264,8 +261,7 @@ public class Chen_NmlAtk82D : State_Chen_DriveAttack {
         new InputFrame(InputType.D, InputFrameType.PRESSED)
     };
     public override AttackFrameData frameData => new() {
-        startup = 12, active = 14, recovery = 26,
-        onHit = +10, onBlock = -40
+        startup = 12, active = 14, recovery = 26
     };
 
     public override AttackType invincibility {

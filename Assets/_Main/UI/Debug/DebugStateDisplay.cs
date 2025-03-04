@@ -85,12 +85,8 @@ public class DebugStateDisplay : PerSideUIElement<DebugStateDisplay> {
         sb.AppendLine($"Decay {comboCounter.comboDecay}");
         sb.AppendLine($"--- Active State {player.activeState.id} @ {player.activeState} ---");
         sb.AppendLine($"--- Main Routine ---");
-        sb.AppendLine($"Routines {player.activeState.activeRoutines} Frame {player.activeState.frame} Ani Frame {(int)(player.animation.animation.state.GetCurrent(0).AnimationTime / Time.fixedDeltaTime)}");
-        sb.AppendLine($"Ticks {player.activeState.routines[0].timesTicked} Int {player.activeState.interruptFrames}");
-        sb.AppendLine($"--- Subroutine Stack ---");
-        foreach (var routine in player.activeState.routines) {
-            sb.AppendLine($"[SUB] {routine.enumerator} Ptr->{routine.parentFrame} Flags {routine.flags}");
-        }
+        sb.AppendLine($"Frame {player.activeState.frame} Ani Frame {(int)(player.animation.animation.state.GetCurrent(0).AnimationTime / Time.fixedDeltaTime)}");
+        sb.AppendLine($"Int {player.activeState.interruptFrames}");
         
         text.text = sb.ToString();
     }
