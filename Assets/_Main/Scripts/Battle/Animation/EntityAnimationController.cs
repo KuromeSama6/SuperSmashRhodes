@@ -97,6 +97,13 @@ public class EntityAnimationController : MonoBehaviour, IStateSerializable {
         }
     }
 
+    public void FastForward(int frames) {
+        var time = frames * Time.fixedDeltaTime;
+        var track = state.GetCurrent(0);
+
+        track.TrackTime += time;
+    }
+
     public void SetFrame(int frame) {
         state.GetCurrent(0).TrackTime = frame * Time.fixedDeltaTime;
         extractedFrameTime = 0;

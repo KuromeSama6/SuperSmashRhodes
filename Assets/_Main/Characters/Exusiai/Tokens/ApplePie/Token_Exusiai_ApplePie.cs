@@ -60,7 +60,7 @@ public class State_Token_Exusiai_ApplePie_Main : TokenState {
             flashCounter = 0;
             entity.StartCoroutine(Flash());
             entity.transform.localScale = baseScale * 1.5f;
-            // entity.rb.AddForce(new Vector2(Random.Range(-0.5f, 0.5f), Random.Range(0f, 3f)), ForceMode2D.Impulse);
+            // entity.rb.AddForce(new Vector2(random.Range(-0.5f, 0.5f), random.Range(0f, 3f)), ForceMode2D.Impulse);
         }
     }
     
@@ -125,7 +125,7 @@ public class State_Token_Exusiai_ApplePie_Attack : TokenAttackStateBase {
     protected override void OnActive() {
         base.OnActive();
         var fx = isLargeExplosion ? applePie.explosionFxLarge : applePie.explosionFxSmall;
-        var sfx = $"chr/exusiai/battle/sfx/apple_pie_explode{Random.Range(1, 3)}";
+        var sfx = $"chr/exusiai/battle/sfx/apple_pie_explode{random.Range(1, 3)}";
         var shake = isLargeExplosion ? applePie.shakeLarge : applePie.shakeSmall;
         entity.rb.simulated = false;
 

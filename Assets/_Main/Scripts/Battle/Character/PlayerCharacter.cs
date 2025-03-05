@@ -158,8 +158,8 @@ public class PlayerCharacter : Entity {
         }
     }
 
-    public override void LogicPreUpdate() {
-        base.LogicPreUpdate();
+    public override void EnginePreUpdate() {
+        base.EnginePreUpdate();
 
         if (bufferClearRequested) {
             inputProvider.inputBuffer.PushAndTick(new InputFrame(InputType.ESC_CLEAR_BUFFER, InputFrameType.PRESSED));
@@ -343,7 +343,7 @@ public class PlayerCharacter : Entity {
 
     public override void OnRoundInit() {
         base.OnRoundInit();
-        GameStateManager.inst.RefreshComponentReferences();
+        FightEngine.inst.RefreshComponentReferences();
         // position
         
         // TODO: Z index management
@@ -411,21 +411,16 @@ public class PlayerCharacter : Entity {
     }
 
     private IAttack ProcessOutboundHit(PlayerCharacter to) {
-        // Debug.Log(1);
         if (!(activeState is CharacterAttackStateBase move)) {
             // invalid attack state1
             return null;
         }
         
-        // Debug.Log(2);
         // reject if move has no active frames
         if (!move.hasActiveFrames) return null;
-        // Debug.Log(3);
         // Debug.Log($"move {move.phase} {move.frame}"); 
         // reject if move is not active
         if (move.phase != AttackPhase.ACTIVE) return null;
-        
-        // Debug.Log(4);
         // move.OnContact(to);
         return move;
     }

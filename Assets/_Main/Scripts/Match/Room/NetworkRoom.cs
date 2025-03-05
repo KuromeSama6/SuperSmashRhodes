@@ -8,6 +8,7 @@ using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Config.Global;
 using SuperSmashRhodes.Framework;
+using SuperSmashRhodes.GGPOWrapper;
 using SuperSmashRhodes.Input;
 using SuperSmashRhodes.Match;
 using SuperSmashRhodes.Match.Player;
@@ -23,23 +24,31 @@ namespace SuperSmashRhodes.Network.RoomManagement {
 public class NetworkRoom : Room, IPacketHandler {
     public bool matchAccepted { get; private set; }
     public NetworkSession session { get; private set; }
-    public P2PConnector p2PConnector { get; private set; }
-    public NetworkInputManager inputManager { get; private set; }
+    public GGPOConnector ggpo { get; private set; }
     public bool fighting { get; private set; }
     public int roundsWon => GetWinCount(localPlayer.playerId);
+    public IRandomNumberProvider randomNumberProvider { get; private set; } = new DefaultRandomNumberProvider();
+    public NetworkInputBufferWrapper remoteBuffer { get; } = new();
     
     private readonly Dictionary<string, Player> idMap = new();
     
     public override bool allConfirmed => status == RoomStatus.NEGOTIATING;
     public NetworkLocalPlayer localPlayer => idMap[session.config.userId] as NetworkLocalPlayer;
+    public NetworkRemotePlayer remotePlayer => players[localPlayer.playerId == 0 ? 1 : 0] as NetworkRemotePlayer;
+    public InputChord localThisFrameInputs {
+        get {
+            if (!fighting) return null;
+            if (localPlayer == null || !localPlayer.playerCharacter) return null;
+            var ret = localPlayer.playerCharacter.inputProvider.inputBuffer.thisFrame;
+            return ret;
+        }
+    }
     
     public NetworkRoom(RoomConfiguration configuration, NetworkSession session) : base(configuration) {
         this.session = session;
         session.AddPacketHandler(this);
         
         this.session.onDisconnected.AddListener(OnDisconnected);
-        
-        inputManager = new(this);
     }
     
     public void NotifyMatchAccept(bool accepted) {
@@ -62,15 +71,12 @@ public class NetworkRoom : Room, IPacketHandler {
     private void OnDisconnected() {
         Debug.LogWarning("Disconnected from server, destroying room");
         Destroy();
-        p2PConnector?.Dispose();
+        
+        MainThreadDispatcher.RunOnMain(() => {
+            ggpo?.Dispose();
+        });
     }
     
-    private void OnInputFrameReceived(NetworkInputFrame frame) {
-        lock (inputManager) {
-            inputManager.AddInput(frame);   
-        }
-    }
-
     private Task<PacketPlayOutGenericResponse> ReportRoundStatus(bool fighting) {
         return session.SendPacket<PacketPlayOutGenericResponse>(new PacketPlayInRoundStatus(session, fighting, this));
     }
@@ -113,12 +119,12 @@ public class NetworkRoom : Room, IPacketHandler {
         if (fighting != packet.fighting) {
             fighting = packet.fighting;
 
-            inputManager.active = fighting;
-            if (fighting) {
-                inputManager.Reset();
-                GameStateManager.inst.ResetFrame();
-                // MainThreadDispatcher.RunOnMain(() => Time.timeScale = .1f);
-            }
+            // inputManager.active = fighting; //TODO put back
+            // if (fighting) {
+            //     inputManager.Reset();
+            //     GameStateManager.inst.ResetFrame();
+            //     // MainThreadDispatcher.RunOnMain(() => Time.timeScale = .1f);
+            // }
         }
     }
 
@@ -137,9 +143,17 @@ public class NetworkRoom : Room, IPacketHandler {
 
     [PacketHandler]
     public void OnBeginP2P(PacketPlayOutBeginP2P packet) {
-        p2PConnector.BeginP2P(packet);
+        MainThreadDispatcher.RunOnMain(() => {
+            ggpo.BeginP2P(packet); 
+        });
     }
-    
+
+    [PacketHandler]
+    public void OnReceivePreRandom(PacketPlayOutPreRandom packet) {
+        Debug.Log($"Received prerandom, {packet}");
+        randomNumberProvider = new PredeterminedRandom(packet.randoms);
+    }
+     
     //region routines
 
     private IEnumerator ShowCharacterSelectRoutine() {
@@ -204,8 +218,8 @@ public class NetworkRoom : Room, IPacketHandler {
             "网络状态",
             "SAELN服务",
             "IP地址",
-            "P2P握手",
-            "连接状态确认"
+            "P2P连接",
+            "同步数据"
         );
         
         // check network status
@@ -225,18 +239,17 @@ public class NetworkRoom : Room, IPacketHandler {
         
         //P2P connection
         // find free port
-        p2PConnector = new(session);
-        p2PConnector.Bind();
-        p2PConnector.onInputFrameReceived.AddListener(OnInputFrameReceived);
+        ggpo = new(this);
+        var bindSuccess = ggpo.Bind();
         
-        if (!p2PConnector.bound) {
+        if (!bindSuccess) {
             loadingScreen.UpdateLoadingStatus(LoadingStatus.BAD);
             yield break;
         }
         
         // send packet
         {
-            var task = session.SendPacket(new PacketPlayInNegotiate(session, p2PConnector.listenerPort));
+            var task = session.SendPacket(new PacketPlayInNegotiate(session, ggpo.port));
             yield return new WaitUntil(() => task.IsCompleted);
             if (!task.IsCompletedSuccessfully || task.Result == null) {
                 Debug.LogError("Failed to send P2P negotiation packet. Task error.");
@@ -249,34 +262,43 @@ public class NetworkRoom : Room, IPacketHandler {
         }
         
         // negotiate
-        while (!p2PConnector.negotiationComplete) {
+        // debug loop
+        while (true) {
             yield return null;
         }
         
-        loadingScreen.UpdateLoadingStatus(p2PConnector.status switch {
-            P2PNegotiationStatus.SKIPPED => LoadingStatus.NA,
-            P2PNegotiationStatus.FAILED => LoadingStatus.BAD,
-            P2PNegotiationStatus.ESTABLISHED => LoadingStatus.GOOD,
-            _ => LoadingStatus.NA
-        });
+        while (ggpo.status == GGPOConnectionStatus.CONNECTING) {
+            yield return null;
+        }
 
-        if (p2PConnector.status == P2PNegotiationStatus.FAILED) {
+        if (ggpo.connected) {
+            loadingScreen.UpdateLoadingStatus(LoadingStatus.GOOD);
+            
+        } else {
             Debug.LogError("Negotiation failed and no fallback available.");
             session.Disconnect(ClientDisconnectionReason.CLIENT_ERROR, "negotiation failed.");
+            loadingScreen.UpdateLoadingStatus(LoadingStatus.BAD);
             yield break;
         }
-
-        while (status != RoomStatus.CLIENT_LOADING) {
+        
+        while (ggpo.status == GGPOConnectionStatus.SYNCHRONIZING) {
             yield return null;
         }
         
-        Debug.Log("Connection established, starting match");
-        loadingScreen.UpdateLoadingStatus(LoadingStatus.GOOD);
-        yield return new WaitForSeconds(1f);
+        if (ggpo.status == GGPOConnectionStatus.ESTABLISHED) {
+            loadingScreen.UpdateLoadingStatus(LoadingStatus.GOOD);
+            
+        } else {
+            Debug.LogError("Initial synchronization failure.");
+            session.Disconnect(ClientDisconnectionReason.CLIENT_ERROR, "initial synchronization failure");
+            loadingScreen.UpdateLoadingStatus(LoadingStatus.BAD);
+            yield break;
+        }
+        
         yield return LoadMatchSceneRoutine();
         
         // report status
-        
+        GameManager.inst.random = randomNumberProvider;
         StartMatch();
     }
 

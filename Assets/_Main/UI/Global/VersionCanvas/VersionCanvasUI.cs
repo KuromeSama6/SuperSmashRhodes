@@ -35,12 +35,6 @@ public class VersionCanvasUI : SingletonBehaviour<VersionCanvasUI> {
                     sb.AppendLine($"RTA {networkRoom.session.lastPingLatency}ms");
 
                     if (networkRoom.fighting) {
-                        var inputManager = networkRoom.inputManager;
-                        sb.AppendLine($"DL Send {inputManager.sendFrame} Receive {inputManager.receiveFrame}");
-
-                        if (networkRoom.session.config.netcodeMode == NetcodeMode.ROLLBACK) {
-                            sb.AppendLine($"Local Frame {inputManager.localReceiveFrame} Diff: {inputManager.sendFrame - inputManager.receiveFrame}");
-                        }
                     }
 
                 } else {

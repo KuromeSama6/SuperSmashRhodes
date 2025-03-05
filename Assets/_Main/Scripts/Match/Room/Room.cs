@@ -197,7 +197,7 @@ public abstract class Room {
         unmanaged = true;
         gm.inGame = true;
         
-        GameStateManager.inst.RefreshComponentReferences();
+        FightEngine.inst.RefreshComponentReferences();
     }
     
     private IEnumerator GameEntryCinematicRoutine() {

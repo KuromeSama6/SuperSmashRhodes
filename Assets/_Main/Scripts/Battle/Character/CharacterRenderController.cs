@@ -22,7 +22,7 @@ public class CharacterRenderController : MonoBehaviour, IManualUpdate {
         owner = GetComponent<PlayerCharacter>();
     }
 
-    public void LogicUpdate() {
+    public void EngineUpdate() {
         var mat = renderer.material;
 
         if (owner) {

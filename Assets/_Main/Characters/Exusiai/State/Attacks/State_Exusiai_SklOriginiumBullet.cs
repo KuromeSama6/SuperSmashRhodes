@@ -67,7 +67,7 @@ public class State_Exusiai_SklOriginiumBullet : State_Common_SpecialAttack, ICha
         var gauge = player.GetComponent<Gauge_Exusiai_AmmoGauge>();
         if (gauge.mayFire) {
             BackgroundUIManager.inst.Flash(0.03f);
-            player.audioManager.PlaySound($"chr/exusiai/battle/vo/modal/{Random.Range(0, 4)}");
+            player.audioManager.PlaySound($"chr/exusiai/battle/vo/modal/{random.Range(0, 4)}");
             var bullets = chargeLevel switch {
                 2 => 15,
                 1 => 10,

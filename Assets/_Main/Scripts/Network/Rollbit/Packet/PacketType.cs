@@ -16,6 +16,7 @@ public enum PacketType : ushort {
     PLAY_OUT_RESPONSE = 0xff00,
     PLAY_OUT_HANDSHAKE = 0xff01,
     PLAY_OUT_ROOM_STATUS = 0xff04,
+    PLAY_OUT_PRE_RANDOM = 0xff05,
     PLAY_OUT_BEGIN_P2P = 0xff06,
     PLAY_OUT_CHARACTER_SELECT = 0xff07,
     
@@ -33,11 +34,9 @@ public static class PacketTypeExtensions {
             PacketType.PLAY_OUT_HANDSHAKE => typeof(PacketPlayOutHandshake),
             PacketType.PLAY_OUT_RESPONSE => typeof(PacketPlayOutGenericResponse),
             PacketType.PLAY_OUT_ROOM_STATUS => typeof(PacketPlayOutRoomStatus),
+            PacketType.PLAY_OUT_PRE_RANDOM => typeof(PacketPlayOutPreRandom),
             PacketType.PLAY_OUT_BEGIN_P2P => typeof(PacketPlayOutBeginP2P),
             PacketType.PLAY_OUT_CHARACTER_SELECT => typeof(PacketPlayOutCharacterSelect),
-            
-            PacketType.PLAY_P2P_HANDSHAKE => typeof(PacketPlayP2PHandshake),
-            PacketType.PLAY_P2P_INPUT => typeof(PacketPlayP2PInput),
             
             _ => null
         };

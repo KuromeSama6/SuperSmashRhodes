@@ -10,7 +10,8 @@ using SuperSmashRhodes.Network.RoomManagement;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Network {
-public class NetworkInputManager {
+[Obsolete]
+internal class NetworkInputManager {
     public int sendFrame { get; private set; }
     public int receiveFrame { get; private set; }
     public int localReceiveFrame { get; private set; }
@@ -21,7 +22,6 @@ public class NetworkInputManager {
     private readonly Dictionary<int, NetworkInputFrame> receiveQueue = new();
     private readonly Dictionary<int, CachedFrame> inputCache = new();
     
-    private P2PConnector p2PConnector => room.p2PConnector;
     private NetcodeMode netcodeMode => room.session.config.netcodeMode;
     
     // public bool rollbackMode { get; private set; }
@@ -124,7 +124,7 @@ public class NetworkInputManager {
         if (doRollback) {
             Debug.Log("beginning rollback");
             var start = receiveFrame + 1;
-            GameStateManager.inst.LoadGameStateImmediate(cachedFrame.gameState);
+            FightEngine.inst.LoadGameStateImmediate(cachedFrame.gameState);
             
             remoteBuffer.SetBuffer(cachedFrame.remoteBuffer);
 
@@ -149,11 +149,11 @@ public class NetworkInputManager {
                     var predictedRemote = PredictInput(remoteBuffer.inputBuffer.thisFrame.inputs);
                     remoteBuffer.inputBuffer.PushAndTick(predictedRemote);
                     
-                    inputCache[frame] = new(frame, cached.localBuffer, remoteBuffer.inputBuffer, predictedRemote, GameStateManager.inst.SerializeGameStateImmediate());
+                    inputCache[frame] = new(frame, cached.localBuffer, remoteBuffer.inputBuffer, predictedRemote, FightEngine.inst.SerializeGameStateImmediate());
                     Debug.Log($"repredicted frame {frame}");
                 }
                 
-                GameStateManager.inst.TickGameStateImmediate();
+                FightEngine.inst.TickGameStateImmediate();
             }
             
         }
@@ -177,7 +177,7 @@ public class NetworkInputManager {
 
         ++sendFrame;
         var arr = chord.inputs.ToArray();
-        p2PConnector.SendInput(sendFrame, arr);
+        // p2PConnector.SendInput(sendFrame, arr);
         
         if (netcodeMode == NetcodeMode.ROLLBACK) {
             InputFrame[] remote;
@@ -194,7 +194,7 @@ public class NetworkInputManager {
             remoteBuffer.inputBuffer.PushAndTick(remote);
 
 
-            var gameState = GameStateManager.inst.SerializeGameStateImmediate();
+            var gameState = FightEngine.inst.SerializeGameStateImmediate();
             inputCache[sendFrame] = new(sendFrame, room.localPlayer.playerCharacter.inputProvider.inputBuffer, remoteBuffer.inputBuffer, remote, gameState);
             
             ++localReceiveFrame;

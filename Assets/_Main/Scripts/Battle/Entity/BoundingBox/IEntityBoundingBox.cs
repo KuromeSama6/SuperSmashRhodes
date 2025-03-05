@@ -6,6 +6,8 @@ public interface IEntityBoundingBox {
     public BoundingBoxType type { get; }
     public Collider2D box { get; }
     public PlayerCharacter owningPlayer { get; }
+
+    void EnsureAttachment();
 }
 
 

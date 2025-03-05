@@ -75,8 +75,8 @@ public class State_Chen_OvrSklChixiao : State_Common_OverdriveAttack {
     public override void OnApplyCinematicDamage(AnimationEventData data) {
         base.OnApplyCinematicDamage(data);
         if (!cinematicHit) return;
-        player.audioManager.PlaySound("chr/chen/battle/sfx/chixiao/1", 1.5f, Random.Range(0.8f, 1.2f));
-        player.audioManager.PlaySound("chr/chen/battle/sfx/chixiao/1_imp", .4f, Random.Range(0.8f, 1.2f));
+        player.audioManager.PlaySound("chr/chen/battle/sfx/chixiao/1", 1.5f, random.Range(0.8f, 1.2f));
+        player.audioManager.PlaySound("chr/chen/battle/sfx/chixiao/1_imp", .4f, random.Range(0.8f, 1.2f));
         // BackgroundUIManager.inst.Flash(0.03f);
     }
 
@@ -107,7 +107,7 @@ public class State_Chen_OvrSklChixiao : State_Common_OverdriveAttack {
         if (hits > 0) {
             player.opponent.fxManager.PlayGameObjectFX("chr/chen/battle/fx/prefab/skl_632146h/final", CharacterFXSocketType.SELF);
             BackgroundUIManager.inst.Flash(0.1f);
-            player.opponent.rotationContainer.localEulerAngles = new(0, 0, Random.Range(-60, 60));
+            player.opponent.rotationContainer.localEulerAngles = new(0, 0, random.Range(-60, 60));
 
             if (cinematicHit) {
                 

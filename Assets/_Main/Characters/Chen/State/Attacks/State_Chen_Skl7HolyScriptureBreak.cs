@@ -50,7 +50,7 @@ public class State_Chen_Skl7HolyScriptureBreak : State_Common_SpecialAttack {
         player.audioManager.PlaySound("chr/chen/battle/sfx/drive/p1");
         entity.audioManager.PlaySound("chr/chen/battle/sfx/skl_214h/0", .4f);  
         
-        entity.audioManager.PlaySound($"chr/chen/battle/vo/modal/{Random.Range(0, 2)}");
+        entity.audioManager.PlaySound($"chr/chen/battle/vo/modal/{random.Range(0, 2)}");
         player.fxManager.PlayGameObjectFX("chr/chen/battle/fx/prefab/drive_dash_smoke", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position, Vector3.zero, new(player.side == EntitySide.LEFT ? -1 : 1, 1, 1));
         player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/land/medium", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position);
         player.ApplyForwardVelocity(new Vector2(25, 0));

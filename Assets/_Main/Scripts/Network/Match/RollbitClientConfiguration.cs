@@ -14,6 +14,10 @@ public class RollbitClientConfiguration : ScriptableObject {
     public int p2PNegotiationAttempts = 10;
     public NetcodeMode netcodeMode = NetcodeMode.ROLLBACK;
     public int maxRollbackFrames = 7;
+
+    [Title("GGPO")]
+    public int ggpoPortP1 = 6023;
+    public int ggpoPortP2 = 6023;
     
     [Title("Debug")]
     public bool debugSkipCharacterSelect;

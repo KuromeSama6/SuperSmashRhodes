@@ -40,7 +40,7 @@ public class PlayerBurstGauge : CharacterComponent, IManualUpdate, IReflectionSe
         
     }
 
-    public void LogicUpdate() {
+    public void EngineUpdate() {
         if (GameManager.inst.globalStateFlags.HasFlag(CharacterStateFlag.PAUSE_GAUGE)) return;
          
         if (driveRelease) {

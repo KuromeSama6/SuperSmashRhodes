@@ -47,8 +47,8 @@ public class State_Chen_NmlAtk5H : State_Common_NmlAtk5H {
     public override void OnHit(Entity target) {
         base.OnHit(target);
         if (target is PlayerCharacter c) {
-            Vector3 angle = new(0f, 0f, Random.Range(20, 80));
-            Vector3 offset = new(Random.Range(-.1f, .1f), Random.Range(-.1f, .1f), 0);
+            Vector3 angle = new(0f, 0f, random.Range(20, 80));
+            Vector3 offset = new(random.Range(-.1f, .1f), random.Range(-.1f, .1f), 0);
             c.PlayFx($"chr/chen/battle/fx/prefab/nml/slash/1", CharacterFXSocketType.SELF, offset, angle);
             // Debug.Log("On hit");
             // AddressablesUtil.LoadAsync<GameObject>("chr/chen/battle/fx/p_chen_slash", go => {
@@ -79,8 +79,8 @@ public class State_Chen_NmlAtk2S : State_Common_NmlAtk2S {
     public override void OnHit(Entity target) {
         base.OnHit(target);
         if (target is PlayerCharacter c) {
-            Vector3 angle = new(0f, 0f, Random.Range(20, 80));
-            Vector3 offset = new(Random.Range(-.1f, .1f), Random.Range(-.1f, .1f), 0);
+            Vector3 angle = new(0f, 0f, random.Range(20, 80));
+            Vector3 offset = new(random.Range(-.1f, .1f), random.Range(-.1f, .1f), 0);
             c.PlayFx("chr/chen/battle/fx/prefab/nml/slash/1", CharacterFXSocketType.SELF, offset, angle);
         }
     }
@@ -179,8 +179,8 @@ public class State_Chen_NmlAtk6H : State_Common_NmlAtk6H {
         base.OnHit(target);
         if (target is PlayerCharacter c) {
             // c.PlayFx("p_chen_slash", CharacterFXSocketType.SELF);
-            Vector3 angle = new(0f, 0f, Random.Range(20, 80));
-            Vector3 offset = new(Random.Range(-.1f, .1f), Random.Range(-.1f, .1f), 0);
+            Vector3 angle = new(0f, 0f, random.Range(20, 80));
+            Vector3 offset = new(random.Range(-.1f, .1f), random.Range(-.1f, .1f), 0);
             c.PlayFx("chr/chen/battle/fx/prefab/nml/slash/1", CharacterFXSocketType.SELF, offset, angle);
 
             if (target is PlayerCharacter p && !p.airborne) {

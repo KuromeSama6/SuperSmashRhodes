@@ -15,16 +15,17 @@ namespace SuperSmashRhodes.Network.Rollbit.P2P {
 /// <summary>
 /// A class that manages the p2p connection between two clients. P2P connector abstracts the sending and reciving of P2P packets between two peers. Even when a P2P connection could not be established and packets are being relayed through the match server, P2P packets should still be sent through the P2P connector, which will handle the relaying of packets through the network session.
 /// </summary>
-public class P2PConnector : IDisposable {
+[Obsolete]
+internal class P2PConnector : IDisposable {
     public bool valid { get; private set; }
     public NetworkSession networkSession { get; private set; }
     public PacketPlayOutBeginP2P negotiationPacket { get; private set; }
-    public P2PNegotiationStatus status { get; private set; }
+    public GGPOConnectionStatus status { get; private set; }
 
     public int listenerPort => netManager.LocalPort;
     public bool bound => netManager != null && netManager.IsRunning;
     public bool useP2P => negotiationPacket != null && negotiationPacket.useP2P;
-    public bool negotiationComplete => status == P2PNegotiationStatus.SKIPPED || status == P2PNegotiationStatus.ESTABLISHED || status == P2PNegotiationStatus.FAILED;
+    public bool negotiationComplete => status == GGPOConnectionStatus.SKIPPED || status == GGPOConnectionStatus.ESTABLISHED || status == GGPOConnectionStatus.DISCONNECTED;
     public bool peerConnected => netManager != null && netManager.IsRunning && peer != null && peer.ConnectionState == ConnectionState.Connected;
     public NetPeer peer { get; private set; }
     public UnityEvent<NetworkInputFrame> onInputFrameReceived { get; } = new();
@@ -76,7 +77,7 @@ public class P2PConnector : IDisposable {
 
     public void BeginP2P(PacketPlayOutBeginP2P packet) {
         negotiationPacket = packet;
-        status = P2PNegotiationStatus.NEGOTIATING;
+        status = GGPOConnectionStatus.CONNECTING;
         --attemptsRemaining;
         
         Debug.Log($"P2P Connection Attempt ({attemptsRemaining} attempts left): {packet}");
@@ -84,7 +85,7 @@ public class P2PConnector : IDisposable {
         if (!useP2P) {
             Debug.LogWarning("Not using P2P. Skipping the P2P connection.");
             networkSession.SendPacket(new PacketPlayInConfirmP2P(networkSession, 0, 0));
-            status = P2PNegotiationStatus.SKIPPED;
+            status = GGPOConnectionStatus.SKIPPED;
             return;
         }
         
@@ -95,22 +96,22 @@ public class P2PConnector : IDisposable {
         netManager.Connect(packet.peerAddressString, packet.peerPort, packet.verifier.ToString());
     }
 
-    public void SendPacket(NetPeer peer, P2PPacket packet) {
-        var data = RollbitCodec.CreateOutboundPacket(packet.header, packet.Serialize(), 0, negotiationPacket.aesKey);
-        peer.Send(data, DeliveryMethod.ReliableOrdered);
-    }
-
-    public void SendInput(int frame, InputFrame[] frames) {
-        if (status == P2PNegotiationStatus.ESTABLISHED) {
-            SendPacket(peer, new PacketPlayP2PInput(this, frame, frames));
-            
-        } else if (status == P2PNegotiationStatus.SKIPPED) {
-            //TODO: relay input
-            
-        } else {
-            throw new InvalidOperationException("Cannot send input before P2P connection is established.");
-        }
-    }
+    // public void SendPacket(NetPeer peer, P2PPacket packet) {
+    //     var data = RollbitCodec.CreateOutboundPacket(packet.header, packet.Serialize(), 0, negotiationPacket.aesKey);
+    //     peer.Send(data, DeliveryMethod.ReliableOrdered);
+    // }
+    //
+    // public void SendInput(int frame, InputFrame[] frames) {
+    //     if (status == GGPOConnectionStatus.ESTABLISHED) {
+    //         SendPacket(peer, new PacketPlayP2PInput(this, frame, frames));
+    //         
+    //     } else if (status == GGPOConnectionStatus.SKIPPED) {
+    //         //TODO: relay input
+    //         
+    //     } else {
+    //         throw new InvalidOperationException("Cannot send input before P2P connection is established.");
+    //     }
+    // }
     
     private void ListenerThread() { 
         while (!cts.IsCancellationRequested) {
@@ -153,11 +154,11 @@ public class P2PConnector : IDisposable {
         this.peer = peer;
         Debug.Log($"peer connected {peer.RemoteId}. Waiting for confirmation.");
         
-        SendPacket(peer, new PacketPlayP2PHandshake(this, negotiationPacket));
+        // SendPacket(peer, new PacketPlayP2PHandshake(this, negotiationPacket));
     }
     
     private void OnPeerDisconnected(NetPeer peer, DisconnectInfo info) {
-        if (status == P2PNegotiationStatus.NEGOTIATING) {
+        if (status == GGPOConnectionStatus.CONNECTING) {
             Debug.LogWarning($"peer disconnected: {info.Reason}. Data: {info.AdditionalData} Error: {info.SocketErrorCode}");
             if (attemptsRemaining > 0) {
                 Debug.Log("Retrying P2P connection.");
@@ -191,58 +192,58 @@ public class P2PConnector : IDisposable {
         var body = buf.Slice(32);
         var type = header.type.GetClass();
         
-        var packet = (P2PPacket)Activator.CreateInstance(type, this, header, body);
-        HandlePacket(packet);
+        // var packet = (P2PPacket)Activator.CreateInstance(type, this, header, body);
+        // HandlePacket(packet);
     }
 
-    private void HandlePacket(P2PPacket packet) {
-        if (status != P2PNegotiationStatus.NEGOTIATING && status != P2PNegotiationStatus.ESTABLISHED) {
-            return;
-        }
-        
-        if (packet is PacketPlayP2PHandshake handshake && status == P2PNegotiationStatus.NEGOTIATING) {
-            bool verified = handshake.verifier == negotiationPacket.expectedVerifier;
-            if (!verified) {
-                Debug.LogWarning($"Received handshake with invalid verifier: {handshake.verifier}. Expected: {negotiationPacket.expectedVerifier}");
-            }
-            
-            Debug.Log($"Peer handshake success. Heartbeat interval: {handshake.heartbeatInterval}"); 
-            _ = networkSession.SendPacket<PacketPlayOutGenericResponse>(new PacketPlayInConfirmP2P(networkSession, verified ? 1 : 2, handshake.nonce));
-            status = P2PNegotiationStatus.ESTABLISHED;
-
-        } else {
-            if (status != P2PNegotiationStatus.ESTABLISHED) {
-                Debug.LogWarning("received packet before handshake was establishe1d!");
-                // FallbackToRelay();
-                return;
-            }
-        }
-
-        if (packet is PacketPlayP2PInput input) {
-            lock (onInputFrameReceived) {
-                onInputFrameReceived.Invoke(input.ToInputFrame());
-            }
-        }
-        
-    }
+    // private void HandlePacket(P2PPacket packet) {
+    //     if (status != GGPOConnectionStatus.CONNECTING && status != GGPOConnectionStatus.ESTABLISHED) {
+    //         return;
+    //     }
+    //     
+    //     if (packet is PacketPlayP2PHandshake handshake && status == GGPOConnectionStatus.CONNECTING) {
+    //         bool verified = handshake.verifier == negotiationPacket.expectedVerifier;
+    //         if (!verified) {
+    //             Debug.LogWarning($"Received handshake with invalid verifier: {handshake.verifier}. Expected: {negotiationPacket.expectedVerifier}");
+    //         }
+    //         
+    //         Debug.Log($"Peer handshake success. Heartbeat interval: {handshake.heartbeatInterval}"); 
+    //         _ = networkSession.SendPacket<PacketPlayOutGenericResponse>(new PacketPlayInConfirmP2P(networkSession, verified ? 1 : 2, handshake.nonce));
+    //         status = GGPOConnectionStatus.ESTABLISHED;
+    //
+    //     } else {
+    //         if (status != GGPOConnectionStatus.ESTABLISHED) {
+    //             Debug.LogWarning("received packet before handshake was establishe1d!");
+    //             // FallbackToRelay();
+    //             return;
+    //         }
+    //     }
+    //
+    //     if (packet is PacketPlayP2PInput input) {
+    //         lock (onInputFrameReceived) {
+    //             onInputFrameReceived.Invoke(input.ToInputFrame());
+    //         }
+    //     }
+    //     
+    // }
     
     private void OnMatchServerDisconnected() {
         Dispose();
     }
 
     private void DisconnectOrFallback(string remarks = "") {
-        if (status == P2PNegotiationStatus.ESTABLISHED) {
+        if (status == GGPOConnectionStatus.ESTABLISHED) {
             StopUDPServer();
             networkSession.Disconnect(ClientDisconnectionReason.P2P_ERROR, remarks);
 
-        } else if (status == P2PNegotiationStatus.NEGOTIATING) {
+        } else if (status == GGPOConnectionStatus.CONNECTING) {
             FallbackToRelay();
         }
     }
     
     private void FallbackToRelay() {
         networkSession.SendPacket(new PacketPlayInConfirmP2P(networkSession, 0, 0));
-        status = P2PNegotiationStatus.SKIPPED;
+        status = GGPOConnectionStatus.SKIPPED;
         StopUDPServer();
     }
     

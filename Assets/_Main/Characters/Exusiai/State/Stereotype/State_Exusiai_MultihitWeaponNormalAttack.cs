@@ -45,7 +45,7 @@ public abstract class State_Exusiai_MultihitWeaponNormalAttack : State_Exusiai_F
     protected override void OnRecovery() {
         base.OnRecovery();
         if (shotsFired) {
-            entity.audioManager.PlaySound($"chr/exusiai/battle/sfx/gun_shell_{Random.Range(1, 4)}");
+            entity.audioManager.PlaySound($"chr/exusiai/battle/sfx/gun_shell_{random.Range(1, 4)}");
         }
     }
 

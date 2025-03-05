@@ -49,6 +49,9 @@ public class ByteBuf {
     public ulong GetQWordAt(int at) {
         return BinaryPrimitives.ReadUInt64BigEndian(buf[at..(at + 8)]);
     }
+    public double GetDoubleAt(int at) {
+        return BitConverter.ToDouble(buf[at..(at + 8)]);
+    }
     public string GetStringNT(int at, int maxLength) {
         var bytes = GetBytes(at, maxLength);
         // parse to string

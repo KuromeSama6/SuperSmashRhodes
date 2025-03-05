@@ -41,6 +41,7 @@ public class NetworkSession : IDisposable, IPacketHandler {
         client = new TcpClient();
         client.ConnectAsync(config.host, config.port).ContinueWith(ConnectTaskCallback);
         status = ClientStatus.CONNECTING;
+        client.ReceiveBufferSize = 32768;
     }
 
     private async Task SendAsync(byte[] msg) {
@@ -245,6 +246,7 @@ public class NetworkSession : IDisposable, IPacketHandler {
     
     public void Dispose() {
         client.Dispose();
+        stream.Dispose();
         cancellationTokenSource.Dispose();
         heartbeatTimer?.Dispose();
         

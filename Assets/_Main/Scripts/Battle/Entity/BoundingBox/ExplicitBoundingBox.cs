@@ -48,5 +48,8 @@ public class ExplicitBoundingBox : MonoBehaviour, IEntityBoundingBox {
             point = other.ClosestPoint(transform.position)
         });
     }
+    
+    public void EnsureAttachment() {
+    }
 }
 }

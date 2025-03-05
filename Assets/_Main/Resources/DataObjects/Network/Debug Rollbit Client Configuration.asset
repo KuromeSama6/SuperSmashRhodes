@@ -19,6 +19,8 @@ MonoBehaviour:
   p2PNegotiationAttempts: 10
   netcodeMode: 1
   maxRollbackFrames: 7
+  ggpoPortP1: 6023
+  ggpoPortP2: 6024
   debugSkipCharacterSelect: 1
   debugP2PLatency: 0
   debugP2PLatencyRange: {x: 50, y: 200}

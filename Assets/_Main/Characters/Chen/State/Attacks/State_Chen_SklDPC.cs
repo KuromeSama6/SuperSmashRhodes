@@ -40,8 +40,8 @@ public class State_Chen_SklDPC : State_Common_SpecialAttack {
     public override void OnHit(Entity target) {
         base.OnHit(target);
         
-        Vector3 angle = new(0f, 0f, Random.Range(20, 80));
-        Vector3 offset = new(Random.Range(-.1f, .1f), Random.Range(-.1f, .1f), 0);
+        Vector3 angle = new(0f, 0f, random.Range(20, 80));
+        Vector3 offset = new(random.Range(-.1f, .1f), random.Range(-.1f, .1f), 0);
         player.opponent.PlayFx("chr/chen/battle/fx/prefab/nml/slash/1", CharacterFXSocketType.SELF, offset, angle);
     }
 
@@ -107,7 +107,7 @@ public class State_Chen_SklDPC : State_Common_SpecialAttack {
             player.ApplyForwardVelocity(new(hits > 0 ? 10f : 0f, -30f));
             player.opponent.frameData.AddGroundBounce(new(0, driveRelease ? 12 : 7), BounceFlags.HEAVY);
             entity.audioManager.PlaySound("chr/chen/battle/sfx/skl_214h/0", .4f);
-            entity.audioManager.PlaySound($"chr/chen/battle/vo/modal/{Random.Range(0, 2)}");
+            entity.audioManager.PlaySound($"chr/chen/battle/vo/modal/{random.Range(0, 2)}");
         }
     }
 

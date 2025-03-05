@@ -12,7 +12,7 @@ public class SubroutineContext : IHandleSerializable {
     public DeferedNextSubroutine deferedNextSubroutine { get; private set; }
     public SubroutineFlags flags { get; set; }
     
-    private readonly EntityStateSubroutine subroutine;
+    public EntityStateSubroutine subroutine { get; private set; }
     public SubroutineContext(EntityStateSubroutine subroutine) {
         if (subroutine == null) throw new System.ArgumentNullException(nameof(subroutine));
         this.subroutine = subroutine;
@@ -57,6 +57,7 @@ public class SubroutineContext : IHandleSerializable {
         public readonly EntityStateSubroutine nextSubroutine;
         public readonly DeferedNextSubroutine deferedNextSubroutine;
         public readonly SubroutineFlags flags;
+        public readonly EntityStateSubroutine subroutine;
 
         public Handle(SubroutineContext ctx) {
             interruptFrames = ctx.interruptFrames;
@@ -64,6 +65,7 @@ public class SubroutineContext : IHandleSerializable {
             nextSubroutine = ctx.nextSubroutine;
             deferedNextSubroutine = ctx.deferedNextSubroutine;
             flags = ctx.flags;
+            subroutine = ctx.subroutine;
         }
         
         public object Resolve() {
@@ -72,7 +74,8 @@ public class SubroutineContext : IHandleSerializable {
                 nextState = nextState,
                 nextSubroutine = nextSubroutine,
                 deferedNextSubroutine = deferedNextSubroutine,
-                flags = flags
+                flags = flags,
+                subroutine = subroutine
             };
         }
     }

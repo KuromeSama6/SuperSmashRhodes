@@ -56,7 +56,7 @@ public class State_Chen_SklUnsheathHeavy : State_Common_SpecialAttack {
 
     protected override void OnActive() {
         base.OnActive();
-        entity.audioManager.PlaySound($"chr/chen/battle/vo/modal/{Random.Range(0, 3)}");
+        entity.audioManager.PlaySound($"chr/chen/battle/vo/modal/{random.Range(0, 3)}");
     }
 
     protected override void OnTick() {

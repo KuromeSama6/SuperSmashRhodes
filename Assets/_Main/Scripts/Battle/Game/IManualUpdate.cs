@@ -17,7 +17,7 @@ public interface IManualUpdate {
     /// Use this for input processing.
     /// This is managed by the GameStateManager.
     /// </summary>
-    void LogicPreUpdate() {
+    void EnginePreUpdate() {
         
     }
     
@@ -25,7 +25,7 @@ public interface IManualUpdate {
     /// Called once per logical frame, in FixedUpdate().
     /// Use this for regular game logic.
     /// </summary>
-    void LogicUpdate() {
+    void EngineUpdate() {
         
     }
 }

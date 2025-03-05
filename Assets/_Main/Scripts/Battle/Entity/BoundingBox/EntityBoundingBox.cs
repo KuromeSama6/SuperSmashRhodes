@@ -1,6 +1,7 @@
 ﻿using System;
 using Spine.Unity;
 using SuperSmashRhodes.Battle.Game;
+using SuperSmashRhodes.Battle.Serialization;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
@@ -18,7 +19,7 @@ public class EntityBoundingBox : MonoBehaviour, IEntityBoundingBox, IManualUpdat
         owningPlayer = entity.owner;
     }
 
-    public void LogicUpdate() {
+    public void EngineUpdate() {
         if (!entity.logicStarted) return;
         
         if (!collider) {
@@ -58,8 +59,12 @@ public class EntityBoundingBox : MonoBehaviour, IEntityBoundingBox, IManualUpdat
         });
     }
 
+    public void EnsureAttachment() {
+        bbFollower.MatchAttachment(bbFollower.Slot.Attachment);
+    }
 
     public void ManualUpdate() {
+        
     }
 }
 

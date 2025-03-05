@@ -46,7 +46,6 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     
     protected virtual void Sub_Startup(SubroutineContext ctx) {
         entity.animation.AddUnmanagedAnimation(mainAnimation, false);
-        // Debug.Log("start");
         phase = AttackPhase.STARTUP;
         OnStartup();
         
@@ -60,7 +59,6 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         phase = AttackPhase.ACTIVE;
         OnActive();
         player.ApplyGroundedFriction(frameData.active);
-
         ctx.Next(frameData.active, Sub_RecoveryStart);
     }
 

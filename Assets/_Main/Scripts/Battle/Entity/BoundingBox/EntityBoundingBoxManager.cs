@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Sirenix.OdinInspector;
 using Spine.Unity;
+using SuperSmashRhodes.Battle.Game;
+using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Util;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
-public class EntityBoundingBoxManager : MonoBehaviour {
+public class EntityBoundingBoxManager : MonoBehaviour, IAutoSerialize {
     [Title("Configuration")]
     public bool createPushbox = true;
     public int hitboxCount = 0;
@@ -75,6 +77,13 @@ public class EntityBoundingBoxManager : MonoBehaviour {
                 box.box.enabled = enabled;
             }
         }
+    }
+    
+    public void Serialize(StateSerializer serializer) {
+        
+    }
+    public void Deserialize(StateSerializer serializer) {
+        boxes.ForEach(c => c.EnsureAttachment());
     }
     
 }

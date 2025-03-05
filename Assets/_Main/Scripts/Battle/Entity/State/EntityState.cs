@@ -28,6 +28,8 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
     public virtual AttackType invincibility => AttackType.NONE;
     public virtual bool isSelfCancellable => false;
     public virtual bool enableHitboxes => true;
+    
+    protected IRandomNumberProvider random => GameManager.inst.random;
 
     public UnityEvent onStateEnd { get; } = new();
     public SubroutineRunner currentRoutine { get; private set; }
@@ -273,8 +275,7 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
     }
     
     public virtual void Deserialize(StateSerializer serializer) {
-        // Debug.Log($"begin deserialize {entity.entityId} {this} {frame} {entity.GetHashCode()}");
-        // Debug.Log($"start, {routines.Count}, {currentRoutine}, int={interruptFrames}, vel={entity.rb.linearVelocity}");
+        // Debug.Log($"start, {currentRoutine}, int={interruptFrames}, vel={entity.rb.linearVelocity}");
         // OnStateBegin();
         // {
         //     // routines first

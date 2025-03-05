@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Battle.Serialization;
+using SuperSmashRhodes.Util;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Input {
@@ -29,7 +30,10 @@ public class InputBuffer : IStateSerializable {
     }
 
     public void PushAndTick(params InputFrame[] inputs) {
-        InputChord chord = new(inputs);
+        PushAndTick(new InputChord(inputs));
+    }
+    
+    public void PushAndTick(InputChord chord) {
         buffer.Insert(0, chord);
         
         if (buffer.Count > maxSize) buffer.RemoveAt(buffer.Count - 1);
@@ -169,6 +173,19 @@ public class InputChord {
         this.inputs = inputs;
     }
 
+    public InputChord(byte[] data) {
+        var buf = new ByteBuf(data);
+        consumed = buf.GetByteAt(0) == 1;
+        var length = buf.GetByteAt(1);
+        inputs = new InputFrame[length];
+        
+        for (int i = 0; i < length; i++) {
+            var type = (InputType)buf.GetWordAt(2 + i * 3);
+            var frameType = (InputFrameType)buf.GetByteAt(2 + i * 3 + 2);
+            inputs[i] = new(type, frameType);
+        }
+    }
+
     public bool HasInput(EntitySide side, InputType type, InputFrameType frameType) {
         type = InputBuffer.TranslateToRawDirection(type, side);
         return inputs.Contains(new(type, frameType));
@@ -184,6 +201,33 @@ public class InputChord {
         consumed = false;
     }
 
+    public byte[] Serialize() {
+        /*
+         * Bytes:
+         * 0: consumed?
+         * 1: length
+         * 2-3: type (word)
+         * 4: frameType (byte)
+         */
+        
+        var size = 2 + inputs.Length * 3;
+        var ret = new ByteBuf((uint)size);
+        
+        ret.SetByteAt(0, (byte)(consumed ? 1 : 0));
+        if (inputs.Length > 255) {
+            Debug.LogError($"Error packing InputChord: inputs length {inputs.Length} is too large. Max is 255.");
+            return null;
+        }
+        ret.SetByteAt(1, (byte)inputs.Length);
+        
+        for (int i = 0; i < inputs.Length; i++) {
+            ret.SetWordAt(2 + i * 3, (ushort)inputs[i].type);
+            ret.SetByteAt(2 + i * 3 + 2, (byte)inputs[i].frameType);
+        }
+        
+        return ret.bytes;
+    }
+    
     public override string ToString() {
         return $"InputChord({string.Join(", ", inputs)})";
     }

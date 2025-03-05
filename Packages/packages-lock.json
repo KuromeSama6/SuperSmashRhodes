@@ -487,11 +487,10 @@
       "url": "https://packages.unity.com"
     },
     "unityggpo.plugin": {
-      "version": "https://github.com/nykwil/UnityGGPO.git?path=/Unity/Packages/UnityGGPO",
+      "version": "file:D:/dev/UnityGGPO/Unity/Packages/UnityGGPO",
       "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "645507dbae294adb220ae24ae3435327023da483"
+      "source": "local",
+      "dependencies": {}
     },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",

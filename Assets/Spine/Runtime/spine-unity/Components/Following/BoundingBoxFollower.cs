@@ -216,7 +216,7 @@ namespace Spine.Unity {
 
 		/// <summary>Sets the current collider to match attachment.</summary>
 		/// <param name="attachment">If the attachment is not a bounding box, it will be treated as null.</param>
-		void MatchAttachment (Attachment attachment) {
+		public void MatchAttachment (Attachment attachment) {
 			BoundingBoxAttachment bbAttachment = attachment as BoundingBoxAttachment;
 
 			if (BoundingBoxFollower.DebugMessages && attachment != null && bbAttachment == null)

@@ -18,7 +18,7 @@ public class LocalInputModule : MonoBehaviour, IInputProvider, IManualUpdate {
     private InputBuffer localBuffer;
     
     private void Start() {
-        if (GameStateManager.inst) GameStateManager.inst.RefreshComponentReferences();
+        if (FightEngine.inst) FightEngine.inst.RefreshComponentReferences();
         
         input = GetComponent<PlayerInput>();
         localBuffer = new(120);
@@ -30,7 +30,7 @@ public class LocalInputModule : MonoBehaviour, IInputProvider, IManualUpdate {
     
     public InputAction this[string action] => input.actions[action];
 
-    public void LogicUpdate() {
+    public void EngineUpdate() {
         
     }
     
@@ -39,7 +39,7 @@ public class LocalInputModule : MonoBehaviour, IInputProvider, IManualUpdate {
         localBuffer = newBuffer;
     }
 
-    public void LogicPreUpdate() {
+    public void EnginePreUpdate() {
         if (!input) return;
         
         {

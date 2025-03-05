@@ -1,0 +1,17 @@
+﻿namespace SuperSmashRhodes.GGPOWrapper {
+public enum GGPOStatusCode {
+    OK = 0,
+    GENERAL_FAILURE = -1,
+    INVALID_SESSION = 1,
+    INVALID_PLAYER_HANDLE = 2,
+    PLAYER_OUT_OF_RANGE = 3,
+    PREDICTION_THRESHOLD = 4,
+    UNSUPPORTED = 5,
+    NOT_SYNCHRONIZED = 6,
+    IN_ROLLBACK = 7,
+    INPUT_DROPPED = 8,
+    PLAYER_DISCONNECTED = 9,
+    TOO_MANY_SPECTATORS = 10,
+    INVALID_REQUEST = 11
+}
+}

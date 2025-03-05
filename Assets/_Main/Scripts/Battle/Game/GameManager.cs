@@ -66,8 +66,8 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
     private int entityIdCounter;
     private readonly List<Renderer> environmentRenderers = new();
     public CinemachineGroupFraming cameraFraming { get; private set; }
-    
     public CharacterStateFlag extraGlobalStateFlags { get; set; }
+    public IRandomNumberProvider random { get; set; } = new DefaultRandomNumberProvider();
     
     private void Start() {
         environmentRenderers.AddRange(environmentContainer.gameObject.GetComponentsInChildren<Renderer>());
@@ -76,6 +76,7 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
 
         if (directDebugMode) {
             inGame = true;
+            
             StartCoroutine(BeginDirectDebugRoutine());
         }
     }
@@ -228,7 +229,7 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
         PruneEntities();
     }
 
-    public void LogicUpdate() {
+    public void EngineUpdate() {
         pushboxCorrectionLock = false;
         if (RoomManager.current != null) {
             RoomManager.current.Tick();
@@ -351,7 +352,7 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
                 return InputDevicePool.inst.GetInputProvider(playerCharacter);
                 
             } else {
-                return networkRoom.inputManager.remoteBuffer;
+                return networkRoom.remoteBuffer;
             }
             
         } else {

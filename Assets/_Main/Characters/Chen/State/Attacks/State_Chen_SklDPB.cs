@@ -37,8 +37,8 @@ public class State_Chen_SklDPB : State_Common_DP {
     public override void OnHit(Entity target) {
         base.OnHit(target);
         
-        Vector3 angle = new(0f, 0f, Random.Range(20, 80));
-        Vector3 offset = new(Random.Range(-.1f, .1f), Random.Range(-.1f, .1f), 0);
+        Vector3 angle = new(0f, 0f, random.Range(20, 80));
+        Vector3 offset = new(random.Range(-.1f, .1f), random.Range(-.1f, .1f), 0);
         player.opponent.PlayFx("chr/chen/battle/fx/prefab/nml/slash/1", CharacterFXSocketType.SELF, offset, angle);
     }
 

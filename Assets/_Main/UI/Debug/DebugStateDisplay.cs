@@ -6,6 +6,7 @@ using System.Text;
 using Sirenix.OdinInspector;
 using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Battle.Serialization;
+using SuperSmashRhodes.Battle.State.Implementation;
 using TMPro;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -38,7 +39,7 @@ public class DebugStateDisplay : PerSideUIElement<DebugStateDisplay> {
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            GameStateManager.inst.QueueSaveGameState(state => {
+            FightEngine.inst.QueueSaveGameState(state => {
                 gameState = state;
                 File.WriteAllText(path, state.DumpToString());
             });
@@ -52,13 +53,13 @@ public class DebugStateDisplay : PerSideUIElement<DebugStateDisplay> {
             } else {
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
-                GameStateManager.inst.QueueLoadGameState(gameState);
+                FightEngine.inst.QueueLoadGameState(gameState);
                 stopwatch.Stop();
                 // Debug.Log($"Operation completed in {stopwatch.ElapsedMilliseconds}ms ({stopwatch.ElapsedTicks} ticks)");
                 
                 var path = Path.Join(Application.persistentDataPath, "/debug/deserialization_dump.txt");
                 // File.WriteAllText(path, GameStateManager.inst.SerializeGameState().DumpToString());
-                GameStateManager.inst.QueueSaveGameState(state => {
+                FightEngine.inst.QueueSaveGameState(state => {
                     File.WriteAllText(path, state.DumpToString());
                 });
             }
@@ -87,6 +88,10 @@ public class DebugStateDisplay : PerSideUIElement<DebugStateDisplay> {
         sb.AppendLine($"--- Main Routine ---");
         sb.AppendLine($"Frame {player.activeState.frame} Ani Frame {(int)(player.animation.animation.state.GetCurrent(0).AnimationTime / Time.fixedDeltaTime)}");
         sb.AppendLine($"Int {player.activeState.interruptFrames}");
+
+        if (player.activeState is CharacterAttackStateBase attack) {
+            sb.AppendLine($"Attack phase {attack.phase}, stage {attack.attackStage}, hits left {attack.hitsRemaining}, lock {attack.hitLock}");
+        }
         
         text.text = sb.ToString();
     }

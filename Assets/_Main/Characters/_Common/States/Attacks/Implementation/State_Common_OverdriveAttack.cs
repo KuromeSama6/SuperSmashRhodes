@@ -20,7 +20,7 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
     protected override EntityStateType commonCancelOptions => EntityStateType.NONE;
     protected override int normalInputBufferLength => 20;
     protected override float inputMeter => 0;
-    public override bool mayEnterState => player.meter.gauge.value >= meterCost;
+    public override bool mayEnterState => player.meter.gauge.value >= meterCost || true;
     public override CharacterStateFlag globalFlags => CharacterStateFlag.PAUSE_GAUGE | CharacterStateFlag.GLOBAL_PAUSE_TIMER;
     public override StateIndicatorFlag stateIndicator => StateIndicatorFlag.SUPER | (player.burst.driveRelease ? StateIndicatorFlag.DRIVE_RELEASE : StateIndicatorFlag.NONE) | (cinematicHit ? StateIndicatorFlag.INVINCIBLE : StateIndicatorFlag.NONE);
     public override bool landCancellable => false;

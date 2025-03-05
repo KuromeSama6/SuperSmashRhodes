@@ -59,7 +59,7 @@ public class PushboxManager : MonoBehaviour, IManualUpdate {
         // Debug.Log($"{player.name}: physicsBox={physicsBox.enabled}/{physicsBox.isTrigger} correctionBox={correctionBox.enabled}/{correctionBox.isTrigger} wallDetectionBox={wallDetectionBox.enabled}/{wallDetectionBox.isTrigger}");
     }
 
-    public void LogicUpdate() {
+    public void EngineUpdate() {
         pushboxCorrectionLock = false;
         if (!player || !player.opponent) return;
 

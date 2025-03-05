@@ -113,17 +113,17 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
         initialized = true;
         // Debug.Log($"init {this}");
         
-        GameStateManager.inst.RefreshComponentReferences();
+        FightEngine.inst.RefreshComponentReferences();
     }
     
     public virtual void ManualUpdate() {
         
     }
 
-    public virtual void LogicPreUpdate() {
+    public virtual void EnginePreUpdate() {
     }
 
-    public virtual void LogicUpdate() {
+    public virtual void EngineUpdate() {
         if (!logicStarted) return;
 
         rb.simulated = shouldSimulatePhysics;

@@ -5,29 +5,37 @@ using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Framework;
+using SuperSmashRhodes.GGPOWrapper;
+using SuperSmashRhodes.Input;
 using SuperSmashRhodes.Match;
 using SuperSmashRhodes.Network;
 using SuperSmashRhodes.Network.RoomManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace SuperSmashRhodes.Battle.Game {
-public class GameStateManager : SingletonBehaviour<GameStateManager> {
-    [Title("References")]
-    public RoomConfiguration config;
-    
+public class FightEngine : AutoInitSingletonBehaviour<FightEngine> {
     public int frame { get; private set; }
-    public bool requiresStateCache => networkInputManager != null && networkInputManager.shouldCacheGameState;
-    public NetworkInputManager networkInputManager => RoomManager.current is NetworkRoom networkRoom ? networkRoom.inputManager : null;
-
+    public GGPOConnector ggpo => RoomManager.current is NetworkRoom networkRoom ? networkRoom.ggpo : null;
+    public Room room => RoomManager.current;
+    public bool inRoom => room != null;
+    
     private readonly List<IManualUpdate> manualUpdates = new();
     private readonly Dictionary<int, IAutoSerialize> autoSerializers = new();
     private readonly Queue<SerializedGameState> queuedStateLoads = new();
     private readonly Queue<Action<SerializedGameState>> queuedStateSaves = new();
-    
-    
+
+    protected override void Awake() {
+        base.Awake();
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
+    }
+
     private void Start() {
         // scan manual updates
         // Debug.Log(manualUpdates.Count);
+        
         RefreshComponentReferences();
     }
 
@@ -56,25 +64,86 @@ public class GameStateManager : SingletonBehaviour<GameStateManager> {
             }
         });
     }
-
-    /**
-     * Central update loop for all manual updates
-     * Each logical frame consists of the following steps:
-     * 0. Check if there is a NetworkInputManager present; if so, pause game updates if the network input managers requires it.
-     * 1. Loads any queued game states to the current state.
-     * 2. Increments the frame counter. This marks the beginning of a new frame.
-     * 3. Calls LogicPreUpdate on all manual updates.
-     * 4. Saves the current game state if the configuration requires it.
-     * 5. Ticks the NetworkInputManager if present.
-     * 6. Calls LogicUpdate on all manual updates.
-     * 7. Satifies any queued state saves by external requests.
-     */
+    
     private void FixedUpdate() {
-        // 0. check network input manager
-        if (networkInputManager != null) {
-            networkInputManager.PreTick();
-            if (networkInputManager.pauseGameState) return;
+        if (ggpo != null && room != null) {
+            TickGameStateGGPO();
+        } else {
+            TickGameStateLocal();
         }
+        
+    }
+
+    private void TickGameStateGGPO() {
+        if (ggpo == null) return;
+        var networkRoom = (NetworkRoom)room;
+        Debug.Log("tick ggpo");
+        
+        // poll inputs
+        manualUpdates.ForEach(m => {
+            if (m is MonoBehaviour beh && beh && beh.isActiveAndEnabled) {
+                // Debug.Log(m);
+                try {
+                    m.EnginePreUpdate();
+                } catch (Exception e) {
+                    Debug.LogException(e);
+                }
+            }
+        });
+        
+        // add local input
+        {
+            var localInput = networkRoom.localThisFrameInputs;
+            byte[] data = localInput != null ? localInput.Serialize() : new byte[0];
+            var res = ggpo.AddLocalInputSync(networkRoom.localPlayer.playerId, data);
+            if (res != GGPOStatusCode.OK) {
+                Debug.LogError($"[FightEngine/GGPO] Failed to add local input: {res}");
+            }
+        }
+        
+        // receive remote inputs
+        {
+            var data = ggpo.GetRemoteInputSync(out var result);
+            if (result == GGPOStatusCode.OK) {
+                var remoteInput = new InputChord(data);
+                networkRoom.remoteBuffer.inputBuffer.PushAndTick(remoteInput);
+                
+            } else {
+                networkRoom.remoteBuffer.inputBuffer.PushAndTick(new InputChord());
+                Debug.LogError($"FightEngine/GGPO] Failed to get remote input.");
+            }
+        }
+        
+        // advance
+        manualUpdates.ForEach(m => {
+            if (m is MonoBehaviour beh && beh && beh.isActiveAndEnabled) {
+                // Debug.Log(m);
+                try {
+                    m.EnginePreUpdate();
+                } catch (Exception e) {
+                    Debug.LogException(e);
+                }
+            }
+        });
+        
+        // notify
+        {
+            var result = ggpo.NotifyTickSync();
+            if (result != GGPOStatusCode.OK) {
+                Debug.LogError($"[FightEngine/GGPO] Frame update failed!!!! {result}");
+            }   
+        }
+        
+        // idling is the last thing of the frame
+        ggpo.NotifyIdleSyncNonBlocking(Time.fixedDeltaTime);
+    }
+    
+    private void TickGameStateLocal() {
+        // 0. check network input manager
+        // if (ggpo != null) { //TODO Put back
+        //     ggpo.PreTick();
+        //     if (ggpo.pauseGameState) return;
+        // }
         
         // 1. load queued states
         while (queuedStateLoads.Count > 0) {
@@ -89,18 +158,12 @@ public class GameStateManager : SingletonBehaviour<GameStateManager> {
             if (m is MonoBehaviour beh && beh && beh.isActiveAndEnabled) {
                 // Debug.Log(m);
                 try {
-                    m.LogicPreUpdate();
+                    m.EnginePreUpdate();
                 } catch (Exception e) {
                     Debug.LogException(e);
                 }
             }
         });
-
-        // 4. save state
-        // Handled by the network input manager
-        
-        // 5. tick network input manager
-        networkInputManager?.Tick();
         
         // 6. update
         TickGameStateImmediate();
@@ -119,7 +182,7 @@ public class GameStateManager : SingletonBehaviour<GameStateManager> {
             if (m is MonoBehaviour beh && beh && beh.isActiveAndEnabled) {
                 // Debug.Log(m);
                 try {
-                    m.LogicUpdate();
+                    m.EngineUpdate();
                 } catch (Exception e) {
                     Debug.LogException(e);
                 }
@@ -127,17 +190,12 @@ public class GameStateManager : SingletonBehaviour<GameStateManager> {
         });
     }
     
-    
     public void QueueLoadGameState(SerializedGameState state) {
         queuedStateLoads.Enqueue(state);
     }
     
     public void QueueSaveGameState(Action<SerializedGameState> saveAction) {
         queuedStateSaves.Enqueue(saveAction);
-    }
-
-    public void ResetFrame() {
-        frame = 0;
     }
     
     public SerializedGameState SerializeGameStateImmediate() {
@@ -172,6 +230,15 @@ public class GameStateManager : SingletonBehaviour<GameStateManager> {
             }
         }
         
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+        Debug.Log("Scene loaded. Refreshing component references.");
+        RefreshComponentReferences();
+    }
+    
+    private void OnSceneUnloaded(Scene scene) {
+        autoSerializers.Clear();
     }
     
 }
