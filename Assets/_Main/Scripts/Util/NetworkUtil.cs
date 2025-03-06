@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using System.Text;
 using Google.FlatBuffers;
 using Spine;
+using Unity.Collections;
 
 namespace SuperSmashRhodes.Util {
 public static class NetworkUtil {
@@ -26,6 +27,18 @@ public static class NetworkUtil {
         int port = ((IPEndPoint)listener.LocalEndpoint).Port;
         listener.Stop();
         return port;
+    }
+    
+    public static int CalcFletcher32(NativeArray<byte> data) {
+        uint sum1 = 0;
+        uint sum2 = 0;
+
+        int index;
+        for (index = 0; index < data.Length; ++index) {
+            sum1 = (sum1 + data[index]) % 0xffff;
+            sum2 = (sum2 + sum1) % 0xffff;
+        }
+        return unchecked((int)((sum2 << 16) | sum1));
     }
 }
 }

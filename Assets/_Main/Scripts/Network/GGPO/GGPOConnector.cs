@@ -1,5 +1,11 @@
 ﻿using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
+using System.Linq;
+using SuperSmashRhodes.Battle.Game;
+using SuperSmashRhodes.Battle.Serialization;
+using SuperSmashRhodes.GGPOWrapper.Packet;
+using SuperSmashRhodes.Input;
 using SuperSmashRhodes.Match.Player;
 using SuperSmashRhodes.Network;
 using SuperSmashRhodes.Network.Rollbit;
@@ -7,6 +13,7 @@ using SuperSmashRhodes.Network.Rollbit.P2P;
 using SuperSmashRhodes.Network.RoomManagement;
 using SuperSmashRhodes.Util;
 using Unity.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityGGPO;
@@ -28,16 +35,21 @@ public class GGPOConnector : IDisposable {
     private readonly NetworkRoom room;
     private PacketPlayOutBeginP2P negotiationPacket;
     private readonly Dictionary<int, int> playerIdToHandleMap = new();
+    private readonly IConnectorCallbackHandler callbackHandler;
+    private readonly List<ChannelSubpacket> packetQueue = new();
+    private readonly HashSet<int> auxiliaryInputsReceived = new();
+    private int gamestateHandleCounter = 0;
 
     public bool connected => status == GGPOConnectionStatus.ESTABLISHED || status == GGPOConnectionStatus.SYNCHRONIZING;
     
-    public GGPOConnector(NetworkRoom room) {
+    public GGPOConnector(NetworkRoom room, IConnectorCallbackHandler callbackHandler) {
         if (inst != null) {
             throw new InvalidOperationException("The last GGPOConnector instance has not been disposed yet. It must be disposed before creating a new one.");
         }
 
         this.room = room;
         inst = this;
+        this.callbackHandler = callbackHandler;
     }
 
     public bool Bind() {
@@ -51,7 +63,7 @@ public class GGPOConnector : IDisposable {
             GGPO.Session.CloseSession();   
         }
         
-        GGPOStatusCode res = (GGPOStatusCode)GGPO.Session.StartSession(OnGameBegin, OnAdvanceFrame, OnLoadGameState, OnLogGameState, OnSaveGameState, OnFreeBuffer, OnEventConnectedToPeer, OnEventSynchronizingWithPeer, OnEventSynchronizedWithPeer, OnEventRunning, OnEventConnectionInterrupted, OnEventConnectionResumed, OnEventDisconnectedFromPeer, OnEventEventcodeTimesync, "ssr_networkgame", 2, port);
+        GGPOStatusCode res = (GGPOStatusCode)GGPO.Session.StartSessionCustomInputSize(OnGameBegin, OnAdvanceFrame, OnLoadGameState, OnLogGameState, OnSaveGameState, OnFreeBuffer, OnEventConnectedToPeer, OnEventSynchronizingWithPeer, OnEventSynchronizedWithPeer, OnEventRunning, OnEventConnectionInterrupted, OnEventConnectionResumed, OnEventDisconnectedFromPeer, OnEventEventcodeTimesync, "ssr_networkgame", 2, port, INPUT_BUFFER_SIZE);
 
         GGPO.Session.SetDisconnectTimeout(3000);
         GGPO.Session.SetDisconnectNotifyStart(1500);
@@ -109,29 +121,84 @@ public class GGPOConnector : IDisposable {
         
         players[handle] = player;
         playerIdToHandleMap[ssrPlayer.playerId] = handle;
+        Debug.Log($"add player {ssrPlayer.playerId} handle {handle}");
         return true;
     }
 
-    public GGPOStatusCode AddLocalInputSync(int playerId, byte[] data) {
-        // pad to max size
+    public void QueueInputChannelPacket(ChannelSubpacket packet) {
+        packetQueue.Add(packet);
+    }
+    
+    public GGPOStatusCode SendQueuedInputPacketsSync(int playerId) {
         if (!playerIdToHandleMap.ContainsKey(playerId)) return GGPOStatusCode.OK;
-        var buffer = new byte[INPUT_BUFFER_SIZE];
-        Array.Copy(data, 0, buffer, 0, data.Length);
-        return (GGPOStatusCode)GGPO.Session.AddLocalInput(playerIdToHandleMap[playerId], INPUT_BUFFER_SIZE, buffer);
+        var packet = new InputChannelPacket(playerId);
+        packet.subpackets.AddRange(packetQueue);
+        packetQueue.Clear();
+        
+        var data = packet.Serialize();
+        // Debug.Log($"send {playerId}: {data.ToHexString()}");
+        return (GGPOStatusCode)GGPO.Session.AddLocalInput(playerIdToHandleMap[playerId], INPUT_BUFFER_SIZE, data);
     }
 
-    public byte[] GetRemoteInputSync(out GGPOStatusCode result) {
+    public InputChannelPacket[] ReadInputChannelSync(out GGPOStatusCode result) {
         var data = GGPO.Session.SynchronizeInput(2, INPUT_BUFFER_SIZE, out int res, out int disconnectFlags);
         result = (GGPOStatusCode)res;
-        return data[0];
+        
+        if (result != GGPOStatusCode.OK) {
+            return null;
+        }
+        
+        var ret = new InputChannelPacket[2];
+        for (int i = 0; i < 2; i++) {
+            if (data[i][0] != InputChannelPacket.MAGIC) {
+                ret[i] = null;
+                continue;
+            }
+            
+            var packet = new InputChannelPacket(new ByteBuf(data[i]));
+            try {
+                ProcessInputChannelPacket(packet);
+            } catch (Exception e) {
+                Debug.LogError($"Error processing input channel packet:");
+                Debug.LogException(e);
+            }
+            ret[i] = packet;
+        }
+        
+        return ret;
+    }
+
+    private void ProcessInputChannelPacket(InputChannelPacket packet) {
+        foreach (var subpacket in packet.subpackets) {
+            if (subpacket is ChannelSubpacketCustom customSubPacket) {
+                // check if we have already received this aux packets
+                if (auxiliaryInputsReceived.Contains(customSubPacket.nonce)) continue;
+                Debug.Log($"received aux input {customSubPacket}");
+                callbackHandler.OnReceivedAuxiliaryData(customSubPacket);
+                auxiliaryInputsReceived.Add(customSubPacket.nonce);
+            }
+        }
+    }
+    
+    public SynchronizedInput GetRemoteInputSync(out GGPOStatusCode result) {
+        var packets = ReadInputChannelSync(out result);
+        if (packets == null || packets.Any(c => c == null)) return new();
+        
+        var localIndex = packets[0].playerId == room.localPlayer.playerId ? 0 : 1;
+        var remoteIndex = localIndex == 0 ? 1 : 0;
+
+        return new() {
+            local = packets[localIndex].FindFirst<ChannelSubpacketInput>().inputChord,
+            remote = packets[remoteIndex].FindFirst<ChannelSubpacketInput>().inputChord
+        };
     }
 
     public GGPOStatusCode NotifyTickSync() {
         return (GGPOStatusCode)GGPO.Session.AdvanceFrame();
     }
     
-    public GGPOStatusCode NotifyIdleSyncNonBlocking(float deltaTime) {
-        return (GGPOStatusCode)GGPO.Session.Idle(Mathf.RoundToInt(deltaTime * 1000f));
+    public GGPOStatusCode NotifyIdleSyncNonBlocking(int time) {
+        return (GGPOStatusCode)GGPO.Session.Idle(time); 
     }
     
     // Called at the start of each frame
@@ -145,25 +212,52 @@ public class GGPOConnector : IDisposable {
     }
 
     private bool OnAdvanceFrame(int flags) {
-        return true;
-    }
-
-    private bool OnLoadGameState(NativeArray<byte> data) {
+        var ticked = FightEngine.inst.TickGameStateGGPO();
+        if (!ticked) GGPO.Session.AdvanceFrame();
         return true;
     }
 
     private bool OnLogGameState(string fileName, NativeArray<byte> data) {
+        // Debug.Log($"log game state, size: {data.Length}");
         return true;
     }
     
     private bool OnSaveGameState(out NativeArray<byte> data, out int checksum, int frame) {
-        checksum = 0;
-        data = new NativeArray<byte>(0, Allocator.Temp);
+        ++gamestateHandleCounter;
+        var saved = callbackHandler.OnSaveGameState(gamestateHandleCounter);
+        // Debug.Log($"save game state, frame: {frame}, handle: {gamestateHandleCounter}");
+
+        var buf = new ByteBuf(1 + 4 + 4);
+        buf.SetByteAt(0, (byte)(!saved ? 0xff : 0x01));
+        buf.SetDWordAt(1, (uint)gamestateHandleCounter);
+        buf.SetDWordAt(5, (uint)frame);
+        data = new NativeArray<byte>(buf.bytes, Allocator.Persistent);
+        checksum = NetworkUtil.CalcFletcher32(data);
+        return true;
+    }
+    
+    private bool OnLoadGameState(NativeArray<byte> data) {
+        if (data.Length == 0) {
+            Debug.LogError($"Request game state load but data is empty????");
+            return true;
+        }
+
+        var buf = new ByteBuf(data.ToArray());
+        Debug.Log($"Load game state, {buf}, handle: {buf.GetDWordAt(1)}");
+        if (buf.GetByteAt(0) == 0x01) {
+            var handle = (int)buf.GetDWordAt(1);
+            callbackHandler.OnLoadGameState(handle);
+        }
+        
         return true;
     }
 
     private void OnFreeBuffer(NativeArray<byte> data) {
+        // Debug.Log($"free buffer");
+        var buf = new ByteBuf(data.ToArray());
+        var handle = (int)buf.GetDWordAt(1);
         
+        callbackHandler.OnDeleteSavedGameState(handle);
     }
     
     private bool OnEventConnectedToPeer(int handle) {
@@ -233,5 +327,10 @@ public class GGPOConnector : IDisposable {
         Debug.Log($"GGPO session disposed");
         inst = null;
     }
+}
+
+public struct SynchronizedInput {
+    public InputChord local;
+    public InputChord remote;
 }
 }

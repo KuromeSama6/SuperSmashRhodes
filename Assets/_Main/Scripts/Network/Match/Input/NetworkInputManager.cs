@@ -28,7 +28,7 @@ internal class NetworkInputManager {
     // public int rollbackModeFrame { get; private set; }
     // public int rollbackTargetFrame { get; private set; }
     
-    public NetworkInputBufferWrapper remoteBuffer { get; private set; } = new();
+    public ManagedInputBufferWrapper remoteBuffer { get; private set; } = new();
     
     public bool pauseGameState {
         get {
@@ -245,9 +245,9 @@ class CachedFrame {
     public readonly InputBuffer localBuffer;
     public readonly InputBuffer remoteBuffer;
     public readonly InputFrame[] predictedRemoteInputs;
-    public readonly SerializedGameState gameState;
+    public readonly SerializedEngineState gameState;
     
-    public CachedFrame(int frame, InputBuffer local, InputBuffer remote, InputFrame[] predictedRemoteInputs, SerializedGameState gameState) {
+    public CachedFrame(int frame, InputBuffer local, InputBuffer remote, InputFrame[] predictedRemoteInputs, SerializedEngineState gameState) {
         this.frame = frame;
         localBuffer = local.Copy();
         remoteBuffer = remote.Copy();

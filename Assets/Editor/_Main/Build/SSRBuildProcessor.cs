@@ -8,8 +8,7 @@ public class SSRBuildProcessor : IPostprocessBuildWithReport {
     public int callbackOrder => 0;
     
     public void OnPostprocessBuild(BuildReport report) {
-        if (report.summary.result == BuildResult.Succeeded || report.summary.result == BuildResult.Unknown) {
-            Debug.Log("Build succeeded, bumping build metadata.");
+        if (report.summary.result != BuildResult.Cancelled) {
             OnSuccessfulBuild();
         }
     }

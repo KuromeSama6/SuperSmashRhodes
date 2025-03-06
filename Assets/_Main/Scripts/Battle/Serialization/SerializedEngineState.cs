@@ -4,11 +4,11 @@ namespace SuperSmashRhodes.Battle.Serialization {
 /// <summary>
 /// Represents a snapshot of the game state that can be serialized and deserialized.
 /// </summary>
-public class SerializedGameState {
+public class SerializedEngineState {
     public int frame { get; private set; }
     public StateSerializer serializer { get; private set; }
 
-    public SerializedGameState(int frame, StateSerializer serializer) {
+    public SerializedEngineState(int frame, StateSerializer serializer) {
         this.frame = frame;
         this.serializer = serializer;
     }

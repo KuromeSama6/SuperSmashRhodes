@@ -6,10 +6,13 @@ using Sirenix.Utilities;
 using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.GGPOWrapper;
+using SuperSmashRhodes.GGPOWrapper.Packet;
 using SuperSmashRhodes.Input;
 using SuperSmashRhodes.Match;
+using SuperSmashRhodes.Match.Player;
 using SuperSmashRhodes.Network;
 using SuperSmashRhodes.Network.RoomManagement;
+using SuperSmashRhodes.Util;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -22,8 +25,8 @@ public class FightEngine : AutoInitSingletonBehaviour<FightEngine> {
     
     private readonly List<IManualUpdate> manualUpdates = new();
     private readonly Dictionary<int, IAutoSerialize> autoSerializers = new();
-    private readonly Queue<SerializedGameState> queuedStateLoads = new();
-    private readonly Queue<Action<SerializedGameState>> queuedStateSaves = new();
+    private readonly Queue<SerializedEngineState> queuedStateLoads = new();
+    private readonly Queue<Action<SerializedEngineState>> queuedStateSaves = new();
 
     protected override void Awake() {
         base.Awake();
@@ -74,10 +77,9 @@ public class FightEngine : AutoInitSingletonBehaviour<FightEngine> {
         
     }
 
-    private void TickGameStateGGPO() {
-        if (ggpo == null) return;
+    public bool TickGameStateGGPO() {
+        if (ggpo == null) return false;
         var networkRoom = (NetworkRoom)room;
-        Debug.Log("tick ggpo");
         
         // poll inputs
         manualUpdates.ForEach(m => {
@@ -92,50 +94,57 @@ public class FightEngine : AutoInitSingletonBehaviour<FightEngine> {
         });
         
         // add local input
+        bool ret = false;
         {
-            var localInput = networkRoom.localThisFrameInputs;
-            byte[] data = localInput != null ? localInput.Serialize() : new byte[0];
-            var res = ggpo.AddLocalInputSync(networkRoom.localPlayer.playerId, data);
-            if (res != GGPOStatusCode.OK) {
-                Debug.LogError($"[FightEngine/GGPO] Failed to add local input: {res}");
-            }
-        }
-        
-        // receive remote inputs
-        {
-            var data = ggpo.GetRemoteInputSync(out var result);
-            if (result == GGPOStatusCode.OK) {
-                var remoteInput = new InputChord(data);
-                networkRoom.remoteBuffer.inputBuffer.PushAndTick(remoteInput);
+            // var localInput = networkRoom.localThisFrameInputs;
+            var localInput = InputDevicePool.inst.defaultInput.inputBuffer.thisFrame;
+            ggpo.QueueInputChannelPacket(new ChannelSubpacketInput(localInput));
+            var res = ggpo.SendQueuedInputPacketsSync(networkRoom.localPlayer.playerId);
+            
+            if (res == GGPOStatusCode.OK) {
+                // receive remote inputs
+                // Debug.Log($"get local input ok");
+                {
+                    var inputs = ggpo.GetRemoteInputSync(out var result);
+                    
+                    if (result == GGPOStatusCode.OK) {
+                        // var remoteInput = new InputChord(inputs);
+                        // if (!inputs.All(c => c == 0)) Debug.Log($"rcv input {new ByteBuf(inputs)}");
+                        // networkRoom.remoteBuffer.inputBuffer.PushAndTick(remoteInput);
+                        // Debug.Log("get remote input ok");
+                        if (inputs.local != null) {
+                            networkRoom.localPlayer.inputBuffer.inputBuffer.PushAndTick(inputs.local);
+                            if (inputs.local.inputs.Length > 0) Debug.Log($"received local input: {inputs.local}");
+                        }
+                        
+                        if (inputs.remote != null) {
+                            networkRoom.remotePlayer.inputBuffer.inputBuffer.PushAndTick(inputs.remote);
+                            if (inputs.remote.inputs.Length > 0) Debug.Log($"received remote input: {inputs.remote}");
+                        }
+                        
+                        // advance
+                        TickGameStateImmediate();
+                        var tickResult = ggpo.NotifyTickSync();
+                        ret = true;
+                        if (tickResult != GGPOStatusCode.OK) {
+                            Debug.LogError($"[FightEngine/GGPO] Frame update failed!!!! {tickResult}");
+                        }   
+
+                    } else {
+                        // networkRoom.remoteBuffer.inputBuffer.PushAndTick(new InputChord());
+                        // Debug.LogError($"FightEngine/GGPO] Failed to get remote input: {result}");
+                    }
+                }
                 
             } else {
-                networkRoom.remoteBuffer.inputBuffer.PushAndTick(new InputChord());
-                Debug.LogError($"FightEngine/GGPO] Failed to get remote input.");
+                // Debug.LogError($"[FightEngine/GGPO] Failed to add lo
+                // cal input: {res}");
             }
-        }
-        
-        // advance
-        manualUpdates.ForEach(m => {
-            if (m is MonoBehaviour beh && beh && beh.isActiveAndEnabled) {
-                // Debug.Log(m);
-                try {
-                    m.EnginePreUpdate();
-                } catch (Exception e) {
-                    Debug.LogException(e);
-                }
-            }
-        });
-        
-        // notify
-        {
-            var result = ggpo.NotifyTickSync();
-            if (result != GGPOStatusCode.OK) {
-                Debug.LogError($"[FightEngine/GGPO] Frame update failed!!!! {result}");
-            }   
         }
         
         // idling is the last thing of the frame
-        ggpo.NotifyIdleSyncNonBlocking(Time.fixedDeltaTime);
+        ggpo.NotifyIdleSyncNonBlocking((int)(Time.fixedDeltaTime * 1000));
+        return ret;
     }
     
     private void TickGameStateLocal() {
@@ -190,15 +199,15 @@ public class FightEngine : AutoInitSingletonBehaviour<FightEngine> {
         });
     }
     
-    public void QueueLoadGameState(SerializedGameState state) {
+    public void QueueLoadGameState(SerializedEngineState state) {
         queuedStateLoads.Enqueue(state);
     }
     
-    public void QueueSaveGameState(Action<SerializedGameState> saveAction) {
+    public void QueueSaveGameState(Action<SerializedEngineState> saveAction) {
         queuedStateSaves.Enqueue(saveAction);
     }
     
-    public SerializedGameState SerializeGameStateImmediate() {
+    public SerializedEngineState SerializeGameStateImmediate() {
         var ser = new StateSerializer(GetType());
         ser.Put("frame", frame);
         
@@ -216,10 +225,10 @@ public class FightEngine : AutoInitSingletonBehaviour<FightEngine> {
             ser.Put("autoSerializers", autoSerializers.objects);
         }
         
-        return new SerializedGameState(frame, ser);
+        return new SerializedEngineState(frame, ser);
     }
     
-    public void LoadGameStateImmediate(SerializedGameState state) {
+    public void LoadGameStateImmediate(SerializedEngineState state) {
         var ser = state.serializer;
 
         {

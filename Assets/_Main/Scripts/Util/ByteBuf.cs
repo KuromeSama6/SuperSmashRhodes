@@ -11,7 +11,11 @@ public class ByteBuf {
     public uint size => (uint)buf.Length;
     public byte[] bytes => buf.ToArray();
     
-    public ByteBuf(uint size) : this(new byte[size]) {
+    public ByteBuf(int size) : this(new byte[size]) {
+        
+    }
+
+    public ByteBuf(uint size) : this((int)size) {
         
     }
 
@@ -109,5 +113,9 @@ public class ByteBuf {
         return $"ByteBuf[{size}]({string.Join(", ", buf.Select(b => b.ToString("X2")))})";
     }
 
+    public class Reader {
+        
+    }
+    
 }
 }

@@ -349,10 +349,10 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
         var room = RoomManager.current;
         if (room is NetworkRoom networkRoom) {
             if (networkRoom.localPlayer.playerId == playerCharacter.playerIndex) {
-                return InputDevicePool.inst.GetInputProvider(playerCharacter);
-                
+                return networkRoom.localPlayer.inputBuffer;
+
             } else {
-                return networkRoom.remoteBuffer;
+                return networkRoom.remotePlayer.inputBuffer;
             }
             
         } else {

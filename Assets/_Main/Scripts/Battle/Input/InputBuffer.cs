@@ -168,6 +168,7 @@ public struct InputFrame : IEquatable<InputFrame>, IComparable<InputFrame> {
 public class InputChord {
     public InputFrame[] inputs;
     public bool consumed { get; set; }
+    public int serializedSize => 2 + inputs.Length * 3;
 
     public InputChord(params InputFrame[] inputs) {
         this.inputs = inputs;
@@ -175,7 +176,6 @@ public class InputChord {
 
     public InputChord(byte[] data) {
         var buf = new ByteBuf(data);
-        consumed = buf.GetByteAt(0) == 1;
         var length = buf.GetByteAt(1);
         inputs = new InputFrame[length];
         
@@ -201,19 +201,19 @@ public class InputChord {
         consumed = false;
     }
 
-    public byte[] Serialize() {
+    public byte[] Serialize(int flag) {
         /*
          * Bytes:
-         * 0: consumed?
+         * 0: flag (constant 0x80)
          * 1: length
          * 2-3: type (word)
          * 4: frameType (byte)
          */
-        
-        var size = 2 + inputs.Length * 3;
+
+        var size = serializedSize;
         var ret = new ByteBuf((uint)size);
         
-        ret.SetByteAt(0, (byte)(consumed ? 1 : 0));
+        ret.SetByteAt(0, (byte)flag);
         if (inputs.Length > 255) {
             Debug.LogError($"Error packing InputChord: inputs length {inputs.Length} is too large. Max is 255.");
             return null;

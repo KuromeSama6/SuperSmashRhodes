@@ -16,7 +16,7 @@ public class DebugStateDisplay : PerSideUIElement<DebugStateDisplay> {
     [Title("References")]
     public TMP_Text text;
     
-    private SerializedGameState gameState;
+    private SerializedEngineState gameState;
 
     private void Start() {
         

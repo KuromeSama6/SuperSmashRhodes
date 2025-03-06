@@ -6,31 +6,34 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.Game;
+using SuperSmashRhodes.Battle.Serialization;
 using SuperSmashRhodes.Config.Global;
 using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.GGPOWrapper;
+using SuperSmashRhodes.GGPOWrapper.Packet;
 using SuperSmashRhodes.Input;
 using SuperSmashRhodes.Match;
 using SuperSmashRhodes.Match.Player;
 using SuperSmashRhodes.Network.Rollbit;
 using SuperSmashRhodes.Network.Rollbit.P2P;
 using SuperSmashRhodes.UI.Global.LoadingScreen;
+using SuperSmashRhodes.Util;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
 namespace SuperSmashRhodes.Network.RoomManagement {
-public class NetworkRoom : Room, IPacketHandler {
+public class NetworkRoom : Room, IPacketHandler, IConnectorCallbackHandler {
     public bool matchAccepted { get; private set; }
     public NetworkSession session { get; private set; }
     public GGPOConnector ggpo { get; private set; }
     public bool fighting { get; private set; }
     public int roundsWon => GetWinCount(localPlayer.playerId);
     public IRandomNumberProvider randomNumberProvider { get; private set; } = new DefaultRandomNumberProvider();
-    public NetworkInputBufferWrapper remoteBuffer { get; } = new();
     
     private readonly Dictionary<string, Player> idMap = new();
+    private readonly Dictionary<int, SavedGameState> savedGamestates = new();
     
     public override bool allConfirmed => status == RoomStatus.NEGOTIATING;
     public NetworkLocalPlayer localPlayer => idMap[session.config.userId] as NetworkLocalPlayer;
@@ -239,7 +242,7 @@ public class NetworkRoom : Room, IPacketHandler {
         
         //P2P connection
         // find free port
-        ggpo = new(this);
+        ggpo = new(this, this);
         var bindSuccess = ggpo.Bind();
         
         if (!bindSuccess) {
@@ -313,5 +316,49 @@ public class NetworkRoom : Room, IPacketHandler {
     }
 
     //endregion
+    
+    //region Callback Handling
+    public void OnRollbackTickFrame() {
+        FightEngine.inst.TickGameStateGGPO();
+    }
+    public void OnLoadGameState(int handle) {
+        if (!savedGamestates.TryGetValue(handle, out var state)) {
+            Debug.LogError($"Failed to load saved game state: handle {handle} not found.");
+            return;
+        }
+
+        localPlayer.inputBuffer.SetBuffer(state.localBuffer);
+        remotePlayer.inputBuffer.SetBuffer(state.remoteBuffer);
+        FightEngine.inst.LoadGameStateImmediate(state.gameState);
+    }
+    public void OnDeleteSavedGameState(int handle) {
+        savedGamestates.Remove(handle);
+    }
+
+    public bool OnSaveGameState(int handle) {
+        if (!fighting) return false;
+
+        var state = new SavedGameState(localPlayer.inputBuffer.inputBuffer.Copy(), remotePlayer.inputBuffer.inputBuffer.Copy(), FightEngine.inst.SerializeGameStateImmediate());
+        savedGamestates[handle] = state;
+        return true;
+    }
+    public void OnNetworkStatusChanged(GGPOConnectionStatus newStatus, GGPOConnectionStatus oldStatus) {
+        throw new NotImplementedException();
+    }
+    public void OnReceivedAuxiliaryData(ChannelSubpacketCustom subpacket) {
+        throw new NotImplementedException();
+    }
+}
+
+public struct SavedGameState {
+    public readonly InputBuffer localBuffer;
+    public readonly InputBuffer remoteBuffer;
+    public readonly SerializedEngineState gameState;
+    
+    public SavedGameState(InputBuffer localBuffer, InputBuffer remoteBuffer, SerializedEngineState gameState) {
+        this.localBuffer = localBuffer;
+        this.remoteBuffer = remoteBuffer;
+        this.gameState = gameState;
+    }
 }
 }
