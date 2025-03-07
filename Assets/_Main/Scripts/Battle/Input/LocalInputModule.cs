@@ -8,7 +8,7 @@ using UnityEngine.InputSystem;
 
 namespace SuperSmashRhodes.Input {
 [RequireComponent(typeof(PlayerInput))]
-public class LocalInputModule : MonoBehaviour, IInputProvider, IManualUpdate {
+public class LocalInputModule : MonoBehaviour, IInputProvider, IEngineUpdateListener {
     public InputBuffer inputBuffer => localBuffer;
 
     public PlayerInput input { get; private set; }

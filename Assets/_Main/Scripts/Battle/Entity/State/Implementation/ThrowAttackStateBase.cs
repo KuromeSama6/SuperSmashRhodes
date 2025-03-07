@@ -103,7 +103,7 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
                         Mathf.Lerp(player.transform.position.y, opponent.transform.position.y, .5f) + 1, 
                         0)
                 );
-                player.audioManager.PlaySound("cmn/battle/sfx/throw_break/1");
+                entity.PlaySound("cmn/battle/sfx/throw_break/1");
                 OnThrowTech(opponent);
                 ctx.Exit();
                 return;
@@ -113,7 +113,7 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
             // Debug.Log("hit");
             hasHit = true;
             bool switchSides = ShouldSwitchSides(opponent);
-            player.audioManager.PlaySound("cmn/battle/sfx/throw/1");
+            entity.PlaySound("cmn/battle/sfx/throw/1");
             stateData.ClearCancelOptions();
             
             var dist = player.opponentDistance * 2;
@@ -254,7 +254,7 @@ public abstract class ThrowAttackStateBase : CharacterAttackStateBase {
         opponent.BeginState("CmnSoftKnockdown");
     }
     protected virtual void OnCosmeticHit() {
-        player.audioManager.PlaySound(GetHitSfx(player.opponent), .6f);
+        entity.PlaySound(GetHitSfx(player.opponent), .6f);
         player.opponent.fxManager.NotifyHit(CreateAttackData());
     }
     protected virtual void OnFinalHit() {

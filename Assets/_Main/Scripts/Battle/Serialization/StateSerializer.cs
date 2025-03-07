@@ -33,6 +33,10 @@ public class StateSerializer {
         
         objects[key] = ToSerialized(obj, options);
     }
+
+    public void Put(string key, StateSerializer serializer) {
+        Put(key, serializer.objects);
+    }
     
     public void PutReference(string key, object obj) {
         var direct = new DirectReferenceHandle(obj);

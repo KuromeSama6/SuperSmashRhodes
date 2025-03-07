@@ -66,7 +66,7 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
         entity.animation.AddUnmanagedAnimation(mainAnimation, false);
         phase = AttackPhase.STARTUP;
         OnStartup();
-        player.audioManager.PlaySound("cmn/battle/sfx/super");
+        entity.PlaySound("cmn/battle/sfx/super");
         
         var pos = player.transform.position;
         player.rb.linearVelocity = Vector2.zero;
@@ -95,7 +95,7 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
         stateData.cameraData.cameraWeightModifier = 0f;
         OnActive();
         player.ApplyGroundedFriction(frameData.active);
-        entity.audioManager.PlaySound(GetAttackNormalSfx());
+        entity.PlaySound(GetAttackNormalSfx());
         cinematicHitWindow = true;
         
         ctx.Next(0, Sub_ActiveCinematicCheckLoop);

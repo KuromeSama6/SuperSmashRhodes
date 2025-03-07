@@ -35,7 +35,7 @@ public abstract class State_Exusiai_MultihitWeaponNormalAttack : State_Exusiai_F
     protected override void OnActive() {
         base.OnActive();
         if (gauge.mayFire) {
-            entity.audioManager.PlaySound(weaponSfx);
+            entity.PlaySound(weaponSfx);
             
         } else {
             FastForward(emptySkipFrame - frame);
@@ -45,7 +45,7 @@ public abstract class State_Exusiai_MultihitWeaponNormalAttack : State_Exusiai_F
     protected override void OnRecovery() {
         base.OnRecovery();
         if (shotsFired) {
-            entity.audioManager.PlaySound($"chr/exusiai/battle/sfx/gun_shell_{random.Range(1, 4)}");
+            entity.PlaySound($"chr/exusiai/battle/sfx/gun_shell_{random.Range(1, 4)}");
         }
     }
 
@@ -56,7 +56,7 @@ public abstract class State_Exusiai_MultihitWeaponNormalAttack : State_Exusiai_F
         }
         if (!gauge.mayFire) {
             if (!weaponDry) {
-                entity.audioManager.PlaySound("chr/exusiai/battle/sfx/gun_empty");
+                entity.PlaySound("chr/exusiai/battle/sfx/gun_empty");
                 weaponDry = true;   
             }
             if (!ended) {

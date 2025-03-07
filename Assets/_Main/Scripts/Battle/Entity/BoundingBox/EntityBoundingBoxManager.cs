@@ -9,7 +9,7 @@ using SuperSmashRhodes.Util;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
-public class EntityBoundingBoxManager : MonoBehaviour, IAutoSerialize {
+public class EntityBoundingBoxManager : MonoBehaviour, IStateSerializable {
     [Title("Configuration")]
     public bool createPushbox = true;
     public int hitboxCount = 0;

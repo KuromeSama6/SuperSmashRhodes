@@ -186,7 +186,7 @@ public class NetworkSession : IDisposable, IPacketHandler {
 
                 var header = new PacketHeader(buf);
                 if (header.magic != PacketHeader.ROLLBIT_MAGIC) {
-                    throw new ArgumentException("Invalid magic number");
+                    throw new ArgumentException($"Invalid magic number: {header.magic:X}");
                 }
                 
                 // create packet

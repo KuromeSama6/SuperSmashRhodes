@@ -6,6 +6,7 @@ using System.Reflection;
 using NUnit.Framework;
 using Spine;
 using SuperSmashRhodes.Battle.Animation;
+using SuperSmashRhodes.Battle.Audio;
 using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Battle.Serialization;
@@ -228,7 +229,7 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
     public virtual void OnPlaySound(AnimationEventData data) {
         var path = data.args[0];
         var volume = data.args.Length > 1 ? float.Parse(data.args[1]) : 1f;
-        entity.audioManager.PlaySound(path, volume);
+        entity.PlaySound(path, volume);
     }
     
     [AnimationEventHandler("std/AddActiveFrame")]
@@ -240,12 +241,12 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
     public virtual void OnPlaySoundLoop(AnimationEventData data) {
         var path = data.args[0];
         var volume = data.args.Length > 1 ? float.Parse(data.args[1]) : 1f;
-        entity.audioManager.PlaySoundLoop(path, volume, true);
+        entity.PlaySound(path, volume, true);
     }
     
     [AnimationEventHandler("std/StopSoundLoop")]
     public virtual void OnStopSoundLoop(AnimationEventData data) {
-        entity.audioManager.StopSound(data.args[0]);
+        BattleAudioManager.inst.ReleaseByPath(data.args[0]);
     }
     
     [AnimationEventHandler("std/ApplyForce")]

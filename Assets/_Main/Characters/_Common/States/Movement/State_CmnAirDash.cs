@@ -40,7 +40,7 @@ public class State_CmnAirDash : CharacterState {
         var pos = player.transform.position + new Vector3(0, 1, 0);
         player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/airdash", CharacterFXSocketType.WORLD_UNBOUND, pos);
 
-        player.audioManager.PlaySoundClip("cmn/battle/sfx/movement/airdash");
+        entity.PlaySound("cmn/battle/sfx/movement/airdash");
         
         ctx.Next(player.characterConfig.airDashDurationFinal, "CmnAirNeutral");
     }

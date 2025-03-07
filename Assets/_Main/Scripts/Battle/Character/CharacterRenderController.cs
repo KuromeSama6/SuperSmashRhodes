@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace SuperSmashRhodes.Battle {
-public class CharacterRenderController : MonoBehaviour, IManualUpdate {
+public class CharacterRenderController : MonoBehaviour, IEngineUpdateListener {
     private static readonly int RENDER_COLOR_WHITE = Shader.PropertyToID("_Color");
     private static readonly int RENDER_COLOR_BLACK = Shader.PropertyToID("_Black");
     

@@ -62,7 +62,7 @@ public class State_CmnAirBackdash : CharacterState {
         player.rb.linearVelocity = Vector2.zero;
         player.rb.AddForce(player.TranslateDirectionalForce(new(-player.characterConfig.airBackdashSpeedFinal, 0)), ForceMode2D.Impulse);
 
-        player.audioManager.PlaySoundClip("cmn/battle/sfx/movement/airdash");
+        entity.PlaySound("cmn/battle/sfx/movement/airdash");
         
         ctx.Next(player.characterConfig.airBackdashDurationFinal, "CmnAirNeutral");
     }

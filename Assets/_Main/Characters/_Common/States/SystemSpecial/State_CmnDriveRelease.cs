@@ -54,11 +54,11 @@ public class State_CmnDriveRelease : CharacterState {
     }
 
     public override EntityStateSubroutine BeginMainSubroutine() {
-        player.audioManager.PlaySound("cmn/battle/sfx/driverelease");
+        entity.PlaySound("cmn/battle/sfx/driverelease");
 
         var pos = player.transform.position;
         player.rb.linearVelocity = Vector2.zero;
-        player.audioManager.PlaySound($"chr/{player.config.id}/battle/vo/driverelease");
+        entity.PlaySound($"chr/{player.config.id}/battle/vo/driverelease");
         player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/super/smoke", CharacterFXSocketType.WORLD_UNBOUND, pos);
         player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/driverelease/star", CharacterFXSocketType.WORLD_UNBOUND, pos);
 

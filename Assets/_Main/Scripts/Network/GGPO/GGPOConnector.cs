@@ -28,19 +28,19 @@ public class GGPOConnector : IDisposable {
     public static GGPOConnector inst { get; private set; }
     public GGPOConnectionStatus status { get; private set; } = GGPOConnectionStatus.STANDBY;
     public int port { get; private set; }
-    public int framesAhead { get; private set; }
+    public int framesAhead { get; set; }
     public Dictionary<int, GGPOPlayer> players { get; } = new();
     public UnityEvent onDisconnected { get; } = new();
     
     private readonly NetworkRoom room;
-    private PacketPlayOutBeginP2P negotiationPacket;
+    public PacketPlayOutBeginP2P negotiationPacket { get; private set;  }
     private readonly Dictionary<int, int> playerIdToHandleMap = new();
     private readonly IConnectorCallbackHandler callbackHandler;
     private readonly List<ChannelSubpacket> packetQueue = new();
     private readonly HashSet<int> auxiliaryInputsReceived = new();
     private int gamestateHandleCounter = 0;
 
-    public bool connected => status == GGPOConnectionStatus.ESTABLISHED || status == GGPOConnectionStatus.SYNCHRONIZING;
+    public bool connected => status == GGPOConnectionStatus.ESTABLISHED || status == GGPOConnectionStatus.SYNCHRONIZING || status == GGPOConnectionStatus.CONNECTED_WAIT;
     
     public GGPOConnector(NetworkRoom room, IConnectorCallbackHandler callbackHandler) {
         if (inst != null) {
@@ -128,16 +128,32 @@ public class GGPOConnector : IDisposable {
     public void QueueInputChannelPacket(ChannelSubpacket packet) {
         packetQueue.Add(packet);
     }
+
+    public void SendP2PHandshakeData() {
+        var buf = new ByteBuf(18);
+        buf.SetWordAt(0, (ushort)PacketType.PLAY_P2P_HANDSHAKE);
+        buf.SetQWordAt(2, negotiationPacket.nonce);
+        buf.SetQWordAt(10, negotiationPacket.verifier);
+        
+        Debug.Log($"send handshake data: {buf}");
+
+        var packet = new ChannelSubpacketCustom(buf.bytes);
+        QueueInputChannelPacket(packet);
+    }
     
     public GGPOStatusCode SendQueuedInputPacketsSync(int playerId) {
         if (!playerIdToHandleMap.ContainsKey(playerId)) return GGPOStatusCode.OK;
         var packet = new InputChannelPacket(playerId);
         packet.subpackets.AddRange(packetQueue);
         packetQueue.Clear();
-        
-        var data = packet.Serialize();
-        // Debug.Log($"send {playerId}: {data.ToHexString()}");
-        return (GGPOStatusCode)GGPO.Session.AddLocalInput(playerIdToHandleMap[playerId], INPUT_BUFFER_SIZE, data);
+
+        try {
+            var data = packet.Serialize();
+            // Debug.Log($"send {playerId}: {data.ToHexString()}");
+            return (GGPOStatusCode)GGPO.Session.AddLocalInput(playerIdToHandleMap[playerId], INPUT_BUFFER_SIZE, data);
+        } catch (Exception e) {
+            return GGPOStatusCode.GENERAL_FAILURE;
+        }
     }
 
     public InputChannelPacket[] ReadInputChannelSync(out GGPOStatusCode result) {
@@ -173,6 +189,9 @@ public class GGPOConnector : IDisposable {
             if (subpacket is ChannelSubpacketCustom customSubPacket) {
                 // check if we have already received this aux packets
                 if (auxiliaryInputsReceived.Contains(customSubPacket.nonce)) continue;
+                // Debug.Log($"process aux input: {customSubPacket}");
+                if (packet.playerId == room.localPlayer.playerId) continue;
+                
                 Debug.Log($"received aux input {customSubPacket}");
                 callbackHandler.OnReceivedAuxiliaryData(customSubPacket);
                 auxiliaryInputsReceived.Add(customSubPacket.nonce);
@@ -212,7 +231,8 @@ public class GGPOConnector : IDisposable {
     }
 
     private bool OnAdvanceFrame(int flags) {
-        var ticked = FightEngine.inst.TickGameStateGGPO();
+        // Debug.Log("advance frame (rollback)");
+        var ticked = FightEngine.inst.TickGameStateGGPO(true);
         if (!ticked) GGPO.Session.AdvanceFrame();
         return true;
     }

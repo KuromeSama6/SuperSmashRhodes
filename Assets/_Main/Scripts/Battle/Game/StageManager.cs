@@ -7,7 +7,7 @@ using SuperSmashRhodes.Framework;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Scripts {
-public class StageManager : SingletonBehaviour<StageManager>, IManualUpdate {
+public class StageManager : SingletonBehaviour<StageManager>, IEngineUpdateListener {
     [Title("References")]
     public GameObject leftWall;
     public GameObject rightWall;

@@ -37,14 +37,14 @@ public class State_Chen_OvrSklChixiao : State_Common_OverdriveAttack {
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
-        player.audioManager.PlaySound("chr/chen/battle/vo/chixiao_start");
+        entity.PlaySound("chr/chen/battle/vo/chixiao_start");
         stateData.ghostFXData = new("cb0000".HexToColor(), 0.01333334f, 40, 10f);
     }
 
     protected override void OnActive() {
         base.OnActive();
-        player.audioManager.PlaySound("chr/chen/battle/sfx/drive/p1");
-        entity.audioManager.PlaySound($"chr/chen/battle/vo/modal/0");
+        entity.PlaySound("chr/chen/battle/sfx/drive/p1");
+        entity.PlaySound($"chr/chen/battle/vo/modal/0");
     }
 
     protected override void OnSuperHit(bool blocked, bool cinematic) {
@@ -57,7 +57,7 @@ public class State_Chen_OvrSklChixiao : State_Common_OverdriveAttack {
             
             SimpleCameraShakePlayer.inst.Play("chr/chen/battle/fx/camerashake", "chixiao_firsthit");
             opponent.fxManager.PlayGameObjectFX("chr/chen/battle/fx/prefab/skl_214s/hit/0", CharacterFXSocketType.SELF);
-            entity.audioManager.PlaySound("chr/chen/battle/sfx/skl_214h/0", .4f);
+            entity.PlaySound("chr/chen/battle/sfx/skl_214h/0", .4f);
             // stateData.cameraFocusBone = "632146h";
 
             player.CallLaterCoroutine(0.3f, () => {
@@ -65,7 +65,7 @@ public class State_Chen_OvrSklChixiao : State_Common_OverdriveAttack {
             });
             
             player.CallLaterCoroutine(.8f, () => {
-                player.audioManager.PlaySound("chr/chen/battle/vo/632146h");
+                entity.PlaySound("chr/chen/battle/vo/632146h");
             });
 
             player.neutralAniTransitionOverride = .1f;
@@ -75,8 +75,8 @@ public class State_Chen_OvrSklChixiao : State_Common_OverdriveAttack {
     public override void OnApplyCinematicDamage(AnimationEventData data) {
         base.OnApplyCinematicDamage(data);
         if (!cinematicHit) return;
-        player.audioManager.PlaySound("chr/chen/battle/sfx/chixiao/1", 1.5f, random.Range(0.8f, 1.2f));
-        player.audioManager.PlaySound("chr/chen/battle/sfx/chixiao/1_imp", .4f, random.Range(0.8f, 1.2f));
+        entity.PlaySound("chr/chen/battle/sfx/chixiao/1", 1.5f, false, random.Range(0.8f, 1.2f));
+        entity.PlaySound("chr/chen/battle/sfx/chixiao/1_imp", .4f, false, random.Range(0.8f, 1.2f));
         // BackgroundUIManager.inst.Flash(0.03f);
     }
 
@@ -102,7 +102,7 @@ public class State_Chen_OvrSklChixiao : State_Common_OverdriveAttack {
 
     [AnimationEventHandler("ChiXiao_FinalHit")]
     public virtual void OnFinalHit(AnimationEventData data) {
-        player.audioManager.PlaySound("chr/chen/battle/sfx/chixiao/2");
+        entity.PlaySound("chr/chen/battle/sfx/chixiao/2");
 
         if (hits > 0) {
             player.opponent.fxManager.PlayGameObjectFX("chr/chen/battle/fx/prefab/skl_632146h/final", CharacterFXSocketType.SELF);

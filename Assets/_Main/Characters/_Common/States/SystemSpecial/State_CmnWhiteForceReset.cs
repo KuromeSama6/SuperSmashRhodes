@@ -30,7 +30,7 @@ public class State_CmnWhiteForceReset : CharacterState {
         opponent.rb.linearVelocity = new(0, Mathf.Max(0, opponent.rb.linearVelocity.y));
         
         player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/force_reset/0", CharacterFXSocketType.SELF);
-        player.audioManager.PlaySound("cmn/battle/sfx/force_reset/0");
+        entity.PlaySound("cmn/battle/sfx/force_reset/0");
         player.ResetAirOptions();
         player.frameData.landingRecoveryFrames = 0;
         player.frameData.landingFlag = LandingRecoveryFlag.NONE;

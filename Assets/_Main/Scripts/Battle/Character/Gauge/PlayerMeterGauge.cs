@@ -6,7 +6,7 @@ using SuperSmashRhodes.Util;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Character.Gauge {
-public class PlayerMeterGauge : CharacterComponent, IManualUpdate, IReflectionSerializable {
+public class PlayerMeterGauge : CharacterComponent, IEngineUpdateListener, IReflectionSerializable {
     public ClampedFloat gauge { get; } = new(0, 100f);
     public ClampedFloat balance { get; } = new(-250f, 250f);
     public int penaltyFrames { get; set; } = 0;

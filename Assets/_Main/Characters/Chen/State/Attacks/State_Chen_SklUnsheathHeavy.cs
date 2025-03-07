@@ -56,13 +56,13 @@ public class State_Chen_SklUnsheathHeavy : State_Common_SpecialAttack {
 
     protected override void OnActive() {
         base.OnActive();
-        entity.audioManager.PlaySound($"chr/chen/battle/vo/modal/{random.Range(0, 3)}");
+        entity.PlaySound($"chr/chen/battle/vo/modal/{random.Range(0, 3)}");
     }
 
     protected override void OnTick() {
         base.OnTick();
         if (frame == 10) {
-            entity.audioManager.PlaySound("chr/chen/battle/sfx/skl_214h/0");
+            entity.PlaySound("chr/chen/battle/sfx/skl_214h/0");
         }
     }
 

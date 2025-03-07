@@ -83,7 +83,7 @@ public class State_CmnHitStunAir : State_Common_Stun {
             player.airHitstunRotation = 0f;  
             if (force.flags.HasFlag(BounceFlags.HEAVY)) {
                 player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/land/hard", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position);
-                player.audioManager.PlaySound("cmn/battle/sfx/wall_bounce");
+                entity.PlaySound("cmn/battle/sfx/wall_bounce");
                 SimpleCameraShakePlayer.inst.PlayCommon("groundbounce_heavy");
                     
             } else {

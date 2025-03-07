@@ -37,7 +37,7 @@ public class State_Exusiai_SklOriginiumBullet : State_Common_SpecialAttack, ICha
         bulletsUsed = 0;
         chargeProgress = 0;
         
-        player.audioManager.PlaySound("chr/exusiai/battle/sfx/originium/draw");
+        entity.PlaySound("chr/exusiai/battle/sfx/originium/draw");
     }
 
     public EntityStateSubroutine GetChargeSubroutine() {
@@ -67,7 +67,7 @@ public class State_Exusiai_SklOriginiumBullet : State_Common_SpecialAttack, ICha
         var gauge = player.GetComponent<Gauge_Exusiai_AmmoGauge>();
         if (gauge.mayFire) {
             BackgroundUIManager.inst.Flash(0.03f);
-            player.audioManager.PlaySound($"chr/exusiai/battle/vo/modal/{random.Range(0, 4)}");
+            entity.PlaySound($"chr/exusiai/battle/vo/modal/{random.Range(0, 4)}");
             var bullets = chargeLevel switch {
                 2 => 15,
                 1 => 10,
@@ -75,7 +75,7 @@ public class State_Exusiai_SklOriginiumBullet : State_Common_SpecialAttack, ICha
             };
             // Debug.Log(bullets);
             bulletsUsed = Math.Min(gauge.displayCount, bullets);
-            player.audioManager.PlaySound("chr/exusiai/battle/sfx/214h/shot");
+            entity.PlaySound("chr/exusiai/battle/sfx/214h/shot");
 
             for (int i = 0; i < (driveRelease ? 5 : bullets); i++) gauge.Fire(false);
             gauge.PlayMuzzleFlash();
@@ -95,7 +95,7 @@ public class State_Exusiai_SklOriginiumBullet : State_Common_SpecialAttack, ICha
             
         } else {
             hitsRemaining = 0;
-            player.audioManager.PlaySound("chr/exusiai/battle/sfx/gun_empty");
+            entity.PlaySound("chr/exusiai/battle/sfx/gun_empty");
         }
 
     }
@@ -120,8 +120,8 @@ public class State_Exusiai_SklOriginiumBullet : State_Common_SpecialAttack, ICha
         // Debug.Log($"charge {newLevel}");
         player.fxManager.PlayGameObjectFXAtSocket("chr/exusiai/fx/prefab/214h/charge", "MuzzleSocket");
         
-        if (newLevel == 1) player.audioManager.PlaySound("chr/exusiai/battle/sfx/originium/charge_lv2");
-        if (newLevel == 2) player.audioManager.PlaySound("chr/exusiai/battle/sfx/originium/charge_lv3");
+        if (newLevel == 1) entity.PlaySound("chr/exusiai/battle/sfx/originium/charge_lv2");
+        if (newLevel == 2) entity.PlaySound("chr/exusiai/battle/sfx/originium/charge_lv3");
     }
 
     public override float GetUnscaledDamage(Entity to) {

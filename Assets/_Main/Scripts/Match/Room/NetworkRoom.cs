@@ -18,7 +18,6 @@ using SuperSmashRhodes.Network.Rollbit;
 using SuperSmashRhodes.Network.Rollbit.P2P;
 using SuperSmashRhodes.UI.Global.LoadingScreen;
 using SuperSmashRhodes.Util;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
@@ -222,7 +221,8 @@ public class NetworkRoom : Room, IPacketHandler, IConnectorCallbackHandler {
             "SAELN服务",
             "IP地址",
             "P2P连接",
-            "同步数据"
+            "同步数据",
+            "确认比赛"
         );
         
         // check network status
@@ -265,12 +265,8 @@ public class NetworkRoom : Room, IPacketHandler, IConnectorCallbackHandler {
         }
         
         // negotiate
-        // debug loop
-        while (true) {
-            yield return null;
-        }
         
-        while (ggpo.status == GGPOConnectionStatus.CONNECTING) {
+        while (ggpo.status == GGPOConnectionStatus.STANDBY || ggpo.status == GGPOConnectionStatus.CONNECTING) {
             yield return null;
         }
 
@@ -297,7 +293,24 @@ public class NetworkRoom : Room, IPacketHandler, IConnectorCallbackHandler {
             loadingScreen.UpdateLoadingStatus(LoadingStatus.BAD);
             yield break;
         }
+
+        yield return new WaitForSeconds(1);
+        ggpo.SendP2PHandshakeData();
         
+        while (status == RoomStatus.NEGOTIATING) {
+            yield return null;
+        }
+        
+        if (status == RoomStatus.CLIENT_LOADING) {
+            loadingScreen.UpdateLoadingStatus(LoadingStatus.GOOD);
+        } else {
+            Debug.LogError("begin match failure");
+            session.Disconnect(ClientDisconnectionReason.CLIENT_ERROR, "begin match failure");
+            loadingScreen.UpdateLoadingStatus(LoadingStatus.BAD);
+            yield break;
+        }
+
+        yield return new WaitForSeconds(1.5f);
         yield return LoadMatchSceneRoutine();
         
         // report status
@@ -343,10 +356,36 @@ public class NetworkRoom : Room, IPacketHandler, IConnectorCallbackHandler {
         return true;
     }
     public void OnNetworkStatusChanged(GGPOConnectionStatus newStatus, GGPOConnectionStatus oldStatus) {
-        throw new NotImplementedException();
+        
     }
     public void OnReceivedAuxiliaryData(ChannelSubpacketCustom subpacket) {
-        throw new NotImplementedException();
+        var data = subpacket.buffer;
+        var type = (PacketType)data.GetWordAt(0);
+        
+        Debug.Log($"received aux input impl type={type}, {data}");
+
+        switch (type) {
+            case PacketType.PLAY_P2P_HANDSHAKE: {
+                var nonce = data.GetQWordAt(2);
+                var verifier = data.GetQWordAt(10);
+                var verifierMatch = verifier == ggpo.negotiationPacket.expectedVerifier;
+                
+                Debug.Log($"p2p handshake received: {nonce}, {verifier}, expected {ggpo.negotiationPacket.expectedVerifier}");
+                if (!verifierMatch) {
+                    Debug.LogWarning($"verifier mismatch: {verifier} != {ggpo.negotiationPacket.expectedVerifier}");
+                }
+
+                var packet = new PacketPlayInConfirmP2P(session, verifierMatch ? 1 : 2, nonce);
+                _ = session.SendPacket(packet);
+                break;
+            }
+
+            default: {
+                Debug.LogWarning($"Received unknown auxiliary data: {type}");
+                break;
+            }
+        }
+        
     }
 }
 

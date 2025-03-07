@@ -33,7 +33,7 @@ public class State_Exusiai_SklApplePie : State_Common_SummonOnlySpecialAttack {
     protected override void OnStateBegin() {
         base.OnStateBegin();
         applePie = null;
-        entity.audioManager.PlaySound("chr/exusiai/battle/vo/modal/3");
+        entity.PlaySound("chr/exusiai/battle/vo/modal/3");
     }
 
     protected override void OnStateEnd(EntityState nextState) {

@@ -23,7 +23,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
 namespace SuperSmashRhodes.Battle.Game {
-public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAutoSerialize {
+public class GameManager : SingletonBehaviour<GameManager>, IEngineUpdateListener, IAutoSerialize {
     [Title("References")]
     [Title("Camera")]
     public CinemachineCamera mainCamera;
@@ -74,7 +74,7 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
         cameraFraming = mainCamera.GetComponent<CinemachineGroupFraming>();
         targetGroup.Targets = new();
 
-        if (directDebugMode) {
+        if (directDebugMode && RoomManager.current == null) {
             inGame = true;
             
             StartCoroutine(BeginDirectDebugRoutine());
@@ -162,7 +162,7 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
         targetGroup.AddMember(player.transform, 1, 0.5f);
         
         Physics2D.SyncTransforms();
-        Physics2D.Simulate(0);
+        // Physics2D.Simulate(0);
         
         return player;
     }
@@ -292,7 +292,7 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
             });
             
             player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/wall_bounce_smoke", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position, new Vector3(0, 0, wall.side == EntitySide.RIGHT ? 0 : 180));
-            player.audioManager.PlaySound("cmn/battle/sfx/wall_bounce");
+            player.PlaySound("cmn/battle/sfx/wall_bounce");
             player.airHitstunRotation = -90f;
 
             SimpleCameraShakePlayer.inst.PlayCommon("wallbounce");
@@ -342,10 +342,6 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
     }
 
     public IInputProvider GetInputProvider(PlayerCharacter playerCharacter) {
-        if (directDebugMode) {
-            return InputDevicePool.inst.GetInputProvider(playerCharacter);
-        }
-        
         var room = RoomManager.current;
         if (room is NetworkRoom networkRoom) {
             if (networkRoom.localPlayer.playerId == playerCharacter.playerIndex) {
@@ -358,6 +354,8 @@ public class GameManager : SingletonBehaviour<GameManager>, IManualUpdate, IAuto
         } else {
             return InputDevicePool.inst.GetInputProvider(playerCharacter);
         }
+        
+        
     }
     
     private void PruneEntities() {

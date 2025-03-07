@@ -11,6 +11,7 @@ using Sirenix.OdinInspector;
 using Spine.Unity;
 using SuperSmashRhodes.Adressable;
 using SuperSmashRhodes.Battle.Animation;
+using SuperSmashRhodes.Battle.Audio;
 using SuperSmashRhodes.Battle.Enums;
 using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Battle.Serialization;
@@ -28,7 +29,7 @@ namespace SuperSmashRhodes.Battle {
 /// An entity is the most basic form of something that lives and moves, and runs a Spine animation.
 /// Entities include player characters, projectiles, summons, etc. Particles are not entities.
 /// </summary>
-public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable, IHandleSerializable {
+public abstract class Entity : MonoBehaviour, IEngineUpdateListener, IStateSerializable, IHandleSerializable {
     [Title("Configuration")]
     public string assetPath;
     
@@ -48,8 +49,6 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
     public EntityBoundingBoxManager boundingBoxManager { get; private set; }
     [SerializationOptions(SerializationOption.EXCLUDE)]
     public Dictionary<string, EntityState> states { get; } = new();
-    [SerializationOptions(SerializationOption.EXCLUDE)]
-    public EntityAudioManager audioManager { get; private set; }
 
     // Entity Stats
     public float health { get; set; }
@@ -83,7 +82,6 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
         animation = GetComponent<EntityAnimationController>();
         rb = GetComponent<Rigidbody2D>();
         boundingBoxManager = GetComponentInChildren<EntityBoundingBoxManager>();
-        audioManager = GetComponent<EntityAudioManager>();
         reflectionSerializer = new(this);
         entityId = GameManager.inst.RegisterEntity(this).entityId;
         
@@ -251,6 +249,18 @@ public abstract class Entity : MonoBehaviour, IManualUpdate, IStateSerializable,
 
     public Vector2 TranslateDirectionalForce(Vector2 force) {
         return new Vector2(force.x * (side == EntitySide.LEFT ? 1f : -1f), force.y);
+    }
+
+    public int PlaySound(string path, float volume = 1f, bool loop = false, float pitch = 1f) {
+        return BattleAudioManager.inst.Play(this, path, loop, volume, loop ? ActiveAudioReleaseMode.ON_STATE_END : ActiveAudioReleaseMode.MANUAL, pitch);
+    }
+
+    public int StopSound(int handle, string tail = null, float volume = 1f) {
+        BattleAudioManager.inst.Release(handle);
+        if (tail != null) {
+            return PlaySound(tail, volume);
+        }
+        return -1;
     }
 
     public T Summon<T>(string path) where T: Entity {

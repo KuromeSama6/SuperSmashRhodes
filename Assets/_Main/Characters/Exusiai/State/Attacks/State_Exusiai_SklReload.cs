@@ -41,7 +41,7 @@ public class State_Exusiai_SklReload : State_Common_SpecialAttack {
         }
 
         if (frame == 62 && !chambered && gauge.displayCount > 0) {
-            entity.audioManager.PlaySound("chr/exusiai/battle/sfx/gun_bolt");
+            entity.PlaySound("chr/exusiai/battle/sfx/gun_bolt");
         }
         
     }

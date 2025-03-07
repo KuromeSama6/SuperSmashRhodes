@@ -64,7 +64,7 @@ public class State_Chen_NmlAtk5D : State_Chen_DriveAttack {
             player.ApplyGroundedFrictionImmediate();
             
         } else {
-            entity.audioManager.PlaySound("chr/chen/battle/sfx/skl_214h/0", .4f);   
+            entity.PlaySound("chr/chen/battle/sfx/skl_214h/0", .4f);   
         }
     }
 
@@ -162,7 +162,7 @@ public class State_Chen_NmlAtk6D : State_Chen_DriveAttack {
         base.OnActive();
         
         player.ApplyForwardVelocity(new Vector2(driveRelease ? 30 : 15, 11));
-        entity.audioManager.PlaySound("chr/chen/battle/sfx/skl_214h/0", .4f);
+        entity.PlaySound("chr/chen/battle/sfx/skl_214h/0", .4f);
         player.airborne = true;
     }
 
@@ -290,7 +290,7 @@ public class Chen_NmlAtk82D : State_Chen_DriveAttack {
         base.OnActive();
         
         player.ApplyForwardVelocity(new Vector2(driveRelease ? 30 : 15, -11));
-        entity.audioManager.PlaySound("chr/chen/battle/sfx/skl_214h/0", .4f);
+        entity.PlaySound("chr/chen/battle/sfx/skl_214h/0", .4f);
         player.airborne = true;
     }
 

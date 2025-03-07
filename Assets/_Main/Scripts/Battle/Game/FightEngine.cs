@@ -23,7 +23,7 @@ public class FightEngine : AutoInitSingletonBehaviour<FightEngine> {
     public Room room => RoomManager.current;
     public bool inRoom => room != null;
     
-    private readonly List<IManualUpdate> manualUpdates = new();
+    private readonly List<IEngineUpdateListener> manualUpdates = new();
     private readonly Dictionary<int, IAutoSerialize> autoSerializers = new();
     private readonly Queue<SerializedEngineState> queuedStateLoads = new();
     private readonly Queue<Action<SerializedEngineState>> queuedStateSaves = new();
@@ -44,7 +44,7 @@ public class FightEngine : AutoInitSingletonBehaviour<FightEngine> {
 
     public void RefreshComponentReferences() {
         foreach (var beh in FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None)) {
-            if (beh is IManualUpdate manualUpdate && !manualUpdates.Contains(manualUpdate)) {
+            if (beh is IEngineUpdateListener manualUpdate && !manualUpdates.Contains(manualUpdate)) {
                 manualUpdates.Add(manualUpdate);
             }
             
@@ -77,7 +77,7 @@ public class FightEngine : AutoInitSingletonBehaviour<FightEngine> {
         
     }
 
-    public bool TickGameStateGGPO() {
+    public bool TickGameStateGGPO(bool rollback = false, bool log = false) {
         if (ggpo == null) return false;
         var networkRoom = (NetworkRoom)room;
         
@@ -92,14 +92,25 @@ public class FightEngine : AutoInitSingletonBehaviour<FightEngine> {
                 }
             }
         });
+
+        if (ggpo.framesAhead > 0) {
+            --ggpo.framesAhead;
+            return false;
+        }   
+
+        if (log) Debug.Log($"FightEngine tick");
         
         // add local input
         bool ret = false;
         {
             // var localInput = networkRoom.localThisFrameInputs;
-            var localInput = InputDevicePool.inst.defaultInput.inputBuffer.thisFrame;
-            ggpo.QueueInputChannelPacket(new ChannelSubpacketInput(localInput));
-            var res = ggpo.SendQueuedInputPacketsSync(networkRoom.localPlayer.playerId);
+            GGPOStatusCode res = GGPOStatusCode.OK;
+            if (!rollback) {
+                var localInput = InputDevicePool.inst.defaultInput.inputBuffer.thisFrame;
+                // if (localInput.inputs.Length > 0) Debug.Log($"adding local input: {localInput}");
+                ggpo.QueueInputChannelPacket(new ChannelSubpacketInput(localInput));
+                res = ggpo.SendQueuedInputPacketsSync(networkRoom.localPlayer.playerId);   
+            }
             
             if (res == GGPOStatusCode.OK) {
                 // receive remote inputs
@@ -114,12 +125,12 @@ public class FightEngine : AutoInitSingletonBehaviour<FightEngine> {
                         // Debug.Log("get remote input ok");
                         if (inputs.local != null) {
                             networkRoom.localPlayer.inputBuffer.inputBuffer.PushAndTick(inputs.local);
-                            if (inputs.local.inputs.Length > 0) Debug.Log($"received local input: {inputs.local}");
+                            // if (inputs.local.inputs.Length > 0) Debug.Log($"received local input: {inputs.local}");
                         }
                         
                         if (inputs.remote != null) {
                             networkRoom.remotePlayer.inputBuffer.inputBuffer.PushAndTick(inputs.remote);
-                            if (inputs.remote.inputs.Length > 0) Debug.Log($"received remote input: {inputs.remote}");
+                            // if (inputs.remote.inputs.Length > 0) Debug.Log($"received remote input: {inputs.remote}");
                         }
                         
                         // advance
@@ -132,13 +143,12 @@ public class FightEngine : AutoInitSingletonBehaviour<FightEngine> {
 
                     } else {
                         // networkRoom.remoteBuffer.inputBuffer.PushAndTick(new InputChord());
-                        // Debug.LogError($"FightEngine/GGPO] Failed to get remote input: {result}");
+                        if (log) Debug.LogError($"FightEngine/GGPO] Failed to get remote input: {result}");
                     }
                 }
                 
             } else {
-                // Debug.LogError($"[FightEngine/GGPO] Failed to add lo
-                // cal input: {res}");
+                if (log) Debug.LogError($"[FightEngine/GGPO] Failed to add local input: {res}");
             }
         }
         

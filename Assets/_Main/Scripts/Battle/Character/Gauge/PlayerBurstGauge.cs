@@ -8,7 +8,7 @@ using SuperSmashRhodes.Util;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Character.Gauge {
-public class PlayerBurstGauge : CharacterComponent, IManualUpdate, IReflectionSerializable {
+public class PlayerBurstGauge : CharacterComponent, IEngineUpdateListener, IReflectionSerializable {
     public ClampedFloat gauge { get; } = new(0f, 620f, 300f);
     private List<BurstGaugeDelta> deltas { get; } = new();
     public bool burstAvailable { get; set; }
@@ -84,7 +84,7 @@ public class PlayerBurstGauge : CharacterComponent, IManualUpdate, IReflectionSe
 
         if (gauge.value >= 450f && !burstUsed) {
             if (!burstAvailable) {
-                player.audioManager.PlaySound("cmn/battle/sfx/burst_alert/0");
+                player.PlaySound("cmn/battle/sfx/burst_alert/0");
             }
             burstAvailable = true;
         }
@@ -110,7 +110,7 @@ public class PlayerBurstGauge : CharacterComponent, IManualUpdate, IReflectionSe
     public void EndDriveRelease() {
         if (!driveRelease) return;
         driveRelease = false;
-        player.audioManager.PlaySound("cmn/battle/sfx/driverelease_end");
+        player.PlaySound("cmn/battle/sfx/driverelease_end");
     }
 }
 

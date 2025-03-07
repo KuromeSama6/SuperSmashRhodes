@@ -50,7 +50,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         OnStartup();
         
         player.ApplyGroundedFriction(frameData.startup);
-        entity.audioManager.PlaySound(GetAttackNormalSfx());
+        entity.PlaySound(GetAttackNormalSfx());
 
         ctx.Next(frameData.startup, Sub_Active);
     }
@@ -103,7 +103,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
 
     public virtual void OnHit(Entity target) {
         ++hits;
-        player.audioManager.PlaySound(GetHitSfx(target), .6f);
+        entity.PlaySound(GetHitSfx(target), .6f);
         // Debug.Log(player.meter.meterGainMultiplier);
         if (hits <= 1) {
             player.meter.AddMeter(GetMeterGain(target, false));
@@ -116,7 +116,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     
     public virtual void OnBlock(Entity target) {
         ++blockedHits;
-        player.audioManager.PlaySound(GetBlockedSfx(target), .4f);
+        entity.PlaySound(GetBlockedSfx(target), .4f);
 
         if (blockedHits <= 1) {
             player.meter.AddMeter(GetMeterGain(target, true));

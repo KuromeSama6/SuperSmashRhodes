@@ -26,7 +26,12 @@ public class ManagedAsset {
             if (res.Status == AsyncOperationStatus.Succeeded) {
                 status = AssetStatus.STANDBY;
                 if (callback != null) {
-                    callback.Invoke();
+                    try {
+                        callback.Invoke();
+                    } catch (Exception e) {
+                        Debug.LogError("Error calling load callback:");
+                        Debug.LogException(e);
+                    }
                 }
                 
                 // Debug.Log($"{key} loaded");

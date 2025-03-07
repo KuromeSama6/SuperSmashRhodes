@@ -48,7 +48,7 @@ public class State_Exusiai_OvrSklOverload : State_Common_OverdriveAttack {
 
     protected override void OnSuperHit(bool blocked, bool cinematic) {
         base.OnSuperHit(blocked, cinematic);
-        player.audioManager.PlaySound($"chr/exusiai/battle/vo/modal/{random.Range(0, 4)}");
+        entity.PlaySound($"chr/exusiai/battle/vo/modal/{random.Range(0, 4)}");
         if (cinematic) {
             opponent.stateFlags |= CharacterStateFlag.NO_CAMERA_WEIGHT;
             player.stateFlags |= CharacterStateFlag.CAMERA_FOLLOWS_BONE;
@@ -57,7 +57,7 @@ public class State_Exusiai_OvrSklOverload : State_Common_OverdriveAttack {
             if (gauge.chambered) gauge.currentMagazine.ammo = 30;
 
             player.CallLaterCoroutine(1.3f, () => {
-                player.audioManager.PlaySound($"chr/exusiai/battle/vo/632146d/{random.Range(0, 2)}");
+                entity.PlaySound($"chr/exusiai/battle/vo/632146d/{random.Range(0, 2)}");
             });
             
         }
@@ -69,7 +69,7 @@ public class State_Exusiai_OvrSklOverload : State_Common_OverdriveAttack {
     
     protected override void OnWhiff() {
         base.OnWhiff();
-        player.audioManager.PlaySound($"chr/exusiai/battle/vo/modal/{random.Range(0, 4)}");
+        entity.PlaySound($"chr/exusiai/battle/vo/modal/{random.Range(0, 4)}");
     }
 
     public override string GetAttackNormalSfx() {
@@ -93,7 +93,7 @@ public class State_Exusiai_OvrSklOverload : State_Common_OverdriveAttack {
     [AnimationEventHandler("Overload_FireBlast")]
     public virtual void OnFireBlast(AnimationEventData data) {
         if (!cinematicHit) return;
-        player.audioManager.PlaySound("chr/exusiai/battle/sfx/632146d/blast");
+        entity.PlaySound("chr/exusiai/battle/sfx/632146d/blast");
         BackgroundUIManager.inst.Flash(0.05f);
         
         SimpleCameraShakePlayer.inst.Play("chr/exusiai/battle/fx/camerashake/632146d", "blast");

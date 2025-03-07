@@ -18,7 +18,7 @@ public abstract class State_Chen_DriveAttack : CharacterAttackStateBase {
     protected override void OnStartup() {
         base.OnStartup();
         stateData.shouldApplySlotNeutralPose = true;
-        player.audioManager.PlaySound("chr/chen/battle/sfx/drive/p1");
+        entity.PlaySound("chr/chen/battle/sfx/drive/p1");
     }
 
     protected override void OnActive() {
@@ -26,7 +26,7 @@ public abstract class State_Chen_DriveAttack : CharacterAttackStateBase {
         stateData.ghostFXData = new("cb0000".HexToColor(), 0.02333334f, driveRelease ? 40 : 20, 2.5f);
         stateData.physicsPushboxDisabled = true;
 
-        entity.audioManager.PlaySound($"chr/chen/battle/vo/modal/{random.Range(0, 2)}");
+        entity.PlaySound($"chr/chen/battle/vo/modal/{random.Range(0, 2)}");
         
         player.fxManager.PlayGameObjectFX("chr/chen/battle/fx/prefab/drive_dash_smoke", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position, Vector3.zero, new(player.side == EntitySide.LEFT ? -1 : 1, 1, 1));
         player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/land/medium", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position);

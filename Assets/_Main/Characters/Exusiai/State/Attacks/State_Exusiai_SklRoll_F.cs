@@ -31,7 +31,7 @@ public class State_Exusiai_SklRoll_FThrow : State_Common_CommandThrow {
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
-        player.audioManager.PlaySound($"chr/exusiai/battle/vo/modal/{random.Range(0, 4)}");
+        entity.PlaySound($"chr/exusiai/battle/vo/modal/{random.Range(0, 4)}");
     }
 
     protected override void OnThrowWhiff(PlayerCharacter other) {
@@ -63,7 +63,7 @@ public class State_Exusiai_SklRoll_FSlide : State_Common_SpecialAttack {
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
-        player.audioManager.PlaySound($"chr/exusiai/battle/vo/modal/{random.Range(0, 4)}");
+        entity.PlaySound($"chr/exusiai/battle/vo/modal/{random.Range(0, 4)}");
     }
 
     protected override void OnActive() {
@@ -121,12 +121,12 @@ public class State_Exusiai_SklRoll_FEvade : State_Common_UtilityMove {
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
-        player.audioManager.PlaySound($"chr/exusiai/battle/vo/modal/{random.Range(0, 4)}");
+        entity.PlaySound($"chr/exusiai/battle/vo/modal/{random.Range(0, 4)}");
     }
 
     protected override void OnActive() {
         base.OnActive();
-        player.audioManager.PlaySoundClip("cmn/battle/sfx/movement/airdash");
+        entity.PlaySound("cmn/battle/sfx/movement/airdash");
         player.ApplyForwardVelocity(new(-6f, 10f));
         player.airborne = true;
     }

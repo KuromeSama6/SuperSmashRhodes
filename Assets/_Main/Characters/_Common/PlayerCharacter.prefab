@@ -179,7 +179,6 @@ GameObject:
   - component: {fileID: 8522237643065872223}
   - component: {fileID: 2209743025246663691}
   - component: {fileID: 8258759772889802032}
-  - component: {fileID: 5843533797680092123}
   - component: {fileID: 4524501357402868674}
   - component: {fileID: 2512386437702889766}
   - component: {fileID: 4933393836554752299}
@@ -289,18 +288,6 @@ MonoBehaviour:
     - {fileID: 6290204124899039702}
   superEmblem: {fileID: 9099637730359370887}
   driveReleaseEmblem: {fileID: 558275655851238996}
---- !u!114 &5843533797680092123
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3132066959301301514}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fb0e6d4c7bb4387a094cf26b38c4eb9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!82 &4524501357402868674
 AudioSource:
   m_ObjectHideFlags: 0

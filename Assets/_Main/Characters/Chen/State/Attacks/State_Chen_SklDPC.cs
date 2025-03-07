@@ -47,7 +47,7 @@ public class State_Chen_SklDPC : State_Common_SpecialAttack {
 
     protected override void OnActive() {
         base.OnActive();
-        player.audioManager.PlaySound("chr/chen/battle/vo/dp");
+        entity.PlaySound("chr/chen/battle/vo/dp");
     }
 
     public override void OnContact(Entity to) {
@@ -58,7 +58,7 @@ public class State_Chen_SklDPC : State_Common_SpecialAttack {
             if (attackStage == 2) BackgroundUIManager.inst.Flash(0.03f);   
         }
 
-        player.audioManager.PlaySound("chr/chen/battle/sfx/dp/1");
+        entity.PlaySound("chr/chen/battle/sfx/dp/1");
         if (attackStage == 2) {
             opponent.fxManager.PlayGameObjectFX("chr/chen/battle/fx/prefab/skl_214s/hit/0", CharacterFXSocketType.SELF);
             opponent.fxManager.PlayGameObjectFX("chr/chen/battle/fx/prefab/dp/heavyhit", CharacterFXSocketType.SELF);
@@ -106,8 +106,8 @@ public class State_Chen_SklDPC : State_Common_SpecialAttack {
             player.rb.linearVelocity = Vector2.zero;
             player.ApplyForwardVelocity(new(hits > 0 ? 10f : 0f, -30f));
             player.opponent.frameData.AddGroundBounce(new(0, driveRelease ? 12 : 7), BounceFlags.HEAVY);
-            entity.audioManager.PlaySound("chr/chen/battle/sfx/skl_214h/0", .4f);
-            entity.audioManager.PlaySound($"chr/chen/battle/vo/modal/{random.Range(0, 2)}");
+            entity.PlaySound("chr/chen/battle/sfx/skl_214h/0", .4f);
+            entity.PlaySound($"chr/chen/battle/vo/modal/{random.Range(0, 2)}");
         }
     }
 

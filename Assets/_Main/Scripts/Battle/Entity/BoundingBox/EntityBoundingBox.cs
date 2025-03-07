@@ -5,7 +5,7 @@ using SuperSmashRhodes.Battle.Serialization;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
-public class EntityBoundingBox : MonoBehaviour, IEntityBoundingBox, IManualUpdate {
+public class EntityBoundingBox : MonoBehaviour, IEntityBoundingBox, IEngineUpdateListener {
     public BoundingBoxType type { get; set; }
     public Entity entity { get; set; }
     public PlayerCharacter owningPlayer { get; set; }

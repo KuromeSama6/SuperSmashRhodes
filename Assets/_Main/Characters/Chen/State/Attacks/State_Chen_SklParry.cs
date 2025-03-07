@@ -25,12 +25,12 @@ public class State_Chen_SklParry : State_Common_Parry {
 
     protected override void OnStartup() {
         base.OnStartup();
-        player.audioManager.PlaySound("chr/chen/battle/sfx/drive/parry");
+        entity.PlaySound("chr/chen/battle/sfx/drive/parry");
     }
 
     protected override void OnParry(AttackData attack) {
         // Debug.Log("parry");
-        player.audioManager.PlaySound("cmn/battle/sfx/generic/generic_parry_success");
+        entity.PlaySound("cmn/battle/sfx/generic/generic_parry_success");
         player.fxManager.PlayGameObjectFX("chr/chen/battle/fx/prefab/drive_parry_success", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position);
         
         stateData.backgroundUIData.priority = 1;

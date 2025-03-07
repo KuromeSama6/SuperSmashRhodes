@@ -8,7 +8,7 @@ using UnityEngine.Events;
 using UnityEngine.Serialization;
 
 namespace SuperSmashRhodes.Battle {
-public class PushboxManager : MonoBehaviour, IManualUpdate {
+public class PushboxManager : MonoBehaviour, IEngineUpdateListener {
     [Title("References")]
     [Tooltip("The physics collider that collides with the ground and other players only.")]
     public BoxCollider2D physicsBox;

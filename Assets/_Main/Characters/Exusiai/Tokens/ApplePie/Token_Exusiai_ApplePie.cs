@@ -137,7 +137,7 @@ public class State_Token_Exusiai_ApplePie_Attack : TokenAttackStateBase {
         explosion.transform.localPosition += new Vector3(0, 1f, 0);
         explosion.transform.localEulerAngles += new Vector3(0, 90f, 0);
         fxPlayer = explosion.GetComponent<ParticleFXPlayer>() ?? explosion.AddComponent<ParticleFXPlayer>(); 
-        entity.owner.audioManager.PlaySound(sfx);
+        entity.PlaySound(sfx);
         SimpleCameraShakePlayer.inst.Play(shake);
         applePie.spriteRenderer.color = Color.clear;
 

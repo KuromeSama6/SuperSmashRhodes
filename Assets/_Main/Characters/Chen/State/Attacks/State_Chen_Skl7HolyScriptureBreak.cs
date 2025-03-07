@@ -32,7 +32,7 @@ public class State_Chen_Skl7HolyScriptureBreak : State_Common_SpecialAttack {
     protected override void OnStartup() {
         base.OnStartup();
         stateData.shouldApplySlotNeutralPose = true;
-        entity.audioManager.PlaySound($"chr/chen/battle/vo/41236d");
+        entity.PlaySound($"chr/chen/battle/vo/41236d");
         
         player.ApplyForwardVelocity(new(-5, 5));
         armor = false;
@@ -47,10 +47,10 @@ public class State_Chen_Skl7HolyScriptureBreak : State_Common_SpecialAttack {
         
         stateData.ghostFXData = new("cb0000".HexToColor(), 0.02333334f, driveRelease ? 40 : 20, 2.5f);
         // stateData.physicsPushboxDisabled = true;
-        player.audioManager.PlaySound("chr/chen/battle/sfx/drive/p1");
-        entity.audioManager.PlaySound("chr/chen/battle/sfx/skl_214h/0", .4f);  
+        entity.PlaySound("chr/chen/battle/sfx/drive/p1");
+        entity.PlaySound("chr/chen/battle/sfx/skl_214h/0", .4f);  
         
-        entity.audioManager.PlaySound($"chr/chen/battle/vo/modal/{random.Range(0, 2)}");
+        entity.PlaySound($"chr/chen/battle/vo/modal/{random.Range(0, 2)}");
         player.fxManager.PlayGameObjectFX("chr/chen/battle/fx/prefab/drive_dash_smoke", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position, Vector3.zero, new(player.side == EntitySide.LEFT ? -1 : 1, 1, 1));
         player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/land/medium", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position);
         player.ApplyForwardVelocity(new Vector2(25, 0));

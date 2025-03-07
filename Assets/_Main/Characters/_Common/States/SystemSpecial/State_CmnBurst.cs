@@ -45,7 +45,7 @@ public class State_CmnBurst : CharacterAttackStateBase {
         RemoveCancelOption("CmnWhiteForceReset");
         var pos = player.transform.position;
         player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/burst", CharacterFXSocketType.WORLD_UNBOUND, pos);
-        player.audioManager.PlaySoundClip("cmn/battle/sfx/burst");
+        entity.PlaySound("cmn/battle/sfx/burst");
         stateData.gravityScale = 0;
         player.rb.linearVelocity = Vector2.zero;
         // player.airborne = true;

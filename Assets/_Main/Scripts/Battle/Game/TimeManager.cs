@@ -6,7 +6,7 @@ using SuperSmashRhodes.Framework;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
-public class TimeManager : SingletonBehaviour<TimeManager>, IManualUpdate, IAutoSerialize {
+public class TimeManager : SingletonBehaviour<TimeManager>, IEngineUpdateListener, IAutoSerialize {
     public int globalFreezeFrames { get; set; }
 
     private int scheduledDelay;

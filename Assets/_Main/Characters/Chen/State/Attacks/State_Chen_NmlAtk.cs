@@ -106,7 +106,7 @@ public class State_Chen_NmlAtk5S : State_Common_NmlAtk5S {
     protected override void OnActive() {
         player.ApplyForwardVelocity(new(3.5f, 0f));
         base.OnActive();
-        player.audioManager.PlaySoundClip("cmn/battle/sfx/generic/generic_swoosh_a");
+        entity.PlaySound("cmn/battle/sfx/generic/generic_swoosh_a");
         player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/dash_dust", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position, Vector3.zero, new Vector3(player.side == EntitySide.LEFT ? 1 : -1, 1, 1));
     }
 
@@ -130,7 +130,7 @@ public class State_Chen_NmlAtk6S : State_Common_NmlAtk6S {
 
     protected override void OnStartup() {
         base.OnStartup();
-        player.audioManager.PlaySoundClip("cmn/battle/sfx/generic/generic_swoosh_a");
+        entity.PlaySound("cmn/battle/sfx/generic/generic_swoosh_a");
     }
 
     protected override void OnActive() {

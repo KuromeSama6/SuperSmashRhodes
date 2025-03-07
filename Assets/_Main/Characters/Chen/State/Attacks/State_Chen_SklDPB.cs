@@ -44,7 +44,7 @@ public class State_Chen_SklDPB : State_Common_DP {
 
     protected override void OnActive() {
         base.OnActive();
-        player.audioManager.PlaySound("chr/chen/battle/vo/dp");
+        entity.PlaySound("chr/chen/battle/vo/dp");
     }
 
     public override void OnContact(Entity to) {
@@ -55,7 +55,7 @@ public class State_Chen_SklDPB : State_Common_DP {
             opponent.fxManager.PlayGameObjectFX("chr/chen/battle/fx/prefab/skl_214s/hit/0", CharacterFXSocketType.SELF);
         }
         
-        player.audioManager.PlaySound("chr/chen/battle/sfx/dp/1");
+        entity.PlaySound("chr/chen/battle/sfx/dp/1");
         
     }
 
@@ -77,7 +77,7 @@ public class State_Chen_SklDPB : State_Common_DP {
         if (stage == 1) {
             player.ApplyForwardVelocity(new(.5f, opponent.atWall && hitsRemaining < 2 ? 20f : 10f));
             player.airborne = true;
-            entity.audioManager.PlaySound("chr/chen/battle/sfx/skl_214h/0", .4f);   
+            entity.PlaySound("chr/chen/battle/sfx/skl_214h/0", .4f);   
             
         } else if (stage == 2) {
             stateData.ghostFXData = null;

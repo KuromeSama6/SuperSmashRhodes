@@ -53,19 +53,19 @@ public abstract class State_Exusiai_DriveAttack : State_Exusiai_FireWeaponAttack
 
         if (gauge.mayFire) {
             gauge.Fire();
-            audioLoopHandle = entity.audioManager.PlaySoundLoop("chr/exusiai/battle/sfx/gun_loop", 0.5f, true);
+            audioLoopHandle = entity.PlaySound("chr/exusiai/battle/sfx/gun_loop", 0.5f, true);
             ctx.Next(0, Sub_FireLoop);
             
         } else {
             hitsRemaining = 0;
-            entity.audioManager.PlaySound("chr/exusiai/battle/sfx/gun_empty");
+            entity.PlaySound("chr/exusiai/battle/sfx/gun_empty");
             ctx.Next(frameData.active, Sub_RecoveryStart);
         }
     }
 
     protected override void Sub_RecoveryStart(SubroutineContext ctx) {
         base.Sub_RecoveryStart(ctx);
-        entity.audioManager.StopSound(audioLoopHandle, "chr/exusiai/battle/sfx/gun_loop_tail", 0.5f);
+        entity.StopSound(audioLoopHandle, "chr/exusiai/battle/sfx/gun_loop_tail", 0.5f);
     }
 
     protected virtual void Sub_FireLoop(SubroutineContext ctx) {
@@ -81,7 +81,7 @@ public abstract class State_Exusiai_DriveAttack : State_Exusiai_FireWeaponAttack
                         
             } else {
                 hitsRemaining = 0;
-                entity.audioManager.PlaySound("chr/exusiai/battle/sfx/gun_empty");
+                entity.PlaySound("chr/exusiai/battle/sfx/gun_empty");
                 ctx.Next(0, Sub_RecoveryStart);
             }
         }

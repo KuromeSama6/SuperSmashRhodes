@@ -459,7 +459,7 @@ public class PlayerCharacter : Entity {
 
         var armor = modifierFlag.HasFlag(InboundHitModifier.NO_STUN);
         if (armor) {
-            audioManager.PlaySound("cmn/battle/sfx/generic/generic_armor_success");
+            PlaySound("cmn/battle/sfx/generic/generic_armor_success");
             activeState.stateData.extraIndicatorFlag |= StateIndicatorFlag.ARMOR;
         }
         
@@ -552,7 +552,7 @@ public class PlayerCharacter : Entity {
                 PostProcessManager.inst.PlayShaker("panini_counter_large");
                 // PostProcessManager.inst.PlayShaker("dof_counter_large");
                 
-                audioManager.PlaySoundClip("cmn/battle/sfx/counter/large");
+                PlaySound("cmn/battle/sfx/counter/large");
                 fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/counter/flash", CharacterFXSocketType.SELF);
                 
                 BackgroundUIManager.inst.Flash(0.1f);
@@ -570,7 +570,7 @@ public class PlayerCharacter : Entity {
                 
                 fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/counter/flash", CharacterFXSocketType.WORLD_UNBOUND, transform.position, new(side == EntitySide.LEFT ? 0 : 180, 0, 0));
                 
-                audioManager.PlaySoundClip("cmn/battle/sfx/counter/large");
+                PlaySound("cmn/battle/sfx/counter/large");
                 opponent.bufferClearRequested = true;
 
 

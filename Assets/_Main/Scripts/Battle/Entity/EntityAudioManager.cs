@@ -11,7 +11,8 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace SuperSmashRhodes.Battle {
-public class EntityAudioManager : MonoBehaviour, IStateSerializable, IManualUpdate {
+[Obsolete]
+internal class EntityAudioManager : MonoBehaviour, IStateSerializable, IEngineUpdateListener {
     public Entity entity { get; private set; }
     public Dictionary<int, AudioHandle> handles { get; } = new();
     private int idCounter = 1;
@@ -139,7 +140,7 @@ public class EntityAudioManager : MonoBehaviour, IStateSerializable, IManualUpda
     }
 }
 
-public class AudioHandle : IHandleSerializable {
+internal class AudioHandle : IHandleSerializable {
     public readonly Entity entity;
     public readonly string audioId;
     public readonly AudioSource source;
@@ -195,25 +196,7 @@ public class AudioHandle : IHandleSerializable {
         }
         
         public object Resolve() {
-            var manager = ((Entity)entity.Resolve()).audioManager;
-
-            int ret;
-            if (isClip) {
-                ret = manager.PlaySoundClip(audioId);
-                
-            } else {
-                if (loop) {
-                    ret = manager.PlaySoundLoop(audioId, volume, destroyOnStateEnd);
-                } else {
-                    ret = manager.PlaySound(audioId, volume, pitch);
-                }
-            }
-
-            var retHandle = manager.handles[ret];
-            if (isClip) retHandle.player.audioSource.time = time;
-            else retHandle.source.time = time;
-            
-            return manager.handles[ret];
+            return null;
         }
     }
 }
