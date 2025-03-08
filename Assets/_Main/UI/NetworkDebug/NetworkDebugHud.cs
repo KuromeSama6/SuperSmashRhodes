@@ -4,6 +4,7 @@ using SuperSmashRhodes.Match;
 using SuperSmashRhodes.Network;
 using SuperSmashRhodes.Network.Rollbit;
 using SuperSmashRhodes.Network.RoomManagement;
+using SuperSmashRhodes.Util;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +16,7 @@ public class NetworkDebugUI : MonoBehaviour {
     public TMP_InputField hostInput;
     public TMP_InputField portInput;
     public Button connectButton;
+    public Button stunTestButton;
     public RollbitClientConfiguration clientConfiguration;
     public RoomConfiguration roomConfiguration;
     
@@ -34,6 +36,7 @@ public class NetworkDebugUI : MonoBehaviour {
         connectButton.onClick.AddListener(OnButtonPress);
         acceptMatchButton.onClick.AddListener(() => AcceptMatch(true));
         declineMatchButton.onClick.AddListener(() => AcceptMatch(false));
+        stunTestButton.onClick.AddListener(TestStun);
 
         if (clientConfiguration) {
             hostInput.text = clientConfiguration.host;
@@ -96,6 +99,12 @@ public class NetworkDebugUI : MonoBehaviour {
     private void Disconnect() {
         if (networkSession == null) return;
         networkSession.Disconnect(ClientDisconnectionReason.BACK_TO_LOBBY, "debug disconnect");
+    }
+
+    private async void TestStun() {
+        print("testing stun");
+        var ret = await StunClient.GetPublicEndpointAsync(6023);
+        print($"STUN result: {ret}");
     }
 }
 }

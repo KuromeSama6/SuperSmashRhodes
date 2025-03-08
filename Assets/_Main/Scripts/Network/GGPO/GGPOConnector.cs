@@ -52,12 +52,12 @@ public class GGPOConnector : IDisposable {
         this.callbackHandler = callbackHandler;
     }
 
-    public bool Bind() {
+    public bool Bind(int port) {
         if (status != GGPOConnectionStatus.STANDBY) {
             throw new InvalidOperationException("The GGPOConnector is already bound.");
         }
 
-        port = room.localPlayer.playerId == 0 ? room.session.config.ggpoPortP1 : room.session.config.ggpoPortP2;
+        // port = room.localPlayer.playerId == 0 ? room.session.config.ggpoPortP1 : room.session.config.ggpoPortP2;
 
         if (GGPO.Session.IsStarted()) {
             GGPO.Session.CloseSession();   

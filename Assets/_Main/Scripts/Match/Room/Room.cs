@@ -317,7 +317,7 @@ public abstract class Room {
         Physics2D.SyncTransforms();
     }
 
-    private IEnumerator RoundEndRoutine(PlayerCharacter winner, RoundCompletionStatus status, bool isGameEnd) {
+    protected virtual IEnumerator RoundEndRoutine(PlayerCharacter winner, RoundCompletionStatus status, bool isGameEnd) {
         if (status == RoundCompletionStatus.PERFECT) {
             AudioManager.inst.PlayAudioClip("cmn/announcer/battle/perfect", gm.gameObject, "active_announcer");
         } else if (isGameEnd) {

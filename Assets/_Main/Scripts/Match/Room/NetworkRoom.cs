@@ -144,7 +144,16 @@ public class NetworkRoom : Room, IPacketHandler, IConnectorCallbackHandler {
     }
 
     [PacketHandler]
-    public void OnBeginP2P(PacketPlayOutBeginP2P packet) {
+    public async void OnBeginP2P(PacketPlayOutBeginP2P packet) {
+        // recheck stun
+        // var stun = await StunClient.GetPublicEndpointAsync(ggpoPort);
+        // Debug.Log($"recheck stun: {stun}");
+        // punchthrough loops
+        Debug.Log($"begin p2p: {packet}");
+        
+        // session.p2pConnector.BeginHolePunch(packet.peerAddressString, packet.peerPort);
+        // return;
+        
         MainThreadDispatcher.RunOnMain(() => {
             ggpo.BeginP2P(packet); 
         });
@@ -153,10 +162,21 @@ public class NetworkRoom : Room, IPacketHandler, IConnectorCallbackHandler {
     [PacketHandler]
     public void OnReceivePreRandom(PacketPlayOutPreRandom packet) {
         Debug.Log($"Received prerandom, {packet}");
+        
         randomNumberProvider = new PredeterminedRandom(packet.randoms);
     }
      
     //region routines
+    protected override IEnumerator RoundEndRoutine(PlayerCharacter winner, RoundCompletionStatus status, bool isGameEnd) {
+        Debug.Log("Round end, reporting status");
+        
+        var task = ReportRoundStatus(false);
+        while (fighting) {
+            yield return null;
+        }
+        
+        yield return base.RoundEndRoutine(winner, status, isGameEnd);
+    }
 
     private IEnumerator ShowCharacterSelectRoutine() {
         foreach (var (id, player) in players) {
@@ -242,17 +262,23 @@ public class NetworkRoom : Room, IPacketHandler, IConnectorCallbackHandler {
         
         //P2P connection
         // find free port
-        ggpo = new(this, this);
-        var bindSuccess = ggpo.Bind();
-        
-        if (!bindSuccess) {
-            loadingScreen.UpdateLoadingStatus(LoadingStatus.BAD);
-            yield break;
-        }
         
         // send packet
         {
-            var task = session.SendPacket(new PacketPlayInNegotiate(session, ggpo.port));
+            // dispose p2p connector first
+            session.StopP2PConnector();
+            
+            ggpo = new(this, this);
+            var bindSuccess = ggpo.Bind(session.allocatedUdpPort);
+            
+            if (!bindSuccess) {
+                loadingScreen.UpdateLoadingStatus(LoadingStatus.BAD);
+                yield break;
+            }
+
+            var localAddress = NetworkUtil.GetLocalIPAddress();
+            Debug.Log($"Local address: {localAddress}");
+            var task = session.SendPacket(new PacketPlayInNegotiate(session, session.allocatedUdpPort, localAddress));
             yield return new WaitUntil(() => task.IsCompleted);
             if (!task.IsCompletedSuccessfully || task.Result == null) {
                 Debug.LogError("Failed to send P2P negotiation packet. Task error.");
@@ -265,7 +291,6 @@ public class NetworkRoom : Room, IPacketHandler, IConnectorCallbackHandler {
         }
         
         // negotiate
-        
         while (ggpo.status == GGPOConnectionStatus.STANDBY || ggpo.status == GGPOConnectionStatus.CONNECTING) {
             yield return null;
         }

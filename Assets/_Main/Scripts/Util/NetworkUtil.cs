@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using Google.FlatBuffers;
@@ -13,8 +14,8 @@ public static class NetworkUtil {
             sb.Append($"{bytes[i]:X2}");
             sb.Append(" ");
         }
-        
-        return sb.ToString(); 
+
+        return sb.ToString();
     }
 
     public static string Format(this ByteBuf buf) {
@@ -28,7 +29,7 @@ public static class NetworkUtil {
         listener.Stop();
         return port;
     }
-    
+
     public static int CalcFletcher32(NativeArray<byte> data) {
         uint sum1 = 0;
         uint sum2 = 0;
@@ -39,6 +40,16 @@ public static class NetworkUtil {
             sum2 = (sum2 + sum1) % 0xffff;
         }
         return unchecked((int)((sum2 << 16) | sum1));
+    }
+
+    public static string GetLocalIPAddress() {
+        var host = Dns.GetHostEntry(Dns.GetHostName());
+        foreach (var ip in host.AddressList) {
+            if (ip.AddressFamily == AddressFamily.InterNetwork) {
+                return ip.ToString();
+            }
+        }
+        throw new Exception("No network adapters with an IPv4 address in the system!");
     }
 }
 }

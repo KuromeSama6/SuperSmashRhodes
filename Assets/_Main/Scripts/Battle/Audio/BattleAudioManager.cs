@@ -126,6 +126,7 @@ public class BattleAudioManager : SingletonBehaviour<BattleAudioManager>, IEngin
     }
     
     public void Serialize(StateSerializer serializer) {
+        Prune();
         foreach (var (id, handle) in active) {
             StateSerializer pth = new();
             pth.Put("entity", handle.entity);

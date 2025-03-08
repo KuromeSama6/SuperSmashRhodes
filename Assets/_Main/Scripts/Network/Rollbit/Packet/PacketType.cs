@@ -10,6 +10,7 @@ public enum PacketType : ushort {
     PLAY_IN_CHARACTER_SELECT = 0x0007,
     PLAY_IN_CONFIRM_P2P = 0x0008,
     PLAY_IN_ROUND_STATUS = 0x0009,
+    PLAY_IN_UDP_REGISTER_ENDPOINT = 0x000a,
     
     PLAY_IN_DISCONNECT = 0x00ff,
     
@@ -23,8 +24,6 @@ public enum PacketType : ushort {
     PLAY_OUT_DISCONNECT = 0xffff,
     
     PLAY_P2P_HANDSHAKE = 0x7700,
-    // PLAY_P2P_HEARTBEAT = 0x7701,
-    PLAY_P2P_INPUT = 0x7702,
 }
 
 public static class PacketTypeExtensions {

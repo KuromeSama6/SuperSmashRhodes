@@ -28,6 +28,8 @@ public class NetworkSession : IDisposable, IPacketHandler {
     public UnityEvent onDisposed { get; } = new();
 
     public int lastPingLatency { get; private set; }
+    public P2PConnector p2pConnector { get; private set; }
+    public int allocatedUdpPort { get; private set; }
     
     private NetworkStream stream;
     private Timer heartbeatTimer;
@@ -41,7 +43,8 @@ public class NetworkSession : IDisposable, IPacketHandler {
         client = new TcpClient();
         client.ConnectAsync(config.host, config.port).ContinueWith(ConnectTaskCallback);
         status = ClientStatus.CONNECTING;
-        client.ReceiveBufferSize = 32768;
+        client.ReceiveBufferSize = 1048576;
+        client.SendBufferSize = 1048576;
     }
 
     private async Task SendAsync(byte[] msg) {
@@ -128,15 +131,30 @@ public class NetworkSession : IDisposable, IPacketHandler {
         
         // handshake
         SendPacket<PacketPlayOutHandshake>(new PacketPlayInHandshake(this, PlayerRole.PLAYER)).ContinueWith(packet => {
-            Debug.Log("Handshake response: " + packet.Result);
-            heartbeatTimer?.Dispose();
-            heartbeatTimer = new Timer(HeartbeatTick, this, 0, packet.Result.heartbeatInterval / 2);
-            onEstablished.Invoke();
-            lock (this) {
-                status = ClientStatus.ESTABLISHED;
-            }
+            HandleHandshakeResponse(packet.Result);
         });
         
+    }
+
+    private void HandleHandshakeResponse(PacketPlayOutHandshake packet) {
+        Debug.Log("Handshake response: " + packet);
+        heartbeatTimer?.Dispose();
+        heartbeatTimer = new Timer(HeartbeatTick, this, 0, packet.heartbeatInterval / 2);
+        onEstablished.Invoke();
+        lock (this) {
+            status = ClientStatus.ESTABLISHED;
+        }
+            
+        // create p2p connector
+        try {
+            allocatedUdpPort = NetworkUtil.AllocateFreePort();
+            p2pConnector = new(this, packet.udpToken, packet.udpAddressString, packet.udpPort, allocatedUdpPort);
+            p2pConnector.SendEndpointRegistrationPacket();
+            
+        } catch (Exception e) {
+            Debug.LogError("Failed to create P2P connector");
+            Debug.LogException(e);
+        }
     }
     
     private async void ReceiveLoop(CancellationToken token) {
@@ -169,6 +187,12 @@ public class NetworkSession : IDisposable, IPacketHandler {
                 uint packetLength = BinaryPrimitives.ReadUInt32BigEndian(headerBuf[6..10]);
                 var padding = (16 - packetLength % 16) % 16;
                 packetLength += padding;
+
+                if (packetLength < 32) {
+                    Debug.LogError("Packet length is invalid, disconnected");
+                    Disconnect(ClientDisconnectionReason.PROTOCOL_ERROR, "invalid packet length");
+                    break;
+                }
                 
                 var bodyBuf = new byte[packetLength - 32];
                 _ = await stream.ReadAsync(bodyBuf, 0, bodyBuf.Length, token);
@@ -243,10 +267,16 @@ public class NetworkSession : IDisposable, IPacketHandler {
     public void Disconnect(ClientDisconnectionReason reason, string remarks = "") {
         SendPacket(new PacketPlayInDisconnect(this, reason, remarks));
     }
+
+    public void StopP2PConnector() {
+        p2pConnector?.Dispose();
+        p2pConnector = null;
+    }
     
     public void Dispose() {
         client.Dispose();
         stream.Dispose();
+        p2pConnector?.Dispose();
         cancellationTokenSource.Dispose();
         heartbeatTimer?.Dispose();
         
