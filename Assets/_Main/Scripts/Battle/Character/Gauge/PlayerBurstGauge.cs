@@ -19,7 +19,7 @@ public class PlayerBurstGauge : CharacterComponent, IEngineUpdateListener, IRefl
     public int maxReleaseFrames => (int)(4 * 60f * 1.5f);
     
     public bool canBurst => burstAvailable && !burstUsed && !player.stateFlags.HasFlag(CharacterStateFlag.DISABLE_BURST);
-    public bool canDriveRelease => gauge.value >= 500f && !driveRelease;
+    public bool canDriveRelease => gauge.value >= 500f && !driveRelease || true;
     
     public ReflectionSerializer reflectionSerializer { get; private set; }
     

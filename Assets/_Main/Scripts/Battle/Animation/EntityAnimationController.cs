@@ -115,7 +115,7 @@ public class EntityAnimationController : MonoBehaviour, IStateSerializable {
         if (disableEvents) return;
         var args = (e.String ?? "").Split();
         var data = new AnimationEventData(e.String, e.Int, e.Float, e.Data.AudioPath);
-        player.activeState.HandleAnimationEvent(name, data);
+        player.HandleAnimationEvent(name, data);
     }
 
     public void Serialize(StateSerializer serializer) {

@@ -21,6 +21,7 @@ public class State_CmnJump : CharacterState {
     public override bool mayEnterState {
         get {
             if (player.airOptions <= 0) return false;
+            if (player.airborne && !player.characterConfig.mayAirJump) return false;
             return true;
         }
     }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
 public abstract class CharacterComponent : MonoBehaviour {
-    protected PlayerCharacter player { get; private set; }
+    public PlayerCharacter player { get; private set; }
     private void Awake() {
         player = GetComponent<PlayerCharacter>();
         player.onRoundInit.AddListener(OnRoundInit);

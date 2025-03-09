@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 589170e0e507452e8d9a751a77995ab6, type: 3}
+  m_Name: Rosmontis_Descriptor
+  m_EditorClassIdentifier: 
+  gameObject: {fileID: 4122413039953609134, guid: 509805c2554df8246b008394ce7f2483, type: 3}
+  id: rosmontis
+  chineseName: "\u8FF7\u8FED\u9999"
+  englishName: Rosmontis
+  profession: 3
+  organizationChinese: "\u7F57\u5FB7\u5C9B"
+  organizationEnglish: Rhodes Island E.O.
+  realName: "\u7EB3\u897F\u838E"
+  easyOfUseRatingIcon: {fileID: 21300000, guid: bf0fc781d492e624aaa375a847a55891, type: 3}
+  mainDescription: "\u4E2D\u8DDD\u79BB/\u538B\u5236"
+  subDescription1: "\u7F57\u5FB7\u5C9B"
+  subDescription2: "\u7CBE\u82F1\u5E72\u5458"
+  portrait: {fileID: 21300000, guid: 669f059b3bbb303428f05bffc8d34282, type: 3}
+  superPortrait: {fileID: 21300000, guid: e1fc04b18b87f5c4fbb06b9a4f745eca, type: 3}
+  avatar: {fileID: 1072731402, guid: 14562abeb9773954fa1b8f88d1691d76, type: 3}
+  professionIconFull: {fileID: -4353086050002372228, guid: 62188ff3c72481e48b15cc096acea6ce, type: 3}
+  professionIconBlack: {fileID: 2166255255771973297, guid: a7a2394739cb9924d8fc38fe12649f8e, type: 3}
+  professionIconWhite: {fileID: 4097154949762752123, guid: ad19b379f3add364d9ebe18172870173, type: 3}
+  professionIconUI: {fileID: -102340783, guid: b8efcc14c116ada40b9bd55d5a0ab621, type: 3}
+  emblem: {fileID: 21300000, guid: 91e00de804d99f4449c150badb7c2fd3, type: 3}
+  skeletonData: {fileID: 11400000, guid: 469326a6f9772504c872f021a00c4ac5, type: 2}
+  entryCinematicDuration: 3
+  roundWonCinematicDuration: 10

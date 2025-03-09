@@ -1,0 +1,11 @@
+weapon4.png
+size:219,76
+filter:MipMap,MipMap
+pma:true
+F_Weapon_4
+bounds:2,30,44,215
+offsets:0,0,47,215
+rotate:90
+F_Weapon_4_Blur
+bounds:2,2,26,152
+rotate:90

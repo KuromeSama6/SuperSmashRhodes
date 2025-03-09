@@ -18,7 +18,7 @@ public abstract class State_Common_Stun : CharacterState {
     protected override void OnStateBegin() {
         base.OnStateBegin();
         entity.animation.ApplyNeutralPose();
-        entity.animation.AddUnmanagedAnimation(animationName, true, 0);
+        entity.animation.AddUnmanagedAnimation(animationName, false, 0);
         
         AddCancelOption("CmnBurst");
         stateData.maySwitchSides = true;

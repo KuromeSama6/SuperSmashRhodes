@@ -24,6 +24,7 @@ public class EntityBoundingBoxManager : MonoBehaviour, IStateSerializable {
     private List<IEntityBoundingBox> boxes = new();
 
     private void Start() {
+        if (!entity) entity = GetComponentInParent<Entity>();
         
         // register
         // main pushbox

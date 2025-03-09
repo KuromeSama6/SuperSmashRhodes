@@ -1,0 +1,10 @@
+weapon3.png
+size:226,120
+filter:MipMap,MipMap
+pma:true
+F_Weapon_3
+bounds:2,48,70,222
+rotate:90
+F_Weapon_3_Blur
+bounds:2,2,44,156
+rotate:90

@@ -1,0 +1,16 @@
+weapon1.png
+size:233,152
+filter:MipMap,MipMap
+pma:true
+F_Weapon_1_1
+bounds:2,85,65,191
+rotate:90
+F_Weapon_1_2
+bounds:2,2,26,183
+rotate:90
+F_Weapon_1_3
+bounds:163,31,68,52
+F_Weapon_1_Blur
+bounds:2,30,53,159
+offsets:0,1,53,161
+rotate:90

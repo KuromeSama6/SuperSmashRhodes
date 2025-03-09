@@ -309,6 +309,7 @@ public abstract class CharacterState : EntityState {
     public virtual Hitstate hitstate => Hitstate.NONE;
     public bool charging { get; protected set; }
     public bool driveRelease => player.burst.driveRelease;
+    public virtual bool alwaysCancellable => false;
     
     protected bool RevalidateInput() {
         return IsInputValid(GetCurrentInputBuffer());

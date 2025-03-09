@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace SuperSmashRhodes.Battle {
 [CreateAssetMenu( menuName = "SSR/Battle/Character Config", order = 0)]
@@ -21,6 +22,8 @@ public class CharacterConfiguration : ScriptableObject {
     [TabGroup("playerConfig", "Jumping", SdfIconType.ArrowUp, TextColor = "blue")]
     [SerializeField]
     private float jumpDuration, jumpVelocity, jumpGravity;
+    [TabGroup("playerConfig", "Jumping", SdfIconType.ArrowUp, TextColor = "blue")]
+    public bool mayAirJump = true;
 
     [TabGroup("playerConfig", "Dash", SdfIconType.ArrowRight, TextColor = "yellow")]
     public bool mayDash = true, mayAirDash = true;

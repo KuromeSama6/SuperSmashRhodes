@@ -46,6 +46,12 @@ public struct AttackFrameData {
     public int startup, active, recovery;
     public int total => startup + active + recovery;
 
+    public AttackFrameData(int startup, int active, int recovery) {
+        this.startup = startup;
+        this.active = active;
+        this.recovery = recovery;
+    }
+    
     public static int GetStandardStun(Entity to, bool blocked, int attackLevel) {
         if (blocked) {
             return attackLevel switch {

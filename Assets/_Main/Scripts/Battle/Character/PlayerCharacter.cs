@@ -58,6 +58,7 @@ public class PlayerCharacter : Entity {
     public IInputProvider inputProvider { get; private set; } = new NOPInputProvider(); // InputProvider assigned on round start
     public List<CharacterAttackStateBase> gatlingMovesUsed { get; } = new();
     public bool bufferClearRequested { get; set; }
+    public int skeletonSortingOrder { get; set; }
 
     public bool atWall => pushboxManager.atWall;
     public bool dead => activeState is State_SysDeath;
@@ -83,6 +84,32 @@ public class PlayerCharacter : Entity {
             }
             if (activeState == null) return 1f;
             return 1f + activeState.stateData.cameraData.cameraWeightModifier;
+        }
+    }
+
+    public virtual float gravityScale {
+        get {
+            var ret = characterConfig.baseGravityFinal;
+            if (comboCounter.inCombo) {
+                var decay = comboCounter.comboDecay;
+                // Debug.Log(decay);
+                var data = opponent.comboDecayData;
+                // Debug.Log($"{playerIndex} {decay}");
+                ret *= data.opponentGravityCurve.Evaluate(decay);
+            }
+
+            // Debug.Log($"p{playerIndex} {activeState.stateData.gravityScale}");
+            ret *= activeState.stateData.gravityScale;
+        
+            if (stateFlags.HasFlag(CharacterStateFlag.PAUSE_PHYSICS)) {
+                ret = 0f;
+            }
+        
+            if (activeState is State_CmnAirDash) {
+                ret = 0f;
+            }
+            
+            return ret;
         }
     }
     
@@ -193,31 +220,13 @@ public class PlayerCharacter : Entity {
             GameManager.inst.HandlePlayerDeath(this);
             comboCounter.Reset();
         }
-        
+
+        animation.animation.GetComponent<MeshRenderer>().sortingOrder = skeletonSortingOrder;
+
     }
 
     private void UpdateGravity() {
-        var ret = characterConfig.baseGravityFinal;
-        if (comboCounter.inCombo) {
-            var decay = comboCounter.comboDecay;
-            // Debug.Log(decay);
-            var data = opponent.comboDecayData;
-            // Debug.Log($"{playerIndex} {decay}");
-            ret *= data.opponentGravityCurve.Evaluate(decay);
-        }
-
-        // Debug.Log($"p{playerIndex} {activeState.stateData.gravityScale}");
-        ret *= activeState.stateData.gravityScale;
-        
-        if (stateFlags.HasFlag(CharacterStateFlag.PAUSE_PHYSICS)) {
-            ret = 0f;
-        }
-        
-        if (activeState is State_CmnAirDash) {
-            ret = 0f;
-        }
-        
-        rb.gravityScale = ret;
+        rb.gravityScale = gravityScale;
     }
 
     public void UpdateRotation() {
@@ -244,7 +253,11 @@ public class PlayerCharacter : Entity {
         }
         
     }
-    
+
+    public bool MayCancelInto(CharacterState state) {
+        return state.alwaysCancellable || activeState.stateData.cancelOptions.Contains(state) || BitUtil.CheckFlag((ulong)activeState.stateData.cancelFlag, (ulong)state.type);
+    }
+
     private void UpdateInput() { 
         if (inputProvider.inputBuffer == null) return;
         if (stateFlags.HasFlag(CharacterStateFlag.PAUSE_INPUT) || GameManager.inst.globalStateFlags.HasFlag(CharacterStateFlag.PAUSE_INPUT)) return;
@@ -257,8 +270,7 @@ public class PlayerCharacter : Entity {
         foreach (var state in li) {
             if (state == activeState && !activeState.isSelfCancellable) continue;
             
-            if (activeState.stateData.cancelOptions.Contains(state) || BitUtil.CheckFlag((ulong)activeState.stateData.cancelFlag, (ulong)state.type)) {
-                
+            if (MayCancelInto(state)) {
                 // state is valid
                 if (state.mayEnterState && state.IsInputValid(inputProvider.inputBuffer)) {
                     // check cancel state
@@ -360,8 +372,8 @@ public class PlayerCharacter : Entity {
     }
 
     public void SetZPriority() {
-        animation.animation.GetComponent<MeshRenderer>().sortingOrder = 3;
-        opponent.animation.animation.GetComponent<MeshRenderer>().sortingOrder = 2;
+        skeletonSortingOrder = 100;
+        opponent.skeletonSortingOrder = 50;
     }
 
     public void ForceSetAirborne() {
@@ -393,7 +405,7 @@ public class PlayerCharacter : Entity {
         base.OnOutboundHit(victim, data);
         
         if (victim is PlayerCharacter player) {
-            return ProcessOutboundHit(player);
+            return ValidateOutboundHit(player);
         }
         
         //TODO: Others 
@@ -410,7 +422,7 @@ public class PlayerCharacter : Entity {
         ApplyStandardAttack(data);
     }
 
-    private IAttack ProcessOutboundHit(PlayerCharacter to) {
+    private IAttack ValidateOutboundHit(PlayerCharacter to) {
         if (!(activeState is CharacterAttackStateBase move)) {
             // invalid attack state1
             return null;
@@ -435,6 +447,7 @@ public class PlayerCharacter : Entity {
         }
         
         attack.OnContact(this);
+        OnContact();
         // hit/guard 
         bool blocked = !CheckAttackHit(data);
 
@@ -473,6 +486,7 @@ public class PlayerCharacter : Entity {
             }
             // Debug.Log("blocked");
             attack.OnBlock(this);
+            OnBlock();
             
             // burst penalty
             {
@@ -523,6 +537,7 @@ public class PlayerCharacter : Entity {
             // Debug.Log($"{activeState} {activeState.stateData.extraIndicatorFlag}");
             
             attack.OnHit(this);
+            OnHit();
             airHitstunRotation = 0f;
             
             var driveReleaseMultiplier = opponent.burst.driveRelease ? 1.2f : 1f;
@@ -801,6 +816,12 @@ public class PlayerCharacter : Entity {
         if (!flag.HasFlag(AttackAirOkType.AIR) && airborne) return false;
         return true;
     }
+    
+    //region Member Virtual Methods
+    protected virtual void OnHit() { }
+    protected virtual void OnBlock() { }
+    protected virtual void OnContact() {}
+    //endregion
 
     public override IHandle GetHandle() {
         return new PlayerHandle(this);

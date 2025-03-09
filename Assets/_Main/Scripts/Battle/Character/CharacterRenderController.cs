@@ -29,7 +29,7 @@ public class CharacterRenderController : MonoBehaviour, IEngineUpdateListener {
             renderer.shadowCastingMode = owner.dead ? ShadowCastingMode.Off : ShadowCastingMode.On;   
         }
         
-        if (fxManager && !fxManager.playFlash) {
+        if (owner && fxManager && !fxManager.playFlash) {
             if (owner.activeState == null) return;
             var data = owner.activeState.stateData.renderColorData;
             if (!data.flags.HasFlag(CharacterRenderColorData.Flag.PAUSE)) {

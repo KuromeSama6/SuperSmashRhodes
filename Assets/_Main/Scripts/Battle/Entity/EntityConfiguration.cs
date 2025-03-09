@@ -11,6 +11,8 @@ public class EntityConfiguration : ScriptableObject {
     [BoxGroup("Basic Configuration")]
     public string id, tokenName;
     [BoxGroup("Basic Configuration")]
+    [HideInInspector]
+    [Obsolete]
     public EntityType entityType;
 
     [BoxGroup("State")]

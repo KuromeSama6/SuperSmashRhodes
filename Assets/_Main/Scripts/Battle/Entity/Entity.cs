@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using NUnit.Framework;
@@ -29,7 +30,7 @@ namespace SuperSmashRhodes.Battle {
 /// An entity is the most basic form of something that lives and moves, and runs a Spine animation.
 /// Entities include player characters, projectiles, summons, etc. Particles are not entities.
 /// </summary>
-public abstract class Entity : MonoBehaviour, IEngineUpdateListener, IStateSerializable, IHandleSerializable {
+public abstract class Entity : MonoBehaviour, IEngineUpdateListener, IStateSerializable, IHandleSerializable, IAnimationEventHandler {
     [Title("Configuration")]
     public string assetPath;
     
@@ -49,6 +50,8 @@ public abstract class Entity : MonoBehaviour, IEngineUpdateListener, IStateSeria
     public EntityBoundingBoxManager boundingBoxManager { get; private set; }
     [SerializationOptions(SerializationOption.EXCLUDE)]
     public Dictionary<string, EntityState> states { get; } = new();
+    [SerializationOptions(SerializationOption.EXCLUDE)]
+    private readonly Dictionary<string, List<RegisteredAnimationHandlerData>> animationEventHandlers = new();
 
     // Entity Stats
     public float health { get; set; }
@@ -96,6 +99,27 @@ public abstract class Entity : MonoBehaviour, IEngineUpdateListener, IStateSeria
 
                 states[tokenName] = state;
             }
+        }
+        
+        // animation event handlers
+        {
+            var alreadyChecked = new HashSet<IAnimationEventHandler>();
+            foreach (var handler in GetComponentsInChildren<IAnimationEventHandler>()) {
+                if (alreadyChecked.Contains(handler)) continue;
+                
+                foreach (var method in GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)) {
+                    var attr = method.GetCustomAttribute<AnimationEventHandlerAttribute>();
+                    if (attr != null) {
+                        if (!animationEventHandlers.TryGetValue(attr.name, out var list)) {
+                            list = new();
+                            animationEventHandlers[attr.name] = list;
+                        }
+                        list.Add(new(method, handler));
+                    }
+                }
+                alreadyChecked.Add(handler);
+            }
+            // Debug.Log($"State {id} has {animationEventHandlers.Count} animation event handlers");
         }
         
         // Debug.Log($"tokens, {string.Join(", ", states.Keys)}");
@@ -242,7 +266,22 @@ public abstract class Entity : MonoBehaviour, IEngineUpdateListener, IStateSeria
             }
         }
     }
-
+    public void HandleAnimationEvent(string handlerName, AnimationEventData data) {
+        activeState.HandleAnimationEvent(handlerName, data);
+        
+        if (animationEventHandlers.TryGetValue(handlerName, out var handlers)) {
+            Debug.Log(handlers);
+            foreach (var handler in handlers) {
+                var m = handler.method;
+                if (m.GetParameters().Length == 1) {
+                    m.Invoke(handler.handler, new object[]{data});
+                } else {
+                    m.Invoke(handler.handler, null);
+                }
+            }
+        }
+    }
+    
     public void QueueInboundAttack(AttackData attack) {
         queuedInboundAttacks.Add(attack);
     }
@@ -531,4 +570,15 @@ class CarriedStateVariable {
     }
     
 }
+
+struct RegisteredAnimationHandlerData {
+    public readonly MethodInfo method;
+    public readonly IAnimationEventHandler handler;
+    
+    public RegisteredAnimationHandlerData(MethodInfo method, IAnimationEventHandler handler) {
+        this.method = method;
+        this.handler = handler;
+    }
+}
+
 }
