@@ -9,6 +9,7 @@ public class FrameDataRegister : RuntimeCharacterDataRegister, IReflectionSerial
     public int blockstunFrames { get; set; }
     public int throwInvulnFrames { get; set; }
     public int landingRecoveryFrames { get; set; }
+    public int forcedAirborneFrames { get; set; }
     public LandingRecoveryFlag landingFlag { get; set; }
     [SerializationOptions(SerializationOption.EXCLUDE)]
     public List<BounceData> groundBounces { get; } = new();
@@ -41,6 +42,10 @@ public class FrameDataRegister : RuntimeCharacterDataRegister, IReflectionSerial
         
         if (throwInvulnFrames > 0) {
             --throwInvulnFrames;
+        }
+        
+        if (forcedAirborneFrames > 0) {
+            --forcedAirborneFrames;
         }
         
         // if (landingRecoveryFrames > 0) {

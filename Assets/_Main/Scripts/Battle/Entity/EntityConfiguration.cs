@@ -17,10 +17,6 @@ public class EntityConfiguration : ScriptableObject {
 
     [BoxGroup("State")]
     public List<EntityStateLibrary> stateLibraries = new();
-    
-    [BoxGroup("Basic Stats")]
-    public float health;
-
 }
 
 public enum EntityType {

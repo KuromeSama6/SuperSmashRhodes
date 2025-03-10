@@ -18,7 +18,8 @@ public class State_CmnDash : CharacterState {
     public override EntityStateType type => EntityStateType.CHR_MOVEMENT_LOOP;
     public override float inputPriority => 1.1f;
     protected override SubroutineFlags mainRoutineFlags => SubroutineFlags.NO_PRETICK_SUBROUTINES;
-
+    
+    
     public override bool mayEnterState {
         get {
             if (!player.characterConfig.mayDash) return false;
@@ -41,6 +42,7 @@ public class State_CmnDash : CharacterState {
         AddCancelOption("CmnBackdash");
         
         player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/dash_dust", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position, Vector3.zero, new Vector3(player.side == EntitySide.LEFT ? 1 : -1, 1, 1));
+        stateData.disableSideSwap = true;
     }
 
     public override EntityStateSubroutine BeginMainSubroutine() {

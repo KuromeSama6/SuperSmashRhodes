@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using Spine;
 using Spine.Unity;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Battle.State;
+using SuperSmashRhodes.Runtime.Character;
 using SuperSmashRhodes.Runtime.Gauge;
 using UnityEngine;
 
@@ -18,6 +20,7 @@ public class Entity_Rosmontis_Sword : Entity, IEngineUpdateListener {
     
     public int index { get; private set; }
     public Gauge_Rosmontis_SwordManager manager { get; private set; }
+    public bool dispatched { get; private set; }
 
     private Bone targetBone;
     private MeshRenderer meshRenderer;
@@ -78,16 +81,27 @@ public class Entity_Rosmontis_Sword : Entity, IEngineUpdateListener {
             current.Attachment = target.Attachment;
         }
 
+        UpdateSortingOrder();
+    }
+
+    private void UpdateSortingOrder() {
+        if (owner.activeState is ISwordBoundAttack swordBoundAttack && swordBoundAttack.indices.Contains(index)) {
+            meshRenderer.sortingOrder = owner.skeletonSortingOrder + 5;
+            return;
+        }
+        
         if (index == 1) {
             meshRenderer.sortingOrder = 0;
-        } else {
-            meshRenderer.sortingOrder = owner.skeletonSortingOrder + index switch {
-                0 => 5,
-                2 => -4,
-                3 => -5,
-                _ => 0
-            };   
+            return;
         }
+
+
+        meshRenderer.sortingOrder = owner.skeletonSortingOrder + index switch {
+            0 => 5,
+            2 => -4,
+            3 => -5,
+            _ => 0
+        };  
     }
 
     public override EntityState GetDefaultState() {

@@ -45,6 +45,11 @@ public class State_CmnAirDash : CharacterState {
         ctx.Next(player.characterConfig.airDashDurationFinal, "CmnAirNeutral");
     }
 
+    protected override void OnStateEnd(EntityState nextState) {
+        base.OnStateEnd(nextState);
+        player.allowSideSwitchOverride = true;
+    }
+
     protected override void OnStateEndComplete(EntityState nextState) {
         base.OnStateEndComplete(nextState);
         player.rb.linearVelocityX *= 0.5f;

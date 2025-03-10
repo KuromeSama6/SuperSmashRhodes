@@ -16,7 +16,11 @@ public class Wall : MonoBehaviour {
     }
 
     private void OnCollisionEnter2D(Collision2D other) {
-        GameManager.inst.HandleWallCollision(this, other.gameObject.GetComponent<PlayerCharacter>());
+        GameManager.inst.HandleWallCollision(this, other.gameObject.GetComponent<PlayerCharacter>(), true);
+    }
+    
+    private void OnCollisionStay2D(Collision2D other) {
+        GameManager.inst.HandleWallCollision(this, other.gameObject.GetComponent<PlayerCharacter>(), false);
     }
 
 }

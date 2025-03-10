@@ -7,6 +7,8 @@ namespace SuperSmashRhodes.Battle {
 public class CharacterConfiguration : ScriptableObject {
     public string prettyName;
     [SerializeField]
+    private float baseHealth;
+    [SerializeField]
     private float defenseModifier = 1f;
     [SerializeField]
     private float baseGravity = 1.9f;
@@ -39,7 +41,8 @@ public class CharacterConfiguration : ScriptableObject {
     [TabGroup("playerConfig", "Dash", SdfIconType.ArrowRight, TextColor = "yellow")]
     [SerializeField]
     private Vector2 backdashVelocity;
-    
+
+    public float healthFinal => 500 + baseHealth;
     public float defenseModifierFinal => 1f + defenseModifier;
     public float baseGravityFinal => 2.5f + baseGravity;
     public float walkSpeedFinal => 1 + walkSpeed;

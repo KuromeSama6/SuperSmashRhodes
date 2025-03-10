@@ -27,7 +27,7 @@ public class HealthBar : PerSideUIElement<HealthBar> {
         if (player == null) return;
 
         var actualHealth = player.health;
-        var maxHealth = player.config.health;
+        var maxHealth = player.characterConfig.healthFinal;
         var percent = actualHealth / maxHealth;
         
         // update target color
@@ -64,7 +64,7 @@ public class HealthBar : PerSideUIElement<HealthBar> {
     private void HealthBlink() {
         if (!player) return;
         var actualHealth = player.health;
-        var maxHealth = player.config.health;
+        var maxHealth = player.characterConfig.healthFinal;
         var percent = actualHealth / maxHealth;
 
         if (percent <= .25f) targetColor = "cb0000".HexToColor();

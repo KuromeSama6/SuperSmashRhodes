@@ -45,7 +45,7 @@ public class EntityBoundingBoxManager : MonoBehaviour, IStateSerializable {
         // Debug.Log($"{entity.name}: pushbox={pushbox.box}");
     }
 
-    private EntityBoundingBox CreateBoundingBox(string name, BoundingBoxType type) {
+    public EntityBoundingBox CreateBoundingBox(string name, BoundingBoxType type) {
         if (skeleton.skeleton.FindSlot(name) == null)
             throw new ArgumentException($"No such bounding box: {name}");
         

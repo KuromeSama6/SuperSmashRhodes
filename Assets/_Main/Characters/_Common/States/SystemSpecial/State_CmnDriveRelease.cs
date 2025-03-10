@@ -80,7 +80,7 @@ public class State_CmnDriveRelease : CharacterState {
         }
 
         if (player.burst.gauge.value >= 600f) frames *= 1.5f;
-        if (player.health / player.config.health <= .2f) frames *= 1.5f;
+        if (player.health / player.characterConfig.healthFinal <= .2f) frames *= 1.5f;
 
         frames = Mathf.Min(frames, player.burst.maxReleaseFrames);
 

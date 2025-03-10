@@ -74,13 +74,9 @@ public class PushboxManager : MonoBehaviour, IEngineUpdateListener {
             // ground check
             // Debug.Log($"{player.playerIndex} {player.transform.position.y}");
             var isGrounded = player.transform.position.y <= .03f;
-            // if (player.playerIndex == 1) Debug.Log($"oldstate {grounded} gnd {isGrounded} pos {player.transform.position.y}");
-            if (isGrounded != grounded) {
-                grounded = isGrounded;
-                if (grounded) {
-                    onGroundContact.Invoke();
-                    // Debug.Log("grounded");
-                }
+            grounded = isGrounded;
+            if (grounded && player.airborne && player.frameData.forcedAirborneFrames == 0 && player.rb.linearVelocityY <= 0) {
+                onGroundContact.Invoke();
             }
         }
 

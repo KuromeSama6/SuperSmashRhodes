@@ -82,6 +82,8 @@ public class DebugLogsUI : SingletonBehaviour<DebugLogsUI> {
     }
 
     private void HandleLogUnsafe(string str, string stackTrace, LogType type) {
+        if (Application.isEditor) return;
+        
         lock (logsQueue) {
             logsQueue.Enqueue(new LogEntry {
                 str = str, 

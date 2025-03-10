@@ -68,18 +68,19 @@ public class State_CmnHitStunAir : State_Common_Stun {
         
         if (player.frameData.shouldGroundBounce) {
             var force = player.frameData.ConsumeContactBounce();
+            
             var decayData = opponent.comboDecayData;
             var comboCounter = player.comboCounter;
             player.rb.AddForce(force.bounceForce * new Vector2(
                                    decayData.opponentBlowbackCurve.Evaluate(comboCounter.comboDecay), 
                                    decayData.opponentLaunchCurve.Evaluate(comboCounter.comboDecay)
-                               ), ForceMode2D.Impulse); 
+                               ) * new Vector2(player.side == EntitySide.RIGHT ? 1 : -1, 1), ForceMode2D.Impulse); 
             // while (player.transform.position.y < 1f) {
             //     yield return 1;
             // }
             landed = false;
             player.airborne = true;
-
+            
             player.airHitstunRotation = 0f;  
             if (force.flags.HasFlag(BounceFlags.HEAVY)) {
                 player.fxManager.PlayGameObjectFX("cmn/battle/fx/prefab/common/land/hard", CharacterFXSocketType.WORLD_UNBOUND, player.transform.position);
@@ -89,8 +90,9 @@ public class State_CmnHitStunAir : State_Common_Stun {
             } else {
                 SimpleCameraShakePlayer.inst.PlayCommon("groundbounce");
             }
-            
-            ctx.Repeat(0);
+
+            player.frameData.forcedAirborneFrames = 5;
+            ctx.Repeat();
             return;
         }
         

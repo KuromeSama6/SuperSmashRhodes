@@ -54,8 +54,6 @@ public abstract class Entity : MonoBehaviour, IEngineUpdateListener, IStateSeria
     private readonly Dictionary<string, List<RegisteredAnimationHandlerData>> animationEventHandlers = new();
 
     // Entity Stats
-    public float health { get; set; }
-    public float healthPercent => health / config.health;
 
     public bool logicStarted { get; private set; }
     // public EntityAssetLibrary assetLibrary { get; private set; }
@@ -415,7 +413,6 @@ public abstract class Entity : MonoBehaviour, IEngineUpdateListener, IStateSeria
         }
     }
     public virtual void OnRoundInit() {
-        health = config.health;
     }
     protected virtual void OnTick() {}
     protected virtual IAttack OnOutboundHit(Entity victim, EntityBBInteractionData data) {

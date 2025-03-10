@@ -15,7 +15,7 @@ public abstract class State_Common_NmlAtk5H : State_Common_NormalAttack {
 
     protected override string mainAnimation => "cmn/NmlAtk5H";
 
-    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_NORMAL | EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER;
+    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_NORMAL_H | EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER;
     protected override InputFrame[] requiredInput => new InputFrame[] {new(InputType.HS, InputFrameType.PRESSED)};
 
     public override int GetFreezeFrames(Entity to) {

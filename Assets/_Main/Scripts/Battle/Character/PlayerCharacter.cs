@@ -34,6 +34,8 @@ public class PlayerCharacter : Entity {
     public float moveDirection { get; private set; }
     public bool isDashing { get; private set; }
     public bool isCrouching { get; private set; }
+    public float health { get; set; }
+    public float healthPercent => health / characterConfig.healthFinal;
     public bool airborne { get; set; }
     public bool airActionPerformed { get; set; }
     public PlayerCharacter opponent => GameManager.inst.GetOpponent(this);
@@ -112,7 +114,8 @@ public class PlayerCharacter : Entity {
             return ret;
         }
     }
-    
+
+    public bool allowSideSwitchOverride { get; set; }
     public float airHitstunRotation { get; set; } = 0f;
     private float yRotationTarget = 0f;
     public int backdashCooldown { get; set; }
@@ -120,7 +123,7 @@ public class PlayerCharacter : Entity {
 
     public float gutsDamageModifier {
         get {
-            var percentage = health / config.health;
+            var percentage = health / characterConfig.healthFinal;
             if (percentage > .7f) return 1f;
             var guts = characterConfig.guts;
 
@@ -222,7 +225,7 @@ public class PlayerCharacter : Entity {
         }
 
         animation.animation.GetComponent<MeshRenderer>().sortingOrder = skeletonSortingOrder;
-
+        
     }
 
     private void UpdateGravity() {
@@ -297,33 +300,34 @@ public class PlayerCharacter : Entity {
     public void UpdateFacing() {
         float pos = transform.position.x;
         float opponentPos = opponent.transform.position.x;
-        var side = this.side;
+        var targetSide = this.side;
         
         if (pos < opponentPos) {
-            side = EntitySide.LEFT;
+            targetSide = EntitySide.LEFT;
             
         } else if (pos > opponentPos) {
-            side = EntitySide.RIGHT;
+            targetSide = EntitySide.RIGHT;
         }
 
-        if (side != this.side) {
+        if (targetSide != this.side) {
             if (activeState != null && activeState.stateData.disableSideSwap) return;
-            if (Mathf.Abs(pos - opponentPos) < pushboxManager.correctionBox.size.x) return;
+            // if (Mathf.Abs(pos - opponentPos) < pushboxManager.correctionBox.size.x) return;
             
             // Debug.Log($"{playerIndex} {opponent.transform.position.y} {transform.position.y + pushboxManager.correctionBox.size.y}");
             
-            if (opponent.transform.position.y >= transform.position.y + pushboxManager.correctionBox.size.y) return;
-            if ((airborne && activeState is State_CmnHitStunAir)) return;
+            // if (opponent.transform.position.y >= transform.position.y + pushboxManager.correctionBox.size.y) return;
+            // if ((airborne && activeState is State_CmnHitStunAir)) return;
 
-            if (facingCheckCurrentState != activeState || facingCheckCurrentState == null) {
-                facingCheckCurrentState = activeState;
-            } else if (activeState != null && !activeState.stateData.maySwitchSides) {
-                return;
-            }
+            // if (facingCheckCurrentState != activeState || facingCheckCurrentState == null) {
+            //     facingCheckCurrentState = activeState;
+            // } else if (activeState != null && !activeState.stateData.maySwitchSides) {
+            //     return;
+            // }
+            //
+            if (airborne && !allowSideSwitchOverride) return;
+            allowSideSwitchOverride = false;
             
-            if (airborne) return;
-            
-            this.side = side;
+            this.side = targetSide;
             onSideSwap.Invoke();
         }
         
@@ -356,6 +360,8 @@ public class PlayerCharacter : Entity {
     public override void OnRoundInit() {
         base.OnRoundInit();
         FightEngine.inst.RefreshComponentReferences();
+        
+        health = characterConfig.healthFinal;
         // position
         
         // TODO: Z index management
@@ -379,7 +385,7 @@ public class PlayerCharacter : Entity {
     public void ForceSetAirborne() {
         // Debug.Log($"force set, a={airborne}");
         if (airborne) return;
-        transform.position += new Vector3(0, .5f, 0);
+        transform.position += new Vector3(0, 1f, 0);
     }
     
     public override void BeginLogic() {
@@ -626,7 +632,10 @@ public class PlayerCharacter : Entity {
         
         // apply freeze frames
 
-        var freezeFrames = attack.GetFreezeFrames(this);
+        // var freezeFrames = attack.GetFreezeFrames(this);
+        // standardized freeze frames
+        var freezeFrames = attack.GetAttackLevel(this) + 8;
+        
         if (addFreezeFrames) {
             var delay = armor ? 0 : 4;
             if (hitstate == Hitstate.COUNTER) {

@@ -275,6 +275,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 89fe426e8d292fa41829cc9ef5f56800
+    m_Address: chr/rosmontis/battle/sfx/sword/impact/normal
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8c2ec1904ab112a459a1c842d0314ece
     m_Address: chr/exusiai/battle/sfx/gun_empty
     m_ReadOnly: 0
@@ -340,6 +345,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a747a73b72966af4bb591cf982a419c3
+    m_Address: cmn/battle/sfx/hit/4
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: aae43bfc74dd26f47a025a4bf92cc0e6
     m_Address: cmn/battle/sfx/hit/1
     m_ReadOnly: 0
@@ -352,6 +362,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b3270193c6333fb4bb3682563d792e78
     m_Address: cmn/battle/sfx/attack/fist/heavy/2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b4bf0aa3aef55544c940f322c1226540
+    m_Address: cmn/battle/sfx/hit/3
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b7d4f0c51602eb147bbae4817a146cd5
+    m_Address: chr/rosmontis/battle/sfx/6h/impact
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -410,6 +430,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d0b6a888f290eea4b892c57a6f84b7bc
+    m_Address: cmn/battle/sfx/block/4
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dfe061460a9217445b7592ef9439ee77
     m_Address: chr/chen/battle/sfx/drive/p1
     m_ReadOnly: 0
@@ -422,6 +447,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e2828db53c9b22045b1118be1c34a400
     m_Address: bgm/results/victory/intro
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e463b33b0565f124cb079e2416ce931d
+    m_Address: chr/rosmontis/battle/sfx/sword/dispatch/light
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

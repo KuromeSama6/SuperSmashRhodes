@@ -277,7 +277,7 @@ public class GameManager : SingletonBehaviour<GameManager>, IEngineUpdateListene
         target.UpdateRotation();
     }
 
-    public void HandleWallCollision(Wall wall, PlayerCharacter player) {
+    public void HandleWallCollision(Wall wall, PlayerCharacter player, bool single) {
         // wall bounce
         if (!player) return;
         

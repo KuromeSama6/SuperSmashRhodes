@@ -120,7 +120,7 @@ public class ComboCounter : RuntimeCharacterDataRegister, IReflectionSerializabl
         lastMove = null;
 
         if (RoomManager.current == null || RoomManager.current.config.isTraining) {
-            owner.health = owner.config.health;
+            owner.health = owner.characterConfig.healthFinal;
         }
 
         // Debug.Log($"{owner} combo end");

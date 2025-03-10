@@ -15,7 +15,7 @@ public abstract class State_Common_NmlAtk2H : State_Common_NormalAttack {
 
     protected override string mainAnimation => "cmn/NmlAtk2H";
 
-    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_NORMAL | EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER;
+    protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_NORMAL_H | EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER;
     public override bool IsInputValid(InputBuffer buffer) {
         return buffer.thisFrame.HasInput(player.side, InputType.DOWN, InputFrameType.HELD) && 
                buffer.TimeSlice(normalInputBufferLength).ScanForInput(player.side, new InputFrame(InputType.HS, InputFrameType.PRESSED));

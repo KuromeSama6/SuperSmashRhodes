@@ -104,6 +104,9 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public virtual void OnHit(Entity target) {
         ++hits;
         entity.PlaySound(GetHitSfx(target), .6f);
+        opponent.frameData.groundBounces.Clear();
+        opponent.frameData.wallBounces.Clear();
+        
         // Debug.Log(player.meter.meterGainMultiplier);
         if (hits <= 1) {
             player.meter.AddMeter(GetMeterGain(target, false));
@@ -237,10 +240,11 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         return 0;
     }
 
-    public string GetHitSfx(Entity to) {
-        return "cmn/battle/sfx/hit/1";
+    public virtual string GetHitSfx(Entity to) {
+        var attackLevel = GetAttackLevel(to);
+        return $"cmn/battle/sfx/hit/{(attackLevel > 2 ? 4 : 3)}";
     }
-    public string GetBlockedSfx(Entity to) {
+    public virtual string GetBlockedSfx(Entity to) {
         return "cmn/battle/sfx/block/2";
     }
     public float GetComboDecay(Entity to) {

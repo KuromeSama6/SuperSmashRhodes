@@ -117,6 +117,10 @@ public class State_Chen_NmlAtk5S : State_Common_NmlAtk5S {
     public override Vector2 GetCarriedMomentumPercentage(Entity to) {
         return Vector2.one;
     }
+
+    public override string GetHitSfx(Entity to) {
+        return "cmn/battle/sfx/hit/3";
+    }
 }
 
 [NamedToken("Chen_NmlAtk6S")]
@@ -184,7 +188,7 @@ public class State_Chen_NmlAtk6H : State_Common_NmlAtk6H {
             c.PlayFx("chr/chen/battle/fx/prefab/nml/slash/1", CharacterFXSocketType.SELF, offset, angle);
 
             if (target is PlayerCharacter p && !p.airborne) {
-                p.frameData.AddGroundBounce(new Vector2(.2f, 12f));
+                p.frameData.AddGroundBounce(new Vector2(.2f, 8f));
                 p.ForceSetAirborne();
             }
         }

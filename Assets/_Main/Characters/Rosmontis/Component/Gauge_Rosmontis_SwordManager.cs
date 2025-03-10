@@ -1,17 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using Spine;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.Game;
 using SuperSmashRhodes.Battle.State;
+using SuperSmashRhodes.Runtime.Character;
 using SuperSmashRhodes.Runtime.State;
 using SuperSmashRhodes.Runtime.Tokens;
 using SuperSmashRhodes.Util;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace SuperSmashRhodes.Runtime.Gauge {
 public class Gauge_Rosmontis_SwordManager : CharacterComponent, IEngineUpdateListener {
+    [FormerlySerializedAs("swordBoundingBoxes")]
+    public int swordBoundingBoxCount = 5;
+    
     [Title("References")]
     public Bone bone;
     public List<GameObject> swordPrefabs = new();
@@ -22,6 +28,7 @@ public class Gauge_Rosmontis_SwordManager : CharacterComponent, IEngineUpdateLis
     
     private int powerCooldown = 0;
     private float initialFloatingHeight;
+    private readonly List<EntityBoundingBox> swordBoundingBoxes = new();
 
     public float maxPower {
         get {
@@ -39,6 +46,7 @@ public class Gauge_Rosmontis_SwordManager : CharacterComponent, IEngineUpdateLis
     public void EngineUpdate() {
         if (!player || player.activeState == null) return;
         // Debug.Log(string.Join(", ", swords));
+        UpdateSwordBoundingBoxes();
 
         if (powerCooldown > 0) {
             --powerCooldown;
@@ -87,8 +95,21 @@ public class Gauge_Rosmontis_SwordManager : CharacterComponent, IEngineUpdateLis
         base.OnRoundInit();
         InstantiateSwords();
         power.value = power.max;
+
+        {
+            // create bounding boxes
+            var manager = player.boundingBoxManager;
+            for (int i = 0; i < swordBoundingBoxCount; i++) {
+                var box = manager.CreateBoundingBox($"sword_hb_{i}", BoundingBoxType.HITBOX);
+                swordBoundingBoxes.Add(box);
+            }
+        }
     }
 
+    public bool IsSwordFree(int index) {
+        return !swords[index].dispatched;
+    }
+    
     private void InstantiateSwords() {
         foreach (var sword in swords) {
             if (sword) GameManager.inst.UnregisterEntity(sword);
@@ -111,6 +132,17 @@ public class Gauge_Rosmontis_SwordManager : CharacterComponent, IEngineUpdateLis
             
             swords.Add(sword);
         }
+    }
+
+    private void UpdateSwordBoundingBoxes() {
+        var boxesEnabled = false;
+        var state = player.activeState;
+
+        if (state is ISwordBoundAttack singleSwordBoundAttack) {
+            boxesEnabled = singleSwordBoundAttack.indices.All(c => !swords[c].dispatched);
+        }
+        
+        foreach (var box in swordBoundingBoxes) box.gameObject.SetActive(boxesEnabled);
     }
 }
 }

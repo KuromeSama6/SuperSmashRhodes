@@ -64,7 +64,14 @@ public struct AttackFrameData {
             };
 
         } else {
-            var ret = 11 + attackLevel;
+            var ret = attackLevel switch {
+                0 => 12,
+                1 => 14,
+                2 => 16,
+                3 => 19,
+                4 => 21,
+                _ => 15
+            };
             if (to.activeState is State_CmnNeutralCrouch) ret += 1;
             return ret;
         }
