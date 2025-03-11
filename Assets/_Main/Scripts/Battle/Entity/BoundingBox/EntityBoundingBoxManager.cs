@@ -29,7 +29,7 @@ public class EntityBoundingBoxManager : MonoBehaviour, IStateSerializable {
         // register
         // main pushbox
         if (skeleton) {
-            pushbox = CreateBoundingBox("pushbox", BoundingBoxType.CHR_MAIN_PUSHBOX);
+            if (createPushbox) pushbox = CreateBoundingBox("pushbox", BoundingBoxType.CHR_MAIN_PUSHBOX);
             for (int i = 0; i < hitboxCount; i++) CreateBoundingBox($"hb_{i}", BoundingBoxType.HITBOX);
             for (int i = 0; i < hurtboxCount; i++) CreateBoundingBox($"ub_{i}", BoundingBoxType.HURTBOX);   
         }

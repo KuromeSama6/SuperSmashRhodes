@@ -14,13 +14,8 @@ public abstract class State_Common_NormalAttack : CharacterAttackStateBase {
     protected override int normalInputBufferLength => 4;
     protected override float inputMeter => 0;
 
-    public override bool mayEnterState => base.mayEnterState && !player.gatlingMovesUsed.Contains(this);
-
     protected override void OnStateBegin() {
         base.OnStateBegin();
-        if (!isSelfCancellable) {
-            player.gatlingMovesUsed.Add(this);   
-        }
     }
 
     public override float GetChipDamagePercentage(Entity to) {
@@ -34,7 +29,6 @@ public abstract class State_Common_NormalAttack : CharacterAttackStateBase {
 public abstract class State_Common_AirNormalAttack : State_Common_NormalAttack {
     protected State_Common_AirNormalAttack(Entity entity) : base(entity) { }
     protected override AttackAirOkType airOk => AttackAirOkType.AIR;
-    public override bool mayEnterState => !player.gatlingMovesUsed.Contains(this);
     
     public override void OnContact(Entity to) {
         base.OnContact(to);
@@ -51,7 +45,7 @@ public abstract class State_Common_SpecialAttack : CharacterAttackStateBase {
     public override EntityStateType type => EntityStateType.CHR_ATK_SPECIAL;
     public override float inputPriority => 5f;
     protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_SUPER;
-    protected override int normalInputBufferLength => 10;
+    protected override int normalInputBufferLength => 12;
     protected override float inputMeter => 1f;
 
     public override float GetChipDamagePercentage(Entity to) {

@@ -16,6 +16,7 @@ using SuperSmashRhodes.Character.Gauge;
 using SuperSmashRhodes.Input;
 using SuperSmashRhodes.Network.RoomManagement;
 using SuperSmashRhodes.Runtime.State;
+using SuperSmashRhodes.Scripts;
 using SuperSmashRhodes.UI.Battle;
 using SuperSmashRhodes.UI.Battle.AnnouncerHud;
 using SuperSmashRhodes.Util;
@@ -58,7 +59,7 @@ public class PlayerCharacter : Entity {
     public float pushboxCorrectionGraceAmount { get; set; }
     public int airOptions { get; set; }
     public IInputProvider inputProvider { get; private set; } = new NOPInputProvider(); // InputProvider assigned on round start
-    public List<CharacterAttackStateBase> gatlingMovesUsed { get; } = new();
+    public Dictionary<CharacterAttackStateBase, int> movesUsed { get; } = new();
     public bool bufferClearRequested { get; set; }
     public int skeletonSortingOrder { get; set; }
 
@@ -161,7 +162,7 @@ public class PlayerCharacter : Entity {
     }
 
     public void ResetGatlings() {
-        gatlingMovesUsed.Clear();
+        movesUsed.Clear();
     }
 
     public override void Init() {
@@ -217,11 +218,15 @@ public class PlayerCharacter : Entity {
         }
         
         // death
-        if (GameManager.inst.inGame && health <= 0 && !RoomManager.current.config.isTraining && !(activeState is State_SysDeath) && !stateFlags.HasFlag(CharacterStateFlag.DEATH_HOLD)) {
-            BeginState("SysDeath");
-            stateFlags |= CharacterStateFlag.NO_NEW_STATE;
-            GameManager.inst.HandlePlayerDeath(this);
-            comboCounter.Reset();
+        if (health <= 0) {
+            if (RoomManager.current != null && !RoomManager.current.config.isTraining && GameManager.inst.inGame && !(activeState is State_SysDeath) && !stateFlags.HasFlag(CharacterStateFlag.DEATH_HOLD)) {
+                BeginState("SysDeath");
+                stateFlags |= CharacterStateFlag.NO_NEW_STATE;
+                GameManager.inst.HandlePlayerDeath(this);
+                comboCounter.Reset();
+            } else {
+                health = characterConfig.healthFinal;
+            }   
         }
 
         animation.animation.GetComponent<MeshRenderer>().sortingOrder = skeletonSortingOrder;
@@ -340,6 +345,18 @@ public class PlayerCharacter : Entity {
     public void ApplyGroundedFrictionImmediate() {
         applyGroundedFrictionFrames = 0;
         rb.linearVelocityX = 0f;
+    }
+
+    public Vector2 GetOffsetStageBound(Vector2 offset) {
+        return StageManager.inst.ClampToStage(transform.position + new Vector3(offset.x * (side == EntitySide.RIGHT ? 1 : -1), offset.y, 0));
+    }
+
+    public void AddMoveCount(CharacterAttackStateBase move, int count = 1) {
+        if (!movesUsed.ContainsKey(move)) {
+            movesUsed.Add(move, 0);
+        }
+        
+        movesUsed[move] += count;
     }
     
     public override EntityState GetDefaultState() {
@@ -603,7 +620,7 @@ public class PlayerCharacter : Entity {
         // pushback
         if (!armor) {
             var amount = attack.GetPushback(this, airborne, blocked);
-            if (blocked) {
+            if (blocked && !airborne) {
                 amount.y = 0f;
                 
             } else {
@@ -750,7 +767,7 @@ public class PlayerCharacter : Entity {
     public void ApplyCarriedPushback(Vector2 vec, Vector2 carriedMomentum, float atWallMultiplier = 1f) {
         float direction = side == EntitySide.LEFT ? -1 : 1;
         
-        if (pushboxManager.atWall) {
+        if (pushboxManager.atWall && vec.x > 0) {
             opponent.rb.linearVelocity *= carriedMomentum;
             opponent.rb.AddForceX(vec.x * -direction * atWallMultiplier, ForceMode2D.Impulse);
             opponent.groundedFrictionAlpha = 0;

@@ -10,17 +10,18 @@ namespace SuperSmashRhodes.Battle.State.Implementation {
 public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public AttackPhase phase { get; protected set; }
     public virtual bool hasActiveFrames => hitsRemaining > 0 && !hitLock; 
-    public int hitsRemaining { get; protected set; }  = 1;
+    public int hitsRemaining { get; protected set; } = 1;
     public int hits { get; protected set; }
     public int blockedHits { get; protected set; }
     public bool hitLock { get; protected set; }
     public int attackStage { get; private set; }
     
     public virtual AttackType attackType => AttackType.STRIKE;
-    public override bool mayEnterState => player.MatchesAirState(airOk);
+    public override bool mayEnterState => player.MatchesAirState(airOk) && player.movesUsed.GetValueOrDefault(this) < comboUseLimit;
     public override Hitstate hitstate => phase == AttackPhase.RECOVERY ? Hitstate.PUNISH : Hitstate.COUNTER;
     public bool chargable => this is IChargable;
     public virtual bool landCancellable => true;
+    protected virtual int comboUseLimit => 1;
 
     public CharacterAttackStateBase(Entity entity) : base(entity) {
         
@@ -38,6 +39,10 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
         chargeLevel = 0;
         hitLock = false;
         attackStage = 0;
+        
+        if (!isSelfCancellable) {
+            player.AddMoveCount(this);
+        }
     }
 
     public override EntityStateSubroutine BeginMainSubroutine() {
@@ -45,7 +50,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     }
     
     protected virtual void Sub_Startup(SubroutineContext ctx) {
-        entity.animation.AddUnmanagedAnimation(mainAnimation, false);
+        if (mainAnimation != null) entity.animation.AddUnmanagedAnimation(mainAnimation, false);
         phase = AttackPhase.STARTUP;
         OnStartup();
         
@@ -226,7 +231,9 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public abstract float GetFirstHitProration(Entity to);
     public abstract AttackGuardType GetGuardType(Entity to);
     public abstract CounterHitType GetCounterHitType(Entity to);
-    public abstract int GetFreezeFrames([CanBeNull] Entity to);
+    public virtual int GetFreezeFrames([CanBeNull] Entity to) {
+        return 10;
+    }
     public abstract int GetAttackLevel(Entity to);
     public virtual float GetMinimumDamagePercentage(Entity to) {
         return 0;
@@ -300,6 +307,11 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     [AnimationEventHandler("std/ApplyCinematicDamage")]
     public virtual void OnApplyCinematicDamage(AnimationEventData data) {
         player.opponent.ApplyDamage(data.integerValue, CreateAttackData(player.opponent), DamageProperties.SKIP_REGISTER | DamageProperties.IGNORE_COMBO_DECAY); 
+    }
+    
+    [AnimationEventHandler("std/SetGravityScale")]
+    public virtual void OnSetGravityScale(AnimationEventData data) {
+        stateData.gravityScale = data.floatValue;
     }
 }
 }

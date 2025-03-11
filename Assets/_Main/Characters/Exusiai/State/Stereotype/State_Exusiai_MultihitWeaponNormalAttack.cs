@@ -18,14 +18,12 @@ public abstract class State_Exusiai_MultihitWeaponNormalAttack : State_Exusiai_F
     
     public override bool hasActiveFrames => base.hasActiveFrames && gauge.mayFire && totalShots > 0;
     protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER | EntityStateType.CHR_ATK_NORMAL;
-    public override bool mayEnterState => !player.gatlingMovesUsed.Contains(this);
     public State_Exusiai_MultihitWeaponNormalAttack(Entity entity) : base(entity) {
         
     }
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
-        player.gatlingMovesUsed.Add(this);
         totalShots = maxHits;
         weaponDry = false;
         shotsFired = false;

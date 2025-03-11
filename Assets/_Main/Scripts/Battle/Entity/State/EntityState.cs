@@ -173,7 +173,7 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
     }
     
     // Member methods
-    protected void AddCancelOption(string stateName) {
+    public void AddCancelOption(string stateName) {
         if (!entity.states.TryGetValue(stateName, out var state))
             throw new KeyNotFoundException($"State {stateName} not found");
             
@@ -181,7 +181,7 @@ public abstract class EntityState : NamedToken, IStateSerializable, IHandleSeria
         stateData.cancelOptions.Add(state);
     }
     
-    protected void AddCancelOption(EntityStateType flag) {
+    public void AddCancelOption(EntityStateType flag) {
         stateData.cancelFlag |= flag;
     }
 

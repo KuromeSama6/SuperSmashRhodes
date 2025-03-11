@@ -55,6 +55,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad5b7984a0a8a0047aaab6962743d4c9
+    m_Address: chr/rosmontis/battle/sfx/j214h/hitfinal
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 47af94df76536e94698dc26068dd4147, type: 2}
   m_SchemaSet:

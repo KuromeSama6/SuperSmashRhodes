@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Tokens
   m_GUID: 23e6d5e2f10a26d4587d644841cef439
   m_SerializeEntries:
+  - m_GUID: 87e873ee501133b40b0bb64b69370233
+    m_Address: chr/rosmontis/battle/token/thrownsword
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f4e32f212df33804ba66ab462303cbb4
     m_Address: chr/exusiai/battle/token/ApplePie
     m_ReadOnly: 0

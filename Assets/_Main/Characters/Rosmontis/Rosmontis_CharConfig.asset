@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Rosmontis_CharConfig
   m_EditorClassIdentifier: 
   prettyName: "\u8FF7\u8FED\u9999"
-  defenseModifier: 0.0156
+  baseHealth: 0
+  defenseModifier: 0.0938
   baseGravity: 0
   guts: 1
   walkSpeed: 0.17

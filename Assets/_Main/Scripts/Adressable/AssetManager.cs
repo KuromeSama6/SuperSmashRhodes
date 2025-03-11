@@ -80,7 +80,14 @@ public class AssetManager : AutoInitSingletonBehaviour<AssetManager> {
             }, AssetReleaseMethod.MANUAL);
         }
     }
-    
+
+    private void OnDestroy() {
+        // release all
+        foreach (var asset in assets.Values) {
+            asset.Release();
+        }
+    }
+
     public static T Get<T>(AssetReferenceT<T> reference) where T: Object {
         return Get<T>(reference.RuntimeKey.ToString());
     }

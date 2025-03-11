@@ -12,7 +12,7 @@ using SuperSmashRhodes.Runtime.Gauge;
 using UnityEngine;
 
 namespace SuperSmashRhodes.Runtime.Tokens {
-public class Entity_Rosmontis_Sword : Entity, IEngineUpdateListener {
+public class Token_Rosmontis_Sword : Token, IEngineUpdateListener {
     [Title("References")]
     public BoneFollower boneFollower;
     public SkeletonAnimation skeleton;
@@ -21,12 +21,15 @@ public class Entity_Rosmontis_Sword : Entity, IEngineUpdateListener {
     public int index { get; private set; }
     public Gauge_Rosmontis_SwordManager manager { get; private set; }
     public bool dispatched { get; private set; }
+    public string dispatcher { get; private set; }
 
     private Bone targetBone;
     private MeshRenderer meshRenderer;
     
     private SkeletonAnimation playerSkeleton => owner.animation.animation;
     public override bool shouldSimulatePhysics => false;
+    private int animationLayer => 10 + index;
+    
     /**
      * Sword slot to target slot.
      */
@@ -62,7 +65,20 @@ public class Entity_Rosmontis_Sword : Entity, IEngineUpdateListener {
 
         // Debug.Log($"Rosmontis sword init: index: {index}, bone: {targetBone}, slots: {string.Join(",", slots.Keys)}");
     }
-    
+
+    public void Dispatch(string dispatcher) {
+        if (dispatched) return;
+        dispatched = true;
+        this.dispatcher = dispatcher;
+        owner.animation.AddLayerdAnimation($"chr/sword/dispatch{index}", animationLayer, false);
+    }
+
+    public void Release() {
+        if (!dispatched) return;
+        dispatcher = null;
+        dispatched = false;
+        owner.animation.AddLayerdAnimation($"chr/sword/return{index}", animationLayer, false);
+    }
     
     public override void OnRoundInit() {
         base.OnRoundInit();

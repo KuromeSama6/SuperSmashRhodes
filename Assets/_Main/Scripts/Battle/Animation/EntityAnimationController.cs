@@ -17,11 +17,11 @@ public class EntityAnimationController : MonoBehaviour, IStateSerializable {
     private AnimationState state => animation.state;
     private float currentBlendProgress = 0f;
     [SerializationOptions(SerializationOption.EXCLUDE)]
-    private PlayerCharacter player;
+    private Entity entity;
     private float currentTimeScale = 1f;
     private float extractedFrameTime = 0f;
     
-    public float targetFrameRate => player.logicStarted ? player.activeState.stateData.targetFrameRate : 60f;
+    public float targetFrameRate => entity.logicStarted ? entity.activeState.stateData.targetFrameRate : 60f;
 
     [SerializationOptions(SerializationOption.EXCLUDE)]
     private ReflectionSerializer reflectionSerializer;
@@ -30,12 +30,12 @@ public class EntityAnimationController : MonoBehaviour, IStateSerializable {
 
     private void Awake() {
         reflectionSerializer = new(this);
+        entity = GetComponentInParent<Entity>();
+        animation = GetComponentInChildren<SkeletonAnimation>();
     }
 
     private void Start() {
-        animation = GetComponentInChildren<SkeletonAnimation>();
         state.Event += OnUserDefinedEvent;
-        player = GetComponentInParent<PlayerCharacter>();
     }
 
     private void Update() {
@@ -48,8 +48,8 @@ public class EntityAnimationController : MonoBehaviour, IStateSerializable {
     }
     
     public void AddUnmanagedAnimation(string name, bool loop, float transitionTime = 0f, float timeScale = 1) {
-        if (player.activeState != null && player.activeState.stateData != null) {
-            ApplyNeutralPose(player.activeState.stateData.shouldApplySlotNeutralPose);
+        if (entity.activeState != null && entity.activeState.stateData != null) {
+            ApplyNeutralPose(entity.activeState.stateData.shouldApplySlotNeutralPose);
         }
         var track = state.GetCurrent(0);
         
@@ -73,6 +73,16 @@ public class EntityAnimationController : MonoBehaviour, IStateSerializable {
             Debug.LogWarning($"Animation {name} not found in {animation.skeletonDataAsset.name}");
         }
         
+    }
+
+    public void AddLayerdAnimation(string name, int track, bool loop, float alpha = 1) {
+        if (track == 0)
+            throw new ArgumentException("Could not add layered animation to main track");
+        state.ClearTrack(track);
+        state.AddAnimation(track, name, loop, 0);
+        
+        var trackEntry = state.GetCurrent(track);
+        trackEntry.Alpha = alpha;
     }
 
     public void Tick(int frames = 1) {
@@ -115,7 +125,7 @@ public class EntityAnimationController : MonoBehaviour, IStateSerializable {
         if (disableEvents) return;
         var args = (e.String ?? "").Split();
         var data = new AnimationEventData(e.String, e.Int, e.Float, e.Data.AudioPath);
-        player.HandleAnimationEvent(name, data);
+        entity.HandleAnimationEvent(name, data);
     }
 
     public void Serialize(StateSerializer serializer) {

@@ -247,8 +247,6 @@ public abstract class Entity : MonoBehaviour, IEngineUpdateListener, IStateSeria
 
         // TODO Clash Counters
 
-        // Debug.Log($"from {from.name} {fromType} {from.owner} to {to.name} {toType} {to.owner}");
-
         // Hit
         if (BitUtil.CheckFlag(fromType, (ulong)BoundingBoxType.HITBOX) && BitUtil.CheckFlag(toType, (ulong)BoundingBoxType.HURTBOX)) {
             var ret = OnOutboundHit(to.owningPlayer, data);
@@ -300,7 +298,7 @@ public abstract class Entity : MonoBehaviour, IEngineUpdateListener, IStateSeria
         return -1;
     }
 
-    public T Summon<T>(string path) where T: Entity {
+    public T Summon<T>(string path, Vector2 offset = default) where T: Entity {
         var prefab = AssetManager.Get<GameObject>(path);
         if (!prefab) {
             Debug.LogError($"Could not summon prefab at [{path}]. The path is either incorrect, or the prefab is not loaded. Summons require relevant prefabs to be preloaded.");
@@ -308,6 +306,8 @@ public abstract class Entity : MonoBehaviour, IEngineUpdateListener, IStateSeria
         }
 
         var go = Instantiate(prefab);
+        go.transform.position = transform.position + PhysicsUtil.NormalizeSide(offset, side) + new Vector3(0, 1f);
+        
         var entity = go.GetComponent<T>();
         if (!entity) {
             Debug.LogError($"The prefab at [{path}] does not have a component of type [{typeof(T)}].");

@@ -41,5 +41,13 @@ public class StageManager : SingletonBehaviour<StageManager>, IEngineUpdateListe
         rightWall.transform.position = new(Mathf.Min(rightWallTarget, stageData.cornerWallX), rightWall.transform.position.y, rightWall.transform.position.z);
     }
 
+    public Vector2 ClampToStage(Vector2 pos) {
+        var right = rightWall.transform.position - new Vector3(rightWall.GetComponent<BoxCollider2D>().size.x / 2, 0, 0);
+        var left = leftWall.transform.position + new Vector3(leftWall.GetComponent<BoxCollider2D>().size.x / 2, 0, 0);
+        
+        pos.x = Mathf.Clamp(pos.x, left.x, right.x);
+        return pos;
+    }
+    
 }
 }

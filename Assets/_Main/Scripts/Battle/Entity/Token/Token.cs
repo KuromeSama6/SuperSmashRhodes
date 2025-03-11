@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SuperSmashRhodes.Battle {
 /**
- * A token is a stationary entity summoned by a character. Different from projectiles, tokens cannot be interacted with by players (and by extension their hitboxes). Torappu uses the phrase "tokens" to refer to these entities, so the term is used here as well.
+ * Tokens are things summoned by players, either explicitly through a move, or automatically by the system.
  */
 public abstract class Token : Entity {
     public virtual TokenFlag flags => TokenFlag.NONE;

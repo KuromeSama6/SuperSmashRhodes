@@ -23,7 +23,7 @@ public class Gauge_Rosmontis_SwordManager : CharacterComponent, IEngineUpdateLis
     public List<GameObject> swordPrefabs = new();
 
     public ClampedFloat power { get; } = new(0, 5, 5);
-    public List<Entity_Rosmontis_Sword> swords { get; } = new();
+    public List<Token_Rosmontis_Sword> swords { get; } = new();
     public bool floating { get; set; }
     
     private int powerCooldown = 0;
@@ -34,30 +34,39 @@ public class Gauge_Rosmontis_SwordManager : CharacterComponent, IEngineUpdateLis
         get {
             var ret = power.max;
             if (floating) ret -= 1;
+
+            ret -= swords.Count(c => c.dispatched);
             return ret;
         }
     }
+    
     public bool belowFloatingHeight => player.transform.position.y < initialFloatingHeight;
+    public int freeSwords => swords.Count(c => !c.dispatched);
+    public bool hasFreeSwords => freeSwords > 0;
     
     private void Start() {
         
     }
 
     public void EngineUpdate() {
-        if (!player || player.activeState == null) return;
+        if (!player || player.activeState == null || player.opponent.activeState == null) return;
         // Debug.Log(string.Join(", ", swords));
         UpdateSwordBoundingBoxes();
-
+        
         if (powerCooldown > 0) {
             --powerCooldown;
         } else if (!GameManager.inst.globalStateFlags.HasFlag(CharacterStateFlag.PAUSE_GAUGE)) {
             // add power
-            var amount = .0075f;
+            var amount = .012f;
             if (power.value < 2) amount += .0075f;
             else if (power.value < 4) amount += .0035f;
             
             if (player.activeState.type == EntityStateType.CHR_HITSTUN) amount *= 0.5f;
             if (player.activeState.type == EntityStateType.CHR_BLOCKSTUN) amount *= 0.2f;
+            if (!player.burst.driveRelease) {
+                if (player.opponent.activeState.type == EntityStateType.CHR_BLOCKSTUN) amount *= 0.3f;
+                if (player.opponent.activeState.type == EntityStateType.CHR_HITSTUN) amount *= 0.1f;   
+            }
 
             if (player.burst.driveRelease) amount *= 2f;
             
@@ -87,8 +96,28 @@ public class Gauge_Rosmontis_SwordManager : CharacterComponent, IEngineUpdateLis
     public void UsePower(float amount) {
         power.value -= amount;
         if (!player.burst.driveRelease) {
-            powerCooldown = 30;
+            powerCooldown = 60;
         }
+    }
+
+    public Token_Rosmontis_Sword DispatchAny(float powerUse, string dispatcher) {
+        if (!hasFreeSwords) return null;
+        if (power.value < powerUse) return null;
+        
+        // find index in descending order, select first
+        var candidate = (from sword in swords
+                         where !sword.dispatched
+                         orderby sword.index descending
+                         select sword).First();
+
+        candidate.Dispatch(dispatcher);
+        UsePower(powerUse);
+
+        return candidate;
+    }
+
+    public Token_Rosmontis_Sword GetDispatchedSword(string dispatcher) {
+        return swords.Find(sword => sword.dispatched && sword.dispatcher == dispatcher);
     }
     
     public override void OnRoundInit() {
@@ -122,7 +151,7 @@ public class Gauge_Rosmontis_SwordManager : CharacterComponent, IEngineUpdateLis
             var go = Instantiate(prefab);
             go.name = $"Rosmontis_Sword${i}";
             
-            var sword = go.GetComponent<Entity_Rosmontis_Sword>();
+            var sword = go.GetComponent<Token_Rosmontis_Sword>();
             GameManager.inst.RegisterEntity(sword);
             
             player.summons.Add(sword);

@@ -16,7 +16,7 @@ public abstract class State_Common_NmlAtk5CS : State_Common_NormalAttack {
     protected override string mainAnimation => "cmn/NmlAtk5CS";
 
     protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_NORMAL | EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER;
-    public override bool mayEnterState => player.opponentDistance <= triggerRange && !GetCurrentInputBuffer().thisFrame.HasInput(entity.side, InputType.DOWN, InputFrameType.HELD) && !player.gatlingMovesUsed.Contains(this) && base.mayEnterState;
+    public override bool mayEnterState => player.opponentDistance <= triggerRange && !GetCurrentInputBuffer().thisFrame.HasInput(entity.side, InputType.DOWN, InputFrameType.HELD) && base.mayEnterState;
 
     protected override InputFrame[] requiredInput => new InputFrame[] {new(InputType.S, InputFrameType.PRESSED)};
     public override void OnContact(Entity to) {

@@ -131,7 +131,7 @@ public class State_Rosmontis_NmlAtk2H : State_Common_NmlAtk2H, ISwordBoundAttack
         return gauge.IsSwordFree(1) ? 50 : 36;
     }
     public override Vector2 GetPushback(Entity to, bool airborne, bool blocked) {
-        return new(blocked ? 5f : 0f, 12f);
+        return new(blocked ? 5f : 2f, 12f);
     }
 
     public override string GetAttackNormalSfx() {
