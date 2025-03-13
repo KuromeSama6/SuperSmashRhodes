@@ -104,12 +104,12 @@ public class InputBuffer : IStateSerializable {
     }
     
     public static InputType TranslateToRawDirection(InputType input, EntitySide side) {
-        if (input == InputType.FORWARD) {
+        if (input == InputType.BACKWARD) {
             if (side == EntitySide.RIGHT) return InputType.RAW_MOVE_RIGHT;
             return InputType.RAW_MOVE_LEFT;
 
         }
-        if (input == InputType.BACKWARD) {
+        if (input == InputType.FORWARD) {
             if (side == EntitySide.RIGHT) return InputType.RAW_MOVE_LEFT;
             return InputType.RAW_MOVE_RIGHT;
 

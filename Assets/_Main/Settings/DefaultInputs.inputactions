@@ -6,16 +6,25 @@
             "id": "df70fa95-8a34-4494-b137-73ab6b9c7d37",
             "actions": [
                 {
-                    "name": "Move",
-                    "type": "Value",
-                    "id": "351f2ccd-1f9f-44bf-9bec-d62ac5c5f408",
-                    "expectedControlType": "Vector2",
+                    "name": "BtlMoveRight",
+                    "type": "Button",
+                    "id": "86e767a9-462d-44e7-b969-9e0171460210",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
                 },
                 {
-                    "name": "Crouch",
+                    "name": "BtlMoveLeft",
+                    "type": "Button",
+                    "id": "c3188a3f-ae9f-4eb8-b231-f8d6566460cd",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "BtlCrouch",
                     "type": "Button",
                     "id": "27c5f898-bc57-4ee1-8800-db469aca5fe3",
                     "expectedControlType": "",
@@ -24,7 +33,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Jump",
+                    "name": "BtlJump",
                     "type": "Button",
                     "id": "f1ba0d36-48eb-4cd5-b651-1c94a6531f70",
                     "expectedControlType": "",
@@ -33,7 +42,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Dash",
+                    "name": "BtlDash",
                     "type": "Button",
                     "id": "641cd816-40e6-41b4-8c3d-04687c349290",
                     "expectedControlType": "",
@@ -42,7 +51,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Punch",
+                    "name": "BtlAttackA",
                     "type": "Button",
                     "id": "1a71a5be-fdf1-4a84-ac35-b3009e1bf864",
                     "expectedControlType": "",
@@ -51,7 +60,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Slash",
+                    "name": "BtlAttackB",
                     "type": "Button",
                     "id": "4367bbb5-6899-4804-afda-0001280d929d",
                     "expectedControlType": "",
@@ -60,7 +69,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "HeavySlash",
+                    "name": "BtlAttackC",
                     "type": "Button",
                     "id": "73b03cf9-7e79-47a3-b733-29d790779a17",
                     "expectedControlType": "",
@@ -69,7 +78,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Drive",
+                    "name": "BtlDrive",
                     "type": "Button",
                     "id": "5372b8b3-e603-41b3-9a72-5e6dab202e65",
                     "expectedControlType": "",
@@ -78,7 +87,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ForceReset",
+                    "name": "BtlForceReset",
                     "type": "Button",
                     "id": "e7fb3345-efa4-4c59-b547-eb1469166c1a",
                     "expectedControlType": "",
@@ -87,159 +96,70 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Burst",
+                    "name": "BtlBurst",
                     "type": "Button",
                     "id": "ce823efb-0b2e-4d67-8593-b7a4590ca377",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "SysMenu",
+                    "type": "Button",
+                    "id": "bc724ee7-8867-4b07-9039-79b45620fac6",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SysConfirm",
+                    "type": "Button",
+                    "id": "ea78d99e-d2ea-4413-8496-5476d9fa9ae0",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SysBack",
+                    "type": "Button",
+                    "id": "c425c432-4770-456c-b406-afd80eeadb99",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SysNavigate",
+                    "type": "Value",
+                    "id": "5db54370-9c13-4c37-bf74-1b651038db3c",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "SysPagePrevious",
+                    "type": "Value",
+                    "id": "aac8d198-0556-41dc-8197-339738e1d023",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "SysPageNext",
+                    "type": "Value",
+                    "id": "5979aeee-78f0-4946-9f86-9b28d054f6ea",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "978bfe49-cc26-4a3d-ab7b-7d7a29327403",
-                    "path": "<Gamepad>/leftStick",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Gamepad",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "WASD",
-                    "id": "00ca640b-d935-4593-8157-c05846ea39b3",
-                    "path": "Dpad",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Move",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "left",
-                    "id": "d2581a9b-1d11-4566-b27d-b92aff5fabbc",
-                    "path": "<Keyboard>/a",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "keyboard1",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "right",
-                    "id": "fcfe95b8-67b9-4526-84b5-5d0bc98d6400",
-                    "path": "<Keyboard>/d",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "keyboard1",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "",
-                    "id": "ca09cc64-759d-4f57-9c71-12d7b0f4fded",
-                    "path": "<Gamepad>/dpad",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Gamepad",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "Arrow Keys",
-                    "id": "93f8f478-48ef-4093-bd03-f12f81e23c01",
-                    "path": "2DVector",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Move",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "left",
-                    "id": "9485fc4f-2456-42cd-a46f-26e960c40290",
-                    "path": "<Keyboard>/leftArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "keyboard2",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "right",
-                    "id": "e49fe104-d765-4484-a1d5-5daee8cfe39c",
-                    "path": "<Keyboard>/rightArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "keyboard2",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "2D Vector",
-                    "id": "f66f63bb-4718-49ae-be68-031226c5ea47",
-                    "path": "2DVector",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Move",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "up",
-                    "id": "5365a990-cfe9-4a0b-9a93-551f099204d5",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "ps4_test",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "down",
-                    "id": "d959e3d5-7f83-4a1f-97a8-f562ff64db9a",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "ps4_test",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "left",
-                    "id": "7d1a7658-adec-4490-98d0-e525f6a93b4f",
-                    "path": "<HID::Brook P4 Wired Gamepad V2.8>/hat/left",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "ps4_test",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "right",
-                    "id": "eaae7a94-7d33-464c-85f6-4177e20be569",
-                    "path": "<HID::Brook P4 Wired Gamepad V2.8>/hat/right",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "ps4_test",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
                 {
                     "name": "",
                     "id": "f2e9ba44-c423-42a7-ad56-f20975884794",
@@ -247,7 +167,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "keyboard1",
-                    "action": "Dash",
+                    "action": "BtlDash",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -258,7 +178,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Dash",
+                    "action": "BtlDash",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -269,7 +189,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "keyboard2",
-                    "action": "Dash",
+                    "action": "BtlDash",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -280,7 +200,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "ps4_test",
-                    "action": "Dash",
+                    "action": "BtlDash",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -291,18 +211,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "keyboard1",
-                    "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "3faa66dc-ec64-4653-8b89-e7df26d8727a",
-                    "path": "<Keyboard>/w",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "keyboard1",
-                    "action": "Jump",
+                    "action": "BtlJump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -313,7 +222,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "Jump",
+                    "action": "BtlJump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -324,7 +233,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "Jump",
+                    "action": "BtlJump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -335,7 +244,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "keyboard2",
-                    "action": "Jump",
+                    "action": "BtlJump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -346,7 +255,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "ps4_test",
-                    "action": "Jump",
+                    "action": "BtlJump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -357,7 +266,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "keyboard1",
-                    "action": "Crouch",
+                    "action": "BtlCrouch",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -368,7 +277,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "keyboard2",
-                    "action": "Crouch",
+                    "action": "BtlCrouch",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -379,7 +288,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "Crouch",
+                    "action": "BtlCrouch",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -390,7 +299,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "Crouch",
+                    "action": "BtlCrouch",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -401,7 +310,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "ps4_test",
-                    "action": "Crouch",
+                    "action": "BtlCrouch",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -412,18 +321,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "keyboard1",
-                    "action": "Punch",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "bc75a489-f55e-4c63-afb8-5c2238df7a00",
-                    "path": "<Keyboard>/h",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "keyboard1",
-                    "action": "Punch",
+                    "action": "BtlAttackA",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -434,7 +332,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "Punch",
+                    "action": "BtlAttackA",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -445,7 +343,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "keyboard2",
-                    "action": "Punch",
+                    "action": "BtlAttackA",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -456,7 +354,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "ps4_test",
-                    "action": "Punch",
+                    "action": "BtlAttackA",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -467,18 +365,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "keyboard1",
-                    "action": "Slash",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "cad33e3b-793a-4f00-9638-bdd61dd49788",
-                    "path": "<Keyboard>/k",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "keyboard1",
-                    "action": "Slash",
+                    "action": "BtlAttackB",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -489,7 +376,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "Slash",
+                    "action": "BtlAttackB",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -500,7 +387,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "keyboard2",
-                    "action": "Slash",
+                    "action": "BtlAttackB",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -511,7 +398,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";ps4_test",
-                    "action": "Slash",
+                    "action": "BtlAttackB",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -522,18 +409,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "keyboard1",
-                    "action": "HeavySlash",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "7929d5b6-7a71-45c2-9d66-3f77bc512ba8",
-                    "path": "<Keyboard>/l",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "keyboard1",
-                    "action": "HeavySlash",
+                    "action": "BtlAttackC",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -544,7 +420,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "HeavySlash",
+                    "action": "BtlAttackC",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -555,7 +431,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "keyboard2",
-                    "action": "HeavySlash",
+                    "action": "BtlAttackC",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -566,7 +442,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";ps4_test",
-                    "action": "HeavySlash",
+                    "action": "BtlAttackC",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -577,18 +453,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "keyboard1",
-                    "action": "Drive",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "d9f3ea6e-331e-4d68-9d86-12afec1900bb",
-                    "path": "<Keyboard>/o",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "keyboard1",
-                    "action": "Drive",
+                    "action": "BtlDrive",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -599,7 +464,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "keyboard2",
-                    "action": "Drive",
+                    "action": "BtlDrive",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -610,7 +475,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";ps4_test",
-                    "action": "Drive",
+                    "action": "BtlDrive",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -621,7 +486,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "keyboard1",
-                    "action": "ForceReset",
+                    "action": "BtlForceReset",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -632,7 +497,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "keyboard2",
-                    "action": "ForceReset",
+                    "action": "BtlForceReset",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -643,7 +508,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";ps4_test",
-                    "action": "ForceReset",
+                    "action": "BtlForceReset",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -654,7 +519,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";keyboard1",
-                    "action": "Burst",
+                    "action": "BtlBurst",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -665,7 +530,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";keyboard2",
-                    "action": "Burst",
+                    "action": "BtlBurst",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -676,9 +541,229 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";ps4_test",
-                    "action": "Burst",
+                    "action": "BtlBurst",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "14caa242-04a1-4c35-95f8-40ec45811f3b",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";keyboard1",
+                    "action": "BtlMoveLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "07cc56be-c26b-4e3f-941c-6fee8e6c2f26",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";keyboard2",
+                    "action": "BtlMoveLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7a149c1b-d8c6-462f-a88e-f3b48bc2bc54",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";keyboard1",
+                    "action": "BtlMoveRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7f266a6f-6904-4603-8622-aa5417ee0e89",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";keyboard2",
+                    "action": "BtlMoveRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0588d2b1-cad8-405f-aac4-9c488b900d59",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";keyboard1",
+                    "action": "SysMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "05d81075-5c0d-48d2-9d8c-a941121b298b",
+                    "path": "<Keyboard>/home",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";keyboard2",
+                    "action": "SysMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a614c589-efbc-481d-8229-613c71bce0c5",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";keyboard1",
+                    "action": "SysConfirm",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fcf396b9-ab37-4a2c-a55b-29a12f939a5d",
+                    "path": "<Keyboard>/numpadEnter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";keyboard2",
+                    "action": "SysConfirm",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fee36a92-ddcb-4eb3-8e9e-70f55961f249",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";keyboard1",
+                    "action": "SysBack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7f8a8b67-2ba0-44e9-829a-37d0461b9de1",
+                    "path": "<Keyboard>/rightShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";keyboard2",
+                    "action": "SysBack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e3b0808f-77b2-4f22-9992-4e58ccae305a",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";keyboard1",
+                    "action": "SysPagePrevious",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1e4231bf-9fb9-40b5-b183-9ff0d4b1ed43",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";keyboard2",
+                    "action": "SysPagePrevious",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "90745d6e-22bc-4a3c-ae5e-4231cea44a8d",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";keyboard1",
+                    "action": "SysPageNext",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3a946ad6-3951-40dd-baaf-745d047b3e5a",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";keyboard2",
+                    "action": "SysPageNext",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "2D Vector",
+                    "id": "38098caa-0d71-4f56-9e25-e4acb684e30a",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SysNavigate",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "dc9b3b41-15e0-4f86-96fd-c4ecbe4a1cca",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";keyboard1",
+                    "action": "SysNavigate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "560c1a95-048f-4334-8082-547bc731338e",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";keyboard1",
+                    "action": "SysNavigate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "2D Vector",
+                    "id": "c6bda381-ccdb-49af-be94-699f6e27a272",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SysNavigate",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "c227a06b-958a-4341-9f65-d956f45f17a6",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";keyboard2",
+                    "action": "SysNavigate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "303f1b3f-6cf5-473a-83f9-ca4aa8301a1c",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";keyboard2",
+                    "action": "SysNavigate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         },

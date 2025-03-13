@@ -1,5 +1,6 @@
 ﻿namespace SuperSmashRhodes.Input {
 public enum InputType {
+    NONE = 0,
     FORWARD = 6,
     BACKWARD = 4,
     UP = 8,

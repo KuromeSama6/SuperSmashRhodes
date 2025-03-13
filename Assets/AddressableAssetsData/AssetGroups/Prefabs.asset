@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Prefabs
   m_GUID: 162e808c75fb38d4e9ca283fcdd6836b
   m_SerializeEntries:
+  - m_GUID: 2d1ef294381eedf40b15db83a50d219e
+    m_Address: __auto/ui/globalprompt
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2e0acfaa9cac465468ff4d2cb1206c18
     m_Address: __auto/ui/debuglogs
     m_ReadOnly: 0

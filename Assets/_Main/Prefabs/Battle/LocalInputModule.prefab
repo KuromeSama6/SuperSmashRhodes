@@ -75,3 +75,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e2eb69ac140ece45b0c114ac7d6a8b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inputMap:
+    keys:
+    - {fileID: -4186928816985170212, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+    - {fileID: 1140458632505206382, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+    - {fileID: 7040659881675835329, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+    - {fileID: -7471211009204490832, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+    - {fileID: 7206993810181130170, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+    - {fileID: 8436785908273959716, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+    - {fileID: 6492278197089535867, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+    - {fileID: -2099379676528639254, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+    - {fileID: 4180250516710350628, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+    - {fileID: -2665448528204310767, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+    values: 6200000063000000020000000f0000000e000000100000000d000000080000000a0000000c000000

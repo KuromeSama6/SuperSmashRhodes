@@ -7,6 +7,7 @@ using SuperSmashRhodes.Framework;
 using SuperSmashRhodes.Util;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Object = UnityEngine.Object;
 
 namespace SuperSmashRhodes.Input {
 public class InputDevicePool : SingletonBehaviour<InputDevicePool> {
@@ -19,6 +20,7 @@ public class InputDevicePool : SingletonBehaviour<InputDevicePool> {
     public readonly Dictionary<string, LocalInputModule> inputs = new();
 
     private readonly List<InputDevice> recentDeviceStack = new();
+    private readonly List<Object> overlayStack = new();
     
     public string currentActionMap {
         get => _currentActionMap;
@@ -41,6 +43,8 @@ public class InputDevicePool : SingletonBehaviour<InputDevicePool> {
         }
     }
     
+    public bool hasGameBaseInput => overlayStack.Count == 0; 
+    
     protected override void Awake() {
         base.Awake();
         inputManager = GetComponent<PlayerInputManager>();
@@ -53,6 +57,10 @@ public class InputDevicePool : SingletonBehaviour<InputDevicePool> {
     }
 
     private void Start() {
+    }
+
+    private void Update() {
+        overlayStack.RemoveAll(c => !c);
     }
 
     public void ReloadLocalInput() {
@@ -79,6 +87,19 @@ public class InputDevicePool : SingletonBehaviour<InputDevicePool> {
             }
         }
     }
+
+    public void PushOverlay(Object overlay) {
+        if (overlayStack.Contains(overlay)) return;
+        overlayStack.Insert(0, overlay);
+    }
+    
+    public void PopOverlay(Object overlay) {
+        overlayStack.Remove(overlay);
+    }
+
+    public bool IsTopOfStack(Object obj) {
+        return overlayStack.Count > 0 && overlayStack[0] == obj;
+    }
     
     private void OnDeviceChanged(InputDevice device, InputDeviceChange change) {
         ReloadLocalInput();
@@ -100,6 +121,11 @@ public class InputDevicePool : SingletonBehaviour<InputDevicePool> {
             return inputs["keyboard2"];
         }
         return new NOPInputProvider();
+    }
+
+    public LocalInputModule GetInputModule(string controlScheme) {
+        if (controlScheme == null) return defaultInput;
+        return inputs.GetValueOrDefault(controlScheme, defaultInput);
     }
 
     private void OnDestroy() {
