@@ -16,10 +16,6 @@ public abstract class State_Common_NmlAtk8S : State_Common_AirNormalAttack {
 
     protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_NORMAL | EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER;
     protected override InputFrame[] requiredInput => new InputFrame[] {new(InputType.S, InputFrameType.PRESSED)};
-
-    public override int GetFreezeFrames(Entity to) {
-        return 6;
-    }
     public override float GetComboProration(Entity to) {
         return .9f;
     }

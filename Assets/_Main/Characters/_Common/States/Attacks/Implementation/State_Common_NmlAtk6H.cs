@@ -20,11 +20,6 @@ public abstract class State_Common_NmlAtk6H : State_Common_NormalAttack {
         return buffer.thisFrame.HasInput(player.side, InputType.FORWARD, InputFrameType.HELD) && 
                buffer.TimeSlice(normalInputBufferLength).ScanForInput(player.side, new InputFrame(InputType.HS, InputFrameType.PRESSED));
     }
-
-
-    public override int GetFreezeFrames(Entity to) {
-        return 15;
-    }
     public override float GetComboProration(Entity to) {
         return .9f;
     }

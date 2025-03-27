@@ -1,0 +1,17 @@
+Adobe After Effects v23.5 Windows 64 render log for project “fx_common.aep”
+
+Rendering started on 3/26/2025 at 5:20:26 PM
+
+  3/26/2025 5:20:26 PM: Starting composition “f_cmn_burstparry_aura”.
+
+  Output To: D:\dev\SuperSmashRhodes\SuperSmashRhodes\Assets\_Main\Characters\_Common\FX\Flipbook\Source\comp\f_cmn_burstparry_aura\f_cmn_burstparry_aura_[#####].png    3/26/2025 5:20:28 PM: Finished composition “f_cmn_burstparry_aura”.
+
+
+  3/26/2025 5:20:28 PM: Starting composition “f_cmn_burstparry_flash”.
+
+  Output To: D:\dev\SuperSmashRhodes\SuperSmashRhodes\Assets\_Main\Characters\_Common\FX\Flipbook\Source\comp\f_cmn_burstparry_flash\f_cmn_burstparry_flash_[#####].png    3/26/2025 5:20:31 PM: Finished composition “f_cmn_burstparry_flash”.
+
+
+  Total Time Elapsed: 5 Seconds
+Log closed on 3/26/2025 at 5:20:31 PM
+

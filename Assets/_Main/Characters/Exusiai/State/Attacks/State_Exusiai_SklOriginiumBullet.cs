@@ -138,12 +138,8 @@ public class State_Exusiai_SklOriginiumBullet : State_Common_SpecialAttack, ICha
     public override AttackGuardType GetGuardType(Entity to) {
         return AttackGuardType.ALL;
     }
-    public override int GetFreezeFrames(Entity to) {
-        if (bulletsUsed >= 15) return 10;
-        return 7;
-    }
     public override int GetAttackLevel(Entity to) {
-        return 4;
+        return bulletsUsed >= 15 ? 4 : 3;
     }
 
     public override int GetExtraStunFrames(Entity to, bool blocked) {

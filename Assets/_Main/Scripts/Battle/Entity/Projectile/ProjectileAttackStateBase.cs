@@ -35,9 +35,6 @@ public abstract class ProjectileAttackStateBase : SummonAttackStateBase {
         entity.rb.linearVelocity = Vector2.Min(entity.rb.linearVelocity, terminalVelocity);
     }
     
-    public override int GetFreezeFrames(Entity to) {
-        return 10;
-    }
     public override int GetAttackLevel(Entity to) {
         return projectileLevel;
     }

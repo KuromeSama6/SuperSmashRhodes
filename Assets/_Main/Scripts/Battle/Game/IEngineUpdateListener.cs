@@ -4,6 +4,11 @@
 /// </summary>
 public interface IEngineUpdateListener {
     /// <summary>
+    /// Nice value for sorting. Lower values are updated first.
+    /// </summary>
+    int niceness => 0;
+    
+    /// <summary>
     /// Called once per game frame, in Update().
     /// This is not managed by the GameStateManager.
     /// Use this for cosemetic updates.

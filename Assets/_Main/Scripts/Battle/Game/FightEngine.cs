@@ -47,6 +47,8 @@ public class FightEngine : AutoInitSingletonBehaviour<FightEngine> {
             if (beh is IEngineUpdateListener manualUpdate && !manualUpdates.Contains(manualUpdate)) {
                 manualUpdates.Add(manualUpdate);
             }
+
+            manualUpdates.Sort((a, b) => a.niceness.CompareTo(b.niceness));
             
             if (beh is IAutoSerialize autoSerialize) {
                 autoSerializers[autoSerialize.GetInstanceID()] = autoSerialize;
@@ -106,7 +108,7 @@ public class FightEngine : AutoInitSingletonBehaviour<FightEngine> {
             // var localInput = networkRoom.localThisFrameInputs;
             GGPOStatusCode res = GGPOStatusCode.OK;
             if (!rollback) {
-                var localInput = InputDevicePool.inst.defaultInput.inputBuffer.thisFrame;
+                var localInput = InputDevicePool.inst.defaultInput.inputBuffer[0];
                 // if (localInput.inputs.Length > 0) Debug.Log($"adding local input: {localInput}");
                 ggpo.QueueInputChannelPacket(new ChannelSubpacketInput(localInput));
                 res = ggpo.SendQueuedInputPacketsSync(networkRoom.localPlayer.playerId);   

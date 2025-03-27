@@ -55,9 +55,6 @@ public class State_Exusiai_SklReload : State_Common_SpecialAttack {
     public override AttackGuardType GetGuardType(Entity to) {
         return AttackGuardType.ALL;
     }
-    public override int GetFreezeFrames(Entity to) {
-        return 0;
-    }
     public override int GetAttackLevel(Entity to) {
         return 0;
     }

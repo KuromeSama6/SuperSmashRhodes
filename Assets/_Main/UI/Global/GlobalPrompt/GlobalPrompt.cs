@@ -22,8 +22,8 @@ public class GlobalPrompt : SingletonBehaviour<GlobalPrompt>, ISelectHandler {
     private void Start() {
         canvasGroup.alpha = 0;
         
-        cancelBtn.onClick.AddListener(Cancel);
-        confirmBtn.onClick.AddListener(Confirm);
+        cancelBtn.onClick.AddListener(() => Cancel());
+        confirmBtn.onClick.AddListener(() => Confirm());
     }
 
     private void Update() {
@@ -42,9 +42,14 @@ public class GlobalPrompt : SingletonBehaviour<GlobalPrompt>, ISelectHandler {
                 Cancel();
             }
         }
+        
+        
     }
 
     public void ShowPrompt(string text, GlobalPromptFlags flags = GlobalPromptFlags.REGULAR, Action onConfirm = null, Action onCancel = null, string inputDevice = null) {
+        if (currentPrompt.HasValue) ClosePrompt();
+        if (!flags.HasFlag(GlobalPromptFlags.NO_SOUND)) AudioManager.inst.PlayAudioClip("cmn/sfx/ui/prompt/normal", gameObject);
+        
         currentPrompt = new GlobalPromptData {
             text = text,
             flags = flags,
@@ -58,21 +63,19 @@ public class GlobalPrompt : SingletonBehaviour<GlobalPrompt>, ISelectHandler {
         cancelBtn.gameObject.SetActive(flags.HasFlag(GlobalPromptFlags.CANCEL));
         confirmBtn.gameObject.SetActive(flags.HasFlag(GlobalPromptFlags.CONFIRM));
         
-        AudioManager.inst.PlayAudioClip("cmn/sfx/ui/button/normal", gameObject);
-        
         InputDevicePool.inst.PushOverlay(this);
     }
     
-    public void Cancel() {
+    public void Cancel(bool playSound = true) {
         if (!currentPrompt.HasValue) return;
-        AudioManager.inst.PlayAudioClip("cmn/sfx/ui/button/back", gameObject);
+        if (playSound) AudioManager.inst.PlayAudioClip("cmn/sfx/ui/button/back", gameObject);
         if (currentPrompt.Value.onCancel != null) currentPrompt.Value.onCancel.Invoke();
         ClosePrompt();
     }
     
-    public void Confirm() {
+    public void Confirm(bool playSound = true) {
         if (!currentPrompt.HasValue) return;
-        AudioManager.inst.PlayAudioClip("cmn/sfx/ui/button/heavy", gameObject);
+        if (playSound) AudioManager.inst.PlayAudioClip("cmn/sfx/ui/button/heavy", gameObject);
         if (currentPrompt.Value.onConfirm != null) currentPrompt.Value.onConfirm.Invoke();
         ClosePrompt();
     }
@@ -100,6 +103,7 @@ public enum GlobalPromptFlags {
     NONE = 0,
     CANCEL = 1 << 0,
     CONFIRM = 1 << 1,
+    NO_SOUND = 1 << 2,
     
     REGULAR = CANCEL | CONFIRM
 }

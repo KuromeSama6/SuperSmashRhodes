@@ -87,9 +87,6 @@ public class State_Chen_SklDPC : State_Common_SpecialAttack {
     public override AttackGuardType GetGuardType(Entity to) {
         return AttackGuardType.ALL;
     }
-    public override int GetFreezeFrames(Entity to) {
-        return 7;
-    }
     public override int GetAttackLevel(Entity to) {
         return 3;
     }

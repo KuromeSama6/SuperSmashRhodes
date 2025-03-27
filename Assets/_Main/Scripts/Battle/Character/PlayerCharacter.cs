@@ -193,8 +193,12 @@ public class PlayerCharacter : Entity {
         base.EnginePreUpdate();
 
         if (bufferClearRequested) {
-            inputProvider.inputBuffer.PushAndTick(new InputFrame(InputType.ESC_CLEAR_BUFFER, InputFrameType.PRESSED));
+            inputProvider.inputBuffer.PushToCurrentFrame(new InputFrame(InputType.ESC_CLEAR_BUFFER, InputFrameType.PRESSED));
             bufferClearRequested = false;
+        }
+
+        if (TimeManager.inst.globalFreezeFrames > 0) {
+            inputProvider.inputBuffer.PushToCurrentFrame(new InputFrame(InputType.ESC_FREEZE_TIMESLICE_CONTINUE, InputFrameType.PRESSED));
         }
     }
 
@@ -277,6 +281,7 @@ public class PlayerCharacter : Entity {
         
         foreach (var state in li) {
             if (state == activeState && !activeState.isSelfCancellable) continue;
+
             
             if (MayCancelInto(state)) {
                 // state is valid
@@ -438,6 +443,7 @@ public class PlayerCharacter : Entity {
     protected override void OnInboundHit(AttackData data) {
         base.OnInboundHit(data);
 
+        
         if (!data.attack.GetSpecialProperties(this).HasFlag(AttackSpecialProperties.IGNORE_INVINCIBILITY)) {
             if (activeState.invincibility.HasFlag(data.attack.attackType)) return;   
         }
@@ -446,6 +452,7 @@ public class PlayerCharacter : Entity {
     }
 
     private IAttack ValidateOutboundHit(PlayerCharacter to) {
+        // Debug.Log("validate outbound hit");
         if (!(activeState is CharacterAttackStateBase move)) {
             // invalid attack state1
             return null;
@@ -545,7 +552,7 @@ public class PlayerCharacter : Entity {
             
             float hitStateDamageMultiplier = 1f;
             if (hitstate == Hitstate.COUNTER) {
-                opponent.activeState.stateData.extraIndicatorFlag |= StateIndicatorFlag.COUNTER;
+                opponent.CallLaterCoroutine(.1f, () => opponent.activeState.stateData.extraIndicatorFlag |= StateIndicatorFlag.COUNTER);
                 hitStateDamageMultiplier = 1.1f;
                 
             } else {
@@ -553,7 +560,7 @@ public class PlayerCharacter : Entity {
             }
             
             if (hitstate == Hitstate.PUNISH) {
-                opponent.activeState.stateData.extraIndicatorFlag |= StateIndicatorFlag.PUNISH;
+                opponent.CallLaterCoroutine(.1f, () => opponent.activeState.stateData.extraIndicatorFlag |= StateIndicatorFlag.PUNISH);
                 hitStateDamageMultiplier = 1.05f;
             }
             
@@ -651,7 +658,7 @@ public class PlayerCharacter : Entity {
 
         // var freezeFrames = attack.GetFreezeFrames(this);
         // standardized freeze frames
-        var freezeFrames = attack.GetAttackLevel(this) + 8;
+        var freezeFrames = attack.GetFreezeFrames(this);
         
         if (addFreezeFrames) {
             var delay = armor ? 0 : 4;

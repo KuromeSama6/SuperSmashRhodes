@@ -1,6 +1,7 @@
 ﻿using System;
 using Sirenix.OdinInspector;
 using SuperSmashRhodes.Input;
+using SuperSmashRhodes.Scripts.Audio;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -13,13 +14,14 @@ public class NavigatableMenu : MonoBehaviour {
     public Selectable defaultSelected;
 
     public string inputDevice { get; set; }
-    public bool maySelect { get; set; } = true;
-    public GameObject selected {
-        get => _selected.gameObject;
+    public bool maySelect { get; set; }
+    public Selectable selected {
+        get {
+            return _selected;
+        }
         set {
-            
             if (_selected) Deselect(_selected);
-            _selected = value.GetComponent<Selectable>();
+            _selected = value;
             if (_selected) Select(_selected);
         }
     }
@@ -27,13 +29,12 @@ public class NavigatableMenu : MonoBehaviour {
     private LocalInputModule inputModule => InputDevicePool.inst.GetInputModule(inputDevice);
 
     private void Start() {
-        if (defaultSelected) selected = defaultSelected.gameObject;
+        if (defaultSelected) selected = defaultSelected;
     }
 
     private void Update() {
-        if (_selected != null && !_selected) {
-            _selected = null;
-            EventSystem.current.SetSelectedGameObject(null);
+        if ((object)_selected != null && !_selected) {
+            selected = null;
         }
         
         if (!inputModule) return;
@@ -41,12 +42,13 @@ public class NavigatableMenu : MonoBehaviour {
         if (_selected && maySelect && inputModule.GetAction("SysNavigate").WasPressedThisFrame()) {
             var direction = inputModule.GetAction("SysNavigate").ReadValue<Vector2>();
             Navigate(direction);
+            AudioManager.inst.PlayAudioClip("cmn/ui/navigate/normal", gameObject);
         }
     }
 
     public void Navigate(Vector2 direction) {
         var next = _selected.FindSelectable(direction);
-        if (next) selected = next.gameObject;
+        if (next) selected = next;
     }
     
     public static void Select(Selectable selectable) {

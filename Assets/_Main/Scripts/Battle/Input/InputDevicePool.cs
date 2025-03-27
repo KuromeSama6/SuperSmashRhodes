@@ -60,7 +60,7 @@ public class InputDevicePool : SingletonBehaviour<InputDevicePool> {
     }
 
     private void Update() {
-        overlayStack.RemoveAll(c => !c);
+        var res = overlayStack.RemoveAll(c => !c);
     }
 
     public void ReloadLocalInput() {

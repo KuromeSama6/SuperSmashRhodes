@@ -761,7 +761,7 @@ Transform:
   m_GameObject: {fileID: 4150892423720408158}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.0025228574, y: 0.72012454, z: 0}
+  m_LocalPosition: {x: 0.0025228262, y: 0.72012454, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1272,7 +1272,7 @@ Transform:
   m_GameObject: {fileID: 7662702445888353291}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.0025228574, y: 0.72012454, z: 0}
+  m_LocalPosition: {x: 0.0025228262, y: 0.72012454, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1585,7 +1585,7 @@ Transform:
   m_GameObject: {fileID: 8708507277122996918}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.7192185, w: 0.694784}
-  m_LocalPosition: {x: 0.0025228574, y: 0.72012454, z: 0}
+  m_LocalPosition: {x: 0.0025228262, y: 0.72012454, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1669,6 +1669,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DREmblem
       objectReference: {fileID: 0}
+    - target: {fileID: 8018660366430957592, guid: b266db23885d3f946931f5f21a2d79c7, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1739,6 +1743,18 @@ PrefabInstance:
     - target: {fileID: 679849634483161607, guid: d5fa21f6d84f9fc468cec57b10a2a47f, type: 3}
       propertyPath: m_Name
       value: SuperEmblem
+      objectReference: {fileID: 0}
+    - target: {fileID: 8018660366430957592, guid: d5fa21f6d84f9fc468cec57b10a2a47f, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8018660366430957592, guid: d5fa21f6d84f9fc468cec57b10a2a47f, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8018660366430957592, guid: d5fa21f6d84f9fc468cec57b10a2a47f, type: 3}
+      propertyPath: m_Color.r
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

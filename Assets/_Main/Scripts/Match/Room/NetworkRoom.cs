@@ -41,7 +41,7 @@ public class NetworkRoom : Room, IPacketHandler, IConnectorCallbackHandler {
         get {
             if (!fighting) return null;
             if (localPlayer == null || !localPlayer.playerCharacter) return null;
-            var ret = localPlayer.playerCharacter.inputProvider.inputBuffer.thisFrame;
+            var ret = localPlayer.playerCharacter.inputProvider.inputBuffer.buffer[0];
             return ret;
         }
     }

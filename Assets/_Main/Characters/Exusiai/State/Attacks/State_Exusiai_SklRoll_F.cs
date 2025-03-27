@@ -90,9 +90,6 @@ public class State_Exusiai_SklRoll_FSlide : State_Common_SpecialAttack {
     public override AttackGuardType GetGuardType(Entity to) {
         return AttackGuardType.CROUCHING;
     }
-    public override int GetFreezeFrames(Entity to) {
-        return 6;
-    }
     public override int GetAttackLevel(Entity to) {
         return 3;
     }

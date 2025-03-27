@@ -40,6 +40,8 @@ public abstract class Entity : MonoBehaviour, IEngineUpdateListener, IStateSeria
     public EntityConfiguration config;
     // public List<EntityAssetLibrary> assetLibraries = new();
 
+    public virtual int niceness => 1;
+
     public int entityId { get; private set; }
     public EntitySide side { get; set; } = EntitySide.LEFT;
     [SerializationOptions(SerializationOption.EXCLUDE)]

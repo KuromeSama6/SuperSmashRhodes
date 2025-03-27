@@ -65,7 +65,6 @@ public class State_CmnBurst : CharacterAttackStateBase {
             && thisFrame.HasInput(player.side, InputType.D, InputFrameType.PRESSED)
             && thisFrame.HasInput(player.side, InputType.P, InputFrameType.PRESSED);
     }
-
     public override float GetUnscaledDamage(Entity to) {
         return 0;
     }
@@ -91,7 +90,7 @@ public class State_CmnBurst : CharacterAttackStateBase {
         return AttackGuardType.ALL;
     }
     public override int GetFreezeFrames(Entity to) {
-        return 15;
+        return 30;
     }
     public override int GetAttackLevel(Entity to) {
         return 3;

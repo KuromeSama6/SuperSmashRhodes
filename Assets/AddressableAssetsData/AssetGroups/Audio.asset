@@ -90,6 +90,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1f5002ede130f1443921d3ee3e19fc30
+    m_Address: cmn/battle/sfx/burstparry/reversal
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 225b841305205ad419b54a400764f408
     m_Address: chr/exusiai/battle/sfx/gun_bolt
     m_ReadOnly: 0
@@ -142,6 +147,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 336d54b5970858e4b89aa89d25d8d3b7
     m_Address: chr/chen/general/vo/deploy
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 35982466f70354d47996b78c3b832a5f
+    m_Address: cmn/sfx/ui/prompt/normal
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -267,6 +277,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 782da8e1e0072584696155ccc4fd6f46
     m_Address: cmn/announcer/battle/round/3
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7a6cd14a6c0ddea44a49bab22f9ed5e1
+    m_Address: cmn/battle/sfx/burstparry/success
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

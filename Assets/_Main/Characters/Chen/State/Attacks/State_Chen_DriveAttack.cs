@@ -59,9 +59,6 @@ public abstract class State_Chen_DriveAttack : CharacterAttackStateBase {
     public override float GetFirstHitProration(Entity to) {
         return 1f;
     }
-    public override int GetFreezeFrames(Entity to) {
-        return 0;
-    }
     public override int GetAttackLevel(Entity to) {
         return 3;
     }

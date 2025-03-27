@@ -235,9 +235,6 @@ public abstract class State_Common_DP : State_Common_SpecialAttack {
     public override AttackGuardType GetGuardType(Entity to) {
         return AttackGuardType.ALL;
     }
-    public override int GetFreezeFrames(Entity to) {
-        return 5;
-    }
     public override int GetAttackLevel(Entity to) {
         return 2;
     }

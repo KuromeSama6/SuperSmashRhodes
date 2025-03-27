@@ -27,9 +27,6 @@ public abstract class State_Common_NmlAtk6S : State_Common_NormalAttack {
         base.OnContact(to);
         AddCancelOption("CmnJump");
     }
-    public override int GetFreezeFrames(Entity to) {
-        return 6;
-    }
     public override float GetComboProration(Entity to) {
         return .9f;
     }

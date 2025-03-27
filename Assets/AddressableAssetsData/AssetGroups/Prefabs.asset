@@ -25,8 +25,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4aa368ea238de724fb6896e8f4bd33f1
+    m_Address: __auto/ui/toasts
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a36f93b5deb43674e8ae86cac73c0f48
     m_Address: __auto/ui/loadingscreen
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cb74622ec1941644d98f98bcc740ca29
+    m_Address: __auto/ui/keybindsmenu
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

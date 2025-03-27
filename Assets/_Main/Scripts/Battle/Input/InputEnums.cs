@@ -20,5 +20,9 @@ public enum InputType {
     /// Simulates a clearing of the current input buffer. During networked games, in order to ensure determinism, the input buffer is oftentimes not modifiable (appart from appending to it). To simulate a clearing of the buffer, this input type can be appended into an input buffer, which causes any reads or scans of the buffer to immediately end upon reaching this escape sequence, effectively clearing the buffer.
     /// </summary>
     ESC_CLEAR_BUFFER = 1000,
+    /// <summary>
+    /// When encountered during InputBuffer.TimeSlice, instructs the time slice to include the next frame in the buffer, even it is beyond the specified length of the time slice. This allows inputs pressed during a freeze/hitstop to still be read and processed immediately after the freeze/hitstop ends.
+    /// </summary>
+    ESC_FREEZE_TIMESLICE_CONTINUE = 1001,
 }
 }

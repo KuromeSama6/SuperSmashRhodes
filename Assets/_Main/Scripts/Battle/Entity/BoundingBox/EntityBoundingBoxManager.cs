@@ -36,13 +36,14 @@ public class EntityBoundingBoxManager : MonoBehaviour, IStateSerializable {
         
         // Debug.Log($"{boxes.Count} {explicitBoundingBoxes.Count}");
         boxes.AddRange(explicitBoundingBoxes);
-        
-        gameObject.SetActive(false);
-        gameObject.SetActive(true);
     }
 
     private void Update() {
         // Debug.Log($"{entity.name}: pushbox={pushbox.box}");
+        
+        foreach (var box in boxes) {
+            if (box is MonoBehaviour beh) beh.enabled = enabled;
+        }
     }
 
     public EntityBoundingBox CreateBoundingBox(string name, BoundingBoxType type) {

@@ -60,6 +60,7 @@ public class EntityBoundingBox : MonoBehaviour, IEntityBoundingBox, IEngineUpdat
     }
 
     public void EnsureAttachment() {
+        enabled = true;
         bbFollower.MatchAttachment(bbFollower.Slot.Attachment);
     }
 

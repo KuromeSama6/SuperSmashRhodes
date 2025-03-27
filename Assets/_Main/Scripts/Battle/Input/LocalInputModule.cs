@@ -5,6 +5,7 @@ using NUnit.Framework;
 using Sirenix.OdinInspector;
 using SuperSmashRhodes.Battle;
 using SuperSmashRhodes.Battle.Game;
+using SuperSmashRhodes.Settings;
 using SuperSmashRhodes.Util;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -23,6 +24,8 @@ public class LocalInputModule : MonoBehaviour, IInputProvider, IEngineUpdateList
     private List<InputFrame> thisFrameInputs = new();
     private InputBuffer localBuffer;
     
+    public string schemeName => input.currentControlScheme;
+    
     private void Start() {
         if (FightEngine.inst) FightEngine.inst.RefreshComponentReferences();
         
@@ -31,13 +34,15 @@ public class LocalInputModule : MonoBehaviour, IInputProvider, IEngineUpdateList
         
         // load inputs
         {
-            var file = new FileInfo(Path.Join(Application.persistentDataPath, "/local/settings/inputs.json"));
-            if (file.Exists) {
+            var inputSettings = SettingsManager.inst.data.playerInputSettings;
+            if (inputSettings != null) {
+                input.actions.LoadBindingOverridesFromJson(inputSettings);
+                foreach (var action in input.actions) action.Enable();
                 
             } else {
-                file.Directory.Create();
-                var json = input.actions.ToJson();
-                File.WriteAllText(file.FullName, json);
+                var json = input.actions.SaveBindingOverridesAsJson();
+                SettingsManager.inst.data.playerInputSettings = json;
+                SettingsManager.inst.Save();
             }
         }
     }

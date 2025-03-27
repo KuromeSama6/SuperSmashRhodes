@@ -171,7 +171,9 @@ public abstract class SummonAttackStateBase : TokenState, IAttack {
         return 1f;
     }
     public abstract AttackGuardType GetGuardType(Entity to);
-    public abstract int GetFreezeFrames([CanBeNull] Entity to);
+    public virtual int GetFreezeFrames([CanBeNull] Entity to) {
+        return GetAttackLevel(to) + 8;
+    }
     public abstract int GetAttackLevel(Entity to);
     public virtual float GetMinimumDamagePercentage(Entity to) {
         return 0;

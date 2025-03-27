@@ -146,7 +146,7 @@ internal class NetworkInputManager {
                     
                 } else {
                     // repredict based on new input
-                    var predictedRemote = PredictInput(remoteBuffer.inputBuffer.thisFrame.inputs);
+                    var predictedRemote = PredictInput(remoteBuffer.inputBuffer[0].inputs);
                     remoteBuffer.inputBuffer.PushAndTick(predictedRemote);
                     
                     inputCache[frame] = new(frame, cached.localBuffer, remoteBuffer.inputBuffer, predictedRemote, FightEngine.inst.SerializeGameStateImmediate());
@@ -173,7 +173,7 @@ internal class NetworkInputManager {
         // poll local input
         var character = room.localPlayer.playerCharacter;
         if (!character) return;
-        var chord = character.inputProvider.inputBuffer.thisFrame;
+        var chord = character.inputProvider.inputBuffer[0];
 
         ++sendFrame;
         var arr = chord.inputs.ToArray();
@@ -188,7 +188,7 @@ internal class NetworkInputManager {
 
             } else {
                 Debug.Log($"No remote input for frame {sendFrame}, predicting");
-                remote = PredictInput(remoteBuffer.inputBuffer.thisFrame.inputs);
+                remote = PredictInput(remoteBuffer.inputBuffer[0].inputs);
             }
             
             remoteBuffer.inputBuffer.PushAndTick(remote);

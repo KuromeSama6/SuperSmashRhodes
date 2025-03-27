@@ -20,8 +20,8 @@ public class State_CmnHitStun : State_Common_Stun {
         base.OnStateBegin();
         // player.ApplyGroundedFrictionImmediate();
         AddCancelOption("CmnHitStunAir");
+        AddCancelOption("CmnBurst");
     }
-
 }
 
 [NamedToken("CmnHitStunGroundCrouch")]

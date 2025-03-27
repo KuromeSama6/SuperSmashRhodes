@@ -18,9 +18,6 @@ public abstract class State_Common_NmlAtk5H : State_Common_NormalAttack {
     protected override EntityStateType commonCancelOptions => EntityStateType.CHR_ATK_NORMAL_H | EntityStateType.CHR_ATK_DRIVE_SPECIAL_SUPER;
     protected override InputFrame[] requiredInput => new InputFrame[] {new(InputType.HS, InputFrameType.PRESSED)};
 
-    public override int GetFreezeFrames(Entity to) {
-        return 8;
-    }
     public override float GetComboProration(Entity to) {
         return .9f;
     }

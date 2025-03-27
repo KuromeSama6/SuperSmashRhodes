@@ -21,10 +21,6 @@ public abstract class State_Common_NmlAtk8P : State_Common_AirNormalAttack {
     protected override void OnStateBegin() {
         base.OnStateBegin();
     }
-
-    public override int GetFreezeFrames(Entity to) {
-        return 4;
-    }
     public override float GetComboProration(Entity to) {
         return .8f;
     }

@@ -235,6 +235,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb499dd1ffc690f4e84550a3121828ba
+    m_Address: cmn/battle/fx/prefab/common/burstparry/flash
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb72dd971289a0048a2cebe08857c52e
+    m_Address: cmn/battle/fx/prefab/common/burstparry/aura
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ee09c108c95d7cd48a322c5d0612ea1c
     m_Address: chr/exusiai/fx/prefab/214h/shot/lv3
     m_ReadOnly: 0

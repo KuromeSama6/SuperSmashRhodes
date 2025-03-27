@@ -14,7 +14,8 @@ namespace SuperSmashRhodes.Input {
 public class InputBuffer : IStateSerializable {
     public int maxSize { get; set; }
     public List<InputChord> buffer { get; private set; } = new();
-    public InputChord thisFrame => buffer[0];
+    public InputBuffer thisFrame => TimeSlice(1);
+    public InputChord this[int index] => buffer[index];
 
     public InputBuffer(int maxSize) {
         this.maxSize = maxSize;
@@ -46,8 +47,16 @@ public class InputBuffer : IStateSerializable {
         buffer[0] = new(buffer[0].inputs.Concat(inputs).ToArray());
     }
 
+    public bool HasInput(EntitySide side, InputType type, InputFrameType frameType) {
+        return HasInputUnordered(side, new InputFrame(type, frameType));
+    }
+    
     public InputBuffer TimeSlice(int frames) {
         var ret = buffer.GetRange(0, frames);
+        while (ret.Count < buffer.Count && buffer[ret.Count - 1].HasInput(default, InputType.ESC_FREEZE_TIMESLICE_CONTINUE, InputFrameType.PRESSED)) {
+            ret.Add(buffer[ret.Count - 1]);
+        }
+        
         return new InputBuffer(maxSize, ret.ToArray());
     }
 

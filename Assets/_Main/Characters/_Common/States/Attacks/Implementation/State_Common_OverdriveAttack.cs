@@ -185,9 +185,6 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
     public override float GetFirstHitProration(Entity to) {
         return 1f;
     }
-    public override int GetFreezeFrames(Entity to) {
-        return 0;
-    }
     public override int GetAttackLevel(Entity to) {
         return 5;
     }
@@ -224,7 +221,7 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
     public virtual float meterCost => 50f;
     public virtual bool hasCinematic => true;
     protected virtual int superfreezeLength => 60;
-    protected virtual int superfreezeHitstopLength => 60;
+    protected virtual int superfreezeHitstopLength => 30;
     protected abstract int framesBeforeSuperfreeze { get; }
     protected abstract int farHitSkipFrame { get; }
     protected abstract int farHitActiveFrames { get; }
@@ -243,7 +240,8 @@ public abstract class State_Common_OverdriveAttack : CharacterAttackStateBase {
             
         }
     }
-
+    
+    
     protected virtual void OnWhiff() { }
     protected virtual void OnRelease() { }
 

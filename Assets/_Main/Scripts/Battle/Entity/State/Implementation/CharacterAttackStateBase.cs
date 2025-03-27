@@ -91,7 +91,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     
     protected override void OnStateEnd(EntityState nextState) {
         base.OnStateEnd(nextState);
-        player.boundingBoxManager.SetAll(false);
+        // player.boundingBoxManager.SetAll(false);
     }
 
     public virtual void OnContact(Entity to) {
@@ -232,7 +232,7 @@ public abstract class CharacterAttackStateBase : CharacterState, IAttack {
     public abstract AttackGuardType GetGuardType(Entity to);
     public abstract CounterHitType GetCounterHitType(Entity to);
     public virtual int GetFreezeFrames([CanBeNull] Entity to) {
-        return 10;
+        return GetAttackLevel(to) + 8;
     }
     public abstract int GetAttackLevel(Entity to);
     public virtual float GetMinimumDamagePercentage(Entity to) {

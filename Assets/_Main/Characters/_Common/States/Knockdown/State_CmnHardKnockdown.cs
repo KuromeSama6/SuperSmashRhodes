@@ -22,7 +22,7 @@ public class State_CmnHardKnockdown : CharacterState {
         entity.animation.AddUnmanagedAnimation("std/down", false);
     }
     public override EntityStateSubroutine BeginMainSubroutine() {
-        return ctx => ctx.Exit(55);
+        return ctx => ctx.Exit(25);
     }
 
     protected override void OnStateEndComplete(EntityState nextState) {

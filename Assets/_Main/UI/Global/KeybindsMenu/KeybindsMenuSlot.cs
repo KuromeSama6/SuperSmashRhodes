@@ -19,9 +19,12 @@ public class KeybindsMenuSlot : MonoBehaviour, ISelectHandler, IDeselectHandler 
     
     public bool expanded { get; set; }
     
-    public LocalInputModule inputModule { get; private set; }
+    public string inputModuleName { get; private set; }
+    public string actionName { get; private set; }
     private RectTransform rectTransform;
-    public InputAction action { get; private set; }
+
+    public InputAction action => inputModule.GetAction(actionName);
+    public LocalInputModule inputModule => InputDevicePool.inst.GetInputModule(inputModuleName);
     
     private void Start() {
         rectTransform = transform as RectTransform;
@@ -32,9 +35,9 @@ public class KeybindsMenuSlot : MonoBehaviour, ISelectHandler, IDeselectHandler 
         rectTransform.localScale = new(Mathf.Lerp(rectTransform.localScale.x, expanded ? 1 : 0, Time.deltaTime * 10f), 1, 1);
     }
 
-    public void Init(string actionName, LocalInputModule inputModule) {
-        this.inputModule = inputModule;
-        action = inputModule.GetAction(actionName);
+    public void Init(string actionName, string inputModuleName) {
+        this.inputModuleName = inputModuleName;
+        this.actionName = actionName;
         
         actionText.text = actionName;
         keybindText.text = action.GetBindingDisplayString();

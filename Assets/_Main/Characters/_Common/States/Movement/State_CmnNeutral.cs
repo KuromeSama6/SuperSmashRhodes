@@ -96,6 +96,7 @@ public class State_CmnAirNeutral : CharacterState {
 
     protected override void OnStateBegin() {
         base.OnStateBegin();
+        AddCancelOption("CmnBurst");
         player.ResetGatlings();
         cancelOptionsAdded = false;
         TryAddCancelOptions();
